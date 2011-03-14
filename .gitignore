@@ -1,0 +1,9 @@
+*.tmp
+*.log
+demo/*.tmp
+demo/*.log
+*.mexglx
+*.mexw32
+/Doc/*
+!/Doc/recsdemos.tex
+

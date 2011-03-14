@@ -1,0 +1,325 @@
+\documentclass[11pt,fleqn]{article}
+
+
+\usepackage{fullpage,amsmath,amssymb,amsfonts,graphicx,subfig,array,booktabs,threeparttable,verbatim,ifpdf,setspace}%
+\usepackage[T1]{fontenc}%
+\usepackage{t1enc}%
+\usepackage[latin1]{inputenc}%
+\usepackage[english]{babel}
+
+% Caption option
+\captionsetup{font={small,bf},%
+  labelsep=period}
+
+
+% Cross-references
+\usepackage[plain]{fancyref}%
+\frefformat{plain}{\fancyreffiglabelprefix}{\Freffigname\fancyrefdefaultspacing#1}%
+\frefformat{plain}{\fancyreftablabelprefix}{\Freftabname\fancyrefdefaultspacing#1}%
+\frefformat{plain}{\fancyrefseclabelprefix}{\Frefsecname\fancyrefdefaultspacing#1}%
+\frefformat{plain}{\fancyrefeqlabelprefix}{\Frefeqname\fancyrefdefaultspacing(#1)}
+
+\graphicspath{{Figures/}CMRoman/}
+
+% Bibliography
+\usepackage[comma]{natbib}
+\bibliographystyle{apalike4}%
+\setlength{\bibsep}{0.2\baselineskip}
+
+\newcommand{\MyTitle}{}%
+\newcommand{\MyAbstract}{}%
+\newcommand{\MyKeywords}{}
+
+% PDF option
+\ifpdf
+\usepackage{hyperref,hyperxmp}%
+\hypersetup{%
+  bookmarksopen=true,%
+  bookmarksnumbered=true,%
+  citecolor=black,%
+  urlcolor=black,%
+  linkcolor=black,%
+  filecolor=black,%
+  colorlinks=true,%
+  pdfdisplaydoctitle=false,%
+  pdfauthor={Christophe Gouel},%
+  pdftitle={\MyTitle},%
+  pdfsubject={\MyAbstract},%
+  pdfkeywords={\MyKeywords},%
+  pdfstartview={FitH}}%
+\fi
+
+% Look
+\usepackage{microtype}
+\DeclareMathOperator{\E}{E}
+\newcommand{\Ss}{S^{\textsc{s}}}
+\newcommand{\Sg}{S^{\textsc{g}}}
+\newcommand{\PF}{P^{\textsc{f}}}
+\newcommand{\Sgb}{\bar{S}^{\textsc{g}}}
+\newcommand{\Pw}{P^{w}}
+\newcommand{\PC}{P^{\textsc{c}}}
+\newcommand{\CP}{\quad \perp \quad}
+\newcommand{\dSp}[1]{\Delta S^{\textsc{g}+}_{#1}}
+\newcommand{\dSm}[1]{\Delta S^{\textsc{g}-}_{#1}}
+\singlespacing
+\setlength{\mathindent}{1cm}
+
+% Title
+\title{}
+% \title{\MyTitle%
+%   \thanks{Support from the AgFoodTrade project funded under the 7th Framework
+%     Programme for Research and Development, DG-Research, European Commission, is
+%     acknowledged.}}%
+\date{\today}%
+\author{Christophe Gouel\footnote{INRA, CEPII and Ecole Polytechnique
+    (christophe.gouel@inra.grignon.fr)}}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+\label{sec:introduction}
+
+This paper presents the models used as demonstration of the RECS toolbox.
+
+\section{Variants of the storage model}
+\label{sec:vari-stor-model}
+
+\subsection{STO1: Competitive storage model}
+\label{sec:comp-stor-model}
+
+Model close to \citet{Wrig82}.
+
+\paragraph{Response variables}
+\label{sec:response-variables}
+
+Storage ($S$), Planned production ($H$) and Price ($P$).
+
+\paragraph{State variable}
+\label{sec:state-variable}
+
+Availability ($A$).
+
+\paragraph{Shock}
+\label{sec:shock}
+
+Productivity shocks ($\epsilon$).
+
+\paragraph{Parameters}
+\label{sec:parameters}
+
+Unit physical storage cost ($k$), Depreciation share ($\delta$), Interest rate
+($r$), Scale parameter for the production cost function ($h$), Inverse of supply
+elasticity ($\mu$) and Demand price elasticity ($\alpha$).
+
+\paragraph{Equilibrium equations}
+\label{sec:equil-equat}
+
+\begin{align}
+  S_{t}&: S_{t}\ge 0 \CP P_{t}+k-\frac{1-\delta}{1+r}\E_{t}\left(P_{t+1}\right)\ge 0,\\
+  H_{t}&: \frac{1}{1+r}\E_{t}\left(P_{t+1}\epsilon_{t+1}\right)=h {H_{t}}^{\mu},\\
+  P_{t}&: A_{t}={P_{t}}^{\alpha}+S_{t}.
+\end{align}
+
+\paragraph{Transition equation}
+\label{sec:transition-equation}
+
+\begin{equation}
+  A_{t}: A_{t}=\left(1-\delta\right)S_{t-1}+H_{t-1}\epsilon_{t}.
+\end{equation}
+
+\subsection{STO2: Storage model with floor price defended by public storage}
+\label{sec:storage-model-with}
+
+Model close to one of the models presented in \citet{Wrig88a}.
+
+\paragraph{Response variables}
+\label{sec:response-variables}
+
+Speculative storage ($\Ss$), Public storage ($\Sg$), Planned production ($H$) and
+Price ($P$).
+
+\paragraph{State variable}
+\label{sec:state-variable}
+
+Availability ($A$).
+
+\paragraph{Shock}
+\label{sec:shock}
+
+Productivity shocks ($\epsilon$).
+
+\paragraph{Parameters}
+\label{sec:parameters}
+
+Unit physical storage cost ($k$), Depreciation share ($\delta$), Interest rate
+($r$), Scale parameter for the production cost function ($h$), Inverse of supply
+elasticity ($\mu$), Demand price elasticity ($\alpha$) and Floor price ($\PF$).
+
+\paragraph{Equilibrium equations}
+\label{sec:equil-equat}
+
+\begin{align}
+  \Ss_{t}&: \Ss_{t}\ge 0 \CP P_{t}+k-\frac{1-\delta}{1+r}\E_{t}\left(P_{t+1}\right)\ge 0,\\
+  H_{t}&: \frac{1}{1+r}\E_{t}\left(P_{t+1}\epsilon_{t+1}\right)=h {H_{t}}^{\mu},\\
+  P_{t}&: A_{t}={P_{t}}^{\alpha}+\Ss_{t}+\Sg_{t},\\
+  \Sg_{t}&: \Sg_{t}\ge 0 \CP P_{t}\ge\PF.
+\end{align}
+
+\paragraph{Transition equation}
+\label{sec:transition-equation}
+
+\begin{equation}
+  A_{t}: A_{t}=\left(1-\delta\right)\left(\Ss_{t-1}+\Sg_{t-1}\right)+H_{t-1}\epsilon_{t}.
+\end{equation}
+
+\subsection{STO3: Storage with price-band defended by public storage}
+\label{sec:storage-with-price}
+
+This model is an extension of \citet{Mira88} to include a capacity constraint on
+the public stock level.
+
+\paragraph{Response variables}
+\label{sec:response-variables}
+
+Speculative storage ($\Ss$), Increase in public stock level ($\dSp{}$), Decrease in
+public stock level ($\dSm{}$), Planned production ($H$) and Price ($P$).
+
+\paragraph{State variables}
+\label{sec:state-variable}
+
+Availability ($A$) and Public stock ($\Sg$).
+
+\paragraph{Shock}
+\label{sec:shock}
+
+Productivity shocks ($\epsilon$).
+
+\paragraph{Parameters}
+\label{sec:parameters}
+
+Unit physical storage cost ($k$), Depreciation share ($\delta$), Interest rate
+($r$), Scale parameter for the production cost function ($h$), Inverse of supply
+elasticity ($\mu$), Demand price elasticity ($\alpha$), Floor price ($\PF$),
+Ceiling price ($\PC$) and Capacity constraint on public stock ($\Sgb$).
+
+\paragraph{Equilibrium equations}
+\label{sec:equil-equat}
+
+\begin{align}
+  \Ss_{t}&: \Ss_{t}\ge 0 \CP P_{t}+k-\frac{1-\delta}{1+r}\E_{t}\left(P_{t+1}\right)\ge 0,\\
+  H_{t}&: \frac{1}{1+r}\E_{t}\left(P_{t+1}\epsilon_{t+1}\right)=h {H_{t}}^{\mu},\\
+  P_{t}&: A_{t}+\dSm{t}={P_{t}}^{\alpha}+\Ss_{t}+\dSp{t},\\
+  \dSp{t}&:0\le\dSp{t}\le\Sgb-\Sg_{t-1} \CP P_{t}-\PF,\\
+  \dSm{t}&:0\le\dSm{t}\le\Sg_{t-1} \CP \PC-P_{t}.
+\end{align}
+
+\paragraph{Transition equations}
+\label{sec:transition-equation}
+
+\begin{align}
+  A_{t}&: A_{t}=\left(1-\delta\right)\Ss_{t-1}+H_{t-1}\epsilon_{t},\\
+  \Sg_{t}&: \Sg_{t}= \Sg_{t-1}+\dSp{t}-\dSm{t}.
+\end{align}
+
+\subsection{STO4: Storage-trade model of a small country}
+\label{sec:storage-trade-model}
+
+
+\paragraph{Response variables}
+
+Storage ($S$), Planned production ($H$), Price ($P$), Import ($M$) and Export ($X$).
+
+\paragraph{State variables}
+
+Availability ($A$) and World price ($\Pw$).
+
+\paragraph{Shocks}
+
+Productivity shocks ($\epsilon$) and Innovation on world price ($\nu$).
+
+\paragraph{Parameters}
+
+Unit physical storage cost ($k$), Depreciation share ($\delta$), Interest rate
+($r$), Scale parameter for the production cost function ($h$), Inverse of supply
+elasticity ($\mu$), Demand price elasticity ($\alpha$) and Trade cost ($\theta$).
+
+\paragraph{Equilibrium equations}
+
+\begin{align}
+  S_{t}&: S_{t}\ge 0 \CP P_{t}+k-\frac{1-\delta}{1+r}\E_{t}\left(P_{t+1}\right)\ge 0,\\
+  H_{t}&: \frac{1}{1+r}\E_{t}\left(P_{t+1}\epsilon_{t+1}\right)=h {H_{t}}^{\mu},\\
+  P_{t}&: A_{t}+M_{t}={P_{t}}^{\alpha}+S_{t}+X_{t},\\
+  M_{t}&: M_{t}\ge 0 \CP \Pw_{t}+\theta\ge P_{t},\\
+  X_{t}&: X_{t}\ge 0 \CP P_{t}\ge \Pw_{t}-\theta.
+\end{align}
+
+\paragraph{Transition equations}
+
+\begin{align}
+  A_{t}&: A_{t}=\left(1-\delta\right)S_{t-1}+H_{t-1}\epsilon_{t},\\
+  \Pw_{t}&: \ln \Pw_{t} = \rho\ln \Pw_{t-1}+\nu_{t}.
+\end{align}
+
+
+
+\subsection{STO5: Two-country storage-trade model}
+\label{sec:two-country-storage}
+
+Model close to \citet{Mira95}. Countries $a$ and $b$ are indicated by the subscript
+$i \in \left\{a,b\right\}$. When variables corresponding to both countries appear
+in the same equation, the foreign country is indicated by the subscript $j$.
+
+\paragraph{Response variables}
+\label{sec:response-variables}
+
+Storage ($S_{i}$), Planned production ($H_{i}$), Price ($P_{i}$) and Export ($X_{i}$).
+
+\paragraph{State variables}
+\label{sec:state-variable}
+
+Availability ($A_{i}$).
+
+\paragraph{Shocks}
+\label{sec:shock}
+
+Productivity shocks ($\epsilon_{i}$).
+
+\paragraph{Parameters}
+\label{sec:parameters}
+
+Unit physical storage cost ($k$), Depreciation share ($\delta$), Interest rate
+($r$), Scale parameter for the production cost function ($h$), Inverse of supply
+elasticity ($\mu$), Demand price elasticity ($\alpha$), Trade cost ($\theta$) and
+Tariff ($\tau_{i}$).
+
+\paragraph{Equilibrium equations}
+\label{sec:equil-equat}
+
+For $i \in \left\{a,b\right\}$ and $j \ne i$:
+\begin{align}
+  S_{it}&: S_{it}\ge 0 \CP P_{it}+k-\frac{1-\delta}{1+r}\E_{t}\left(P_{it+1}\right)\ge 0,\\
+  H_{it}&: \frac{1}{1+r}\E_{t}\left(P_{it+1}\epsilon_{it+1}\right)=h {H_{it}}^{\mu},\\
+  P_{it}&: A_{it}+X_{jt}={P_{it}}^{\alpha}+S_{it}+X_{it},\\
+  X_{it}&: X_{it}\ge 0 \CP P_{it}+\theta+\tau_{j}\ge P_{jt}.
+\end{align}
+
+\paragraph{Transition equations}
+\label{sec:transition-equation}
+
+For $i \in \left\{a,b\right\}$:
+\begin{equation}
+  A_{it}: A_{it}=\left(1-\delta\right)S_{it-1}+H_{it-1}\epsilon_{it}.
+\end{equation}
+
+\bibliography{Volatility}%
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% ispell-local-dictionary: "american"
+%%% TeX-master: t
+%%% End:
