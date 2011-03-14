@@ -12,8 +12,8 @@ F = residual_function(X,func,params,e,d,m);
 function F = residual_function(X,func,params,e,d,m)
 ss = X(1:d)';
 xx = X(d+1:d+m)';
-zz = feval(func,'h',ss,xx,[],e,ss,xx,params{:});
-g  = feval(func,'g',ss,xx,[],e,[],[],params{:});
-f  = feval(func,'f',ss,xx,zz,[],[],[],params{:});
+zz = feval(func,'h',ss,xx,[],e,ss,xx,params);
+g  = feval(func,'g',ss,xx,[],e,[],[],params);
+f  = feval(func,'f',ss,xx,zz,[],[],[],params);
 F  = [ss-g f]';
 return

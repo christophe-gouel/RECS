@@ -13,7 +13,7 @@ if nargin < 13
 end
 
 [n,m]   = size(x);
-[LB,UB] = feval(func,'b',s,[],[],[],[],[],params{:});
+[LB,UB] = feval(func,'b',s,[],[],[],[],[],params);
 
 if loop_over_s % Solve separately for each point on the grid
   f                 = zeros(size(x));

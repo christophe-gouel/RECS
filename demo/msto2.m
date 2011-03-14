@@ -1,8 +1,16 @@
-function [out1,out2,out3,out4] = mdsem04(flag,s,x,z,e,snext,xnext,k,delta,r,mu,alpha,PF,Sgbar)
+function [out1,out2,out3,out4] = mdsem04(flag,s,x,z,e,snext,xnext,params)
 % Equations of a competitive storage model with floor-price backed by public storage
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
+
+k = params(1);
+delta = params(2);
+r  = params(3);
+mu  = params(4);
+alpha  = params(5);
+PF  = params(6);
+Sgbar  = params(7);
 
 n = size(s,1);
 d = 1;

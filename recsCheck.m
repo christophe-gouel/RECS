@@ -27,21 +27,21 @@ func   = model.func;
 params = model.params;
 
 % Analytical derivatives
-[~,fx,fz] = feval(func,'f',s,x,z,[],[],[],params{:});
+[~,fx,fz] = feval(func,'f',s,x,z,[],[],[],params);
 
-[~,gx] = feval(func,'g',s,x,[],e,[],[],params{:});
+[~,gx] = feval(func,'g',s,x,[],e,[],[],params);
 
-[~,hx,hsnext,hxnext] = feval(func,'h',s,x,[],e,snext,xnext,params{:});
+[~,hx,hsnext,hxnext] = feval(func,'h',s,x,[],e,snext,xnext,params);
 
 % Numerical derivatives
-fxnum = fjac(func,3,'f',s,x,z,[],[],[],params{:});
-fznum = fjac(func,4,'f',s,x,z,[],[],[],params{:});
+fxnum = fjac(func,3,'f',s,x,z,[],[],[],params);
+fznum = fjac(func,4,'f',s,x,z,[],[],[],params);
 
-gxnum = fjac(func,3,'g',s,x,[],e,[],[],params{:});
+gxnum = fjac(func,3,'g',s,x,[],e,[],[],params);
 
-hxnum     = fjac(func,3,'h',s,x,[],e,snext,xnext,params{:});
-hsnextnum = fjac(func,6,'h',s,x,[],e,snext,xnext,params{:});
-hxnextnum = fjac(func,7,'h',s,x,[],e,snext,xnext,params{:});
+hxnum     = fjac(func,3,'h',s,x,[],e,snext,xnext,params);
+hsnextnum = fjac(func,6,'h',s,x,[],e,snext,xnext,params);
+hxnextnum = fjac(func,7,'h',s,x,[],e,snext,xnext,params);
 
 % Error
 err = norm(fx(:)-fxnum(:),inf);

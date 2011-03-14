@@ -59,8 +59,8 @@ else
 end
 
 for t=1:nper+1
-  if t>1, s0 = feval(func,'g',s0,xx,[],esim(:,:,t),[],[],params{:}); end
-  [LB,UB]    = feval(func,'b',s0,[],[],[],[],[],params{:});
+  if t>1, s0 = feval(func,'g',s0,xx,[],esim(:,:,t),[],[],params); end
+  [LB,UB]    = feval(func,'b',s0,[],[],[],[],[],params);
   Phi        = funbasx(fspace,s0);
   xx         = min(max(funeval(cx,fspace,Phi),LB),UB);
   switch simulmethod
@@ -95,7 +95,7 @@ for t=1:nper+1
                                     'expfunapprox',eqsolveroptions,loop_over_s);
     end
    case 'interpolation'
-    if nargout>=4, f = feval(func,'f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params{:}); end
+    if nargout>=4, f = feval(func,'f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params); end
   end
   ssim(:,:,t) = s0;
   xsim(:,:,t) = xx;
@@ -115,7 +115,7 @@ if (nargout==5 || statdisplay) && (nper > 40)
   X = reshape(X,d+m,[])';
 
   % Percent of time spent at the bounds
-  [LB,UB] = feval(func,'b',X(:,1:d),[],[],[],[],[],params{:});
+  [LB,UB] = feval(func,'b',X(:,1:d),[],[],[],[],[],params);
   pLB     = [zeros(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps)*100];
   pUB     = [zeros(1,d) mean(abs(UB-X(:,d+1:d+m))<eps)*100];
 

@@ -24,7 +24,7 @@ m      = length(x);
 exitflag = 1;
 
 X       = [s(:); x(:)];
-[LB,UB] = feval(func,'b',s,[],[],[],[],[],params{:});
+[LB,UB] = feval(func,'b',s,[],[],[],[],[],params);
 LB      = [-inf(size(s(:))); LB(:)];
 UB      = [+inf(size(s(:))); UB(:)];
 
@@ -60,4 +60,4 @@ if exitflag~=1, disp('Failure to find a deterministic steady state'); end
 
 s = X(1:d)';
 x = X(d+1:d+m)';
-z = feval(func,'h',s,x,[],e,s,x,params{:});
+z = feval(func,'h',s,x,[],e,s,x,params);

@@ -1,8 +1,16 @@
-function [out1,out2,out3,out4] = msto4(flag,s,x,z,e,snext,xnext,delta,r,k,alpha,tau,rho,sigma)
+function [out1,out2,out3,out4] = msto4(flag,s,x,z,e,snext,xnext,params)
 % Equations of a storage-trade model of one small-country
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
+
+delta = params(1);
+r = params(2);
+k = params(3);
+alpha = params(4);
+tau = params(5);
+rho = params(6);
+sigma = params(7);
 
 n = size(s,1);
 d = 2;
