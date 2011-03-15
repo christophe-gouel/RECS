@@ -26,8 +26,8 @@ Sigma             = [0.05 0;0 0.05];   % std-deviation of production shocks in a
 model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*Sigma;
 
 % PACK MODEL STRUCTURE
-model.func   = 'msto5';                                     % model functions
-model.params = [delta,r,k,alpha,theta,lambda,eta,mu,taua,taub];         % other parameters
+model.func   = @msto5;                                     % model functions
+model.params = {delta,r,k,alpha,theta,lambda,eta,mu,taua,taub};         % other parameters
 
 % DEFINE APPROXIMATION SPACE
 order         = [15; 15];                                      % degree of approximation

@@ -37,12 +37,12 @@ end
 ssss = s0;
 
 d       = size(s0,2);
-q       = size(feval(funrand,1),2);
+q       = size(funrand(1),2);
 m       = size(interp.cx,2);
 shocks0 = zeros(nrep,q,nper+1);
 shocks1 = zeros(nrep,q,nper+1);
 for t=1:nper+1
-  shocks0(:,:,t) = feval(funrand,nrep);
+  shocks0(:,:,t) = funrand(nrep);
 end
 
 shocks1(:,:,2:end) = shocks0(:,:,2:end);

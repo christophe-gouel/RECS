@@ -13,7 +13,7 @@ if nargin < 13
 end
 
 [n,m]   = size(x);
-[LB,UB] = feval(func,'b',s,[],[],[],[],[],params);
+[LB,UB] = func('b',s,[],[],[],[],[],params);
 
 if loop_over_s % Solve separately for each point on the grid
   f                 = zeros(size(x));
@@ -51,13 +51,13 @@ switch lower(eqsolver)
                          x,LB,UB,eqsolveroptions);
   if exitflag~=1, disp('No convergence'); end
  case 'ncpsolve'
-  [x,f] = ncpsolve(@(X) ncpsolvetransform(X,'recsEquilibrium',s,z,func,...
+  [x,f] = ncpsolve(@(X) ncpsolvetransform(X,@recsEquilibrium,s,z,func,...
                                           params,grid,c,e,w,fspace,method),...
                    LB,UB,x);
   f     = -f;
  case 'path'
   global par
-  par   = {'recsEquilibrium',s,z,func,params,grid,c,e,w,fspace,method};
+  par   = {@recsEquilibrium,s,z,func,params,grid,c,e,w,fspace,method};
   [x,f] = pathmcp(x,LB,UB,'pathtransform');
   clear global par
 end

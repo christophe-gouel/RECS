@@ -12,7 +12,7 @@ checkjacobian = 0; % Check analytical derivatives against numerical ones
 switch method
  case {'expapprox','resapprox-simple'}
   if nargout==2
-    [F,J] = feval(func,'f',s,x,z,[],[],[],params);
+    [F,J] = func('f',s,x,z,[],[],[],params);
     J     = permute(J,[2 3 1]);
     if isempty(J) || (checkjacobian) % Numerical derivatives
       Jnum   = zeros(m,m,n);
@@ -27,7 +27,7 @@ switch method
       end
     end
   else
-    F     = feval(func,'f',s,x,z,[],[],[],params);
+    F     = func('f',s,x,z,[],[],[],params);
   end
   F       = reshape(F',n*m,1);
  case {'expfunapprox','resapprox-complete'}
@@ -40,27 +40,27 @@ switch method
 
   if (nargout==2) && (((nargout(func)>=4) && isequal(method,'resapprox-complete')) ...
                       || ((nargout(func)>=3) && isequal(method,'expfunapprox'))) % Analytic derivatives
-    [snext,gx]           = feval(func,'g',ss,xx,[],ee,[],[],params);
+    [snext,gx]           = func('g',ss,xx,[],ee,[],[],params);
 
     switch method
      case 'expfunapprox'
       H                 = funeval(c,fspace,snext,[zeros(1,d); eye(d)]);
       if nargout(func)==5
-        [~,~,~,~,hmult] = feval(func,'h',[],[],[],ee,snext,zeros(size(snext,1),m),params);
+        [~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params);
         H               = H.*hmult(:,:,ones(1+d,1));
       end
       h   = H(:,:,1);
       hds = H(:,:,2:end);
      case 'resapprox-complete'
-      [LB,UB]              = feval(func,'b',snext,[],[],[],[],[],params);
+      [LB,UB]              = func('b',snext,[],[],[],[],[],params);
       Xnext                = funeval(c,fspace,snext,[zeros(1,d); eye(d)]);
       xnext                = min(max(Xnext(:,:,1),LB),UB);
       xnextds              = Xnext(:,:,2:end);
 
       if nargout(func)<5
-        [h,hx,hsnext,hxnext] = feval(func,'h',ss,xx,[],ee,snext,xnext,params);
+        [h,hx,hsnext,hxnext] = func('h',ss,xx,[],ee,snext,xnext,params);
       else
-        [h,hx,hsnext,hxnext,hmult] = feval(func,'h',ss,xx,[],ee,snext,xnext,params);
+        [h,hx,hsnext,hxnext,hmult] = func('h',ss,xx,[],ee,snext,xnext,params);
         h      = h.*hmult;
         hx     = hx.*hmult(:,:,ones(m,1));
         hsnext = hsnext.*hmult(:,:,ones(d,1));
@@ -69,7 +69,7 @@ switch method
     end
     p         = size(h,2);
     z         = reshape(w'*reshape(h,K,n*p),n,p);
-    [F,fx,fz] = feval(func,'f',s,x,z,[],[],[],params);
+    [F,fx,fz] = func('f',s,x,z,[],[],[],params);
     F         = reshape(F',n*m,1);
 
     switch method
@@ -120,7 +120,7 @@ x = reshape(x,[],n)';
 m = size(x,2);
 
 if ~isempty(z) % Cases expapprox and resapprox-simple
-  F = feval(func,'f',s,x,z,[],[],[],params);
+  F = func('f',s,x,z,[],[],[],params);
 else
   K       = size(e,1);
   ind     = (1:n);
@@ -129,30 +129,30 @@ else
   xx      = x(ind,:);
   ee      = e(repmat(1:K,1,n),:);
 
-  snext   = feval(func,'g',ss,xx,[],ee,[],[],params);
+  snext   = func('g',ss,xx,[],ee,[],[],params);
 
   switch method
    case 'expfunapprox'
     h                 = funeval(c,fspace,snext);
     if nargout(func)==5
-      [~,~,~,~,hmult] = feval(func,'h',[],[],[],ee,snext,zeros(size(snext,1),m),params);
+      [~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params);
       h               = h.*hmult;
     end
 
    case 'resapprox-complete'
-    [LB,UB] = feval(func,'b',snext,[],[],[],[],[],params);
+    [LB,UB] = func('b',snext,[],[],[],[],[],params);
     xnext   = min(max(funeval(c,fspace,snext),LB),UB);
     if nargout(func)<5
-      h = feval(func,'h',ss,xx,[],ee,snext,xnext,params);
+      h = func('h',ss,xx,[],ee,snext,xnext,params);
     else
-      [h,~,~,~,hmult] = feval(func,'h',ss,xx,[],ee,snext,xnext,params);
+      [h,~,~,~,hmult] = func('h',ss,xx,[],ee,snext,xnext,params);
       h               = h.*hmult;
     end
 
   end
   p       = size(h,2);
   z       = reshape(w'*reshape(h,K,n*p),n,p);
-  F       = feval(func,'f',s,x,z,[],[],[],params);
+  F       = func('f',s,x,z,[],[],[],params);
 end
 F = reshape(F',n*m,1);
 

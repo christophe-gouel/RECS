@@ -194,11 +194,11 @@ Indexset(I_lu) = 3;
 
 % choice of NCP-function and corresponding evaluations
 Phi       = @Phi3MCPPFB;
-Phix      = feval(Phi,x,Fx,lb,ub,lambda1,lambda2,n,Indexset);
+Phix      = Phi(x,Fx,lb,ub,lambda1,lambda2,n,Indexset);
 normPhix  = norm(Phix);
 Psix      = 0.5*(Phix'*Phix);
 DPhi      = @DPhi3MCPPFB;
-DPhix     = feval(DPhi,x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
+DPhix     = DPhi(x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
 DPsix     = DPhix'*Phix;
 normDPsix = norm(DPsix);
 
@@ -276,7 +276,7 @@ if preprocess==1
 
       % function evaluations etc.
       [Fxnew,DFxnew] = feval(FUN,xnew,varargin{:});
-      Phixnew=feval(Phi,xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
+      Phixnew=Phi(xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
       Psixnew=0.5*(Phixnew'*Phixnew);
       normPhixnew=norm(Phixnew);
 
@@ -294,7 +294,7 @@ if preprocess==1
       Phix=Phixnew;
       Psix=Psixnew;
       normPhix=normPhixnew;
-      DPhix=feval(DPhi,x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
+      DPhix=DPhi(x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
       DPsix=DPhix'*Phix;
       normDPsix=norm(DPsix,inf);
 
@@ -371,7 +371,7 @@ while (k < kmax) && (Psix > eps2)
    t       = 1;
    xnew    = x+d;
    Fxnew   = feval(FUN,xnew,varargin{:});
-   Phixnew = feval(Phi,xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
+   Phixnew = Phi(xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
    Psixnew = 0.5*(Phixnew'*Phixnew);
    const   = sigma*DPsix'*d;
 
@@ -379,7 +379,7 @@ while (k < kmax) && (Psix > eps2)
       t       = t*beta;
       xnew    = x+t*d;
       Fxnew   = feval(FUN,xnew,varargin{:});
-      Phixnew = feval(Phi,xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
+      Phixnew = Phi(xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
       Psixnew = 0.5*(Phixnew'*Phixnew);
    end
 
@@ -389,7 +389,7 @@ while (k < kmax) && (Psix > eps2)
    Phix=Phixnew;
    Psix=Psixnew;
    [~,DFx]=feval(FUN,x,varargin{:});
-   DPhix=feval(DPhi,x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
+   DPhix=DPhi(x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
    DPsix=DPhix'*Phix;
    normDPsix=norm(DPsix);
    k=k+1;

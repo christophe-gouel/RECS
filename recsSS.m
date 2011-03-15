@@ -15,16 +15,22 @@ options = catstruct(defaultopt,options);
 eqsolver        = options.eqsolver;
 eqsolveroptions = options.eqsolveroptions;
 
-func   = model.func;
 params = model.params;
 e      = model.w'*model.e;
 d      = length(s);
 m      = length(x);
+if isa(model.func,'char')
+  func = str2func(model.func);
+elseif isa(model.func,'function_handle')
+  func   = model.func;
+else
+  error('model.func must be either a string or a function handle')
+end
 
 exitflag = 1;
 
 X       = [s(:); x(:)];
-[LB,UB] = feval(func,'b',s,[],[],[],[],[],params);
+[LB,UB] = func('b',s,[],[],[],[],[],params);
 LB      = [-inf(size(s(:))); LB(:)];
 UB      = [+inf(size(s(:))); UB(:)];
 
@@ -60,4 +66,4 @@ if exitflag~=1, disp('Failure to find a deterministic steady state'); end
 
 s = X(1:d)';
 x = X(d+1:d+m)';
-z = feval(func,'h',s,x,[],e,s,x,params);
+z = func('h',s,x,[],e,s,x,params);

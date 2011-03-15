@@ -8,9 +8,9 @@ function [F,J] = ncpsolvetransform(x,model,varargin)
 % Licensed under the Expat license, see LICENSE.txt
 
 if nargout==2
-  [F,J] = feval(model,x,varargin{:});
+  [F,J] = model(x,varargin{:});
   J     = -J;
 else
-  F     = feval(model,x,varargin{:});
+  F     = model(x,varargin{:});
 end
 F       = -F;

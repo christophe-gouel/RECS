@@ -42,9 +42,15 @@ reesolveroptions = catstruct(struct('showiters' , options.display,...
                                    options.reesolveroptions);
 
 e      = model.e;
-func   = model.func;
 params = model.params;
 w      = model.w;
+if isa(model.func,'char')
+  func = str2func(model.func);
+elseif isa(model.func,'function_handle')
+  func   = model.func;
+else
+  error('model.func must be either a string or a function handle')
+end
 
 switch method
  case 'expapprox'
@@ -58,7 +64,7 @@ fspace = interp.fspace;
 Phi    = interp.Phi;
 
 [n,m] = size(x);
-p     = size(feval(func,'h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params),2);
+p     = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params),2);
 K     = length(w);               % number of shock values
 
 switch reesolver
@@ -111,22 +117,22 @@ if isempty(z)
   ind   = ind(ones(1,K),:);
   ss    = s(ind,:);
   xx    = x(ind,:);
-  snext = feval(func,'g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
+  snext = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
   switch method
    case 'expfunapprox'
     h   = funeval(c,fspace,snext);
     if nargout(func)==5
-      [~,~,~,~,hmult] = feval(func,'h',[],[],[],e(repmat(1:K,1,n),:),snext,zeros(size(snext,1),m),params);
+      [~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:K,1,n),:),snext,zeros(size(snext,1),m),params);
       h               = h.*hmult;
     end
 
    case 'resapprox-complete'
-    [LB,UB] = feval(func,'b',snext,[],[],[],[],[],params);
+    [LB,UB] = func('b',snext,[],[],[],[],[],params);
     xnext   = min(max(funeval(c,fspace,snext),LB),UB);
     if nargout(func)<5
-       h     = feval(func,'h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       h     = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
     else
-      [h,~,~,~,hmult] = feval(func,'h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+      [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
       h               = h.*hmult;
     end
 
@@ -149,7 +155,7 @@ function [R,FLAG] = Residual_Function(cc)
      ind   = ind(ones(1,K),:);
      ss    = s(ind,:);
      xx    = x(ind,:);
-     snext = feval(func,'g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
+     snext = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
 
      % xnext calculated by interpolation
      xnext = funeval(funfitxy(fspace,Phi,x),fspace,snext);
@@ -162,9 +168,9 @@ function [R,FLAG] = Residual_Function(cc)
 %}
 
      if nargout(func)<5
-       h     = feval(func,'h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       h     = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
      else
-       [h,~,~,~,hmult] = feval(func,'h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
        h               = h.*hmult;
      end
      z     = reshape(w'*reshape(h,K,n*p),n,p);
@@ -177,28 +183,28 @@ function [R,FLAG] = Residual_Function(cc)
     [x,f] = recsSolveEquilibrium(s,x,zeros(n,0),func,params,eqsolver,cc,e,w, ...
                                  fspace,'expfunapprox',eqsolveroptions, ...
                                  loop_over_s);
-    R     = funfitxy(fspace,Phi,feval(func,'h',[],[],[],[],s,x,params))-cc;
+    R     = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params))-cc;
     z     = [];
 
    case 'resapprox-simple'
     cc    = reshape(cc,n,m);
 
-    [LB,UB] = feval(func,'b',s,[],[],[],[],[],params);
+    [LB,UB] = func('b',s,[],[],[],[],[],params);
     x     = min(max(funeval(cc,fspace,Phi),LB),UB);
 
     ind   = (1:n);
     ind   = ind(ones(1,K),:);
     ss    = s(ind,:);
     xx    = x(ind,:);
-    snext = feval(func,'g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
+    snext = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
 
-    [LB,UB] = feval(func,'b',snext,[],[],[],[],[],params);
+    [LB,UB] = func('b',snext,[],[],[],[],[],params);
     xnext = min(max(funeval(cc,fspace,snext),LB),UB);
 
     if nargout(func)<5
-       h     = feval(func,'h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       h     = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
     else
-      [h,~,~,~,hmult] = feval(func,'h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+      [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
       h               = h.*hmult;
     end
     z     = reshape(w'*reshape(h,K,n*p),n,p);

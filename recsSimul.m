@@ -35,10 +35,16 @@ simulmethod     = lower(options.simulmethod);
 statdisplay     = options.stat;
 
 e       = model.e;
-func    = model.func;
 params  = model.params;
 funrand = model.funrand;
 w       = model.w;
+if isa(model.func,'char')
+  func = str2func(model.func);
+elseif isa(model.func,'function_handle')
+  func   = model.func;
+else
+  error('model.func must be either a string or a function handle')
+end
 
 fspace  = interp.fspace;
 cz      = interp.cz;
@@ -46,21 +52,21 @@ cx      = interp.cx;
 
 [nrep,d] = size(s0);
 m        = size(interp.cx,2);
-q        = size(feval(funrand,1),2);
+q        = size(funrand(1),2);
 
 ssim = zeros(nrep,d,nper+1);
 xsim = zeros(nrep,m,nper+1);
 esim = zeros(nrep,q,nper+1);
 if nargout>=4, fsim = zeros(nrep,m,nper+1); end
 if isempty(shocks)
-  for t=2:nper+1, esim(:,:,t) = feval(funrand,nrep); end
+  for t=2:nper+1, esim(:,:,t) = funrand(nrep); end
 else
   esim(:,:,2:end) = shocks;
 end
 
 for t=1:nper+1
-  if t>1, s0 = feval(func,'g',s0,xx,[],esim(:,:,t),[],[],params); end
-  [LB,UB]    = feval(func,'b',s0,[],[],[],[],[],params);
+  if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params); end
+  [LB,UB]    = func('b',s0,[],[],[],[],[],params);
   Phi        = funbasx(fspace,s0);
   xx         = min(max(funeval(cx,fspace,Phi),LB),UB);
   switch simulmethod
@@ -95,7 +101,7 @@ for t=1:nper+1
                                     'expfunapprox',eqsolveroptions,loop_over_s);
     end
    case 'interpolation'
-    if nargout>=4, f = feval(func,'f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params); end
+    if nargout>=4, f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params); end
   end
   ssim(:,:,t) = s0;
   xsim(:,:,t) = xx;
@@ -115,7 +121,7 @@ if (nargout==5 || statdisplay) && (nper > 40)
   X = reshape(X,d+m,[])';
 
   % Percent of time spent at the bounds
-  [LB,UB] = feval(func,'b',X(:,1:d),[],[],[],[],[],params);
+  [LB,UB] = func('b',X(:,1:d),[],[],[],[],[],params);
   pLB     = [zeros(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps)*100];
   pUB     = [zeros(1,d) mean(abs(UB-X(:,d+1:d+m))<eps)*100];
 

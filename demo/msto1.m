@@ -5,11 +5,7 @@ function [out1,out2,out3,out4,out5] = mdsem03(flag,s,x,z,e,snext,xnext,params)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-alpha = params(1);
-k = params(2);
-delta = params(3);
-r = params(4);
-mu = params(5);
+[alpha,k,delta,r,mu] = params{:};
 
 n = size(s,1);
 d = 1;

@@ -4,16 +4,7 @@ function [out1,out2,out3,out4] = mdsem13(flag,s,x,z,e,snext,xnext,params)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-delta = params(1);
-r = params(2);
-k = params(3);
-alpha = params(4);
-theta = params(5);
-lambda = params(6);
-eta = params(7);
-mu = params(8);
-taua = params(9);
-taub = params(10);
+[delta,r,k,alpha,theta,lambda,eta,mu,taua,taub] = params{:};
 
 n = size(s,1);
 d = 2;

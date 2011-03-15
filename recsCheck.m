@@ -23,15 +23,21 @@ if size(s,1)~=1 || size(x,1)~=1 || size(e,1)~=1 || size(snext,1)~=1 || size(xnex
   error('Derivatives can only be check at one location, not on a grid');
 end
 
-func   = model.func;
 params = model.params;
+if isa(model.func,'char')
+  func = str2func(model.func);
+elseif isa(model.func,'function_handle')
+  func   = model.func;
+else
+  error('model.func must be either a string or a function handle')
+end
 
 % Analytical derivatives
-[~,fx,fz] = feval(func,'f',s,x,z,[],[],[],params);
+[~,fx,fz] = func('f',s,x,z,[],[],[],params);
 
-[~,gx] = feval(func,'g',s,x,[],e,[],[],params);
+[~,gx] = func('g',s,x,[],e,[],[],params);
 
-[~,hx,hsnext,hxnext] = feval(func,'h',s,x,[],e,snext,xnext,params);
+[~,hx,hsnext,hxnext] = func('h',s,x,[],e,snext,xnext,params);
 
 % Numerical derivatives
 fxnum = fjac(func,3,'f',s,x,z,[],[],[],params);

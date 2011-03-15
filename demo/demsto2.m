@@ -22,8 +22,8 @@ sigma             = 0.05;
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 % PACK MODEL STRUCTURE
-model.func   = 'msto2';                               % model functions
-model.params = [k,delta,r,mu,alpha,PF,Sgbar];               % other parameters
+model.func   = @msto2;                               % model functions
+model.params = {k,delta,r,mu,alpha,PF,Sgbar};               % other parameters
 
 % DEFINE APPROXIMATION SPACE
 order         = 50;                                          % degree of approximation

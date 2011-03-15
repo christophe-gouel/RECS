@@ -8,12 +8,13 @@ function [F,J,domerr] = pathtransform(x,jacflag)
 % Licensed under the Expat license, see LICENSE.txt
 
 global par
+model = par{1};
 
 domerr = 0;
 if (jacflag)
-  [F,J] = feval(par{1},x,par{2:end});
+  [F,J] = model(x,par{2:end});
 else
-  F     = feval(par{1},x,par{2:end});
+  F     = model(x,par{2:end});
   J     = [];
 end
 

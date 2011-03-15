@@ -3,14 +3,7 @@ function [out1,out2,out3,out4] = mdsem05(flag,s,x,z,e,snext,xnext,params)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-delta  = params(1);
-r = params(2);
-alpha = params(3);
-k = params(4);
-mu = params(5);
-PF = params(6);
-PC = params(7);
-Sgbar = params(8);
+[delta,r,alpha,k,mu,PF,PC,Sgbar] = params{:};
 
 n = size(s,1);
 d = 2;
