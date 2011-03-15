@@ -1,21 +1,19 @@
-function [x,f] = recsSolveEquilibrium(s,x,z,func,params,eqsolver,c,e,w,fspace, ...
-                                      method,eqsolveroptions,loop_over_s)
+function [x,f] = recsSolveEquilibrium(s,x,z,func,params,c,e,w,fspace,options)
 % RECSSOLVEEQUILIBRIUM Solves the system of equilibrium equations using x as starting values
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-if nargin < 13
-  loop_over_s = 0;
-  if nargin < 12
-    eqsolveroptions = struct([]);
-  end
-end
+eqsolver         = lower(options.eqsolver);
+eqsolveroptions  = options.eqsolveroptions;
+method           = lower(options.method);
 
+if options.functional, params{end} = c; end
+  
 [n,m]   = size(x);
 [LB,UB] = func('b',s,[],[],[],[],[],params);
 
-if loop_over_s % Solve separately for each point on the grid
+if options.loop_over_s % Solve separately for each point on the grid
   f                 = zeros(size(x));
   [~,grid]          = spblkdiag(zeros(m,m,1),[],0);
   for i=1:n
@@ -36,7 +34,7 @@ x       = reshape(x',[n*m 1]);
 LB      = reshape(LB',[n*m 1]);
 UB      = reshape(UB',[n*m 1]);
 
-switch lower(eqsolver)
+switch eqsolver
  case 'fsolve'
   options = optimset('Display','off',...
                      'Jacobian','on');

@@ -24,7 +24,8 @@ defaultopt = struct(...
     'loop_over_s'      , 0          ,...
     'method'           , 'expapprox',...
     'reesolver'        , 'krylov'   ,...
-    'reesolveroptions' , struct([]));
+    'reesolveroptions' , struct([]) ,...
+    'functional'       , 0);
 warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
@@ -39,7 +40,7 @@ reesolveroptions = catstruct(struct('showiters' , options.display,...
                                     'atol'      , sqrt(eps),...
                                     'lmeth'     , 3,...
                                     'rtol'      , eps),...
-                                   options.reesolveroptions);
+                             options.reesolveroptions);
 
 e      = model.e;
 params = model.params;
@@ -62,6 +63,7 @@ switch method
 end
 fspace = interp.fspace;
 Phi    = interp.Phi;
+if options.functional, params = [params fspace c]; end
 
 [n,m] = size(x);
 p     = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params),2);
@@ -95,11 +97,11 @@ switch reesolver
 
  case 'kinsol'
   neq = numel(c);
-  options  = KINSetOptions('Verbose',       false,...
-                           'LinearSolver',  'GMRES',...
-                           'ErrorMessages', false,...
-                           'FuncNormTol',   reesolveroptions.atol);
-  KINInit(@Residual_Function,neq,options);
+  KINoptions  = KINSetOptions('Verbose',       false,...
+                              'LinearSolver',  'GMRES',...
+                              'ErrorMessages', false,...
+                              'FuncNormTol',   reesolveroptions.atol);
+  KINInit(@Residual_Function,neq,KINoptions);
   [status, c] = KINSol(c(:),'LineSearch',ones(neq,1),ones(neq,1));
   KINFree;
   if status==0 || status==1, exitflag = 1; else exitflag = 0; end
@@ -149,7 +151,7 @@ function [R,FLAG] = Residual_Function(cc)
      cc    = reshape(cc,n,p);
 
      z     = funeval(cc,fspace,Phi);
-     [x,f] = recsSolveEquilibrium(s,x,z,func,params,eqsolver,cc,e,w,fspace,'expapprox',eqsolveroptions,loop_over_s);
+     [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
 
      ind   = (1:n);
      ind   = ind(ones(1,K),:);
@@ -164,7 +166,7 @@ function [R,FLAG] = Residual_Function(cc)
      xnext = recsSolveEquilibrium(snext,...
                                   funeval(funfitxy(fspace,Phi,x),fspace,snext),...
                                   funeval(c,fspace,snext),...
-                                  func,params,eqsolver,cc,e,w,fspace,'expapprox',eqsolveroptions,loop_over_s);
+                                  func,params,cc,e,w,fspace,options);
 %}
 
      if nargout(func)<5
@@ -180,9 +182,7 @@ function [R,FLAG] = Residual_Function(cc)
    case 'expfunapprox'
     cc    = reshape(cc,n,p);
 
-    [x,f] = recsSolveEquilibrium(s,x,zeros(n,0),func,params,eqsolver,cc,e,w, ...
-                                 fspace,'expfunapprox',eqsolveroptions, ...
-                                 loop_over_s);
+    [x,f] = recsSolveEquilibrium(s,x,zeros(n,0),func,params,cc,e,w, fspace,options);
     R     = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params))-cc;
     z     = [];
 
@@ -209,15 +209,12 @@ function [R,FLAG] = Residual_Function(cc)
     end
     z     = reshape(w'*reshape(h,K,n*p),n,p);
 
-    [x,f] = recsSolveEquilibrium(s,x,z,func,params,eqsolver,cc,e,w,fspace, ...
-                                 'resapprox-simple',eqsolveroptions, ...
-                                 loop_over_s);
+    [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
     R     = funfitxy(fspace,Phi,x)-cc;
 
    case 'resapprox-complete'
     cc    = reshape(cc,n,m);
-    [x,f] = recsSolveEquilibrium(s,x,zeros(n,0),func,params,eqsolver,cc,e,w, ...
-                                 fspace,'resapprox-complete',eqsolveroptions,loop_over_s);
+    [x,f] = recsSolveEquilibrium(s,x,zeros(n,0),func,params,cc,e,w,fspace,options);
     R     = funfitxy(fspace,Phi,x)-cc;
     z     = [];
   end
