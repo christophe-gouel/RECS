@@ -39,6 +39,12 @@ interp.cx = xinit;
 interp.ch = [s.^(1/alpha) s.^(1/alpha)];
 optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
 
+disp('Deterministic steady-state')
+[sss,xss,zss] = recsSS(model,1,[0 1 1])
+
+% Check derivatives
+recsCheck(model,sss,xss,zss);
+
 tic
 [interp.cz,x] = recsSolveREE(interp,model,s,xinit);
 toc

@@ -27,7 +27,7 @@ params = model.params;
 if isa(model.func,'char')
   func = str2func(model.func);
 elseif isa(model.func,'function_handle')
-  func   = model.func;
+  func = model.func;
 else
   error('model.func must be either a string or a function handle')
 end
@@ -40,14 +40,14 @@ end
 [~,hx,hsnext,hxnext] = func('h',s,x,[],e,snext,xnext,params);
 
 % Numerical derivatives
-fxnum = fjac(func,3,'f',s,x,z,[],[],[],params);
-fznum = fjac(func,4,'f',s,x,z,[],[],[],params);
+fxnum = numjac(@(X) func('f',s,X,z,[],[],[],params),x);
+fznum = numjac(@(Z) func('f',s,x,Z,[],[],[],params),z);
 
-gxnum = fjac(func,3,'g',s,x,[],e,[],[],params);
+gxnum = numjac(@(X) func('g',s,X,[],e,[],[],params),x);
 
-hxnum     = fjac(func,3,'h',s,x,[],e,snext,xnext,params);
-hsnextnum = fjac(func,6,'h',s,x,[],e,snext,xnext,params);
-hxnextnum = fjac(func,7,'h',s,x,[],e,snext,xnext,params);
+hxnum = numjac(@(X) func('h',s,x,[],e,snext,xnext,params),x);
+hsnextnum = numjac(@(SNEXT) func('h',s,x,[],e,SNEXT,xnext,params),snext);
+hxnextnum = numjac(@(XNEXT) func('h',s,x,[],e,snext,XNEXT,params),xnext);
 
 % Error
 err = norm(fx(:)-fxnum(:),inf);
