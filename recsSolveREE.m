@@ -32,10 +32,10 @@ options = catstruct(defaultopt,options);
 
 eqsolver         = options.eqsolver;
 eqsolveroptions  = options.eqsolveroptions;
+functional       = options.functional;
 loop_over_s      = options.loop_over_s;
 method           = lower(options.method);
 reesolver        = lower(options.reesolver);
-
 reesolveroptions = catstruct(struct('showiters' , options.display,...
                                     'atol'      , sqrt(eps),...
                                     'lmeth'     , 3,...
@@ -48,7 +48,7 @@ w      = model.w;
 if isa(model.func,'char')
   func = str2func(model.func);
 elseif isa(model.func,'function_handle')
-  func   = model.func;
+  func = model.func;
 else
   error('model.func must be either a string or a function handle')
 end
@@ -63,11 +63,12 @@ switch method
 end
 fspace = interp.fspace;
 Phi    = interp.Phi;
-if options.functional, params = [params fspace c]; end
+if functional, params = [params fspace c]; end
 
-[n,m] = size(x);
-p     = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params),2);
-K     = length(w);               % number of shock values
+[ns,m] = size(x);
+nc     = size(c,1);
+p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params),2);
+K      = length(w);               % number of shock values
 
 switch reesolver
  case 'mixed'
@@ -112,19 +113,21 @@ if exitflag~=1
   warning('recs:FailureREE','Failure to find a rational expectations equilibrium');
 end
 
-c = reshape(c,n,[]);
+c = reshape(c,nc,[]);
 
+% Calculation of z on the grid for output
 if isempty(z)
-  ind   = (1:n);
+  if functional, params{end} = c; end
+  ind   = (1:ns);
   ind   = ind(ones(1,K),:);
   ss    = s(ind,:);
   xx    = x(ind,:);
-  snext = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
+  snext = func('g',ss,xx,[],e(repmat(1:K,1,ns),:),[],[],params);
   switch method
    case 'expfunapprox'
     h   = funeval(c,fspace,snext);
     if nargout(func)==5
-      [~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:K,1,n),:),snext,zeros(size(snext,1),m),params);
+      [~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:K,1,ns),:),snext,zeros(size(snext,1),m),params);
       h               = h.*hmult;
     end
 
@@ -132,14 +135,14 @@ if isempty(z)
     [LB,UB] = func('b',snext,[],[],[],[],[],params);
     xnext   = min(max(funeval(c,fspace,snext),LB),UB);
     if nargout(func)<5
-       h     = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       h     = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params);
     else
-      [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+      [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params);
       h               = h.*hmult;
     end
 
   end
-  z     = reshape(w'*reshape(h,K,n*p),n,p);
+  z     = reshape(w'*reshape(h,K,ns*p),ns,p);
 end
 
 function [R,FLAG] = Residual_Function(cc)
@@ -148,73 +151,78 @@ function [R,FLAG] = Residual_Function(cc)
 
   switch method
     case 'expapprox'
-     cc    = reshape(cc,n,p);
+     cc    = reshape(cc,nc,p);
+     if functional, params{end} = cc; end
 
      z     = funeval(cc,fspace,Phi);
      [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
 
-     ind   = (1:n);
+     ind   = (1:ns);
      ind   = ind(ones(1,K),:);
      ss    = s(ind,:);
      xx    = x(ind,:);
-     snext = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
+     snext = func('g',ss,xx,[],e(repmat(1:K,1,ns),:),[],[],params);
+     [LB,UB] = func('b',snext,[],[],[],[],[],params);
 
      % xnext calculated by interpolation
-     xnext = funeval(funfitxy(fspace,Phi,x),fspace,snext);
+     xnext = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snext),LB),UB);
 %{
      % xnext calculated by equation solve
      xnext = recsSolveEquilibrium(snext,...
-                                  funeval(funfitxy(fspace,Phi,x),fspace,snext),...
+                                  xnext,...
                                   funeval(c,fspace,snext),...
                                   func,params,cc,e,w,fspace,options);
 %}
 
      if nargout(func)<5
-       h     = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       h     = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params);
      else
-       [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params);
        h               = h.*hmult;
      end
-     z     = reshape(w'*reshape(h,K,n*p),n,p);
+     z     = reshape(w'*reshape(h,K,ns*p),ns,p);
 
      R     = funfitxy(fspace,Phi,z)-cc;
 
    case 'expfunapprox'
-    cc    = reshape(cc,n,p);
+    cc    = reshape(cc,nc,p);
+    if functional, params{end} = cc; end
 
-    [x,f] = recsSolveEquilibrium(s,x,zeros(n,0),func,params,cc,e,w, fspace,options);
+    [x,f] = recsSolveEquilibrium(s,x,zeros(ns,0),func,params,cc,e,w, fspace,options);
     R     = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params))-cc;
     z     = [];
 
    case 'resapprox-simple'
-    cc    = reshape(cc,n,m);
+    cc    = reshape(cc,nc,m);
+    if functional, params{end} = cc; end
 
     [LB,UB] = func('b',s,[],[],[],[],[],params);
     x     = min(max(funeval(cc,fspace,Phi),LB),UB);
 
-    ind   = (1:n);
+    ind   = (1:ns);
     ind   = ind(ones(1,K),:);
     ss    = s(ind,:);
     xx    = x(ind,:);
-    snext = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params);
+    snext = func('g',ss,xx,[],e(repmat(1:K,1,ns),:),[],[],params);
 
     [LB,UB] = func('b',snext,[],[],[],[],[],params);
     xnext = min(max(funeval(cc,fspace,snext),LB),UB);
 
     if nargout(func)<5
-       h     = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+       h     = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params);
     else
-      [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params);
+      [h,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params);
       h               = h.*hmult;
     end
-    z     = reshape(w'*reshape(h,K,n*p),n,p);
+    z     = reshape(w'*reshape(h,K,ns*p),ns,p);
 
     [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
     R     = funfitxy(fspace,Phi,x)-cc;
 
    case 'resapprox-complete'
-    cc    = reshape(cc,n,m);
-    [x,f] = recsSolveEquilibrium(s,x,zeros(n,0),func,params,cc,e,w,fspace,options);
+    cc    = reshape(cc,nc,m);
+    if functional, params{end} = cc; end
+    [x,f] = recsSolveEquilibrium(s,x,zeros(ns,0),func,params,cc,e,w,fspace,options);
     R     = funfitxy(fspace,Phi,x)-cc;
     z     = [];
   end

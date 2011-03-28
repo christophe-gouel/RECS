@@ -37,7 +37,6 @@ statdisplay     = options.stat;
 
 e       = model.e;
 params  = model.params;
-funrand = model.funrand;
 w       = model.w;
 if isa(model.func,'char')
   func = str2func(model.func);
@@ -45,6 +44,11 @@ elseif isa(model.func,'function_handle')
   func   = model.func;
 else
   error('model.func must be either a string or a function handle')
+end
+if isfield(model,'funrand') % Check if a random shocks generator function is provided
+  funrand = model.funrand;
+else % Use the discretisation to generate the shocks
+  funrand = @(N) e(discrand(N,w),:);
 end
 
 fspace  = interp.fspace;

@@ -9,15 +9,9 @@ function [err,discrepancy] = recsCheck(model,s,x,z,e,snext,xnext)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-
-if nargin < 6
-  snext = s;
-  xnext = x;
-end
-
-if nargin < 5 || isempty(e)
-  e = model.w'*model.e;
-end
+if nargin < 7 || isempty(xnext), xnext = x;                end
+if nargin < 6 || isempty(snext), snext = s;                end
+if nargin < 5 || isempty(e)    , e     = model.w'*model.e; end
 
 if size(s,1)~=1 || size(x,1)~=1 || size(e,1)~=1 || size(snext,1)~=1 || size(xnext,1)~=1
   error('Derivatives can only be check at one location, not on a grid');

@@ -50,7 +50,6 @@ tic
 toc
 interp.cx = funfitxy(interp.fspace,interp.Phi,x);
 
-
 options.method = 'expfunapprox';
 tic
 [interp.ch,x,z] = recsSolveREE(interp,model,s,xinit,options);
@@ -112,3 +111,8 @@ title('Planned production')
 subplot(1,3,3)
 plot(ssim(:),reshape(xsim(:,3,:),[],1),'.')
 title('Price')
+
+% Simulation using the shocks discretisation and not the random number generator
+% function provided by the user
+model = rmfield(model,'funrand');
+[ssim,xsim,esim] = recsSimul(model,interp,ones(1000,1),200);

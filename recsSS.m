@@ -15,7 +15,8 @@ options = catstruct(defaultopt,options);
 warning('off','catstruct:DuplicatesFound')
 
 if options.functional
-  error('Steady state not defined for a functional equation problem'); 
+  error(['This program cannot solve for the deterministic steady state of a ' ...
+         'functional equation problem']); 
 end
 eqsolver        = options.eqsolver;
 eqsolveroptions = options.eqsolveroptions;

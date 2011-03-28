@@ -8,8 +8,6 @@ eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 method           = lower(options.method);
 
-if options.functional, params{end} = c; end
-  
 [n,m]   = size(x);
 [LB,UB] = func('b',s,[],[],[],[],[],params);
 
