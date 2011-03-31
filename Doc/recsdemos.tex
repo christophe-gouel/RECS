@@ -11,7 +11,6 @@
 \captionsetup{font={small,bf},%
   labelsep=period}
 
-
 % Cross-references
 \usepackage[plain]{fancyref}%
 \frefformat{plain}{\fancyreffiglabelprefix}{\Freffigname\fancyrefdefaultspacing#1}%
@@ -19,11 +18,9 @@
 \frefformat{plain}{\fancyrefseclabelprefix}{\Frefsecname\fancyrefdefaultspacing#1}%
 \frefformat{plain}{\fancyrefeqlabelprefix}{\Frefeqname\fancyrefdefaultspacing(#1)}
 
-\graphicspath{{Figures/}CMRoman/}
-
 % Bibliography
 \usepackage[comma]{natbib}
-\bibliographystyle{apalike4}%
+\bibliographystyle{apalike2}%
 \setlength{\bibsep}{0.2\baselineskip}
 
 \newcommand{\MyTitle}{}%
@@ -67,9 +64,8 @@
 % Title
 \title{}
 % \title{\MyTitle%
-%   \thanks{Support from the AgFoodTrade project funded under the 7th Framework
-%     Programme for Research and Development, DG-Research, European Commission, is
-%     acknowledged.}}%
+%   \thanks{I acknowledge support from the AgFoodTrade project funded under the 7th Framework
+%     Programme for Research and Development, DG-Research, European Commission.}}%
 \date{\today}%
 \author{Christophe Gouel\footnote{INRA, CEPII and Ecole Polytechnique
     (christophe.gouel@inra.grignon.fr)}}
@@ -314,7 +310,7 @@ For $i \in \left\{a,b\right\}$:
   A_{it}: A_{it}=\left(1-\delta\right)S_{it-1}+H_{it-1}\epsilon_{it}.
 \end{equation}
 
-\bibliography{Volatility}%
+\bibliography{recs}%
 
 \end{document}
 

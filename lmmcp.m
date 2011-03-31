@@ -18,19 +18,19 @@ function [x,FVAL,EXITFLAG,OUTPUT,JACOB] = lmmcp(FUN,x,lb,ub,options,varargin)
 % defined in the structure OPTIONS. Main fields are
 %      Display    : control the display of iterations, 'none' (default),
 %                   'iter-detailed' or 'final-detailed'
-%  Switch from phase I to phase II  
+%  Switch from phase I to phase II
 %      preprocess : activate preprocessor for phase I (default = 1)
 %      presteps   : number of iterations in phase I (default = 20)
 %  Termination parameters
-%      epsilon2   : termination value of the merit function (default = 1E-10)  
+%      epsilon2   : termination value of the merit function (default = 1E-10)
 %      MaxIter    : maximum number of iterations (default = 500)
-%      tmin       : safeguard stepsize (default = 1E-12)  
+%      tmin       : safeguard stepsize (default = 1E-12)
 %  Stepsize parameters
 %      m          : number of previous function values to use in the nonmonotone
 %                   line search rule (default = 10)
 %      kwatch     : maximum number of steps (default = 20 and should not be
 %                   smaller than m)
-%      watchdog   : activate the watchdog strategy (default = 1)  
+%      watchdog   : activate the watchdog strategy (default = 1)
 %  Ther are other minor parameters. Please see the code for their default values
 %  and interpretation.
 %
@@ -66,15 +66,15 @@ function [x,FVAL,EXITFLAG,OUTPUT,JACOB] = lmmcp(FUN,x,lb,ub,options,varargin)
 %
 % A user's guide is also available:
 %
-% Christian Kanzow and Stefania Petra (2005). 
-% LMMCP --- A Levenberg-Marquardt-type Matlab Solver for Mixed Complementarity Problems. 
+% Christian Kanzow and Stefania Petra (2005).
+% LMMCP --- A Levenberg-Marquardt-type Matlab Solver for Mixed Complementarity Problems.
 % University of Wuerzburg.
 % http://www.mathematik.uni-wuerzburg.de/~kanzow/software/UserGuide.pdf
 %
 % This is a modification by Christophe Gouel of the original files, which can be
 % downloaded from:
-% http://www.mathematik.uni-wuerzburg.de/~kanzow/software/LMMCP.zip  
-%  
+% http://www.mathematik.uni-wuerzburg.de/~kanzow/software/LMMCP.zip
+%
 % copyright: Christian Kanzow and Stefania Petra
 %            Institute of Applied Mathematics and Statistics
 %            University of Wuerzburg
@@ -193,11 +193,9 @@ Indexset(I_lu) = 3;
 [Fx,DFx] = feval(FUN,x,varargin{:});
 
 % choice of NCP-function and corresponding evaluations
-Phi       = @Phi3MCPPFB;
 Phix      = Phi(x,Fx,lb,ub,lambda1,lambda2,n,Indexset);
 normPhix  = norm(Phix);
 Psix      = 0.5*(Phix'*Phix);
-DPhi      = @DPhi3MCPPFB;
 DPhix     = DPhi(x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
 DPsix     = DPhix'*Phix;
 normDPsix = norm(DPsix);
@@ -453,7 +451,7 @@ JACOB             = DFx;
 
 % Subfunctions
 
-function y = Phi3MCPPFB(x,Fx,lb,ub,lambda1,lambda2,n,Indexset)
+function y = Phi(x,Fx,lb,ub,lambda1,lambda2,n,Indexset)
 
 y           = zeros(2*n,1);
 phi_u       = sqrt((ub-x).^2+Fx.^2)-ub+x+Fx;
@@ -476,8 +474,8 @@ y(I3)       = lambda1*(sqrt((x(I3)-lb(I3)).^2+phi_u(I3).^2)-x(I3)+lb(I3)-phi_u(I
 y([LZ; I3]) = lambda2*(max(0,x(I3)-lb(I3)).*max(0,Fx(I3))+max(0,ub(I3)-x(I3)).*max(0,-Fx(I3)));
 
 
-function H = DPhi3MCPPFB(x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset)
-% we evaluate an element of the C-subdifferential of operator Phi3MCPPFB
+function H = DPhi(x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset)
+% DPHI evaluates an element of the C-subdifferential of operator Phi
 
 null       = 1e-8;
 beta_l     = zeros(n,1);

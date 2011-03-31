@@ -1,5 +1,10 @@
 function [x,f] = recsSolveEquilibrium(s,x,z,func,params,c,e,w,fspace,options)
 % RECSSOLVEEQUILIBRIUM Solves the system of equilibrium equations using x as starting values
+%
+% RECSSOLVEEQUILIBRIUM is called by RECSSIMUL and RECSSOLVEREE. It is
+% not meant to be called directly by the user.
+%
+% See also RECSSIMUL, RECSSOLVEREE.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

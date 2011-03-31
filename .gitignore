@@ -6,4 +6,4 @@ demo/*.log
 *.mexw32
 /Doc/*
 !/Doc/recsdemos.tex
-
+!/Doc/recs.bib

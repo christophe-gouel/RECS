@@ -1,5 +1,66 @@
 function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,options)
 % RECSSIMUL Simulates a model from starting values given in s0 and for nper period
+%
+% SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER) simulates the model defined in the
+% structure MODEL, by using the interpolation structure defined in the structure
+% INTERP. The simulation starts from the initial state S0 and lasts NPER (scalar)
+% periods. S0 is a nrep-by-d matrix with nrep the number of scenarios to simulate,
+% and d the number of state variables. RECSSIMUL returns the nrep-by-d-by-nper+1
+% array SSIM that contains the simulated state variables.
+% MODEL is a structure, which includes the following fields:
+%    [e,w]   : discrete distribution with finite support with e the values and w
+%              the probabilities (it could be also the discretisation of a
+%              continuous distribution through quadrature or Monte Carlo drawings)
+%    func    : function name or anonymous function that defines the model's equations
+%    funrand : random shocks generator function (optional). Function handle that
+%              accepts an integer n as input and returns a n-by-q matrix of
+%              shocks. If not provided, shocks will be drawn from the discrete
+%              distribution [e,w].
+%    params  : model's parameters, it is preferable to pass them as a cell array
+%              (compulsory with the functional option) but other formats are
+%              acceptable
+% INTERP is a structure, which includes the following fields:
+%    ch      : coefficient matrix of the interpolation of the expectations
+%              function (optional, to be provided with method 'expfunapprox')
+%    cx      : coefficient matrix of the interpolation of the response variables
+%    cz      : coefficient matrix of the interpolation of the expectations variables
+%    fspace  : a definition structure for the interpolation family (created by
+%              the function fundef)
+%
+% SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER,SHOCKS) uses the nrep-by-q-by-nper array
+% SHOCKS to simulate the model instead of drawing random numbers. In this case
+% size(SHOCKS,3) supersedes NPER.
+%
+% SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER,SHOCKS,OPTIONS) simulates the model with
+% the parameters defined by the structure OPTIONS. The fields of the structure are
+%    eqsolver         : 'fsolve', 'lmmcp', 'ncpsolve' (default) or 'path'
+%    eqsolveroptions  : options structure to be passed to eqsolver
+%    functional       : 1 if the equilibrium equations are a functional equation
+%                       problem (default: 0)
+%    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
+%                       over each grid points
+%    method           : 'expapprox' (default), 'expfunapprox', 'resapprox-simple'
+%                       or 'resapprox-complete'
+%    simulmethod      : 'interpolation' (default) or 'solve'
+%    stat             : 1 to ouput summary statistics from the simulation
+%                       (default: 0)
+%
+% [SSIM,XSIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the nrep-by-m-by-nper+1
+% array XSIM that contains the simulated response variables.
+%
+% [SSIM,XSIM,ESIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the
+% nrep-by-q-by-nper+1 array ESIM that contains the shocks.
+%
+% [SSIM,XSIM,ESIM,FSIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the
+% nrep-by-m-by-nper+1 array FSIM that contains the value of the equilibrium
+% equations on the simulation.
+%
+% [SSIM,XSIM,ESIM,FSIM,STAT] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns summary
+% statistics as a structure that contains the moments (STAT.MOMENTS), the
+% correlation between variables (STAT.COR), and the autocorrelation
+% (STAT.ACOR). Asking RECSSIMUL to return STAT forces the OPTIONS.STAT to 1.
+%
+% See also RECSACCURACY.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -19,17 +80,18 @@ if ~isempty(shocks), nper = size(shocks,3); end
 defaultopt = struct(...
     'eqsolver'        , 'ncpsolve'     ,...
     'eqsolveroptions' , struct([])     ,...
+    'functional'      , 0              ,...
     'loop_over_s'     , 0              ,...
     'method'          , 'expapprox'    ,...
     'simulmethod'     , 'interpolation',...
-    'stat'            , 0              ,...
-    'functional'      , 0);
+    'stat'            , 0);
 warning('off','catstruct:DuplicatesFound')
 
 options         = catstruct(defaultopt,options);
 
 eqsolver        = options.eqsolver;
 eqsolveroptions = options.eqsolveroptions;
+functional      = options.functional;
 loop_over_s     = options.loop_over_s;
 method          = lower(options.method);
 simulmethod     = lower(options.simulmethod);
@@ -54,7 +116,7 @@ end
 fspace  = interp.fspace;
 cz      = interp.cz;
 cx      = interp.cx;
-if options.functional, params = [params fspace cx]; end
+if functional, params = [params fspace cx]; end
 
 [nrep,d] = size(s0);
 m        = size(interp.cx,2);
@@ -93,6 +155,7 @@ for t=1:nper+1
                                     params,...
                                     cx,e,w,fspace,options);
      case 'expfunapprox'
+      if functional, params{end} = interp.ch; end
       [xx,f] = recsSolveEquilibrium(s0,...
                                     xx,...
                                     zeros(nrep,0),...

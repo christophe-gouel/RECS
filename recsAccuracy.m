@@ -1,5 +1,7 @@
 function recsAccuracy(model,interp,s)
 % RECSACCURACY Evaluates approximation accuracy
+%
+% RECSACCURACY(MODEL,INTERP,S)
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
