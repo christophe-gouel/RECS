@@ -1,7 +1,22 @@
 function recsAccuracy(model,interp,s)
 % RECSACCURACY Evaluates approximation accuracy
 %
-% RECSACCURACY(MODEL,INTERP,S)
+% RECSACCURACY(MODEL,INTERP,S) evaluates the accuracy of the approximation
+% defined in the interpolition structure INTERP for the model defined in the
+% structure MODEL. The accuracy is assessed over the state variables contained
+% in the n-by-d-by-y array S.
+% MODEL is a structure, which includes the following fields:
+%    func    : function name or anonymous function that defines the model's equations
+%    params  : model's parameters, it is preferable to pass them as a cell array
+%              (compulsory with the functional option) but other formats are
+%              acceptable
+% INTERP is a structure, which includes the following fields:
+%    cx      : coefficient matrix of the interpolation of the response variables
+%    cz      : coefficient matrix of the interpolation of the expectations variables
+%    fspace  : a definition structure for the interpolation family (created by
+%              the function fundef)
+%
+% See also RECSSIMUL, RECSSOLVEREE.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
