@@ -7,7 +7,7 @@ warning off backtrace
 
 dsemdirectory = strrep(which('recsSimul'),'recsSimul.m','');
 
-addpath([dsemdirectory '/demo'])
+addpath([dsemdirectory '/demos'])
 
 demsto1
 demsto2

@@ -1,10 +1,12 @@
-function [out1,out2,out3,out4,out5,out6] = mtest(flag,s,x,z,e,snext,xnext,params,output)
+function [out1,out2,out3,out4,out5,out6] = msto1(flag,s,x,z,e,snext,xnext,params,output)
+% Equations of a competitive storage model with supply reaction with an explicit
+% market equilibrium equation
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-voidcell                       = cell(1,6);
-[ou1,out2,out3,out4,out5,out6] = voidcell{:};
+voidcell                        = cell(1,6);
+[out1,out2,out3,out4,out5,out6] = voidcell{:};
 
 [alpha,k,delta,r,mu] = params{:};
 
@@ -29,6 +31,7 @@ switch flag
  case 'f' % EQUILIBRIUM FUNCTION
   % f
   if output.F
+    out1       = zeros(n,m);
     out1(:,iS) = P+k-((1-delta)/(1+r))*z(:,1);
     out1(:,iH) = z(:,2)-H.^mu;
     out1(:,iP) = A-P.^alpha-S;
@@ -36,7 +39,7 @@ switch flag
 
   % df/ds
   if output.Js
-    out2 = zeros(n,m,d);
+    out2         = zeros(n,m,d);
     out2(:,iP,1) = ones(n,1,1);
   end
 
@@ -60,7 +63,7 @@ switch flag
   if output.F
     out1 = (1-delta)*S + H.*e;
   end
-
+  
   % dg/ds
   if output.Js, out2 = zeros(n,d,d); end
 
@@ -71,30 +74,41 @@ switch flag
     out3(:,1,iH) = e;
   end
  case 'h' % EXPECTATION FUNCTION
+  n = size(snext,1);
   % h
   if output.F
-    out1      = zeros(size(snext,1),p);
-    out1(:,1) =    xnext(:,iP);
-    out1(:,2) = e.*xnext(:,iP);
+    out1      = zeros(n,p);
+    out1(:,1) = xnext(:,iP);
+    out1(:,2) = xnext(:,iP);
   end
 
   % dh/ds
-  if output.Js, out2 = zeros(size(snext,1),p,d); end
+  if output.Js,  out2 = zeros(n,p,d); end
 
   % dh/dx
-  if output.Jx, out3 = zeros(size(snext,1),p,m); end
+  if output.Jx,  out3 = zeros(n,p,m); end
 
   % dh/dsnext
-  if output.Jsn, out4 = zeros(size(snext,1),p,d); end
+  if output.Jsn, out4 = zeros(n,p,d); end
 
   % dh/dxnext
   if output.Jxn
-    out5         = zeros(size(snext,1),p,m);
-    out5(:,1,iP) = ones(size(snext,1),1,1);
-    out5(:,2,iP) = e;
+    out5         = zeros(n,p,m);
+    out5(:,1,iP) = ones(n,1,1);
+    out5(:,2,iP) = ones(n,1,1);
   end
 
+  % hmult
+  if output.hmult
+    out6      = ones(n,p);
+    out6(:,2) = e;
+  end
+  
  case 'b' % BOUND FUNCTION
   out1 = [zeros(n,1) -inf(n,2)];
   out2 = inf(n,3);
+ case 'e' % EULER EQUATION ERROR
+  out1 = zeros(n,2);
+  out1(:,iS) = ones(n,1)-(max(A.^(1/alpha),((1-delta)/(1+r))*z(:,1)-k).^alpha)./(A-S);
+  out1(:,iH) = 1-(z(:,2).^(1/mu))./H;
 end

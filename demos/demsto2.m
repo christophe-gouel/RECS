@@ -33,30 +33,24 @@ interp.fspace = fundefn('spli',order,smin,smax);                 % function spac
 snodes        = funnode(interp.fspace);                             % state collocaton nodes
 s             = gridmake(snodes);
 interp.Phi    = funbasx(interp.fspace);
-n             = order;
 
-xinit  = [zeros(n,1) ones(n,2) zeros(n,1)];
-interp.cz = ones(n,2);
-interp.cx = xinit;
 optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
 options.simulmethod = 'solve';
+
+[interp,xinit,zinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);
 
 tic
 [interp.cz,x] = recsSolveREE(interp,model,s,xinit);
 toc
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
 
 options.method = 'resapprox-simple';
-interp.cz = ones(n,2);
-interp.cx = xinit;
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
 tic
 [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 
 options.method = 'resapprox-complete';
-interp.cz = ones(n,2);
-interp.cx = xinit;
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
 tic
 [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc
@@ -67,8 +61,8 @@ tic
 toc
 
 options.eqsolver = 'lmmcp';
-interp.cz = ones(n,2);
-interp.cx = xinit;
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
+interp.cz = funfitxy(interp.fspace,interp.Phi,zinit);
 tic
 [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc

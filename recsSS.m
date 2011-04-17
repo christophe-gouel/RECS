@@ -23,9 +23,9 @@ defaultopt = struct(...
     'eqsolver'        , 'lmmcp',...
     'eqsolveroptions' , struct([]),...
     'functional'      , 0);
+warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
-warning('off','catstruct:DuplicatesFound')
 
 if options.functional
   error(['This program cannot solve for the deterministic steady state of a ' ...
@@ -83,9 +83,10 @@ end
 
 if exitflag~=1, disp('Failure to find a deterministic steady state'); end
 
-s = X(1:d)';
-x = X(d+1:d+m)';
-z = func('h',s,x,[],e,s,x,params);
+s      = X(1:d)';
+x      = X(d+1:d+m)';
+output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+z      = func('h',s,x,[],e,s,x,params,output);
 
 
 %%%%%%%%%%%%%%%%
@@ -94,15 +95,16 @@ z = func('h',s,x,[],e,s,x,params);
 function [F,J] = SSResidual(X,func,params,e,d,m)
 
 if nargout==2
-  J = sparse(fdjac(@residual_function,X,func,params,e,d,m));
+  J = sparse(numjac(@residual_function,X,[],func,params,e,d,m));
 end
-F = residual_function(X,func,params,e,d,m);
+F   = residual_function(X,func,params,e,d,m);
 
 function F = residual_function(X,func,params,e,d,m)
-ss = X(1:d)';
-xx = X(d+1:d+m)';
-zz = func('h',ss,xx,[],e,ss,xx,params);
-g  = func('g',ss,xx,[],e,[],[],params);
-f  = func('f',ss,xx,zz,[],[],[],params);
-F  = [ss-g f]';
+ss     = X(1:d)';
+xx     = X(d+1:d+m)';
+output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
+zz     = func('h',ss,xx,[],e ,ss,xx,params,output);
+g      = func('g',ss,xx,[],e ,[],[],params,output);
+f      = func('f',ss,xx,zz,[],[],[],params,output);
+F      = [ss-g f]';
 return

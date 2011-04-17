@@ -26,22 +26,25 @@ else
   error('model.func must be either a string or a function handle')
 end
 
+outputF  = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
+outputJ  = struct('F',0,'Js',0,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',0);
+
 % Analytical derivatives
-[~,fx,fz] = func('f',s,x,z,[],[],[],params);
+[~,~,fx,fz] = func('f',s,x,z,[],[],[],params,outputJ);
 
-[~,gx] = func('g',s,x,[],e,[],[],params);
+[~,~,gx] = func('g',s,x,[],e,[],[],params,outputJ);
 
-[~,hx,hsnext,hxnext] = func('h',s,x,[],e,snext,xnext,params);
+[~,~,hx,hsnext,hxnext] = func('h',s,x,[],e,snext,xnext,params,outputJ);
 
 % Numerical derivatives
-fxnum = numjac(@(X) func('f',s,X,z,[],[],[],params),x);
-fznum = numjac(@(Z) func('f',s,x,Z,[],[],[],params),z);
+fxnum = numjac(@(X) func('f',s,X,z,[],[],[],params,outputF),x);
+fznum = numjac(@(Z) func('f',s,x,Z,[],[],[],params,outputF),z);
 
-gxnum = numjac(@(X) func('g',s,X,[],e,[],[],params),x);
+gxnum = numjac(@(X) func('g',s,X,[],e,[],[],params,outputF),x);
 
-hxnum = numjac(@(X) func('h',s,x,[],e,snext,xnext,params),x);
-hsnextnum = numjac(@(SNEXT) func('h',s,x,[],e,SNEXT,xnext,params),snext);
-hxnextnum = numjac(@(XNEXT) func('h',s,x,[],e,snext,XNEXT,params),xnext);
+hxnum = numjac(@(X) func('h',s,x,[],e,snext,xnext,params,outputF),x);
+hsnextnum = numjac(@(SNEXT) func('h',s,x,[],e,SNEXT,xnext,params,outputF),snext);
+hxnextnum = numjac(@(XNEXT) func('h',s,x,[],e,snext,XNEXT,params,outputF),xnext);
 
 % Error
 err = norm(fx(:)-fxnum(:),inf);

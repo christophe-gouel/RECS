@@ -51,7 +51,8 @@ disp(' Euler equation error (in log10)');
 disp('    Max       Mean');
 disp(lEE');
 
-fe      = func('f',se,xe,ze,[],[],[],params);
+output  = struct('F',1,'Js',0,'Jx',0,'Jz',0);
+fe      = func('f',se,xe,ze,[],[],[],params,output);
 
 Ef = min(max(-fe,LB-xe),UB-xe);
 Ef = [max(abs(Ef));

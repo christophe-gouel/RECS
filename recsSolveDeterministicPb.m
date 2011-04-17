@@ -1,11 +1,12 @@
-function [x,s,z,F] = SolveDeterministicProblem(model,s0,T,xss,zss,sss,options)
-
+function [x,s,z,F] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,options)
+% RECSSOLVEDETERMINISTICPB 
+  
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 if nargin <=6, options = struct([]); end
 
-defaultopt = struct(...
+defaultopt = struct(              ...
     'eqsolver'         , 'lmmcp' ,...
     'eqsolveroptions'  , struct([]));
 warning('off','catstruct:DuplicatesFound')
@@ -16,10 +17,18 @@ m = size(xss,2);
 p = size(zss,2);
 d = size(sss,2);
 n = T*(m+p+d);
+
 e = model.w'*model.e;
-func   = model.func;
+if isa(model.func,'char')
+  func = str2func(model.func);
+elseif isa(model.func,'function_handle')
+  func = model.func;
+else
+  error('model.func must be either a string or a function handle')
+end
 params = model.params;
-[LB,UB] = feval(func,'b',s0,[],[],[],[],[],params);
+
+[LB,UB] = func('b',s0,[],[],[],[],[],params);
 LB = [LB -inf(1,p+d)];
 UB = [UB +inf(1,p+d)];
 LB = reshape(LB(ones(T,1),:)',n,1);
@@ -34,26 +43,26 @@ switch lower(options.eqsolver)
   options = optimset('Display','off',...
                      'Jacobian','on');
   options = optimset(options,eqsolveroptions);
-  [X,F,exitflag] = fsolve(@(x) DeterministicProblem(x,func,s0,xss,p,e,params),...
+  [X,F,exitflag] = fsolve(@(x) recsDeterministicPb(x,func,s0,xss,p,e,params),...
                           X,...
                           options);
   if exitflag~=1, disp('No convergence'); end
  case 'lmmcp'
-  [X,F,exitflag] = lmmcp(@(x) DeterministicProblem(x,func,s0,xss,p,e,params),...
+  [X,F,exitflag] = lmmcp(@(x) recsDeterministicPb(x,func,s0,xss,p,e,params),...
                          X,...
                          LB,...
                          UB,...
                          eqsolveroptions);
   if exitflag~=1, disp('No convergence'); end
  case 'ncpsolve'
-  [X,F] = ncpsolve(@(x) ncpsolvetransform(x,'DeterministicProblem',func,s0,xss,p,e,params),...
+  [X,F] = ncpsolve(@(x) ncpsolvetransform(x,@recsDeterministicPb,func,s0,xss,p,e,params),...
                    LB, ...
                    UB,...
                    X);
   F     = -F;
  case 'path'
-  global par %#ok<TLEV>
-  par   = {'DeterministicProblem',func,s0,xss,p,e,params};
+  global par
+  par   = {@recsDeterministicPb,func,s0,xss,p,e,params};
   [X,F] = pathmcp(X,...
                   LB, ...
                   UB,...

@@ -89,10 +89,7 @@ warning('off','catstruct:DuplicatesFound')
 
 options         = catstruct(defaultopt,options);
 
-eqsolver        = options.eqsolver;
-eqsolveroptions = options.eqsolveroptions;
 functional      = options.functional;
-loop_over_s     = options.loop_over_s;
 method          = lower(options.method);
 simulmethod     = lower(options.simulmethod);
 statdisplay     = options.stat;
@@ -122,9 +119,10 @@ if functional, params = [params fspace cx]; end
 m        = size(interp.cx,2);
 q        = size(funrand(1),2);
 
-ssim = zeros(nrep,d,nper+1);
-xsim = zeros(nrep,m,nper+1);
-esim = zeros(nrep,q,nper+1);
+output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
+ssim   = zeros(nrep,d,nper+1);
+xsim   = zeros(nrep,m,nper+1);
+esim   = zeros(nrep,q,nper+1);
 if nargout>=4, fsim = zeros(nrep,m,nper+1); end
 if isempty(shocks)
   for t=2:nper+1, esim(:,:,t) = funrand(nrep); end
@@ -133,7 +131,7 @@ else
 end
 
 for t=1:nper+1
-  if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params); end
+  if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params,output); end
   [LB,UB]    = func('b',s0,[],[],[],[],[],params);
   Phi        = funbasx(fspace,s0);
   xx         = min(max(funeval(cx,fspace,Phi),LB),UB);
@@ -164,7 +162,7 @@ for t=1:nper+1
                                     interp.ch,e,w,fspace,options);
     end
    case 'interpolation'
-    if nargout>=4, f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params); end
+    if nargout>=4, f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params,output); end
   end
   ssim(:,:,t) = s0;
   xsim(:,:,t) = xx;
