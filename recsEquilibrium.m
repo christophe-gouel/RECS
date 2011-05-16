@@ -12,31 +12,16 @@ function [F,J] = recsEquilibrium(x,s,z,func,params,grid,c,e,w,fspace,method)
 [n,d] = size(s);
 x     = reshape(x,[],n)';
 m     = size(x,2);
-checkjacobian = 0; % Check analytical derivatives against numerical ones
 
 switch method
  case {'expapprox','resapprox-simple'}
-  if nargout==2
+  if nargout==2 % With Jacobian
     output  = struct('F',1,'Js',0,'Jx',1,'Jz',0);
     [F,~,J] = func('f',s,x,z,[],[],[],params,output);
-    J       = permute(J,[2 3 1]);
-    if isempty(J) || (checkjacobian) % Numerical derivatives
-      Jnum   = zeros(m,m,n);
-      for i=1:n
-        Jnum(:,:,i) = fdjac(@equilibriumfunction,x(i,:),s(i,:),z(i,:),func, ...
-                            params,[],[],[],[],method);
-      end
-      if (checkjacobian)
-        norm(J(:)-Jnum(:))
-      else
-        J = Jnum;
-      end
-    end
-  else
+  else % Without Jacobian
     output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
     F      = func('f',s,x,z,[],[],[],params,output);
   end
-  F        = reshape(F',n*m,1);
  case {'expfunapprox','resapprox-complete'}
   K     = size(e,1);
   ind   = (1:n);
@@ -45,8 +30,7 @@ switch method
   xx    = x(ind,:);
   ee    = e(repmat(1:K,1,n),:);
 
-  if (nargout==2) && (((nargout(func)>=4) && isequal(method,'resapprox-complete')) ...
-                      || ((nargout(func)>=3) && isequal(method,'expfunapprox'))) % Analytic derivatives
+  if nargout==2 % With Jacobian
     output              = struct('F',1,'Js',0,'Jx',1);
     [snext,~,gx]        = func('g',ss,xx,[],ee,[],[],params,output);
 
@@ -58,8 +42,8 @@ switch method
         [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params,output);
         H               = H.*hmult(:,:,ones(1+d,1));
       end
-      h   = H(:,:,1);
-      hds = H(:,:,2:end);
+      h  = H(:,:,1);
+      hs = H(:,:,2:end);
      case 'resapprox-complete'
       [LB,UB]              = func('b',snext,[],[],[],[],[],params);
       Xnext                = funeval(c,fspace,snext,[zeros(1,d); eye(d)]);
@@ -81,95 +65,49 @@ switch method
     z           = reshape(w'*reshape(h,K,n*p),n,p);
     output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
     [F,~,fx,fz] = func('f',s,x,z,[],[],[],params,output);
-    F           = reshape(F',n*m,1);
 
     switch method
      case 'expfunapprox'
-      Jtmp = arraymult(hds,gx,K*n,p,d,m);
-% $$$       Jtmp = multiprod(hds,gx,[2 3],[2 3]);
-% $$$       Jtmp = mtimesx(permute(hds,[2 3 1]),permute(gx,[2 3 1]));
-% $$$       Jtmp = permute(Jtmp,[3 1 2]);
+      Jtmp = arraymult(hs,gx,K*n,p,d,m);
      case 'resapprox-complete'
       Jtmp = hx+arraymult(hsnext+arraymult(hxnext,xnextds,K*n,p,m,d),gx,K*n,p,d,m);
-% $$$       Jtmp = hx+multiprod(hsnext+multiprod(hxnext,xnextds,[2 3]),gx,[2 3],[2 3]);
-% $$$       Jtmp = hx+permute(mtimesx(permute(hsnext,[2 3 1])+mtimesx(permute(hxnext,[2 3 1]),permute(xnextds,[2 ...
-% $$$                           3 1])),permute(gx,[2 3 1])),[3 1 2]);
     end
     Jtmp = reshape(w'*reshape(Jtmp,K,n*p*m),n,p,m);
     J    = fx+arraymult(fz,Jtmp,n,m,p,m);
-% $$$     J    = fx+multiprod(fz,Jtmp,[2 3],[2 3]);
-% $$$     J    = fx+permute(mtimesx(permute(fz,[2 3 1]),permute(Jtmp,[2 3 1])),[3 1 2]);
-    J    = permute(J,[2 3 1]);
-    if (checkjacobian)
-      Jnum                   = zeros(m,m,n);
-      for i=1:n
-        Jnum(:,:,i) = fdjac(@equilibriumfunction,x(i,:),s(i,:),[],func, ...
-                            params,c,e,w,fspace,method);
+  else % Without Jacobian
+    output  = struct('F',1,'Js',0,'Jx',0);
+    snext   = func('g',ss,xx,[],ee,[],[],params,output);
+    
+    switch method
+     case 'expfunapprox'
+      h                 = funeval(c,fspace,snext);
+      if nargout(func)==6
+        output  = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+        [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params,output);
+        h                 = h.*hmult;
       end
-      norm(J(:)-Jnum(:))
+      
+     case 'resapprox-complete'
+      [LB,UB] = func('b',snext,[],[],[],[],[],params);
+      xnext   = min(max(funeval(c,fspace,snext),LB),UB);
+      output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+      if nargout(func)<6
+        h                 = func('h',ss,xx,[],ee,snext,xnext,params,output);
+      else
+        [h,~,~,~,~,hmult] = func('h',ss,xx,[],ee,snext,xnext,params,output);
+        h                 = h.*hmult;
+      end
+      
     end
-  elseif (nargout==2) && (((nargout(func)<4) && isequal(method,'resapprox-complete')) ...
-                          || ((nargout(func)<3) && isequal(method,'expfunapprox'))) % Numerical derivatives
-    F = equilibriumfunction(reshape(x',[n*m 1]),s,[],func,params,c,e,w,fspace,method);
-    J                   = zeros(m,m,n);
-    for i=1:n
-      J(:,:,i) = fdjac(@equilibriumfunction,x(i,:),s(i,:),[],func,params,c,e,w, ...
-                       fspace,method);
-    end
-  else
-    F = equilibriumfunction(reshape(x',[n*m 1]),s,[],func,params,c,e,w,fspace,method);
+    p       = size(h,2);
+    z       = reshape(w'*reshape(h,K,n*p),n,p);
+    output  = struct('F',1,'Js',0,'Jx',0,'Jz',0);
+    F       = func('f',s,x,z,[],[],[],params,output);
   end
 end
 
-if nargout==2, J = spblkdiag(J,grid); end
-
-
-function F = equilibriumfunction(x,s,z,func,params,c,e,w,fspace,method)
-
-n = size(s,1);
-x = reshape(x,[],n)';
-m = size(x,2);
-
-if ~isempty(z) % Cases expapprox and resapprox-simple
-  output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-  F      = func('f',s,x,z,[],[],[],params,output);
-else
-  K       = size(e,1);
-  ind     = (1:n);
-  ind     = ind(ones(1,K),:);
-  ss      = s(ind,:);
-  xx      = x(ind,:);
-  ee      = e(repmat(1:K,1,n),:);
-
-  output  = struct('F',1,'Js',0,'Jx',0);
-  snext   = func('g',ss,xx,[],ee,[],[],params,output);
-
-  switch method
-   case 'expfunapprox'
-    h                 = funeval(c,fspace,snext);
-    if nargout(func)==6
-      output  = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params,output);
-      h                 = h.*hmult;
-    end
-
-   case 'resapprox-complete'
-    [LB,UB] = func('b',snext,[],[],[],[],[],params);
-    xnext   = min(max(funeval(c,fspace,snext),LB),UB);
-    output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-    if nargout(func)<6
-      h                 = func('h',ss,xx,[],ee,snext,xnext,params,output);
-    else
-      [h,~,~,~,~,hmult] = func('h',ss,xx,[],ee,snext,xnext,params,output);
-      h                 = h.*hmult;
-    end
-
-  end
-  p       = size(h,2);
-  z       = reshape(w'*reshape(h,K,n*p),n,p);
-  output  = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-  F       = func('f',s,x,z,[],[],[],params,output);
-end
 F = reshape(F',n*m,1);
-
-return
+if nargout==2
+  J = permute(J,[2 3 1]);
+  J = spblkdiag(J,grid); 
+end
