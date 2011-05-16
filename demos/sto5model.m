@@ -1,4 +1,4 @@
-function [out1,out2,out3,out4,out5] = msto5(flag,s,x,z,e,snext,xnext,params,output)
+function [out1,out2,out3,out4,out5] = sto5model(flag,s,x,z,e,snext,xnext,params,output)
 % Equations of a two-country storage-trade model with supply reaction
 
 % Copyright (C) 2011 Christophe Gouel

@@ -1,9 +1,9 @@
-% DEMSTO1 Competitive storage with supply reaction and explicit market equilibrium equation
+% STO1 Competitive storage with supply reaction and explicit market equilibrium equation
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-disp('DEMSTO1 Competitive storage with supply reaction and explicit market equilibrium equation');
+disp('STO1 Competitive storage with supply reaction and explicit market equilibrium equation');
 clear interp model options
 
 % ENTER MODEL PARAMETERS
@@ -20,7 +20,7 @@ sigma             = 0.1;
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 % PACK MODEL STRUCTURE
-model.func   = @msto1;                               % model functions
+model.func   = @sto1model;                               % model functions
 model.params = {alpha,k,delta,r,mu};               % other parameters
 
 % DEFINE APPROXIMATION SPACE

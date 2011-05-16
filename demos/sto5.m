@@ -1,9 +1,9 @@
-% DEMSTO5 Two-country storage-trade model with supply reaction, fixed tariffs
+% STO5 Two-country storage-trade model with supply reaction, fixed tariffs
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-disp('DEMSTO5 Two-country storage-trade model with supply reaction, fixed tariffs');
+disp('STO5 Two-country storage-trade model with supply reaction, fixed tariffs');
 clear interp model options
 
 % ENTER MODEL PARAMETERS
@@ -26,7 +26,7 @@ Sigma             = [0.05 0;0 0.05];   % std-deviation of production shocks in a
 model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*Sigma;
 
 % PACK MODEL STRUCTURE
-model.func   = @msto5;                                     % model functions
+model.func   = @sto5model;                                     % model functions
 model.params = {delta,r,k,alpha,theta,lambda,eta,mu,taua,taub};         % other parameters
 
 % DEFINE APPROXIMATION SPACE

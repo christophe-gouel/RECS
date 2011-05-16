@@ -1,9 +1,9 @@
-% DEMSTO3 Competitive storage with price-band backed by public storage
+% STO3 Competitive storage with price-band backed by public storage
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-disp('DEMSTO3 Competitive storage with price-band backed by public storage');
+disp('STO3 Competitive storage with price-band backed by public storage');
 clear interp model options
 
 % ENTER MODEL PARAMETERS
@@ -23,7 +23,7 @@ sigma             = 0.05;
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 % PACK MODEL STRUCTURE
-model.func   = @msto3;                                      % model functions
+model.func   = @sto3model;                                      % model functions
 model.params = {delta,r,alpha,k,mu,PF,PC,Sgbar};               % other parameters
 
 % DEFINE APPROXIMATION SPACE

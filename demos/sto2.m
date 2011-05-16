@@ -1,9 +1,9 @@
-% DEMSTO2 Competitive storage with floor-price backed by public storage
+% STO2 Competitive storage with floor-price backed by public storage
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-disp('DEMSTO2 Competitive storage with floor-price backed by public storage');
+disp('STO2 Competitive storage with floor-price backed by public storage');
 clear interp model options
 
 % ENTER MODEL PARAMETERS
@@ -22,7 +22,7 @@ sigma             = 0.05;
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 % PACK MODEL STRUCTURE
-model.func   = @msto2;                               % model functions
+model.func   = @sto2model;                               % model functions
 model.params = {k,delta,r,mu,alpha,PF,Sgbar};               % other parameters
 
 % DEFINE APPROXIMATION SPACE

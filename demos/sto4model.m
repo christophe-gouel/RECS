@@ -1,5 +1,5 @@
-function [out1,out2,out3,out4,out5] = msto4(flag,s,x,z,e,snext,xnext,params,output)
-% MSTO4 Equations of a storage-trade model of one small-country
+function [out1,out2,out3,out4,out5] = sto4model(flag,s,x,z,e,snext,xnext,params,output)
+% STO4MODEL Equations of a storage-trade model of one small-country
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

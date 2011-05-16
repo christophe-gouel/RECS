@@ -1,9 +1,9 @@
-% DEMSTO4 One small-country storage-trade model
+% STO4 One small-country storage-trade model
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-disp('DEMSTO4 One small-country storage-trade model');
+disp('STO4 One small-country storage-trade model');
 clear interp model options
 
 % ENTER MODEL PARAMETERS
@@ -22,7 +22,7 @@ Sigma             = [0.05 0;0 sigma];
 model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*Sigma;
 
 % PACK MODEL STRUCTURE
-model.func   = @msto4;                                     % model functions
+model.func   = @sto4model;                                     % model functions
 model.params = {delta,r,k,alpha,tau,rho,sigma};               % other parameters
 
 % DEFINE APPROXIMATION SPACE

@@ -1,4 +1,4 @@
-function [out1,out2,out3,out4,out5] = msto3(flag,s,x,z,e,snext,xnext,params,output)
+function [out1,out2,out3,out4,out5] = sto3model(flag,s,x,z,e,snext,xnext,params,output)
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
