@@ -23,6 +23,7 @@ defaultopt = struct(              ...
     'eqsolveroptions'  , struct([]));
 warning('off','catstruct:DuplicatesFound')
 options = catstruct(defaultopt,options);
+eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 
 m = size(xss,2);
@@ -50,7 +51,20 @@ X = [xss zss sss];
 X = X(ones(T,1),:)';
 X = reshape(X,n,1);
 
-switch lower(options.eqsolver)
+SCPSubProblem = @(X0,S0) NewtonProblem(func,S0,xss,X0,p,e,params,...
+                                       LB,UB,eqsolver,eqsolveroptions);
+[X,F]         = SCP(X,s0,sss,SCPSubProblem,1);
+
+X = reshape(X,m+p+d,T)';
+x = X(:,1:m);
+z = X(:,(m+1):(m+p));
+s = [s0; X(1:end-1,(m+p+1):(m+p+d))];
+F = reshape(F,m+p+d,T)';
+
+function [X,F,exitflag] = NewtonProblem(func,s0,xss,X,p,e,params,LB,UB,eqsolver,eqsolveroptions)
+
+exitflag = 1;
+switch eqsolver
  case 'fsolve'
   options = optimset('Display','off',...
                      'Jacobian','on');
@@ -75,14 +89,13 @@ switch lower(options.eqsolver)
  case 'path'
   global par
   par   = {@recsDeterministicPb,func,s0,xss,p,e,params};
-  [X,F] = pathmcp(X,...
-                  LB, ...
-                  UB,...
-                  'pathtransform');
+  try
+    [X,F] = pathmcp(X,...
+                    LB, ...
+                    UB,...
+                    'pathtransform');
+  catch
+    exitflag = 0;
+  end
   clear global par
 end
-X = reshape(X,m+p+d,T)';
-x = X(:,1:m);
-z = X(:,(m+1):(m+p));
-s = [s0; X(1:end-1,(m+p+1):(m+p+d))];
-F = reshape(F,m+p+d,T)';
