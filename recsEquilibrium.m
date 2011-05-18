@@ -23,12 +23,12 @@ switch method
     F      = func('f',s,x,z,[],[],[],params,output);
   end
  case {'expfunapprox','resapprox-complete'}
-  K     = size(e,1);
+  k     = size(e,1);
   ind   = (1:n);
-  ind   = ind(ones(1,K),:);
+  ind   = ind(ones(1,k),:);
   ss    = s(ind,:);
   xx    = x(ind,:);
-  ee    = e(repmat(1:K,1,n),:);
+  ee    = e(repmat(1:k,1,n),:);
 
   if nargout==2 % With Jacobian
     output              = struct('F',1,'Js',0,'Jx',1);
@@ -62,17 +62,17 @@ switch method
       end
     end
     p           = size(h,2);
-    z           = reshape(w'*reshape(h,K,n*p),n,p);
+    z           = reshape(w'*reshape(h,k,n*p),n,p);
     output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
     [F,~,fx,fz] = func('f',s,x,z,[],[],[],params,output);
 
     switch method
      case 'expfunapprox'
-      Jtmp = arraymult(hs,gx,K*n,p,d,m);
+      Jtmp = arraymult(hs,gx,k*n,p,d,m);
      case 'resapprox-complete'
-      Jtmp = hx+arraymult(hsnext+arraymult(hxnext,xnextds,K*n,p,m,d),gx,K*n,p,d,m);
+      Jtmp = hx+arraymult(hsnext+arraymult(hxnext,xnextds,k*n,p,m,d),gx,k*n,p,d,m);
     end
-    Jtmp = reshape(w'*reshape(Jtmp,K,n*p*m),n,p,m);
+    Jtmp = reshape(w'*reshape(Jtmp,k,n*p*m),n,p,m);
     J    = fx+arraymult(fz,Jtmp,n,m,p,m);
   else % Without Jacobian
     output  = struct('F',1,'Js',0,'Jx',0);
@@ -100,7 +100,7 @@ switch method
       
     end
     p       = size(h,2);
-    z       = reshape(w'*reshape(h,K,n*p),n,p);
+    z       = reshape(w'*reshape(h,k,n*p),n,p);
     output  = struct('F',1,'Js',0,'Jx',0,'Jz',0);
     F       = func('f',s,x,z,[],[],[],params,output);
   end
