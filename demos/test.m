@@ -36,20 +36,24 @@ interp.Phi    = funbasx(interp.fspace);
 
 optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
 options.simulmethod = 'solve';
+options.eqsolver = 'lmmcp';
 
 [interp,xinit,zinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);
 
 options.method = 'resapprox-complete';
 
 interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
+
 tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+[interp.cx,x,z,f] = recsSolveREE(interp,model,s,xinit,options);
 toc
 interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 
-recsSolveREEtmp(interp,model,s,xinit,options);
-return
-
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
 tic
-[ssim,xsim,esim] = recsSimul(model,interp,1,200,[],options);
+  [~,~,~,F] = recsSolveREEtmp(interp,model,s,xinit,options);
 toc
+  n = 50;
+m = 4;
+F1     = reshape(F(1:n*m),m,n)';
+F2     = reshape(F(n*m+1:end),m,n)';
