@@ -52,6 +52,12 @@ options =struct('eqsolver','ncpsolve',...
                 'reesolveroptions',struct('lambda',0.5),...
                 'useapprox',0);
 
+% Solve by Full Newton
+tic
+[interp.cx,x,z] = recsSolveREEFull(interp,model,s,xinit,options);
+toc
+
+% Solve by successive approximations
 tic
 [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc

@@ -1,4 +1,4 @@
-function [F,J] = recsFullPb(x,s,func,params,grid,c,e,w,fspace,Phi)
+function [F,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,Phi)
 % RECSFULLPB 
 %
 % This code is not optimized. Some formulas are calculated both in this file and
@@ -7,36 +7,45 @@ function [F,J] = recsFullPb(x,s,func,params,grid,c,e,w,fspace,Phi)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
   
-[n,d] = size(s);
+n     = size(s,1);
+x     = X(1:length(X)/2);
+x     = reshape(x,[],n)';
 m     = size(x,2);
+c     = reshape(X(length(X)/2+1:end),m,n)';
 
 F2 = funeval(c,fspace,Phi)-x;
 F2 = reshape(F2',n*m,1);
 
 if nargout==2 % With Jacobian
-  [F1,J11] = recsEquilibrium(x,s,zeros(n,0),func,params,grid,c,e,w,fspace,'resapprox-complete');  
+  [F1,J11] = recsEquilibrium(reshape(x',[n*m 1]),...
+                             s,zeros(n,0),func,params,grid,c,e,w,fspace,'resapprox-complete');  
 
   B = funbas(fspace,s);
 
   J21 = -speye(n*m);
-  J22 = kron(speye(m),B);
-  
+
+  J22 = kron(B,speye(m));
+
   % Calculation of J12
-  J12   = sparse(n*m,n*m);
-  K     = size(e,1);
+  J12   = sparse([],[],[],n*m,n*m,0.1*(n*m)^2); % TODO: improve the space allocation
+  k     = size(e,1);
   ind   = (1:n);
-  ind   = ind(ones(1,K),:);
+  ind   = ind(ones(1,k),:);
   ss    = s(ind,:);
   xx    = x(ind,:);
-  ee    = e(repmat(1:K,1,n),:);
+  ee    = e(repmat(1:k,1,n),:);
+  % ss, xx and ee are organised as
+  %   s_i   e_1
+  %   s_i   e_k
+  %   s_i   e_K
+  %   s_i+1 e_1
 
   output   = struct('F',1,'Js',0,'Jx',0);
   snext    = func('g',ss,xx,[],ee,[],[],params,output);
   Bsnext   = funbas(fspace,snext);
 
   [LB,UB]              = func('b',snext,[],[],[],[],[],params);
-%  xnext                = min(max(funeval(c,fspace,Bsnext),LB),UB);
-  xnext                = min(max(funeval(c,fspace,snext),LB),UB);
+  xnext                = min(max(Bsnext*c,LB),UB);
 
   output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',1,'hmult',1);
   if nargout(func)<6
@@ -46,29 +55,30 @@ if nargout==2 % With Jacobian
     h      = h.*hmult;
     hxnext = hxnext.*hmult(:,:,ones(m,1));
   end
-  size(hxnext)
-  size(h)
   p           = size(h,2);
-  z           = reshape(w'*reshape(h,K,n*p),n,p);
+  z           = reshape(w'*reshape(h,k,n*p),n,p);
   output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
   [~,~,~,fz] = func('f',s,x,z,[],[],[],params,output);
-  
+
+% $$$   iter = 0;
   for i=1:n % The kronecker products with identity matrix could be remplaced by
             % matrix repetition and block diagonal matrix construction
-    size(permute(fz(i,:,:),[2 3 1]))
-    size(w')
-    size(kron(permute(fz(i,:,:),[2 3 1]),w'))
-    size(permute(hxnext(i,:,:),[2 3 1]))
-    size(Bsnext)
-    spy(Bsnext)
-%    J12((i-1)*m+1:i*m,:) = kron(permute(fz(i,:,:),[2 3 1]),w')*permute(hxnext(i,:,:),[2 3 1])*kron(speye(m),Bsnext);
-    J12((i-1)*m+1:i*m,:) = kron(permute(fz(i,:,:),[2 3 1]),w')*permute(hxnext(i,:,:),[2 3 1]);
+
+   ira = (i-1)*k+1:i*k;
+   tmp = kron(w',eye(p))*spblkdiag(permute(hxnext(ira,:,:),[2 3 1]))*kron(Bsnext(ira,:),speye(m));
+% $$$    tmp  = zeros(p,n*m);
+% $$$    for j=1:k
+% $$$      iter = iter+1;
+% $$$      tmp = tmp+w(j)*permute(hxnext(iter,:,:),[2 3 1])*kron(Bsnext(iter,:),speye(m));
+% $$$    end
+   J12((i-1)*m+1:i*m,:) = permute(fz(i,:,:),[2 3 1])*tmp;
   end
-  
+
   J = [J11 J12;
        J21 J22];
 else % Without Jacobian
-  F1 = recsEquilibrium(x,s,zeros(n,0),func,params,grid,c,e,w,fspace,'resapprox-complete');  
+  F1 = recsEquilibrium(reshape(x',[n*m 1]),...
+                       s,zeros(n,0),func,params,grid,c,e,w,fspace,'resapprox-complete');  
 end
 
 F = [F1; F2];
