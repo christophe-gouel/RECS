@@ -1,4 +1,4 @@
-function [F,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m)
+function [F,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m,functional)
 % RECSFULLPB
 %
 % This code is not optimized. Some formulas are calculated both in this file and
@@ -11,6 +11,7 @@ n     = size(s,1);
 x     = X(1:m*n);
 x     = reshape(x,m,n)';
 c     = reshape(X(m*n+1:end),[],n)';
+if functional, params{end} = c; end
 
 switch method
  case 'expfunapprox'
@@ -41,17 +42,16 @@ if nargout==2 % With Jacobian
     J21 = -spblkdiag(permute(hxnext,[2 3 1]));
 
     J22 = kron(B,speye(p));
-
-    sizeJ12 = p;
+   
    case 'resapprox-complete'
     J21 = -speye(n*m);
+
     J22 = kron(B,speye(m));
 
-    sizeJ12 = m;
   end
 
   % Calculation of J12
-  J12   = sparse([],[],[],n*m,n*sizeJ12,0.1*(n*m*n*sizeJ12)); % TODO: improve the space allocation
+  J12   = zeros(n*m,numel(c));
   k     = size(e,1);
   ind   = (1:n);
   ind   = ind(ones(1,k),:);
@@ -76,6 +76,9 @@ if nargout==2 % With Jacobian
       [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params,output);
       h               = h.*hmult;
     end
+
+    [~,gridJ12] = spblkdiag(zeros(1,n,p),[],0);
+   
    case 'resapprox-complete'
     [LB,UB]              = func('b',snext,[],[],[],[],[],params);
     xnext                = min(max(Bsnext*c,LB),UB);
@@ -88,29 +91,28 @@ if nargout==2 % With Jacobian
       h      = h.*hmult;
       hxnext = hxnext.*hmult(:,:,ones(m,1));
     end
+
+    p           = size(h,2);
+    [~,gridJ12] = spblkdiag(zeros(p,m,k),[],0);
+
   end
-  p           = size(h,2);
   z           = reshape(w'*reshape(h,k,n*p),n,p);
   output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
   [~,~,~,fz] = func('f',s,x,z,[],[],[],params,output);
 
-% $$$   iter = 0;
   for i=1:n % The kronecker products with identity matrix could be remplaced by
             % matrix repetition and block diagonal matrix construction
 
-   ira = (i-1)*k+1:i*k;
-  switch method
-   case 'expfunapprox'
-    tmp = kron(w',eye(p))*kron(Bsnext(ira,:),speye(p));
-   case 'resapprox-complete'
-    tmp = kron(w',eye(p))*spblkdiag(permute(hxnext(ira,:,:),[2 3 1]))*kron(Bsnext(ira,:),speye(m));
-% $$$    tmp  = zeros(p,n*m);
-% $$$    for j=1:k
-% $$$      iter = iter+1;
-% $$$      tmp = tmp+w(j)*permute(hxnext(iter,:,:),[2 3 1])*kron(Bsnext(iter,:),speye(m));
-% $$$    end
-  end
-   J12((i-1)*m+1:i*m,:) = permute(fz(i,:,:),[2 3 1])*tmp;
+    ira = (i-1)*k+1:i*k;
+    switch method
+     case 'expfunapprox'
+      tmp    = w'*Bsnext(ira,:);
+      J12tmp = spblkdiag(tmp(:,:,ones(p,1)),gridJ12);
+      
+     case 'resapprox-complete'
+      J12tmp = kron(w',eye(p))*spblkdiag(permute(hxnext(ira,:,:),[2 3 1]),gridJ12)*kron(Bsnext(ira,:),speye(m));
+    end
+    J12((i-1)*m+1:i*m,:) = full(permute(fz(i,:,:),[2 3 1])*J12tmp);
   end
 
   J = [J11 J12;
