@@ -1,4 +1,4 @@
-function [cx,x,z,f,exitflag] = recsSolveREEFull(interp,model,s,x,options)
+function [c,x,z,f,exitflag] = recsSolveREEFull(interp,model,s,x,options)
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -7,12 +7,14 @@ if nargin <=4, options = struct([]); end
 
 defaultopt = struct(                  ...
     'eqsolver'          , 'lmmcp' ,...
-    'eqsolveroptions'   , struct([]));
+    'eqsolveroptions'   , struct([]),...
+    'method'            , 'resapprox-complete');
 warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
+method           = lower(options.method);
 
 e      = model.e;
 params = model.params;
@@ -25,7 +27,13 @@ else
   error('model.func must be either a string or a function handle')
 end
 
-cx     = interp.cx;
+switch method
+ case 'expfunapprox'
+  c      = interp.ch;
+ case 'resapprox-complete'
+  c      = interp.cx;
+ otherwise
+end
 fspace = interp.fspace;
 Phi    = interp.Phi;
 
@@ -36,20 +44,20 @@ K      = length(w);               % number of shock values
 z      = zeros(n,0);
 
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
-X        = [reshape(x',[n*m 1]); reshape(cx',[n*m 1])];
+X        = [reshape(x',[n*m 1]); reshape(c',[],1)];
 [LB,UB]  = func('b',s,[],[],[],[],[],params);
-LB       = [reshape(LB',[n*m 1]); -inf(n*m,1)];
-UB       = [reshape(UB',[n*m 1]); +inf(n*m,1)];
+LB       = [reshape(LB',[n*m 1]); -inf(n*size(c,2),1)];
+UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 
-% $$$ [f,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,Phi);
-% $$$ Jnum = numjac(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,Phi),X);
+% $$$ [f,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m);
+% $$$ Jnum = numjac(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,method,Phi,m),X);
 % $$$ spy(J)
 % $$$ figure
 % $$$ spy(Jnum)
-% $$$ 
+% $$$
 % $$$ norm(full(J)-Jnum)
-% $$$ norm(full(J(1:n*m,n*m+1:2*n*m))-Jnum(1:n*m,n*m+1:2*n*m))
-% $$$ norm(full(J(n*m+1:2*n*m,n*m+1:2*n*m))-Jnum(n*m+1:2*n*m,n*m+1:2*n*m))
+% $$$ norm(full(J(1:n*m,n*m+1:n*(m+size(c,2))))-Jnum(1:n*m,n*m+1:n*(m+size(c,2))))
+% $$$ norm(full(J(n*m+1:n*(m+size(c,2)),n*m+1:n*(m+size(c,2))))-Jnum(n*m+1:n*(m+size(c,2)),n*m+1:n*(m+size(c,2))))
 % $$$ z = [];
 % $$$ return
 exitflag = 1;
@@ -59,20 +67,20 @@ switch eqsolver
   options = optimset('Display','off',...
                      'Jacobian','on');
   options = optimset(options,eqsolveroptions);
-  [X,f,exitflag] = fsolve(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,Phi),...
+  [X,f,exitflag] = fsolve(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,method,Phi,m),...
                           X,options);
   if exitflag~=1, disp('No convergence'); end
  case 'lmmcp'
-  [X,f,exitflag] = lmmcp(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,Phi),...
+  [X,f,exitflag] = lmmcp(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,method,Phi,m),...
                          X,LB,UB,eqsolveroptions);
   if exitflag~=1, disp('No convergence'); end
  case 'ncpsolve'
-  [X,f] = ncpsolve(@(VAR) ncpsolvetransform(VAR,@recsFullPb,s,func,params,grid,e,w,fspace,Phi),...
+  [X,f] = ncpsolve(@(VAR) ncpsolvetransform(VAR,@recsFullPb,s,func,params,grid,e,w,fspace,method,Phi,m),...
                    LB,UB,X);
   f     = -f;
  case 'path'
   global par
-  par   = {@recsFullPb,s,func,params,grid,e,w,fspace,Phi};
+  par   = {@recsFullPb,s,func,params,grid,e,w,fspace,method,Phi,m};
   [X,f] = pathmcp(X,LB,UB,'pathtransform');
   clear global par
 end
@@ -82,7 +90,7 @@ if exitflag~=1
 end
 
 x     = reshape(X(1:n*m),m,n)';
-cx    = reshape(X(n*m+1:end),m,n)';
+c     = reshape(X(n*m+1:end),[],n)';
 
 % Calculation of z
 ind    = (1:n);
@@ -91,14 +99,25 @@ ss     = s(ind,:);
 xx     = x(ind,:);
 output = struct('F',1,'Js',0,'Jx',0);
 snext  = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params,output);
-[LB,UB] = func('b',snext,[],[],[],[],[],params);
-xnext   = min(max(funeval(cx,fspace,snext),LB),UB);
-output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-if nargout(func)<6
-  h                = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params,output);
-else
-  [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params,output);
-  h               = h.*hmult;
+switch method
+ case 'expfunapprox'
+  h   = funeval(c,fspace,snext);
+  if nargout(func)==6
+    output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+    [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:K,1,n),:),snext,zeros(size(snext,1),m),params,output);
+    h                 = h.*hmult;
+  end
+
+   case 'resapprox-complete'
+    [LB,UB] = func('b',snext,[],[],[],[],[],params);
+    xnext   = min(max(funeval(c,fspace,snext),LB),UB);
+    output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+    if nargout(func)<6
+      h                = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params,output);
+    else
+      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params,output);
+      h               = h.*hmult;
+    end
 end
 z     = reshape(w'*reshape(h,K,n*p),n,p);
 

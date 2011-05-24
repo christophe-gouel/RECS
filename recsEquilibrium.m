@@ -1,4 +1,4 @@
-function [F,J] = recsEquilibrium(x,s,z,func,params,grid,c,e,w,fspace,method)
+function [F,Jx] = recsEquilibrium(x,s,z,func,params,grid,c,e,w,fspace,method)
 % RECSEQUILIBRIUM evaluate the equilibrium equations and Jacobian
 %
 % RECSEQUILIBRIUM is called by RECSSOLVEEQUILIBRIUM. It is not meant to be called
@@ -17,7 +17,7 @@ switch method
  case {'expapprox','resapprox-simple'}
   if nargout==2 % With Jacobian
     output  = struct('F',1,'Js',0,'Jx',1,'Jz',0);
-    [F,~,J] = func('f',s,x,z,[],[],[],params,output);
+    [F,~,Jx] = func('f',s,x,z,[],[],[],params,output);
   else % Without Jacobian
     output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
     F      = func('f',s,x,z,[],[],[],params,output);
@@ -68,16 +68,16 @@ switch method
 
     switch method
      case 'expfunapprox'
-      Jtmp = arraymult(hs,gx,k*n,p,d,m);
+      Jxtmp = arraymult(hs,gx,k*n,p,d,m);
      case 'resapprox-complete'
-      Jtmp = hx+arraymult(hsnext+arraymult(hxnext,xnextds,k*n,p,m,d),gx,k*n,p,d,m);
+      Jxtmp = hx+arraymult(hsnext+arraymult(hxnext,xnextds,k*n,p,m,d),gx,k*n,p,d,m);
     end
-    Jtmp = reshape(w'*reshape(Jtmp,k,n*p*m),n,p,m);
-    J    = fx+arraymult(fz,Jtmp,n,m,p,m);
+    Jxtmp = reshape(w'*reshape(Jxtmp,k,n*p*m),n,p,m);
+    Jx    = fx+arraymult(fz,Jxtmp,n,m,p,m);
   else % Without Jacobian
     output  = struct('F',1,'Js',0,'Jx',0);
     snext   = func('g',ss,xx,[],ee,[],[],params,output);
-    
+
     switch method
      case 'expfunapprox'
       h                 = funeval(c,fspace,snext);
@@ -86,7 +86,7 @@ switch method
         [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params,output);
         h                 = h.*hmult;
       end
-      
+
      case 'resapprox-complete'
       [LB,UB] = func('b',snext,[],[],[],[],[],params);
       xnext   = min(max(funeval(c,fspace,snext),LB),UB);
@@ -97,7 +97,7 @@ switch method
         [h,~,~,~,~,hmult] = func('h',ss,xx,[],ee,snext,xnext,params,output);
         h                 = h.*hmult;
       end
-      
+
     end
     p       = size(h,2);
     z       = reshape(w'*reshape(h,k,n*p),n,p);
@@ -108,6 +108,6 @@ end
 
 F = reshape(F',n*m,1);
 if nargout==2
-  J = permute(J,[2 3 1]);
-  J = spblkdiag(J,grid); 
+  Jx = permute(Jx,[2 3 1]);
+  Jx = spblkdiag(Jx,grid);
 end
