@@ -1,15 +1,20 @@
 function [X,grid] = spblkdiag(X,grid,output)
 % SPBLKDIAG Computes a sparse block diagonal matrix
 %
-% Arguments:
+% X = SPBLKDIAG(X) builds a sparse block diagonal matrix X from the pxqxn array
+% X, which contains n pxq matrices corresponding to blocks on the diagonal.
 %
-%  X - pxqxn array, a list of n pxq arrays corresponding to a single block on
-%  the diagonal.
+% X = SPBLKDIAG(X,GRID) provides the index to be used to build the sparse matrix.
 %
-%  grid (optional) - row and column indices for building the sparse matrix
+% X = SPBLKDIAG(X,GRID,OUTPUT) indicates if the matrix has to be calculated or not
+%  (0 or 1, default). It is useful when one just wants to calculate the index to
+%  build the matrix and avoid the time-consuming sparse matrix building. If
+%  OUTPUT=0, X is empty.
 %
-%  output (optional, default: 1) - indicates if the matrix has to be calculated
-%  or not (0 or 1)
+% [X,GRID] = SPBLKDIAG(X,...) returns in GRID the index used to build the sparse
+% matrix X.
+%
+% See also BLKDIAG, DIAG, SPARSE, SPDIAGS.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
