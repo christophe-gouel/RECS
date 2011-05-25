@@ -1,9 +1,12 @@
 **RECS**
+
 A solver for nonlinear, dynamic, stochastic, rational expectations equilibrium
 models.
+
 Christophe Gouel <christophe.gouel@grignon.inra.fr>
 
-To use the solver you must
+To use the solver you have to
+
 1. Install the CompEcon toolbox (see Dependencies), see CompEcon installation
    instructions and do not forget to create the mex files.
 2. Add the solver folder to the Matlab path.
@@ -16,10 +19,11 @@ DEPENDENCIES
 ============
 
 RECS programs depend on the following packages, which have to be installed:
+
 * CompEcon (http://www4.ncsu.edu/~pfackler/compecon/).
 
 OPTIONAL INSTALLATION
-=====================
+---------------------
 
 * Path solver for Matlab (http://www.cs.wisc.edu/cpnet/cpnetsoftware/). This is
   the reference solver for mixed complementarity problems. It is highly recommended
