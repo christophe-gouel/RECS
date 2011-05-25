@@ -42,7 +42,7 @@ n             = prod(order);
 
 xinit         = [0.1*zeros(n,2) max(s(:,1).^(1/alpha),0.8) max((s(:,2)/lambda).^(1/alpha),0.8) zeros(n,2) ones(n,2)];
 interp.cz     = ones(n,4);
-interp.cx     = xinit;
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);;
 interp.ch     = ones(n,4);
 
 options =struct('eqsolver','ncpsolve',...
@@ -51,6 +51,7 @@ options =struct('eqsolver','ncpsolve',...
                 'stat',1,...
                 'reesolveroptions',struct('lambda',0.5),...
                 'useapprox',0);
+optset('ncpsolve','type','smooth')
 
 % Solve by Full Newton
 tic
@@ -58,6 +59,7 @@ tic
 toc
 
 % Solve by successive approximations
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);;
 tic
 [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc
