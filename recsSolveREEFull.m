@@ -57,12 +57,12 @@ UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 % $$$ spy(J)
 % $$$ figure
 % $$$ spy(Jnum)
-% $$$ % $$$
 % $$$ norm(full(J)-Jnum)
 % $$$ norm(full(J(1:n*m,n*m+1:n*(m+size(c,2))))-Jnum(1:n*m,n*m+1:n*(m+size(c,2))))
 % $$$ norm(full(J(n*m+1:n*(m+size(c,2)),n*m+1:n*(m+size(c,2))))-Jnum(n*m+1:n*(m+size(c,2)),n*m+1:n*(m+size(c,2))))
 % $$$ z = [];
 % $$$ return
+
 exitflag = 1;
 
 switch eqsolver

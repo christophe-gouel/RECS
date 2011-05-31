@@ -1,4 +1,4 @@
-function [X,grid] = spblkdiag(X,grid,output)
+function [X,grid] = spblkdiag(X,grid,output,n)
 % SPBLKDIAG Computes a sparse block diagonal matrix
 %
 % Arguments:
@@ -10,18 +10,24 @@ function [X,grid] = spblkdiag(X,grid,output)
 %
 %  output (optional, default: 1) - indicates if the matrix has to be calculated
 %  or not (0 or 1)
-
+%
+% Note that spblkdiag(X,[],1,n) is equivalent, but faster, to kron(speye(n),X).
+  
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
+  
+if nargin < 2, grid = []; end
 
-if nargin < 3
-  output = 1;
-  if nargin < 2
-    grid = [];
-  end
+if nargin < 3 || isempty(output), output = 1; end
+
+if nargin < 4 || isempty(n) || n==1
+  [p,q,n] = size(X);
+else
+  [p,q,n0] = size(X);
+  if n0~=1, error('X should not be an ND array'); end
+  X = X(:,:,ones(n,1));
 end
 
-[p,q,n] = size(X);
 % Generate the row and column indices for building the sparse matrix
 if isempty(grid) || ~isequal(size(grid),[n*p*q 2])
   P = (1:p)';

@@ -1,8 +1,5 @@
 function [F,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m,functional)
 % RECSFULLPB
-%
-% This code is not optimized. Some formulas are calculated both in this file and
-% in recsEquilibrium. It could be improved.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -51,7 +48,6 @@ if nargout==2 % With Jacobian
   end
 
   % Calculation of J12
-  J12   = zeros(n*m,numel(c));
   k     = size(e,1);
   ind   = (1:n);
   ind   = ind(ones(1,k),:);
@@ -74,11 +70,9 @@ if nargout==2 % With Jacobian
     if nargout(func)==6
       output = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
       [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params,output);
-      h               = h.*hmult;
+      h                 = h.*hmult;
     end
 
-    [~,gridJ12] = spblkdiag(zeros(1,n,p),[],0);
-   
    case 'resapprox-complete'
     [LB,UB]              = func('b',snext,[],[],[],[],[],params);
     xnext                = min(max(Bsnext*c,LB),UB);
@@ -93,27 +87,28 @@ if nargout==2 % With Jacobian
     end
 
     p           = size(h,2);
+
+  end
+  z          = reshape(w'*reshape(h,k,n*p),n,p);
+  [~,~,~,fz] = func('f',s,x,z,[],[],[],params,struct('F',0,'Js',0,'Jx',0,'Jz',1));
+
+  Bsnext = mat2cell(Bsnext',n,k*ones(n,1))';
+  switch method
+   case 'expfunapprox'     
+    [~,gridJ12] = spblkdiag(zeros(1,n,p),[],0);
+    J12    = cellfun(@(X) full(spblkdiag((X*w)',gridJ12,1,p)),...
+                     Bsnext,'UniformOutput',false);
+   case 'resapprox-complete'
     [~,gridJ12] = spblkdiag(zeros(p,m,k),[],0);
-
+    kw     = kron(w',eye(p));
+    hxnext = num2cell(reshape(hxnext,[n k p m]),[2 3 4]);
+    J12    = cellfun(@(X,Y) kw*spblkdiag(permute(X,[3 4 2 1]),gridJ12)*kron(Y',speye(m)),...
+                     hxnext,Bsnext,'UniformOutput',false);
   end
-  z           = reshape(w'*reshape(h,k,n*p),n,p);
-  output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
-  [~,~,~,fz] = func('f',s,x,z,[],[],[],params,output);
-
-  for i=1:n % The kronecker products with identity matrix could be remplaced by
-            % matrix repetition and block diagonal matrix construction
-
-    ira = (i-1)*k+1:i*k;
-    switch method
-     case 'expfunapprox'
-      tmp    = w'*Bsnext(ira,:);
-      J12tmp = spblkdiag(tmp(:,:,ones(p,1)),gridJ12);
-      
-     case 'resapprox-complete'
-      J12tmp = kron(w',eye(p))*spblkdiag(permute(hxnext(ira,:,:),[2 3 1]),gridJ12)*kron(Bsnext(ira,:),speye(m));
-    end
-    J12((i-1)*m+1:i*m,:) = full(permute(fz(i,:,:),[2 3 1])*J12tmp);
-  end
+  J12    = reshape(cat(1,J12{:}),[n p numel(c)]);
+    
+  J12 = arraymult(fz,J12,n,m,p,numel(c));
+  J12 = reshape(permute(J12,[2 1 3]),[n*m numel(c)]);
 
   J = [J11 J12;
        J21 J22];
