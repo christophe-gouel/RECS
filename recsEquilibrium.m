@@ -87,14 +87,18 @@ switch method
        case 'resapprox-complete'
         [~,gridJc] = spblkdiag(zeros(p,m,k),[],0);
         kw     = kron(w',eye(p));
-        hxnext = num2cell(reshape(hxnext,[n k p m]),[2 3 4]);
+        hxnext = num2cell(reshape(hxnext,[k n p m]),[1 3 4])';
         Jc     = cellfun(@(X,Y) kw*spblkdiag(permute(X,[3 4 2 1]),gridJc)*kron(Y',speye(m)),...
                          hxnext,Bsnext,'UniformOutput',false);
       end
-      Jc    = reshape(cat(1,Jc{:}),[n p numel(c)]);
-      
-      Jc = arraymult(fz,Jc,n,m,p,numel(c));
-      Jc = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
+      J12   = zeros(n*m,numel(c));
+      for i=1:n
+        J12((i-1)*m+1:i*m,:) = permute(fz(i,:,:),[2 3 1])*Jc{i};
+      end
+      Jc = J12;
+% $$$       Jc    = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);     
+% $$$       Jc = arraymult(fz,Jc,n,m,p,numel(c));
+% $$$       Jc = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
     end
   else % Without Jacobian
     output  = struct('F',1,'Js',0,'Jx',0);
