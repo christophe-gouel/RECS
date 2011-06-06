@@ -79,26 +79,27 @@ switch method
     if nargout==3
       Bsnext = funbconv(Bsnext,zeros(1,d));
       Bsnext = mat2cell(Bsnext.vals{1}',n,k*ones(n,1))';
-      switch method
+      switch method % The product with fz is vectorized for 'expfunapprox' and
+                    % executed in a loop for resapprox-complete', because it
+                    % seems to be the fastest ways to do it.
        case 'expfunapprox'     
         [~,gridJc] = spblkdiag(zeros(1,n,p),[],0);
         Jc    = cellfun(@(X) full(spblkdiag((X*w)',gridJc,1,p)),...
                         Bsnext,'UniformOutput',false);
+        Jc    = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);     
+        Jc    = arraymult(fz,Jc,n,m,p,numel(c));
+        Jc    = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
        case 'resapprox-complete'
         [~,gridJc] = spblkdiag(zeros(p,m,k),[],0);
         kw     = kron(w',eye(p));
         hxnext = num2cell(reshape(hxnext,[k n p m]),[1 3 4])';
-        Jc     = cellfun(@(X,Y) kw*spblkdiag(permute(X,[3 4 2 1]),gridJc)*kron(Y',speye(m)),...
-                         hxnext,Bsnext,'UniformOutput',false);
+        Jctmp  = cellfun(@(X,Y) kw*spblkdiag(permute(X,[3 4 2 1]),gridJc)*kron(Y',speye(m)),...
+                            hxnext,Bsnext,'UniformOutput',false);
+        Jc   = zeros(n*m,numel(c));
+        for i=1:n
+          Jc((i-1)*m+1:i*m,:) = permute(fz(i,:,:),[2 3 1])*Jctmp{i};
+        end
       end
-      J12   = zeros(n*m,numel(c));
-      for i=1:n
-        J12((i-1)*m+1:i*m,:) = permute(fz(i,:,:),[2 3 1])*Jc{i};
-      end
-      Jc = J12;
-% $$$       Jc    = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);     
-% $$$       Jc = arraymult(fz,Jc,n,m,p,numel(c));
-% $$$       Jc = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
     end
   else % Without Jacobian
     output  = struct('F',1,'Js',0,'Jx',0);
