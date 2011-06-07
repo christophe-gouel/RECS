@@ -208,8 +208,8 @@ Ceiling price ($\PC$) and Capacity constraint on public stock ($\Sgb$).
   \Ss_{t}&: \Ss_{t}\ge 0 \CP P_{t}+k-\frac{1-\delta}{1+r}\E_{t}\left(P_{t+1}\right)\ge 0,\\
   H_{t}&: \frac{1}{1+r}\E_{t}\left(P_{t+1}\epsilon_{t+1}\right)=h {H_{t}}^{\mu},\\
   P_{t}&: A_{t}+\dSm{t}={P_{t}}^{\alpha}+\Ss_{t}+\dSp{t},\\
-  \dSp{t}&:0\le\dSp{t}\le\Sgb-\Sg_{t-1} \CP P_{t}-\PF,\\
-  \dSm{t}&:0\le\dSm{t}\le\Sg_{t-1} \CP \PC-P_{t}.
+  \dSp{t}&:0\le\dSp{t}\le\Sgb-\left(1-\delta\right)\Sg_{t-1} \CP P_{t}-\PF,\\
+  \dSm{t}&:0\le\dSm{t}\le\left(1-\delta\right)\Sg_{t-1} \CP \PC-P_{t}.
 \end{align}
 
 \paragraph{Transition equations}
@@ -217,7 +217,7 @@ Ceiling price ($\PC$) and Capacity constraint on public stock ($\Sgb$).
 
 \begin{align}
   A_{t}&: A_{t}=\left(1-\delta\right)\Ss_{t-1}+H_{t-1}\epsilon_{t},\\
-  \Sg_{t}&: \Sg_{t}= \Sg_{t-1}+\dSp{t}-\dSm{t}.
+  \Sg_{t}&: \Sg_{t}= \left(1-\delta\right)\Sg_{t-1}+\dSp{t}-\dSm{t}.
 \end{align}
 
 \subsection{STO4: Storage-trade model of a small country}
