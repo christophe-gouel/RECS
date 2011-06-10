@@ -1,10 +1,19 @@
 function [err,discrepancy] = recsCheck(model,s,x,z,e,snext,xnext)
 % RECSCHECK Checks analytical derivatives against numerical ones
-% OUTPUT
-%   err : a 1x6 vector containing the maximal differences between analytical and
-%   numerical derivatives
-%   discrepancy : a structure containing the detailed differences between
-%   analytical and numerical derivatives
+%
+% RECSCHECK(MODEL,S,X,Z)
+%
+% RECSCHECK(MODEL,S,X,Z,E)
+%
+% RECSCHECK(MODEL,S,X,Z,E,SNEXT)
+%
+% RECSCHECK(MODEL,S,X,Z,E,SNEXT,XNEXT)
+%
+% ERR = RECSCHECK(MODEL,S,X,Z,...) returns ERR, a 1x6 vector containing the maximal
+% differences between analytical and numerical derivatives.
+%
+% [ERR,DISCREPANCY] = RECSCHECK(MODEL,S,X,Z,...) returns DISCREPANCY, a structure
+% containing the detailed differences between analytical and numerical derivatives.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

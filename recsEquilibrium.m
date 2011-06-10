@@ -77,7 +77,7 @@ switch method
     Jx    = fx+arraymult(fz,Jxtmp,n,m,p,m);
     
     if nargout==3
-      Bsnext = funbconv(Bsnext,zeros(1,d));
+      if ~strcmp(Bsnext.format,'expanded'), Bsnext = funbconv(Bsnext,zeros(1,d)); end
       Bsnext = mat2cell(Bsnext.vals{1}',n,k*ones(n,1))';
       switch method % The product with fz is vectorized for 'expfunapprox' and
                     % executed in a loop for resapprox-complete', because it
