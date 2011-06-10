@@ -28,7 +28,7 @@ model.params = {delta,r,k,alpha,tau,rho,sigma};               % other parameters
 % DEFINE APPROXIMATION SPACE
 order         = [15; 15];                                      % degree of approximation
 smin          = [min(model.e(:,1))*0.95; 0.4];
-smax          = [1.6; 2];
+smax          = [1.6; 2.05];
 interp.fspace = fundefn('spli',order,smin,smax);               % function space
 snodes        = funnode(interp.fspace);                        % state collocaton nodes
 s             = gridmake(snodes);
@@ -45,6 +45,15 @@ options = struct('eqsolver','lmmcp',...
                  'simulmethod','solve',...
                  'method','expfunapprox',...
                  'stat',1);
+
+% Solve by Full Newton
+if exist('mcppath')
+  options.eqsolver = 'path';
+  tic
+    recsSolveREEFull(interp,model,s,xinit,options);
+  toc
+  options.eqsolver = 'lmmcp';
+end
 
 tic
 [interp.ch,x,z] = recsSolveREE(interp,model,s,xinit,options);

@@ -51,7 +51,7 @@ tic
 [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc
 interp.cz = funfitxy(interp.fspace,interp.Phi,z);
-return
+
 if exist('mcppath')
   options.eqsolver = 'path';
   interp.cz = ones(n,2);

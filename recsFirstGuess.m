@@ -7,6 +7,14 @@ function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 if nargin <=5 || isempty(T), T = 10; end
 if nargin <=6, options = struct([]); end
   
+if isa(model.func,'char')
+  model.func = str2func(model.func);
+elseif isa(model.func,'function_handle')
+  model.func = model.func;
+else
+  error('model.func must be either a string or a function handle')
+end
+
 [sss,xss,zss] = recsSS(model,sss,xss,options);
 
 n = size(s,1);
@@ -22,15 +30,15 @@ end
 interp.cx = funfitxy(interp.fspace,interp.Phi,x);
 interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 
-e = model.e;
+e      = model.e;
 params = model.params;
-func = model.func;
-K     = size(e,1);
-ind   = (1:n);
-ind   = ind(ones(1,K),:);
-ss    = s(ind,:);
-xx    = x(ind,:);
-ee    = e(repmat(1:K,1,n),:);
+func   = model.func;
+K      = size(e,1);
+ind    = (1:n);
+ind    = ind(ones(1,K),:);
+ss     = s(ind,:);
+xx     = x(ind,:);
+ee     = e(repmat(1:K,1,n),:);
 
 output = struct('F',1,'Js',0,'Jx',0);
 snext = func('g',ss,xx,[],ee,[],[],params,output);
