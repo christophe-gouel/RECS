@@ -1,18 +1,18 @@
 function [x,s,z,F] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,options)
 % RECSSOLVEDETERMINISTICPB Solves a perfect foresight problem
 %
-% X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS)  
+% X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS)
 %
-% X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,OPTIONS)  
+% X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,OPTIONS)
 %
-% [X,S] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)  
+% [X,S] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)
 %
-% [X,S,Z] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)  
+% [X,S,Z] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)
 %
-% [X,S,Z,F] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)  
+% [X,S,Z,F] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)
 %
-% See also RECSFIRSTGUESS, RECSSOLVEEQUILIBRIUM, RECSSOLVEREE, RECSSS.  
-  
+% See also RECSFIRSTGUESS, RECSSOLVEEQUILIBRIUM, RECSSOLVEREE, RECSSS.
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
@@ -51,15 +51,19 @@ X = [xss zss sss];
 X = X(ones(T,1),:)';
 X = reshape(X,n,1);
 
-SCPSubProblem = @(X0,S0) NewtonProblem(func,S0,xss,X0,p,e,params,...
-                                       LB,UB,eqsolver,eqsolveroptions);
-[X,F]         = SCP(X,s0,sss,SCPSubProblem,1);
+SCPSubProblem  = @(X0,S0) NewtonProblem(func,S0,xss,X0,p,e,params,...
+                                        LB,UB,eqsolver,eqsolveroptions);
+[X,F,exitflag] = SCP(X,s0,sss,SCPSubProblem,1);
+if exitflag~=1
+  warning('recs:FailureDeterministic',...
+          'Failure to find the perfect foresight solution');
+end
 
 X = reshape(X,m+p+d,T)';
 x = X(:,1:m);
 z = X(:,(m+1):(m+p));
 s = [s0; X(1:end-1,(m+p+1):(m+p+d))];
-F = reshape(F,m+p+d,T)';
+if ~isempty(F), F = reshape(F,m+p+d,T)'; end
 
 function [X,F,exitflag] = NewtonProblem(func,s0,xss,X,p,e,params,LB,UB,eqsolver,eqsolveroptions)
 
@@ -95,6 +99,7 @@ switch eqsolver
                     UB,...
                     'pathtransform');
   catch
+    F = [];
     exitflag = 0;
   end
   clear global par

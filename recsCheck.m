@@ -36,31 +36,51 @@ else
 end
 
 outputF  = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
-outputJ  = struct('F',0,'Js',0,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',0);
+outputJ  = struct('F',0,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',0);
 
 % Analytical derivatives
-[~,~,fx,fz] = func('f',s,x,z,[],[],[],params,outputJ);
+[~,fs,fx,fz] = func('f',s,x,z,[],[],[],params,outputJ);
 
-[~,~,gx] = func('g',s,x,[],e,[],[],params,outputJ);
+[~,gs,gx] = func('g',s,x,[],e,[],[],params,outputJ);
 
-[~,~,hx,hsnext,hxnext] = func('h',s,x,[],e,snext,xnext,params,outputJ);
+[~,hs,hx,hsnext,hxnext] = func('h',s,x,[],e,snext,xnext,params,outputJ);
 
 % Numerical derivatives
+if ~isempty(fs), fsnum = numjac(@(S) func('f',S,x,z,[],[],[],params,outputF),s); end
 fxnum = numjac(@(X) func('f',s,X,z,[],[],[],params,outputF),x);
 fznum = numjac(@(Z) func('f',s,x,Z,[],[],[],params,outputF),z);
 
+if ~isempty(gs), gsnum = numjac(@(S) func('g',S,x,[],e,[],[],params,outputF),s); end
 gxnum = numjac(@(X) func('g',s,X,[],e,[],[],params,outputF),x);
 
-hxnum = numjac(@(X) func('h',s,x,[],e,snext,xnext,params,outputF),x);
+if ~isempty(hs)
+  hsnum = numjac(@(S) func('h',S,x,[],e,snext,xnext,params,outputF),s);
+end
+hxnum = numjac(@(X) func('h',s,X,[],e,snext,xnext,params,outputF),x);
 hsnextnum = numjac(@(SNEXT) func('h',s,x,[],e,SNEXT,xnext,params,outputF),snext);
 hxnextnum = numjac(@(XNEXT) func('h',s,x,[],e,snext,XNEXT,params,outputF),xnext);
 
 % Error
-err = norm(fx(:)-fxnum(:),inf);
+if ~isempty(hs)
+  err = norm(fs(:)-fsnum(:),inf);
+else
+  err = NaN;
+end
+err = [err norm(fx(:)-fxnum(:),inf)];
 err = [err norm(fz(:)-fznum(:),inf)];
 
+if ~isempty(gs)
+  err = [err norm(gs(:)-gsnum(:),inf)];
+else
+  err = [err NaN];
+end
 err = [err norm(gx(:)-gxnum(:),inf)];
 
+if ~isempty(hs)
+  err = [err norm(hs(:)-hsnum(:),inf)];
+else
+  err = [err NaN];
+end
 err = [err norm(hx(:)-hxnum(:),inf)];
 err = [err norm(hsnext(:)-hsnextnum(:),inf)];
 err = [err norm(hxnext(:)-hxnextnum(:),inf)];
@@ -68,8 +88,8 @@ err = [err norm(hxnext(:)-hxnextnum(:),inf)];
 if max(err)>1.e-4
    disp('Possible Error in Derivatives')
    disp('Discrepancies in derivatives = ')
-   disp('    fx        fz        gx             hx      hsnext hxnext');
-   disp(err)
+   fprintf(1,'fs      fx      fz      gs      gx      hs      hx      hsnext  hxnext\n');
+   fprintf(1,'%1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e\n',err);
 end
 
 discrepancy    = struct(...
