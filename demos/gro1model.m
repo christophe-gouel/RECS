@@ -41,10 +41,10 @@ switch flag
   % g
   if output.F
     out1       = zeros(n,d);
-    disp('Investment:')
-    a*exp(Z).*K.^alpha-C
-    disp('Residual capital:')
-    (1-delta)*K
+% $$$     disp('Investment:')
+% $$$     a*exp(Z).*K.^alpha-C
+% $$$     disp('Residual capital:')
+% $$$     (1-delta)*K
     out1(:,iK) = a*exp(Z).*K.^alpha+(1-delta)*K-C;
     out1(:,iZ) = rho*Z+e;
   end

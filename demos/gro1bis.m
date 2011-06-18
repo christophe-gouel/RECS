@@ -7,13 +7,13 @@ disp('GRO1 Stochastic growth model');
 clear interp model options
 
 % ENTER MODEL PARAMETERS
-tau   = 3;
-beta  = 0.95;
-alpha = 0.33;
-%delta = 0.0196;
-delta = 0;
-rho   = 0.9;
-a     = (1/beta-1+delta)/alpha;
+tau   = 2;
+beta  = 0.9896;
+alpha = 0.4;
+delta = 0.0196;
+rho   = 0.95;
+a     = 1;
+theta = 0.357;
 
 % COMPUTE SHOCK DISTRIBUTION
 Mu                = 0;
@@ -22,8 +22,8 @@ sigma             = 0.007;
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 % PACK MODEL STRUCTURE
-model.func   = @gro1model;                               % model functions
-model.params = {tau,beta,alpha,delta,rho,a};             % other parameters
+model.func   = @gro1model3;                               % model functions
+model.params = {tau,beta,alpha,delta,rho,a,theta};             % other parameters
 
 options = struct(...
     'eqsolver','path',...
@@ -32,11 +32,13 @@ options = struct(...
     'reesolveroptions',struct('lambda',0.5));
 
 disp('Deterministic steady-state')
-[out1,out2,out3] = model.func('ss',[],[],[],[],[],[],model.params);
+[out1,out2,out3] = model.func('ss',[],[],[],[],[],[],model.params)
 [sss,xss,zss] = recsSS(model,out1,out2,options)
+%[sss,xss,zss] = recsSS(model,[10 0],[1 0.5],options)
 
 % Check derivatives
-recsCheck(model,sss,xss,zss);
+recsCheck(model,out1,out2,out3);
+return
 
 % DEFINE APPROXIMATION SPACE
 order         = [10 10];                                 % degree of approximation
