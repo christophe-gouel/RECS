@@ -41,6 +41,10 @@ else
 end
 params = model.params;
 
+if norm(numjac(@(S) bounds(func,S,params),s0),Inf)>eps
+  error('Bounds should be independent of state variables')
+end
+
 [LB,UB] = func('b',s0,[],[],[],[],[],params);
 LB = [LB -inf(1,p+d)];
 UB = [UB +inf(1,p+d)];
@@ -104,3 +108,9 @@ switch eqsolver
   end
   clear global par
 end
+
+function B = bounds(func,s0,params)
+
+[LB,UB]     = func('b',s0,[],[],[],[],[],params);
+B           = [LB(:); UB(:)];
+B(isinf(B)) = 0;

@@ -61,7 +61,7 @@ hsnextnum = numjac(@(SNEXT) func('h',s,x,[],e,SNEXT,xnext,params,outputF),snext)
 hxnextnum = numjac(@(XNEXT) func('h',s,x,[],e,snext,XNEXT,params,outputF),xnext);
 
 % Error
-if ~isempty(hs)
+if ~isempty(fs)
   err = norm(fs(:)-fsnum(:),inf);
 else
   err = NaN;
