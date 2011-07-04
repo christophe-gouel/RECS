@@ -14,10 +14,10 @@ else
         output.Js = 1;
     end
     if nargout >= 3
-        outpout.Jx = 1;
+        output.Jx = 1;
     end
     if nargout >= 4
-        if strcompi(flag, 'f')
+        if strcmpi(flag, 'f')
             output.Jz = 1;
         else
             output.Jsn = 1;
