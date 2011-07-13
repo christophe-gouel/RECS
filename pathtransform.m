@@ -18,3 +18,6 @@ else
   J     = [];
 end
 
+% In test:
+isdomerr = ~(isfinite(F)+(imag(F)==0));
+if sum(isdomerr)>=1, fprintf(1,'domerr = %i \n',sum(isdomerr)); end

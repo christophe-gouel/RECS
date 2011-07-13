@@ -34,9 +34,9 @@ interp.Phi    = funbasx(interp.fspace);
 n             = order;
 
 xinit  = [zeros(n,1) ones(n,1) s.^(1/alpha)];
-interp.cz = ones(n,2);
-interp.cx = xinit;
-interp.ch = [s.^(1/alpha) s.^(1/alpha)];
+interp.cz = funfitxy(interp.fspace,interp.Phi,ones(n,2));
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
+interp.ch = funfitxy(interp.fspace,interp.Phi,[s.^(1/alpha) s.^(1/alpha)]);
 optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
 
 disp('Deterministic steady-state')
