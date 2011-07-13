@@ -1,4 +1,4 @@
-function [G,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m,functional)
+function [G,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m,functional,extrapolate)
 % RECSFULLPB
 
 % Copyright (C) 2011 Christophe Gouel
@@ -25,7 +25,7 @@ end
 
 if nargout==2 % With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),...
-                              s,zeros(n,0),func,params,grid,c,e,w,fspace,method);
+                              s,zeros(n,0),func,params,grid,c,e,w,fspace,method,extrapolate);
 
   B = funbas(fspace,s);
 
@@ -49,8 +49,8 @@ if nargout==2 % With Jacobian
   J = [Fx Fc;
        Rx Rc];
 else % Without Jacobian
-  F = recsEquilibrium(reshape(x',[n*m 1]),...
-                       s,zeros(n,0),func,params,grid,c,e,w,fspace,method);
+  F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),...
+                       func,params,grid,c,e,w,fspace,method,extrapolate);
 end
 
 G = [F; R];
