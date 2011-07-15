@@ -3,7 +3,7 @@ function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params)
 %
 % RECSDETERMINISTICPB is called by RECSSOLVEDETERMINISTICPB. It is not meant
 % to be called directly by the user.
-  
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
@@ -36,7 +36,6 @@ if nargout==2
     hsnext = hsnext.*hmult(:,:,ones(d,1));
     hxnext = hxnext.*hmult(:,:,ones(m,1));
   end
-% $$$   [h,hs,hx,hsnext,hxnext] = func('h',s,x,[],e ,snext,xnext,params,output);
   [g,gs,gx]               = func('g',s,x,[],e ,snext,xnext,params,output);
 
   identityz = eye(p);
@@ -49,14 +48,14 @@ if nargout==2
             cat(2,zeros(T,m,d),-hsnext,identitys));
   Jsub = cat(3,...
              zeros(T-1,m+p+d,m+p),...
-             cat(2,fs(2:end,:,:),-hs(2:end,:,:),gs(2:end,:,:)));
+             cat(2,fs(2:end,:,:),-hs(2:end,:,:),-gs(2:end,:,:)));
   Jsup = cat(3,...
              cat(2,zeros(T-1,m,m),-hxnext(1:end-1,:,:),zeros(T-1,d,m)),...
              zeros(T-1,m+p+d,p+d));
 
   J = blktridiag(permute(Jmd,[2 3 1]),permute(Jsub,[2 3 1]),permute(Jsup,[2 3 1]));
 
-  else
+else
   output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
   f                   = func('f',s,x,z ,[],[]   ,[]   ,params,output);
   if nargout(func)<6
