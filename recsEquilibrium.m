@@ -33,11 +33,8 @@ switch method
   if nargout>=2 % With Jacobian
     output              = struct('F',1,'Js',0,'Jx',1);
     [snext,~,gx]        = func('g',ss,xx,[],ee,[],[],params,output);
-    if extrapolate
-        snextinterp = snext;
-    else
-        snextinterp = max(min(snext,fspace.b),fspace.a);
-    end
+    if extrapolate, snextinterp = snext;
+    else            snextinterp = max(min(snext,fspace.b),fspace.a); end
     Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
 
     switch method

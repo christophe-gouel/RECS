@@ -108,9 +108,12 @@ ss     = s(ind,:);
 xx     = x(ind,:);
 output = struct('F',1,'Js',0,'Jx',0);
 snext  = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params,output);
+if extrapolate, snextinterp = snext;
+else            snextinterp = max(min(snext,fspace.b),fspace.a); end
+
 switch method
  case 'expfunapprox'
-  h   = funeval(c,fspace,snext);
+  h   = funeval(c,fspace,snextinterp);
   if nargout(func)==6
     output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
     [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:K,1,n),:),snext,zeros(size(snext,1),m),params,output);
@@ -118,8 +121,8 @@ switch method
   end
 
    case 'resapprox-complete'
-    [LB,UB] = func('b',snext,[],[],[],[],[],params);
-    xnext   = min(max(funeval(c,fspace,snext),LB),UB);
+    [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
+    xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
     output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
     if nargout(func)<6
       h                = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params,output);
