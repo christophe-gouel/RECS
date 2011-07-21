@@ -1,0 +1,46 @@
+declarations:
+
+    states: [K, Z]
+
+    controls: [C]
+
+    expectations: [E]
+
+    shocks: [Epsilon]
+
+    parameters: [a, tau, delta, beta, rho, alpha]
+
+equations:
+
+    arbitrage:
+
+        - C^(-tau)-beta*E=0 | -inf <= C <= inf
+
+    transition:
+
+        - K = a*exp(Z(-1))*K(-1)^alpha+(1-delta)*K(-1)-C(-1)
+        - Z = rho*Z(-1)+Epsilon
+
+    expectation:
+
+        - E = C(1)^(-tau)*(1-delta+a*alpha*exp(Z(1))*K(1)^(alpha-1))
+
+calibration:
+
+    parameters:
+
+        tau : 2
+        delta : 0.0196
+        beta : 0.95
+        rho : 0.9
+        alpha : 0.33
+        a : (1/beta-1+delta)/alpha
+
+    steady_state:
+        Z : 0
+        K : 1
+        C : a-delta
+        E : C^(-tau)/beta
+
+    covariances: |
+      [ [ 0.007 ] ]

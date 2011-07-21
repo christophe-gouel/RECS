@@ -6,15 +6,6 @@
 disp('GRO1 Stochastic growth model');
 clear interp model options
 
-% ENTER MODEL PARAMETERS
-tau   = 3;
-beta  = 0.95;
-alpha = 0.33;
-%delta = 0.0196;
-delta = 0;
-rho   = 0.9;
-a     = (1/beta-1+delta)/alpha;
-
 % COMPUTE SHOCK DISTRIBUTION
 Mu                = 0;
 sigma             = 0.007;
@@ -22,50 +13,37 @@ sigma             = 0.007;
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 % PACK MODEL STRUCTURE
-model.func   = @gro1model;                               % model functions
-model.params = {tau,beta,alpha,delta,rho,a};             % other parameters
+model.func   = @gro1model;
+model.params = gro1model('params');
+a            = model.params(1);
+delta        = model.params(3);
 
-options = struct(...
-    'eqsolver','path',...
-    'method','resapprox-complete',...
-    'reesolver','SA',...
-    'reesolveroptions',struct('lambda',0.5));
+options = struct('reesolver','krylov');
 
 disp('Deterministic steady-state')
-[out1,out2,out3] = model.func('ss',[],[],[],[],[],[],model.params);
-[sss,xss,zss] = recsSS(model,out1,out2,options)
-
-% Check derivatives
-recsCheck(model,sss,xss,zss);
+[sss,xss,zss] = recsSS(model,[1 0],a-delta,options)
 
 % DEFINE APPROXIMATION SPACE
 order         = [10 10];                                 % degree of approximation
-smin          = [0.5*sss(1) min(model.e)*0.95];
-smax          = [2*sss(1)   max(model.e)*10.5];
-smin          = [0.95*sss(1) -0.009];
-smax          = [1.05*sss(1) 0.009];
-interp.fspace = fundefn('spli',order,smin,smax);                 % function space
-snodes        = funnode(interp.fspace);                             % state collocaton nodes
+smin          = [0.85*sss(1) min(model.e)*4];
+smax          = [1.15*sss(1) max(model.e)*4];
+interp.fspace = fundefn('cheb',order,smin,smax);           % function space
+snodes        = funnode(interp.fspace);                    % state collocaton nodes
 s             = gridmake(snodes);
 interp.Phi    = funbasx(interp.fspace);
 n             = prod(order);
 
-[x,s,z,F] = recsSolveDeterministicPb(model,[sss(1)*1.01 sss(2)],10,xss,zss,sss, ...
-                                     options)
-return
-[interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,30,options)
-return
-
-xinit  = xss*ones(n,1);
-interp.cz = funfitxy(interp.fspace,interp.Phi,zss*ones(n,1));
-interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
-
+disp('Find the perfect-foresight solution as first guess')
 tic
-[interp.cz,x] = recsSolveREEFull(interp,model,s,xinit,options);
+[interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,50,options);
 toc
 
+disp('Solve the stochastic problem:')
 tic
-[interp.cz,x] = recsSolveREE(interp,model,s,xinit,options);
+[interp.cx,x,z] = recsSolveREE(interp,model,s,x,options);
 toc
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
+interp.cz = funfitxy(interp.fspace,interp.Phi,z);
+
+[~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200);
+
 

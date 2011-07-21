@@ -9,6 +9,7 @@ dsemdirectory = strrep(which('recsSimul'),'recsSimul.m','');
 
 addpath([dsemdirectory '/demos'])
 
+gro1
 sto1
 sto2
 sto3

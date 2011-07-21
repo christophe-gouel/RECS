@@ -101,18 +101,19 @@ Innovation to productivity ($\epsilon$).
 \paragraph{Parameters}
 
 Capital depreciation rate ($\delta$), Discount factor ($\beta$), Elasticity of
-intertemporal substitution ($\tau$).
+intertemporal substitution ($\tau$), Capital share ($\alpha$), Scale parameter
+($a$).
 
 \paragraph{Equilibrium equations}
 
 \begin{equation}
-  C_{t}: C_{t}^{-\tau}=\beta\E_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+\alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].
+  C_{t}: C_{t}^{-\tau}=\beta\E_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+a \alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].
 \end{equation}
 
 \paragraph{Transition equation}
 
 \begin{align}
-  K_{t}&: K_{t}=e^{Z_{t-1}}K_{t-1}^{\alpha}+\left(1-\delta\right)K_{t-1}-C_{t-1},\\
+  K_{t}&: K_{t}=a e^{Z_{t-1}}K_{t-1}^{\alpha}+\left(1-\delta\right)K_{t-1}-C_{t-1},\\
   Z_{t}&: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.
 \end{align}
 

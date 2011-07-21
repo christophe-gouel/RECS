@@ -1,104 +1,124 @@
-function [out1,out2,out3,out4,out5] = gro1model(flag,s,x,z,e,snext,xnext,params,output)
-% GRO1MODEL Equations of the stochastic growth model
+function [out1,out2,out3,out4,out5] = gro1model(flag,s,x,z,e,snext,xnext,p,out);
 
-% Copyright (C) 2011 Christophe Gouel
-% Licensed under the Expat license, see LICENSE.txt
+output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'Jz',0,'hmult',0);
 
-voidcell                   = cell(1,5);
-[out1,out2,out3,out4,out5] = voidcell{:};
-
-[tau,beta,alpha,delta,rho,a] = params{:};
-
-n = size(s,1);
-d = 2;
-m = 1;
-p = 1;
-
-iK = 1;
-iZ = 2;
-if ~isempty(s)
-  K = s(:,iK);
-  Z = s(:,iZ);
+if nargin == 9
+  output                     = catstruct(output,out);
+  voidcell                   = cell(1,5);
+  [out1,out2,out3,out4,out5] = voidcell{:};
+else
+  if nargout >= 2, output.Js = 1; end
+  if nargout >= 3, output.Jx = 1; end
+  if nargout >= 4
+    if strcmpi(flag, 'f')
+      output.Jz = 1;
+    else
+      output.Jsn = 1;
+    end
+  end
+  if nargout >= 5, output.Jxn = 1; end
 end
 
-C = x;
 
 switch flag
- case 'f' % EQUILIBRIUM FUNCTION
-  % f
-  if output.F,  out1 = C.^(-tau)-beta*z; end
 
-  % df/ds
-  if output.Js, out2 = zeros(n,m,d); end
+  case 'b';
+    n = size(s,1);
+    out1 = zeros(n,1);
+    out1(:,1) = -inf;
+    out2 = zeros(n,1);
+    out2(:,1) = inf;
 
-  % df/dx
-  if output.Jx, out3 = -tau*C.^(-1-tau); end
+  case 'f';
+    n = size(s,1);
 
-  % df/dz
-  if output.Jz, out4 = -beta*ones(n,1,1); end
-  
- case 'g' % STATE TRANSITION FUNCTION
-  % g
-  if output.F
-    out1       = zeros(n,d);
-% $$$     disp('Investment:')
-% $$$     a*exp(Z).*K.^alpha-C
-% $$$     disp('Residual capital:')
-% $$$     (1-delta)*K
-    out1(:,iK) = a*exp(Z).*K.^alpha+(1-delta)*K-C;
-    out1(:,iZ) = rho*Z+e;
-  end
-  
-  % dg/ds
-  if output.Js
-    out2          = zeros(n,d,d); 
-    out2(:,iK,iK) = a*alpha*exp(Z).*K.^(alpha-1)+(1-delta)*ones(n,1,1);
-    out2(:,iK,iZ) = a*exp(Z).*K.^alpha;
-    out2(:,iZ,iZ) = rho*ones(n,1,1);
-  end
+    % f
+    if output.F
+      out1 = zeros(n,1);
+      out1(:,1) = -p(4).*z(:,1) + x(:,1).^(-p(2));
+    end
 
-  % dg/dx
-  if output.Jx
-    out3         = zeros(n,d,m);
-    out3(:,iK,1) = -ones(n,1,1);
-  end
-  
- case 'h' % EXPECTATION FUNCTION
-  n = size(snext,1);
-  % h
-  if output.F
-    out1 = xnext.^(-tau).*(1-delta+a*alpha*exp(snext(:,iZ)).*snext(:,iK).^(alpha-1)); 
-  end
+    % df/ds
+    if output.Js
+      out2 = zeros(n,1,2);
+      out2(:,1,1) = 0; % d eq_1 w.r.t. K
+      out2(:,1,2) = 0; % d eq_1 w.r.t. Z
+    end
 
-  % dh/ds
-  if output.Js,  out2 = zeros(n,p,d); end
+    % df/dx
+    if output.Jx
+      out3 = zeros(n,1,1);
+      out3(:,1,1) = -x(:,1).^(-p(2)).*p(2)./x(:,1); % d eq_1 w.r.t. C
+    end
 
-  % dh/dx
-  if output.Jx,  out3 = zeros(n,p,m); end
+    % df/dz
+    if output.Jz
+      out4 = zeros(n,1,1);
+      out4(:,1,1) = -p(4); % d eq_1 w.r.t. E
+    end
+        
+  case 'g';
+    n = size(s,1);
 
-  % dh/dsnext
-  if output.Jsn
-    out4         = zeros(n,p,d);
-    out4(:,1,iK) = a*alpha*(alpha-1)*xnext.^(-tau).*exp(snext(:,iZ)).*...
-        snext(:,iK).^(alpha-2); 
-    out4(:,1,iZ) = a*alpha*xnext.^(-tau).*exp(snext(:,iZ)).*snext(:,iK).^(alpha-1); 
-  end
+    % g
+    if output.F
+      out1 = zeros(n,2);
+      out1(:,1) = -x(:,1) + (1 - p(3)).*s(:,1) + s(:,1).^p(6).*p(1).*exp(s(:,2));
+      out1(:,2) = p(5).*s(:,2) + e(:,1);      
+    end
 
-  % dh/dxnext
-  if output.Jxn
-    out5 = -tau*xnext.^(-tau-1).*(1-delta+a*alpha*exp(snext(:,iZ)).*snext(:,iK).^(alpha-1)); ; 
-  end
-  
- case 'b' % BOUND FUNCTION
-  out1 = -inf(n,1);
-  out2 =  inf(n,1);
+    if output.Js
+      out2 = zeros(n,2,2);
+      out2(:,1,1) = 1 - p(3) + s(:,1).^p(6).*p(1).*p(6).*exp(s(:,2))./s(:,1); % d eq_1 w.r.t. K
+      out2(:,1,2) = s(:,1).^p(6).*p(1).*exp(s(:,2)); % d eq_1 w.r.t. Z
+      out2(:,2,1) = 0; % d eq_2 w.r.t. K
+      out2(:,2,2) = p(5); % d eq_2 w.r.t. Z
+    end
 
- case 'ss' % Deterministic steady-state
-  Kstar = ((1/beta-1+delta)/(a*alpha))^(1/(alpha-1));
-  %%  'State variables'
-  out1 = [Kstar 0];
-  %%  'Response variables'
-  out2 = Kstar^alpha-delta*Kstar;
-  %%  'Expectations'
-  out3 = out2^(-tau)*(1-delta+a*alpha*Kstar^(alpha-1));
+    if output.Jx
+      out3 = zeros(n,2,1);
+      out3(:,1,1) = -1; % d eq_1 w.r.t. C
+      out3(:,2,1) = 0; % d eq_2 w.r.t. C
+    end
+        
+  case 'h';
+    n = size(snext,1);
+
+    %h
+    if output.F
+      out1 = zeros(n,1);
+      out1(:,1) = xnext(:,1).^(-p(2)).*(1 - p(3) + snext(:,1).^(-1 + p(6)).*p(1).*p(6).*exp(snext(:,2)));
+    end
+
+    if output.Js
+      out2 = zeros(n,1,2);
+      out2(:,1,1) = 0; % d eq_1 w.r.t. K
+      out2(:,1,2) = 0; % d eq_1 w.r.t. Z
+    end
+
+    if output.Jx
+      out3 = zeros(n,1,1);
+      out3(:,1,1) = 0; % d eq_1 w.r.t. C
+    end
+
+    if output.Jsn
+      out4 = zeros(n,1,2);
+      out4(:,1,1) = -xnext(:,1).^(-p(2)).*snext(:,1).^(-1 + p(6)).*(1 - p(6)).*p(1).*p(6).*exp(snext(:,2))./snext(:,1); % d eq_1 w.r.t. K(1)
+      out4(:,1,2) = xnext(:,1).^(-p(2)).*snext(:,1).^(-1 + p(6)).*p(1).*p(6).*exp(snext(:,2)); % d eq_1 w.r.t. Z(1)
+    end
+
+    if output.Jxn
+      out5 = zeros(n,1,1);
+      out5(:,1,1) = -xnext(:,1).^(-p(2)).*(1 - p(3) + snext(:,1).^(-1 + p(6)).*p(1).*p(6).*exp(snext(:,2))).*p(2)./xnext(:,1); % d eq_1 w.r.t. C(1)
+    end
+        
+  case 'e';
+    warning('Euler equation errors not implemented in Dolo');
+
+  case 'params';
+    out1 = [0.218883572568,2,0.0196,0.95,0.9,0.33];
+
+  case 'solution';
+
+
 end
