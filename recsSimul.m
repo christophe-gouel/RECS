@@ -137,7 +137,7 @@ end
 for t=1:nper+1
   if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params,output); end
   if extrapolate, sinterp = s0;
-  else,           sinterp = max(min(s0,fspace.b),fspace.a); end
+  else, sinterp = max(min(s0,fspace.b(ones(nrep,1),:)),fspace.a(ones(nrep,1),:)); end
   [LB,UB]    = func('b',sinterp,[],[],[],[],[],params);
   Phi        = funbasx(fspace,sinterp);
   xx         = min(max(funeval(cx,fspace,Phi),LB),UB);

@@ -34,7 +34,9 @@ switch method
     output              = struct('F',1,'Js',0,'Jx',1);
     [snext,~,gx]        = func('g',ss,xx,[],ee,[],[],params,output);
     if extrapolate, snextinterp = snext;
-    else            snextinterp = max(min(snext,fspace.b),fspace.a); end
+    else
+      snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
+    end
     Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
 
     switch method
@@ -110,7 +112,10 @@ switch method
     switch method
      case 'expfunapprox'
       if extrapolate, snextinterp = snext;
-      else,           snextinterp = max(min(snext,fspace.b),fspace.a); end
+      else,      
+        snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
+                          fspace.a(ones(n*k,1),:));       
+      end
       h                   = funeval(c,fspace,snextinterp);
       if nargout(func)==6
         output  = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
@@ -121,7 +126,10 @@ switch method
      case 'resapprox-complete'
       [LB,UB] = func('b',snext,[],[],[],[],[],params);
       if extrapolate, snextinterp = snext;
-      else,           snextinterp = max(min(snext,fspace.b),fspace.a); end
+      else
+        snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
+                          fspace.a(ones(n*k,1),:)); 
+      end
       xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
       output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
       if nargout(func)<6

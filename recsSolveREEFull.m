@@ -46,7 +46,7 @@ if functional, params = [params fspace c]; end
 [n,m]  = size(x);
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
-K      = length(w);               % number of shock values
+k      = length(w);               % number of shock values
 z      = zeros(n,0);
 
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
@@ -103,20 +103,22 @@ c     = reshape(X(n*m+1:end),[],n)';
 
 % Calculation of z
 ind    = (1:n);
-ind    = ind(ones(1,K),:);
+ind    = ind(ones(1,k),:);
 ss     = s(ind,:);
 xx     = x(ind,:);
 output = struct('F',1,'Js',0,'Jx',0);
-snext  = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params,output);
+snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
 if extrapolate, snextinterp = snext;
-else            snextinterp = max(min(snext,fspace.b),fspace.a); end
+else
+  snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
+end
 
 switch method
  case 'expfunapprox'
   h   = funeval(c,fspace,snextinterp);
   if nargout(func)==6
     output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-    [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:K,1,n),:),snext,zeros(size(snext,1),m),params,output);
+    [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,n),:),snext,zeros(size(snext,1),m),params,output);
     h                 = h.*hmult;
   end
 
@@ -125,11 +127,11 @@ switch method
     xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
     output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
     if nargout(func)<6
-      h                = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params,output);
+      h                = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
     else
-      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,n),:),snext,xnext,params,output);
+      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
       h               = h.*hmult;
     end
 end
-z     = reshape(w'*reshape(h,K,n*p),n,p);
+z     = reshape(w'*reshape(h,k,n*p),n,p);
 
