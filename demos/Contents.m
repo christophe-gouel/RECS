@@ -1,4 +1,7 @@
-% ************** Variants around the storage model **************
+% ************** Variants of the stochastic growth model **************
+% GRO1 Stochastic growth model
+
+% ********************* Variants of the storage model *****************
 % STO1 Competitive storage model
 % STO2 Competitive storage with floor-price backed by public storage
 % STO3 Competitive storage with price-band backed by public storage

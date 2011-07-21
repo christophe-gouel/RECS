@@ -35,6 +35,8 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 % the parameters defined by the structure OPTIONS. The fields of the structure are
 %    eqsolver         : 'fsolve', 'lmmcp', 'ncpsolve' (default) or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
+%    extrapolate      : 1 if extrapolation is allowed outside the
+%                       interpolation space or 0 to forbid it (default: 1)
 %    functional       : 1 if the equilibrium equations are a functional equation
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
@@ -78,17 +80,19 @@ end
 if ~isempty(shocks), nper = size(shocks,3); end
 
 defaultopt = struct(...
-    'eqsolver'        , 'ncpsolve'     ,...
-    'eqsolveroptions' , struct([])     ,...
-    'functional'      , 0              ,...
-    'loop_over_s'     , 0              ,...
-    'method'          , 'expapprox'    ,...
-    'simulmethod'     , 'interpolation',...
+    'eqsolver'        , 'lmmcp'             ,...
+    'eqsolveroptions' , struct([])          ,...
+    'extrapolate'     , 1                   ,...
+    'functional'      , 0                   ,...
+    'loop_over_s'     , 0                   ,...
+    'method'          , 'resapprox-complete',...
+    'simulmethod'     , 'interpolation'     ,...
     'stat'            , 0);
 warning('off','catstruct:DuplicatesFound')
 
 options         = catstruct(defaultopt,options);
 
+extrapolate     = options.extrapolate;
 functional      = options.functional;
 method          = lower(options.method);
 simulmethod     = lower(options.simulmethod);
@@ -132,8 +136,10 @@ end
 
 for t=1:nper+1
   if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params,output); end
-  [LB,UB]    = func('b',s0,[],[],[],[],[],params);
-  Phi        = funbasx(fspace,s0);
+  if extrapolate, sinterp = s0;
+  else, sinterp = max(min(s0,fspace.b(ones(nrep,1),:)),fspace.a(ones(nrep,1),:)); end
+  [LB,UB]    = func('b',sinterp,[],[],[],[],[],params);
+  Phi        = funbasx(fspace,sinterp);
   xx         = min(max(funeval(cx,fspace,Phi),LB),UB);
   switch simulmethod
    case 'solve'

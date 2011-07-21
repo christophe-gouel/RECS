@@ -40,10 +40,7 @@ xinit         = [zeros(n,1) ones(n,2) zeros(n,2)];
 interp.cz     = ones(n,2);
 interp.cx     = xinit;
 
-options = struct('eqsolver','lmmcp',...
-                 'simulmethod','solve',...
-                 'reesolver','SA',...
-                 'method','resapprox-complete');
+options = struct('simulmethod','solve');
 
 interp.cz = ones(n,2);
 interp.cx = xinit;

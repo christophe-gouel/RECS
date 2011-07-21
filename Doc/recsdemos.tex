@@ -80,6 +80,43 @@
 
 This paper presents the models used as demonstration of the RECS toolbox.
 
+\section{Variants of the stochastic growth model}
+\label{sec:sto-grow}
+
+\subsection{GRO1: Stochastic growth model}
+\label{sec:gro1}
+
+\paragraph{Response variables}
+
+Consumption ($C$).
+
+\paragraph{State variable}
+
+Capital stock ($K$), Productivity ($Z$).
+
+\paragraph{Shock}
+
+Innovation to productivity ($\epsilon$).
+
+\paragraph{Parameters}
+
+Capital depreciation rate ($\delta$), Discount factor ($\beta$), Elasticity of
+intertemporal substitution ($\tau$), Capital share ($\alpha$), Scale parameter
+($a$).
+
+\paragraph{Equilibrium equations}
+
+\begin{equation}
+  C_{t}: C_{t}^{-\tau}=\beta\E_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+a \alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].
+\end{equation}
+
+\paragraph{Transition equation}
+
+\begin{align}
+  K_{t}&: K_{t}=a e^{Z_{t-1}}K_{t-1}^{\alpha}+\left(1-\delta\right)K_{t-1}-C_{t-1},\\
+  Z_{t}&: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.
+\end{align}
+
 \section{Variants of the storage model}
 \label{sec:vari-stor-model}
 
@@ -99,19 +136,16 @@ Storage ($S$), Planned production ($H$) and Price ($P$).
 Availability ($A$).
 
 \paragraph{Shock}
-\label{sec:shock}
 
 Productivity shocks ($\epsilon$).
 
 \paragraph{Parameters}
-\label{sec:parameters}
 
 Unit physical storage cost ($k$), Depreciation share ($\delta$), Interest rate
 ($r$), Scale parameter for the production cost function ($h$), Inverse of supply
 elasticity ($\mu$) and Demand price elasticity ($\alpha$).
 
 \paragraph{Equilibrium equations}
-\label{sec:equil-equat}
 
 \begin{align}
   S_{t}&: S_{t}\ge 0 \CP P_{t}+k-\frac{1-\delta}{1+r}\E_{t}\left(P_{t+1}\right)\ge 0,\\
@@ -120,7 +154,6 @@ elasticity ($\mu$) and Demand price elasticity ($\alpha$).
 \end{align}
 
 \paragraph{Transition equation}
-\label{sec:transition-equation}
 
 \begin{equation}
   A_{t}: A_{t}=\left(1-\delta\right)S_{t-1}+H_{t-1}\epsilon_{t}.
@@ -132,7 +165,6 @@ elasticity ($\mu$) and Demand price elasticity ($\alpha$).
 Model close to one of the models presented in \citet{Wrig88a}.
 
 \paragraph{Response variables}
-\label{sec:response-variables}
 
 Speculative storage ($\Ss$), Public storage ($\Sg$), Planned production ($H$) and
 Price ($P$).
@@ -311,6 +343,7 @@ For $i \in \left\{a,b\right\}$:
 \end{equation}
 
 \bibliography{recs}%
+\addcontentsline{toc}{section}{\numberline{}References}
 
 \end{document}
 

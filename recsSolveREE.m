@@ -30,22 +30,23 @@ function [c,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 % C = RECSSOLVEREE(INTERP,MODEL,S,X,OPTIONS) solves the problem with the parameters
 % defined by the structure OPTIONS. The fields of the structure are
 %    display          : 1 to show iterations (default: 1)
-%    eqsolver         : 'fsolve', 'lmmcp', 'ncpsolve' (default) or 'path'
+%    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
+%    extrapolate      : 1 if extrapolation is allowed outside the
+%                       interpolation space or 0 to forbid it (default: 1)
 %    functional       : 1 if the equilibrium equations are a functional equation
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
-%    method           : 'expapprox' (default), 'expfunapprox', 'resapprox-simple'
-%                       or 'resapprox-complete'
-%    reesolver        : 'krylov' (default), 'mixed', 'SA' or 'fsolve' (in test)
+%    method           : 'expapprox', 'expfunapprox', 'resapprox-simple'
+%                       or 'resapprox-complete' (default)
+%    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve' (in test)
 %    reesolveroptions : options structure to be passed to reesolver
-%    useapprox        : (default: 1) behaviour dependent of the chosen method. If 0 and
-%                       method is 'expapprox' then next-period responses are
-%                       calculated by equations solve and not just
-%                       interpolated. If 1 and method is 'resapprox', the guess
-%                       of response variables is found with the new
-%                       approximation structure
+%    useapprox        : (default: 1) behaviour dependent of the chosen method. If
+%                       0 and method is 'expapprox' then next-period responses are
+%                       calculated by equations solve and not just interpolated. If 
+%                       1 and method is 'resapprox', the guess of response variables 
+%                       is found with the new approximation structure
 %
 % [C,X] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns the value of the response
 % variables on the grid.
@@ -70,18 +71,20 @@ if nargin <=4, options = struct([]); end
 
 defaultopt = struct(                  ...
     'display'           , 1          ,...
-    'eqsolver'          , 'ncpsolve' ,...
+    'eqsolver'          , 'lmmcp' ,...
     'eqsolveroptions'   , struct([]) ,...
+    'extrapolate'       , 1          ,...
     'functional'        , 0          ,...
     'loop_over_s'       , 0          ,...
-    'method'            , 'expapprox',...
-    'reesolver'         , 'krylov'   ,...
+    'method'            , 'resapprox-complete',...
+    'reesolver'         , 'sa'   ,...
     'reesolveroptions'  , struct([]) ,...
     'useapprox'         , 1);
 warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
 
+extrapolate        = options.extrapolate;
 functional         = options.functional;
 method             = lower(options.method);
 reesolver          = lower(options.reesolver);
@@ -119,7 +122,7 @@ if functional, params = [params fspace c]; end
 nc     = size(c,1);
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
-K      = length(w);               % number of shock values
+k      = length(w);               % number of shock values
 z      = zeros(ns,0);
 
 switch reesolver
@@ -173,33 +176,38 @@ c = reshape(c,nc,[]);
 if isempty(z)
   if functional, params{end} = c; end
   ind    = (1:ns);
-  ind    = ind(ones(1,K),:);
+  ind    = ind(ones(1,k),:);
   ss     = s(ind,:);
   xx     = x(ind,:);
   output = struct('F',1,'Js',0,'Jx',0);
-  snext  = func('g',ss,xx,[],e(repmat(1:K,1,ns),:),[],[],params,output);
+  snext  = func('g',ss,xx,[],e(repmat(1:k,1,ns),:),[],[],params,output);
+  if extrapolate, snextinterp = snext;
+  else      
+    snextinterp = max(min(snext,fspace.b(ones(ns*k,1),:)),fspace.a(ones(ns*k,1),:)); 
+  end
+
   switch method
    case 'expfunapprox'
-    h   = funeval(c,fspace,snext);
+    h   = funeval(c,fspace,snextinterp);
     if nargout(func)==6
       output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:K,1,ns),:),snext,zeros(size(snext,1),m),params,output);
+      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,ns),:),snext,zeros(size(snext,1),m),params,output);
       h                 = h.*hmult;
     end
 
    case 'resapprox-complete'
-    [LB,UB] = func('b',snext,[],[],[],[],[],params);
-    xnext   = min(max(funeval(c,fspace,snext),LB),UB);
+    [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
+    xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
     output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
     if nargout(func)<6
-       h                = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params,output);
+       h                = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
     else
-      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params,output);
+      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
       h               = h.*hmult;
     end
 
   end
-  z     = reshape(w'*reshape(h,K,ns*p),ns,p);
+  z     = reshape(w'*reshape(h,k,ns*p),ns,p);
 end
 
 function [R,FLAG] = Residual_Function(cc)
@@ -214,30 +222,35 @@ function [R,FLAG] = Residual_Function(cc)
      [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
 
      ind     = (1:ns);
-     ind     = ind(ones(1,K),:);
+     ind     = ind(ones(1,k),:);
      ss      = s(ind,:);
      xx      = x(ind,:);
      output  = struct('F',1,'Js',0,'Jx',0);
-     snext   = func('g',ss,xx,[],e(repmat(1:K,1,ns),:),[],[],params,output);
-     [LB,UB] = func('b',snext,[],[],[],[],[],params);
+     snext   = func('g',ss,xx,[],e(repmat(1:k,1,ns),:),[],[],params,output);
+     if extrapolate, snextinterp = snext;
+     else          
+       snextinterp = max(min(snext,fspace.b(ones(ns*k,1),:)),...
+                         fspace.a(ones(ns*k,1),:)); 
+     end
+     [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
 
      % xnext calculated by interpolation
-     xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snext),LB),UB);
+     xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LB),UB);
      if ~useapprox  % xnext calculated by equation solve
        xnext = recsSolveEquilibrium(snext,...
                                     xnext,...
-                                    funeval(cc,fspace,snext),...
+                                    funeval(cc,fspace,snextinterp),...
                                     func,params,cc,e,w,fspace,options);
      end
 
      output              = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
      if nargout(func)<6
-       h                 = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params,output);
+       h                 = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
      else
-       [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params,output);
+       [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
        h                 = h.*hmult;
      end
-     z     = reshape(w'*reshape(h,K,ns*p),ns,p);
+     z     = reshape(w'*reshape(h,k,ns*p),ns,p);
 
      R     = funfitxy(fspace,Phi,z)-cc;
 
@@ -260,23 +273,28 @@ function [R,FLAG] = Residual_Function(cc)
 
     if strcmp(method,'resapprox-simple')
       ind    = (1:ns);
-      ind    = ind(ones(1,K),:);
+      ind    = ind(ones(1,k),:);
       ss     = s(ind,:);
       xx     = x(ind,:);
       output = struct('F',1,'Js',0,'Jx',0);
-      snext  = func('g',ss,xx,[],e(repmat(1:K,1,ns),:),[],[],params,output);
+      snext  = func('g',ss,xx,[],e(repmat(1:k,1,ns),:),[],[],params,output);
 
-      [LB,UB] = func('b',snext,[],[],[],[],[],params);
-      xnext   = min(max(funeval(cc,fspace,snext),LB),UB);
+      if extrapolate, snextinterp = snext;
+      else          
+        snextinterp = max(min(snext,fspace.b(ones(ns*k,1),:)),...
+                          fspace.a(ones(ns*k,1),:)); 
+      end
+      [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
+      xnext   = min(max(funeval(cc,fspace,snextinterp),LB),UB);
 
       output              = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
       if nargout(func)<6
-        h                 = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params,output);
+        h                 = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
       else
-        [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:K,1,ns),:),snext,xnext,params,output);
+        [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
         h                 = h.*hmult;
       end
-      z     = reshape(w'*reshape(h,K,ns*p),ns,p);
+      z     = reshape(w'*reshape(h,k,ns*p),ns,p);
     end
 
     [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);

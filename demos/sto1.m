@@ -34,9 +34,9 @@ interp.Phi    = funbasx(interp.fspace);
 n             = order;
 
 xinit  = [zeros(n,1) ones(n,1) s.^(1/alpha)];
-interp.cz = ones(n,2);
-interp.cx = xinit;
-interp.ch = [s.^(1/alpha) s.^(1/alpha)];
+interp.cz = funfitxy(interp.fspace,interp.Phi,ones(n,2));
+interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
+interp.ch = funfitxy(interp.fspace,interp.Phi,[s.^(1/alpha) s.^(1/alpha)]);
 optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
 
 disp('Deterministic steady-state')
@@ -46,30 +46,22 @@ disp('Deterministic steady-state')
 recsCheck(model,sss,xss,zss);
 
 tic
-[interp.cz,x] = recsSolveREE(interp,model,s,xinit);
+recsSolveREE(interp,model,s,xinit);
 toc
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
+
+options = struct(...
+    'method','expapprox',...
+    'reesolver','krylov');
+tic
+recsSolveREE(interp,model,s,xinit,options);
+toc
 
 options.method = 'expfunapprox';
 tic
-[interp.ch,x,z] = recsSolveREE(interp,model,s,xinit,options);
+recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
-
 
 options.method = 'resapprox-simple';
-interp.cz = ones(n,2);
-interp.cx = xinit;
-tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
-toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
-
-
-options.method = 'resapprox-complete';
-interp.cz = ones(n,2);
-interp.cx = xinit;
 tic
 [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc

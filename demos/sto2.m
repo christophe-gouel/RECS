@@ -40,33 +40,31 @@ options.simulmethod = 'solve';
 [interp,xinit,zinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);
 
 tic
-[interp.cz,x] = recsSolveREE(interp,model,s,xinit);
+recsSolveREE(interp,model,s,xinit);
 toc
 
 options.method = 'resapprox-simple';
-interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
 tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+recsSolveREE(interp,model,s,xinit,options);
 toc
 
-options.method = 'resapprox-complete';
-interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
+options.method = 'expapprox';
 tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+[interp.cz,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
+interp.cx = funfitxy(interp.fspace,interp.Phi,x);
 
 tic
 [ssim,xsim,esim] = recsSimul(model,interp,1,200,[],options);
 toc
 
-options.eqsolver = 'lmmcp';
+options.eqsolver = 'ncpsolve';
 interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
 interp.cz = funfitxy(interp.fspace,interp.Phi,zinit);
 tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+[interp.cz,x,z] = recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
+interp.cx = funfitxy(interp.fspace,interp.Phi,x);
 
 tic
 [ssim,xsim,esim] = recsSimul(model,interp,1,200,[],options);

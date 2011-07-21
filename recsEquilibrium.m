@@ -1,4 +1,4 @@
-function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,method)
+function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,method,extrapolate)
 % RECSEQUILIBRIUM evaluate the equilibrium equations and Jacobian
 %
 % RECSEQUILIBRIUM is called by RECSSOLVEEQUILIBRIUM. It is not meant to be called
@@ -33,7 +33,11 @@ switch method
   if nargout>=2 % With Jacobian
     output              = struct('F',1,'Js',0,'Jx',1);
     [snext,~,gx]        = func('g',ss,xx,[],ee,[],[],params,output);
-    Bsnext = funbasx(fspace,snext,[zeros(1,d); eye(d)]);
+    if extrapolate, snextinterp = snext;
+    else
+      snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
+    end
+    Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
 
     switch method
      case 'expfunapprox'
@@ -107,7 +111,12 @@ switch method
 
     switch method
      case 'expfunapprox'
-      h                 = funeval(c,fspace,snext);
+      if extrapolate, snextinterp = snext;
+      else,      
+        snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
+                          fspace.a(ones(n*k,1),:));       
+      end
+      h                   = funeval(c,fspace,snextinterp);
       if nargout(func)==6
         output  = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
         [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),params,output);
@@ -116,7 +125,12 @@ switch method
 
      case 'resapprox-complete'
       [LB,UB] = func('b',snext,[],[],[],[],[],params);
-      xnext   = min(max(funeval(c,fspace,snext),LB),UB);
+      if extrapolate, snextinterp = snext;
+      else
+        snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
+                          fspace.a(ones(n*k,1),:)); 
+      end
+      xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
       output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
       if nargout(func)<6
         h                 = func('h',ss,xx,[],ee,snext,xnext,params,output);
