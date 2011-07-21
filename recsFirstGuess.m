@@ -4,7 +4,7 @@ function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-if nargin <=5 || isempty(T), T = 10; end
+if nargin <=5 || isempty(T), T = 50; end
 if nargin <=6, options = struct([]); end
 
 if isa(model.func,'char')
