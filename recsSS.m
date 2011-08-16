@@ -1,18 +1,33 @@
 function [s,x,z] = recsSS(model,s,x,options)
 % RECSSS Solves for the deterministic steady state in rational expectations models
 %
-% S = RECSSS(MODEL,S,X)
+% RECSSS cannot find the deterministic steady state of a functional
+% equation problem since, in this case, the steady state depends on
+% the model solution.
 %
-% S = RECSSS(MODEL,S,X,OPTIONS)  solves the problem with the parameters
+% S = RECSSS(MODEL,S,X) tries to find the non-stochastic steady
+% state of the model defined in the structure MODEL, by using as
+% first guess the vector of state and response variables S and
+% X. RECSSS returns the value of the state variables at steady state.  
+% MODEL is a structure, which has to include the following fields:
+%    [e,w] : discrete distribution with finite support with e the values and w the
+%            probabilities (it could be also the discretisation of a continuous
+%            distribution through quadrature or Monte Carlo drawings)
+%    func   : function name or anonymous function that defines the model's equations
+%    params : model's parameters, it is preferable to pass them as a cell array
+%             (compulsory with the functional option) but other formats are
+%             acceptable
+%
+% S = RECSSS(MODEL,S,X,OPTIONS) solves the problem with the parameters
 % defined by the structure OPTIONS. The fields of the structure are
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
-%    functional       : 1 if the equilibrium equations are a functional equation
-%                       problem (default: 0)
 %
-% [S,X] = RECSSS(MODEL,S,X,...)
+% [S,X] = RECSSS(MODEL,S,X,...) returns the value of the response
+% variables at steady state.
 %
-% [S,X,Z] = RECSSS(MODEL,S,X,...)
+% [S,X,Z] = RECSSS(MODEL,S,X,...) returns the value of the
+% expectations variable at steady state.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -54,31 +69,31 @@ LB      = [-inf(size(s(:))); LB(:)];
 UB      = [+inf(size(s(:))); UB(:)];
 
 switch lower(eqsolver)
- case 'fsolve'
-  opt = optimset('Display','off',...
-                 'Jacobian','on');
-  opt = optimset(opt,eqsolveroptions);
-  [X,~,exitflag] = fsolve(@(Y) SSResidual(Y,func,params,e,d,m),...
-                          X,...
-                          opt);
- case 'lmmcp'
-  [X,~,exitflag] = lmmcp(@(Y) SSResidual(Y,func,params,e,d,m),...
-                         X,...
-                         LB,...
-                         UB,...
-                         eqsolveroptions);
- case 'ncpsolve'
-  X = ncpsolve(@ncpsolvetransform,...
-               LB,...
-               UB,...
-               X,...
-               @SSResidual,...
-               func,params,e,d,m);
- case 'path'
-  global par
-  par = {@SSResidual,func,params,e,d,m};
-  X   = pathmcp(X,LB,UB,'pathtransform');
-  clear global par
+  case 'fsolve'
+    opt = optimset('Display','off',...
+                   'Jacobian','on');
+    opt = optimset(opt,eqsolveroptions);
+    [X,~,exitflag] = fsolve(@(Y) SSResidual(Y,func,params,e,d,m),...
+                            X,...
+                            opt);
+  case 'lmmcp'
+    [X,~,exitflag] = lmmcp(@(Y) SSResidual(Y,func,params,e,d,m),...
+                           X,...
+                           LB,...
+                           UB,...
+                           eqsolveroptions);
+  case 'ncpsolve'
+    X = ncpsolve(@ncpsolvetransform,...
+                 LB,...
+                 UB,...
+                 X,...
+                 @SSResidual,...
+                 func,params,e,d,m);
+  case 'path'
+    global par
+    par = {@SSResidual,func,params,e,d,m};
+    X   = pathmcp(X,LB,UB,'pathtransform');
+    clear global par
 end
 
 if exitflag~=1, disp('Failure to find a deterministic steady state'); end
@@ -89,22 +104,44 @@ output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 z      = func('h',s,x,[],e,s,x,params,output);
 
 
-%%%%%%%%%%%%%%%%
-% Subfunctions %
-%%%%%%%%%%%%%%%%
 function [F,J] = SSResidual(X,func,params,e,d,m)
+% SSRESIDUAL evaluates the equations and Jacobians of the steady-state finding problem
 
-if nargout==2
-  J = sparse(numjac(@residual_function,X,[],func,params,e,d,m));
-end
-F   = residual_function(X,func,params,e,d,m);
-
-function F = residual_function(X,func,params,e,d,m)
 ss     = X(1:d)';
 xx     = X(d+1:d+m)';
-output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
-zz     = func('h',ss,xx,[],e ,ss,xx,params,output);
-g      = func('g',ss,xx,[],e ,[],[],params,output);
-f      = func('f',ss,xx,zz,[],[],[],params,output);
-F      = [ss-g f]';
+
+if nargout==2 % With Jacobian calculation
+
+  output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',1);
+  if nargout(func)<6
+    [zz,hs,hx,hsnext,hxnext]       = func('h',ss,xx,[],e ,ss,xx,params,output);
+  else
+    [h,hs,hx,hsnext,hxnext,hmult]  = func('h',ss,xx,[],e ,ss,xx,params,output);
+    zz     = h.*hmult;
+    hs     = hs.*hmult(:,:,ones(d,1));
+    hx     = hx.*hmult(:,:,ones(m,1));
+    hsnext = hsnext.*hmult(:,:,ones(d,1));
+    hxnext = hxnext.*hmult(:,:,ones(m,1));
+  end
+  [f,fs,fx,fz] = func('f',ss,xx,zz,[],[],[],params,output);
+  fz           = permute(fz,[2 3 1]);
+  [g,gs,gx]    = func('g',ss,xx,[],e ,[],[],params,output);
+
+  J                  = zeros(d+m,d+m);
+  J(1:d,1:d)         = eye(d)-permute(gs,[2 3 1]);
+  J(1:d,d+1:d+m)     = -permute(gx,[2 3 1]);
+  J(d+1:d+m,1:d)     = permute(fs,[2 3 1])+fz*permute(hs+hsnext,[2 3 1]);
+  J(d+1:d+m,d+1:d+m) = permute(fx,[2 3 1])+fz*permute(hx+hxnext,[2 3 1]);
+  J                  = sparse(J);
+  
+  F      = [ss-g f]';
+  
+else % Without Jacobian calculation
+  output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
+  zz     = func('h',ss,xx,[],e ,ss,xx,params,output);
+  g      = func('g',ss,xx,[],e ,[],[],params,output);
+  f      = func('f',ss,xx,zz,[],[],[],params,output);
+  F      = [ss-g f]';
+end
+
 return
