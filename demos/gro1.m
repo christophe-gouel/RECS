@@ -40,9 +40,8 @@ toc
 
 disp('Solve the stochastic problem:')
 tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,x,options);
+interp = recsSolveREE(interp,model,s,x,options);
 toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 
 [~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200);
 

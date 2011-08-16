@@ -63,18 +63,16 @@ toc
 
 options.method = 'resapprox-simple';
 tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+interp = recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 
 if exist('fsolve')
   options.reesolver = 'fsolve';
   interp.cz     = ones(n,2);
   interp.cx     = xinit;
   tic
-    [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+    interp = recsSolveREE(interp,model,s,xinit,options);
   toc
-  interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 end
 
 if exist('kinsol')
@@ -82,9 +80,8 @@ if exist('kinsol')
   interp.cz     = ones(n,2);
   interp.cx     = xinit;
   tic
-    [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+    interp = recsSolveREE(interp,model,s,xinit,options);
   toc
-  interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 end
 
 reset(RandStream.getDefaultStream);

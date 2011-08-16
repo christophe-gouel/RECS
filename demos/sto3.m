@@ -45,18 +45,16 @@ options = struct('simulmethod','solve');
 interp.cz = ones(n,2);
 interp.cx = xinit;
 tic
-[interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+interp = recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 
 if exist('mcppath')
   options.eqsolver = 'path';
   interp.cz = ones(n,2);
   interp.cx = xinit;
   tic
-    [interp.cx,x,z] = recsSolveREE(interp,model,s,xinit,options);
+    interp = recsSolveREE(interp,model,s,xinit,options);
   toc
-  interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 end
 
 tic

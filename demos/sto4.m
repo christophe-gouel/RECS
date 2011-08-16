@@ -54,19 +54,15 @@ if exist('mcppath')
 end
 
 tic
-[interp.ch,x,z] = recsSolveREE(interp,model,s,xinit,options);
+interp = recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
-interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 
 if exist('KINSol')
   options.reesolver = 'kinsol';
   interp.ch     = max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau);
   tic
-    [interp.ch,x,z] = recsSolveREE(interp,model,s,xinit,options);
+    interp = recsSolveREE(interp,model,s,xinit,options);
   toc
-  interp.cx = funfitxy(interp.fspace,interp.Phi,x);
-  interp.cz = funfitxy(interp.fspace,interp.Phi,z);
 end
 
 reset(RandStream.getDefaultStream);

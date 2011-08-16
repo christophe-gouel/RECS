@@ -1,5 +1,5 @@
 function [c,x,z,f,exitflag] = recsSolveREEFull(interp,model,s,x,options)
-% RECSSOLVEREEFULL
+% RECSSOLVEREEFULL finds the rational expectations equilibrium (REE) of a model
     
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -33,11 +33,12 @@ else
 end
 
 switch method
- case 'expfunapprox'
-  c      = interp.ch;
- case 'resapprox-complete'
-  c      = interp.cx;
- otherwise
+  case 'expfunapprox'
+    c      = interp.ch;
+  case 'resapprox-complete'
+    c      = interp.cx;
+  otherwise
+    error('This method is not implemented in recsSolveREEFull.')
 end
 fspace = interp.fspace;
 Phi    = interp.Phi;

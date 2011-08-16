@@ -50,21 +50,15 @@ toc
 
 options.method = 'expapprox';
 tic
-[interp.cz,x,z] = recsSolveREE(interp,model,s,xinit,options);
-toc
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
-
-tic
-[ssim,xsim,esim] = recsSimul(model,interp,1,200,[],options);
+interp = recsSolveREE(interp,model,s,xinit,options);
 toc
 
 options.eqsolver = 'ncpsolve';
 interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
 interp.cz = funfitxy(interp.fspace,interp.Phi,zinit);
 tic
-[interp.cz,x,z] = recsSolveREE(interp,model,s,xinit,options);
+interp = recsSolveREE(interp,model,s,xinit,options);
 toc
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
 
 tic
 [ssim,xsim,esim] = recsSimul(model,interp,1,200,[],options);
