@@ -5,9 +5,9 @@
 
 warning off backtrace
 
-dsemdirectory = strrep(which('recsSimul'),'recsSimul.m','');
+recsdirectory = strrep(which('recsSimul'),'recsSimul.m','');
 
-addpath([dsemdirectory '/demos'])
+addpath([recsdirectory '/demos'])
 
 gro1
 sto1
