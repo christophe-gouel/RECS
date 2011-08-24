@@ -45,6 +45,7 @@ License: BSD-2-clause
  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+Source: http://www.mathworks.com/matlabcentral/fileexchange/10603-block-tri-diagonal-matrices
 
 Files: catstruct.m
 Copyright: 2009, Jos van der Geest
@@ -70,17 +71,43 @@ License: BSD-2-clause
  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+Source: http://www.mathworks.com/matlabcentral/fileexchange/7842
 
-Files: nsoli.m
-Copyright: 2001-2003, C. T. Kelley
-Comment: This is a modification by Christophe Gouel of the original file, which
- can be downloaded from:
- http://www4.ncsu.edu/~ctk/newtony.html  
- The changes are surrounded above and below by "%% Change CG" % and "%%". They only
- concern the way of handling inputs (particularly options).
+Files: dolo-recs.exe
+Copyright: 2010-2011, Pablo Winant
+License: BSD-2-clause
+ All rights reserved.
+ .
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ .
+  * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice, this
+    list of conditions and the following disclaimer in the documentation and/or
+    other materials provided with the distribution
+ .     
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+Source: https://github.com/albop/dynare-python
 
 Files: lmmcp.m
 Copyright: 2005, Christian Kanzow and Stefania Petra
-Comment: This is a modification by Christophe Gouel of the original files, which
- can be downloaded from:
- http://www.mathematik.uni-wuerzburg.de/~kanzow/software/LMMCP.zip  
+Comment: This is a modification by Christophe Gouel of the original files.
+Source: http://www.mathematik.uni-wuerzburg.de/~kanzow/software/LMMCP.zip  
+
+Files: nsoli.m
+Copyright: 2001-2003, C. T. Kelley
+Comment: This is a modification by Christophe Gouel of the original file. The
+ changes are surrounded above and below by "%% Change CG" % and "%%". They only
+ concern the way of handling inputs (particularly options).
+Source: http://www4.ncsu.edu/~ctk/newtony.html
+
