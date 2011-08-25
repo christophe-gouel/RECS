@@ -6,24 +6,24 @@
 disp('STO1 Competitive storage with supply reaction and explicit market equilibrium equation');
 clear interp model options
 
-% ENTER MODEL PARAMETERS
+%% Enter model parameters
 alpha = -0.4;
 k     = 0.02;
 delta = 0.02;
 r     = 0.05;
 mu    = 10;
 
-% COMPUTE SHOCK DISTRIBUTION
+%% Compute shock distribution
 Mu                = 1;
 sigma             = 0.1;
 [model.e,model.w] = qnwnorm(5,Mu,sigma^2);
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
-% PACK MODEL STRUCTURE
+%% Pack model structure
 model.func   = @sto1model;                               % model functions
 model.params = {alpha,k,delta,r,mu};               % other parameters
 
-% DEFINE APPROXIMATION SPACE
+%% Define approximation space
 order         = 30;                                          % degree of approximation
 smin          = 0.5;
 smax          = 2;
@@ -33,18 +33,20 @@ s             = gridmake(snodes);
 interp.Phi    = funbasx(interp.fspace);
 n             = order;
 
+%% Provide a first guess
 xinit  = [zeros(n,1) ones(n,1) s.^(1/alpha)];
 interp.cz = funfitxy(interp.fspace,interp.Phi,ones(n,2));
 interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
 interp.ch = funfitxy(interp.fspace,interp.Phi,[s.^(1/alpha) s.^(1/alpha)]);
-optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
 
+%% Find deterministic steady-state
 disp('Deterministic steady-state')
 [sss,xss,zss] = recsSS(model,1,[0 1 1])
 
-% Check derivatives
+%% Check derivatives
 recsCheck(model,sss,xss,zss);
 
+%% Solve for rational expectations
 tic
 recsSolveREE(interp,model,s,xinit);
 toc
@@ -66,7 +68,7 @@ tic
 interp = recsSolveREE(interp,model,s,xinit,options);
 toc
 
-if exist('fsolve')
+if exist('fsolve','file')
   options.reesolver = 'fsolve';
   interp.cz     = ones(n,2);
   interp.cx     = xinit;
@@ -75,7 +77,7 @@ if exist('fsolve')
   toc
 end
 
-if exist('kinsol')
+if exist('kinsol','file')
   options.reesolver = 'kinsol';
   interp.cz     = ones(n,2);
   interp.cx     = xinit;
@@ -84,6 +86,7 @@ if exist('kinsol')
   toc
 end
 
+%% Simulate the model
 reset(RandStream.getDefaultStream);
 [ssim,xsim,esim,~,stat] = recsSimul(model,interp,ones(1000,1),200);
 

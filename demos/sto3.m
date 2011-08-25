@@ -6,7 +6,7 @@
 disp('STO3 Competitive storage with price-band backed by public storage');
 clear interp model options
 
-% ENTER MODEL PARAMETERS
+%% Enter model parameters
 delta = 0;
 r     = 0.05;
 alpha = -0.4;
@@ -16,17 +16,17 @@ PF    = 0.9;
 PC    = 1.1;
 Sgbar = 0.4;
 
-% COMPUTE SHOCK DISTRIBUTION
+%% Compute shock distribution
 Mu                = 1;
 sigma             = 0.05;
 [model.e,model.w] = qnwnorm(5,Mu,sigma^2);
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
-% PACK MODEL STRUCTURE
+%% Pack model structure
 model.func   = @sto3model;                                      % model functions
 model.params = {delta,r,alpha,k,mu,PF,PC,Sgbar};               % other parameters
 
-% DEFINE APPROXIMATION SPACE
+%% Define approximation space
 order         = [20; 20];                                      % degree of approximation
 smin          = [min(model.e(:,1))*0.95; 0];
 smax          = [1.4; Sgbar];
@@ -36,19 +36,19 @@ s             = gridmake(snodes);
 interp.Phi    = funbasx(interp.fspace);
 n             = prod(order);
 
+%% Provide a first guess
 xinit         = [zeros(n,1) ones(n,2) zeros(n,2)];
 interp.cz     = ones(n,2);
 interp.cx     = xinit;
 
-options = struct('simulmethod','solve');
-
+%% Solve for rational expectations
 interp.cz = ones(n,2);
 interp.cx = xinit;
 tic
-interp = recsSolveREE(interp,model,s,xinit,options);
+interp = recsSolveREE(interp,model,s,xinit);
 toc
 
-if exist('mcppath')
+if exist('mcppath','file')
   options.eqsolver = 'path';
   interp.cz = ones(n,2);
   interp.cx = xinit;
@@ -57,6 +57,8 @@ if exist('mcppath')
   toc
 end
 
+%% Simulate the model
+options.simulmethod = 'solve';
 tic
 [ssim,xsim,esim] = recsSimul(model,interp,[1 0],200,[],options);
 toc
