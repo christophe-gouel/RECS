@@ -68,6 +68,7 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
 if nargin <=4, options = struct([]); end
 
 defaultopt = struct(                  ...
@@ -126,33 +127,33 @@ p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 k      = length(w);               % number of shock values
 z      = zeros(ns,0);
 
+%% Solve for the rational expectations equilibrium
 switch reesolver
- % Attention: the variables x and z are changed by the nested function
- % 'Residual_Function'
+ % Attention: the variables x and z are changed by the nested function 'ResidualREE'
  case 'mixed'
   reesolveroptions.maxit = 10;
   reesolveroptions.atol  = 1E-2;
   reesolveroptions.rtol  = 1E-3;
-  c = SA(@Residual_Function, c(:), reesolveroptions);
+  c = SA(@ResidualREE, c(:), reesolveroptions);
 
   reesolveroptions.maxit = 40;
   reesolveroptions.atol  = 1E-7;
   reesolveroptions.rtol  = 1E-25;
-  [c,~,exitflag] = nsoli(@Residual_Function, c(:), reesolveroptions);
+  [c,~,exitflag] = nsoli(@ResidualREE, c(:), reesolveroptions);
   if exitflag==0, exitflag = 1; else exitflag = 0; end
 
  case 'krylov'
-  [c,~,exitflag] = nsoli(@Residual_Function, c(:), reesolveroptions);
+  [c,~,exitflag] = nsoli(@ResidualREE, c(:), reesolveroptions);
   if exitflag==0, exitflag = 1; else exitflag = 0; end
 
  case 'sa'
-  [c,~,exitflag] = SA(@Residual_Function, c(:), reesolveroptions);
+  [c,~,exitflag] = SA(@ResidualREE, c(:), reesolveroptions);
 
  case 'fsolve' % In test - Slow, because it uses numerical derivatives
   if options.display==1
     reesolveroptions = optimset('display','iter-detailed','Diagnostics','on');
   end
-  [c,~,exitflag] = fsolve(@Residual_Function, c(:), reesolveroptions);
+  [c,~,exitflag] = fsolve(@ResidualREE, c(:), reesolveroptions);
 
  case 'kinsol'
   neq = numel(c);
@@ -160,7 +161,7 @@ switch reesolver
                               'LinearSolver',  'GMRES',...
                               'ErrorMessages', false,...
                               'FuncNormTol',   reesolveroptions.atol);
-  KINInit(@Residual_Function,neq,KINoptions);
+  KINInit(@ResidualREE,neq,KINoptions);
   [status, c] = KINSol(c(:),'LineSearch',ones(neq,1),ones(neq,1));
   KINFree;
   if status==0 || status==1, exitflag = 1; else exitflag = 0; end
@@ -171,7 +172,8 @@ if exitflag~=1
   warning('recs:FailureREE','Failure to find a rational expectations equilibrium');
 end
 
-% Outputs calculations
+%% Outputs calculations
+% Interpolation coefficients
 c = reshape(c,nc,[]);
 switch method
  case 'expapprox'
@@ -232,8 +234,9 @@ if isempty(z)
   interp.cz = funfitxy(fspace,Phi,z); 
 end
 
-function [R,FLAG] = Residual_Function(cc)
-% RESIDUAL_FUNCTION Calculates the residual of the model with regards to rational expectations
+%%
+function [R,FLAG] = ResidualREE(cc)
+% RESIDUALREE Calculates the residual of the model with regards to rational expectations
 
   switch method
     case 'expapprox'
