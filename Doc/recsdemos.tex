@@ -23,7 +23,7 @@
 \bibliographystyle{apalike2}%
 \setlength{\bibsep}{0.2\baselineskip}
 
-\newcommand{\MyTitle}{}%
+\newcommand{\MyTitle}{Models demonstration for RECS}%
 \newcommand{\MyAbstract}{}%
 \newcommand{\MyKeywords}{}
 
@@ -62,12 +62,11 @@
 \setlength{\mathindent}{1cm}
 
 % Title
-\title{}
-% \title{\MyTitle%
-%   \thanks{I acknowledge support from the AgFoodTrade project funded under the 7th Framework
-%     Programme for Research and Development, DG-Research, European Commission.}}%
+\title{\MyTitle%
+  \thanks{I acknowledge support from the AgFoodTrade project funded under the 7th Framework
+    Programme for Research and Development, DG-Research, European Commission.}}%
 \date{\today}%
-\author{Christophe Gouel\footnote{INRA, CEPII and Ecole Polytechnique
+\author{Christophe Gouel\footnote{INRA and CEPII
     (christophe.gouel@inra.grignon.fr)}}
 
 \begin{document}
@@ -92,7 +91,7 @@ Consumption ($C$).
 
 \paragraph{State variable}
 
-Capital stock ($K$), Productivity ($Z$).
+Capital stock ($K$), Log of productivity ($Z$).
 
 \paragraph{Shock}
 
@@ -108,6 +107,40 @@ intertemporal substitution ($\tau$), Capital share ($\alpha$), Scale parameter
 
 \begin{equation}
   C_{t}: C_{t}^{-\tau}=\beta\E_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+a \alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].
+\end{equation}
+
+\paragraph{Transition equation}
+
+\begin{align}
+  K_{t}&: K_{t}=a e^{Z_{t-1}}K_{t-1}^{\alpha}+\left(1-\delta\right)K_{t-1}-C_{t-1},\\
+  Z_{t}&: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.
+\end{align}
+
+\subsection{GRO2: Stochastic growth model with irreversible investment}
+\label{sec:gro1}
+
+\paragraph{Response variables}
+
+Consumption ($C$).
+
+\paragraph{State variable}
+
+Capital stock ($K$), Log of productivity ($Z$).
+
+\paragraph{Shock}
+
+Innovation to productivity ($\epsilon$).
+
+\paragraph{Parameters}
+
+Capital depreciation rate ($\delta$), Discount factor ($\beta$), Elasticity of
+intertemporal substitution ($\tau$), Capital share ($\alpha$), Scale parameter
+($a$).
+
+\paragraph{Equilibrium equations}
+
+\begin{equation}
+  C_{t}: C_{t}\le a e^{Z_{t}}K_{t}^{\alpha} \CP C_{t}^{-\tau}\le\beta\E_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+a \alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].
 \end{equation}
 
 \paragraph{Transition equation}

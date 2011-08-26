@@ -18,10 +18,9 @@ model.params = gro1model('params');
 a            = model.params(1);
 delta        = model.params(3);
 
-options = struct('reesolver','krylov');
-
+%% Find deterministic steady-state
 disp('Deterministic steady-state')
-[sss,xss,zss] = recsSS(model,[1 0],a-delta,options)
+[sss,xss,zss] = recsSS(model,[1 0],a-delta)
 
 %% Define approximation space
 order         = [10 10];                                 % degree of approximation
@@ -36,10 +35,12 @@ n             = prod(order);
 %% Find a first guess through the perfect foresight solution
 disp('Find the perfect-foresight solution as first guess')
 tic
-[interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,50,options);
+[interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,50);
 toc
 
 %% Solve for rational expectations
+options = struct('reesolver','mixed',...
+                 'extrapolate',0);
 disp('Solve the stochastic problem:')
 tic
 interp = recsSolveREE(interp,model,s,x,options);
@@ -47,5 +48,3 @@ toc
 
 %% Simulate the model
 [~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200);
-
-
