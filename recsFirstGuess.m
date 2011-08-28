@@ -1,5 +1,5 @@
 function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
-% RECSFIRSTGUESS
+% RECSFIRSTGUESS finds a first guess using the perfect foresight solution
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
