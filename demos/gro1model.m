@@ -113,7 +113,7 @@ switch flag
     end
         
   case 'e';
-    warning('Euler equation errors not implemented in Dolo');
+	  out1 = [];
 
   case 'params';
     out1 = [0.218883572568,2,0.0196,0.95,0.9,0.33];

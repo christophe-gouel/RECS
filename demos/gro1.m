@@ -38,6 +38,8 @@ tic
 [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,50);
 toc
 
+recsAccuracy(model,interp,s);
+
 %% Solve for rational expectations
 options = struct('reesolver','mixed',...
                  'extrapolate',0);
@@ -45,6 +47,9 @@ disp('Solve the stochastic problem:')
 tic
 interp = recsSolveREE(interp,model,s,x,options);
 toc
+
+recsAccuracy(model,interp,s);
+
 
 %% Simulate the model
 [~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200);
