@@ -13,18 +13,10 @@ recsdirectory     = fileparts(which('recsSimul'));
 compecondirectory = fileparts(which('remsolve'));
 
 %% Copy CompEcon mex files
-if ispc, 
-  command = 'copy ';
-else % unix or mac
-  command = 'cp ';
-end
+s1 = copyfile(fullfile(compecondirectory,'private','arraymult.mex*'),recsdirectory);
+s2 = copyfile(fullfile(compecondirectory,'arraymult.mex*'),recsdirectory);
 
-[s1,~] = system([command fullfile(compecondirectory,'private','arraymult.mex*') ...
-                 ' ' recsdirectory]);
-[s2,~] = system([command fullfile(compecondirectory,'arraymult.mex*') ...
-                 ' ' recsdirectory]);
-
-if s1 && s2
+if ~s1 && ~s2
   warning(['Failure to copy CompEcon mex files. RECS is not properly ' ...
            'installed, see installation instructions.']);
 end

@@ -5,9 +5,10 @@ if exist(filename,'file')
 else
   switch filename
     case 'fsolve'
-      web();
+      web('http://www.mathworks.fr/help/toolbox/optim/ug/fsolve.html','-helpbrowser');
     case 'pathmc'
-      recsdirectory = strrep(which('recsSimul'),'recsSimul.m','');
-      web(['file://' recsdirectory 'html/pathnotinstalled.html'],'-helpbrowser');
+      recsdirectory = fileparts(which('recsSimul'));
+      web(['file://' fullfile(recsdirectory,'html','pathnotinstalled.html')], ...
+          '-helpbrowser');
   end
 end  

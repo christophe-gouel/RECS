@@ -3,12 +3,7 @@
 recsdirectory = fileparts(which('recsSimul'));
 targetdirectory = fullfile(recsdirectory,'html');
 
-if ispc, 
-  command = 'del ';
-else % unix or mac
-  command = 'rm ';
-end
-system([command fullfile(recsdirectory,'html','*.png')]);
+delete(fullfile(recsdirectory,'html','*.png'));
 options = struct('outputDir',targetdirectory);
 publish('recs_product_page.m',options);
 publish('getting_started.m',options);

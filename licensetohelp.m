@@ -1,2 +1,2 @@
-recsdirectory = strrep(which('recsSimul'),'recsSimul.m','');
+recsdirectory = fileparts(which('recsSimul'));
 web(['file://' recsdirectory 'LICENSE.txt'],'-helpbrowser');

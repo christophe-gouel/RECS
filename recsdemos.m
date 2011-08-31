@@ -5,7 +5,7 @@
 
 warning off backtrace
 
-recsdirectory = strrep(which('recsSimul'),'recsSimul.m','');
+recsdirectory = fileparts(which('recsSimul'));
 
 addpath([recsdirectory '/demos'])
 
