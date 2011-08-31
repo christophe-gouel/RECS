@@ -7,3 +7,5 @@ demo/*.log
 /Doc/*
 !/Doc/recsdemos.tex
 !/Doc/recs.bib
+*.html
+*.png

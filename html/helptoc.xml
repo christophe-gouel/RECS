@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+
+<toc version="0.3.1">
+
+  <tocitem target="recs_product_page.html">RECS
+    <tocitem target="getting_started.html" image="HelpIcon.GETTING_STARTED"> Getting started
+      <tocitem target="installation.html"> Installation </tocitem>
+      <tocitem target="def_dsre.html"> Definition of a dynamic stochastic rational expectations problem </tocitem>
+    </tocitem>
+    
+    <tocitem target="user_guide.html" image="HelpIcon.USER_GUIDE"> User's Guide 
+      <tocitem target="ug_setting_up.html"> Setting Up a Rational Expectations Problem
+        <tocitem target="ug_model_files.html"> Writing model files </tocitem>
+      </tocitem>
+      <tocitem target="ug_methods.html"> Solution methods </tocitem>
+      <tocitem target="ug_solvers_eq.html"> Solvers for equilibrium equations </tocitem>
+      <tocitem target="ug_solvers_ree.html"> Solvers for the rational expectations problem for two-step approaches </tocitem>
+    </tocitem>
+
+    <tocitem target="recs_functions.html" image="HelpIcon.FUNCTION"> Functions </tocitem>
+        
+  </tocitem>
+</toc>

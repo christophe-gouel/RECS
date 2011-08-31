@@ -8,11 +8,11 @@ models.
 INSTALL
 =======
 
-If you use git, you can get the lastest version with
+If you use git, you can get the latest version with
 
 `git clone https://github.com/christophe-gouel/RECS.git recs`
 
-Without git, you can download an archive of the lastest version by clicking on the
+Without git, you can download an archive of the latest version by clicking on the
 **Downloads** button on [RECS webpage](https://github.com/christophe-gouel/RECS).
 
 To use the solver you have to
@@ -38,10 +38,10 @@ OPTIONAL INSTALLATION
 * Path solver for Matlab (<http://www.cs.wisc.edu/cpnet/cpnetsoftware/>). This is
   the reference solver for mixed complementarity problems. It is highly recommended
   to install if difficult complementarity problems need to be solved.
-* Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
-  distribution other than normal.
+* Matlab Optimization Toolbox. The solver fsolve can be used to solve both the
+  equilibrium equations and the rational expectations equilibrium.
 * Sundials Toolbox (<https://computation.llnl.gov/casc/sundials/main.html>), which
   provides a compiled Newton-Krylov solver for solving the rational expectations
   equilibrium.
-* Matlab Optimization Toolbox. The solver fsolve can be used to solve both the
-  equilibrium equations and the rational expectations equilibrium.
+* Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
+  distribution other than normal.

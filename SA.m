@@ -1,30 +1,36 @@
 function [x,fval,exitflag] = SA(f,x,options,varargin)
 % SA Solves a system of equations by successive approximation
-% USAGE
-%   [x,fval,exitflag] = SA(f,x,options,varargin)
-% INPUTS
-%   f        : name of function of form:
-%               fval=f(x,optional additional parameters)
-%   x        : initial guess for root (d by 1)
-%   varargin : additional arguments for f [optional]
-% OUTPUTS
-%   x        : root of f (d by 1)
-%   fval     : function value estimate (d by 1)
-%   options  : structure defining options. Fields can be
-%               maxit     : maximum number of iterations (default: 1000)
-%               atol      : absolute convergence tolerance
-%               rtol      : relative convergence tolerance
-%               showiters : display results of each iteration
-%               lambda    : adjustment parameter
 %
-%   exitflag : integer describing exit condition. Possible values listed below.
-%                1  SA converged to a root
-%                0  Too many iterations
+% SA solves a system of equations by iterating on the evaluations of
+% the equations: x[i+1] = x[i]+lambda*f(x[i]) until x has converged.
+%  
+% X = SA(F,X0) tries to solve the system of equations F(X)=0 and
+% start at the vector X0. F accepts a vector X and return a vector
+% of equation values F evaluated at X. SA returns the vector X the
+% root of F.
+%
+% X = SA(F,X0,OPTIONS) solves the problem using the options defined
+% in the structure OPTIONS. Fields can be
+%      maxit     : maximum number of iterations (default: 1000)
+%      atol      : absolute convergence tolerance (default: sqrt(eps))
+%      rtol      : relative convergence tolerance (default: sqrt(eps))
+%      showiters : 1 to display results of each iteration, 0 (default) if not
+%      lambda    : adjustment parameter (default: 1)
+%
+% X = SA(F,X0,OPTIONS,VARARGIN) provides additional arguments for
+% F, which, in this case, takes the following form: F(X,VARARGIN).
+%
+% [X,FVAL] = SA(F,X0,...) returns the value of the equations F at X.
+%
+% [X,FVAL,EXITFLAG] = SA(F,X0,...) returns EXITFLAG that describes
+% the exit conditions. Possible values listed below.
+%       1 : SA converged to a root
+%       0 : Too many iterations
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-% ------------Initialization----------------
+%% Initialization
 defaultopt = struct(...
     'maxit',1000,...
     'atol',sqrt(eps),...
@@ -47,6 +53,7 @@ fnrm     = norm(fval);
 stop_tol = atol + rtol*fnrm;
 it       = 0;
 
+%% Iterations
 while(fnrm > stop_tol && it < maxit)
   x_old = x;
   it    = it+1;
