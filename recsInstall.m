@@ -1,19 +1,34 @@
-% RECSINSTALL
+function recsInstall
+% RECSINSTALL Finalizes RECS installation
+%
+% RECSINSTALL copies mex files from CompEcon, so the installation
+% of CompEcon must be complete before running
+% RECSINSTALL. RECSINSTALL prepares also the html help files.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-recsdirectory     = strrep(which('recsSimul'),'recsSimul.m','');
-compecondirectory = strrep(which('remsolve.m'),'remsolve.m','');
+%% Initialize
+recsdirectory     = fileparts(which('recsSimul'));
+compecondirectory = fileparts(which('remsolve'));
 
-if ispc
-  strarray = ['copy ' compecondirectory 'private\arraymult.mex* ' recsdirectory]
-  dos(strarray);
-  strarray = ['copy ' compecondirectory         'arraymult.mex* ' recsdirectory]
-  dos(strarray);
+%% Copy CompEcon mex files
+if ispc, 
+  command = 'copy ';
 else % unix or mac
-  strarray = ['cp ' compecondirectory 'private/arraymult.mex* ' recsdirectory]
-  unix(strarray);
-  strarray = ['cp ' compecondirectory         'arraymult.mex* ' recsdirectory];
-  unix(strarray);
+  command = 'cp ';
 end
+
+[s1,~] = system([command fullfile(compecondirectory,'private','arraymult.mex*') ...
+                 ' ' recsdirectory]);
+[s2,~] = system([command fullfile(compecondirectory,'arraymult.mex*') ...
+                 ' ' recsdirectory]);
+
+if s1 && s2
+  warning(['Failure to copy CompEcon mex files. RECS is not properly ' ...
+           'installed, see installation instructions.']);
+end
+
+%% Publish html help files
+addpath(fullfile(recsdirectory,'html'))
+Publish_recs_help

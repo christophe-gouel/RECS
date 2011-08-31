@@ -9,6 +9,7 @@
 % interpolation structure of a model to another form
 % * <matlab:doc('recsFirstGuess') |recsFirstGuess|> - Find a first guess using the
 % perfect foresight solution
+% * <matlab:doc('recsInstall') |recsInstall|> - Finalize RECS installation
 % * <matlab:doc('recsSimul') |recsSimul|> - Simulate a model from starting values
 %   given in s0 and for nper period
 % * <matlab:doc('recsSolveDeterministicPb') |recsSolveDeterministicPb|> - Solve a
