@@ -4,8 +4,9 @@ demo/*.tmp
 demo/*.log
 *.mexglx
 *.mexw32
+*.html
+*.png
 /Doc/*
 !/Doc/recsdemos.tex
 !/Doc/recs.bib
-*.html
-*.png
+/exe/*

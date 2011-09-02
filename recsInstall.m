@@ -24,3 +24,14 @@ end
 %% Publish html help files
 addpath(fullfile(recsdirectory,'html'))
 Publish_recs_help
+
+%% Install binary files
+if ispc
+  extension = '.exe';
+else
+  extension = '';
+end
+[~,~] = mkdir(recsdirectory,fullfile('exe',computer('arch')));
+urlwrite(['http://dynare-python.googlecode.com/files/dolo-recs-' computer('arch') extension],...
+         fullfile(recsdirectory,'exe',computer('arch'),['dolo-recs' ...
+                    extension]));
