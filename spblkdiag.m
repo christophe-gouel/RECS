@@ -24,6 +24,7 @@ function [X,grid] = spblkdiag(X,grid,output,n)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
 if nargin < 2, grid = []; end
 
 if nargin < 3 || isempty(output), output = 1; end
@@ -36,7 +37,7 @@ else
   X = X(:,:,ones(n,1));
 end
 
-% Generate the row and column indices for building the sparse matrix
+%% Creation of the row and column indices for building the sparse matrix
 if isempty(grid) || ~isequal(size(grid),[n*p*q 2])
   P = (1:p)';
   Q = (1:q)';
@@ -50,6 +51,7 @@ if isempty(grid) || ~isequal(size(grid),[n*p*q 2])
   end
 end
 
+%% Sparse matrix building
 if output
   X = sparse(grid(:,1),...
              grid(:,2),...

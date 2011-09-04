@@ -1,9 +1,16 @@
-function [c,x,z,f,exitflag] = recsSolveREEFull(interp,model,s,x,options)
+function [interp,x,z,f,exitflag] = recsSolveREEFull(interp,model,s,x,options)
 % RECSSOLVEREEFULL finds the rational expectations equilibrium (REE) of a model
-    
+%
+% RECSSOLVEREEFULL solves the rational expectations problem has one
+% single problem and not by iterating on two subproblems as in
+% RECSSolveREE.
+%
+% This solver is still in development  
+  
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
 if nargin <=4, options = struct([]); end
 
 defaultopt = struct(                  ...
@@ -15,6 +22,7 @@ defaultopt = struct(                  ...
 warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
+
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 extrapolate      = options.extrapolate;
@@ -69,45 +77,57 @@ UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 
 exitflag = 1;
 
+%% Solve for the rational expectations equilibrium
 switch eqsolver
- case 'fsolve'
-  options = optimset('Display','off',...
-                     'Jacobian','on');
-  options = optimset(options,eqsolveroptions);
-  [X,f,exitflag] = fsolve(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
-                                            method,Phi,m,functional,extrapolate),...
-                          X,options);
-  if exitflag~=1, disp('No convergence'); end
- case 'lmmcp'
-  [X,f,exitflag] = lmmcp(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
-                                           method,Phi,m,functional,extrapolate),...
-                         X,LB,UB,eqsolveroptions);
-  if exitflag~=1, disp('No convergence'); end
- case 'ncpsolve'
-  [X,f] = ncpsolve(@(VAR) ncpsolvetransform(VAR,@recsFullPb,s,func,params,grid,e,w,...
-                                            fspace,method,Phi,m,functional,extrapolate),...
-                   LB,UB,X);
-  f     = -f;
- case 'path'
-  global par
-  par   = {@recsFullPb,s,func,params,grid,e,w,fspace,method,Phi,m,functional,extrapolate};
-  [X,f] = pathmcp(X,LB,UB,'pathtransform');
-  clear global par
+  case 'fsolve'
+    options = optimset('Display','off',...
+                       'Jacobian','on');
+    options = optimset(options,eqsolveroptions);
+    [X,f,exitflag] = fsolve(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
+                                              method,Phi,m,functional,extrapolate),...
+                            X,options);
+    if exitflag~=1, disp('No convergence'); end
+  case 'lmmcp'
+    [X,f,exitflag] = lmmcp(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
+                                             method,Phi,m,functional,extrapolate),...
+                           X,LB,UB,eqsolveroptions);
+    if exitflag~=1, disp('No convergence'); end
+  case 'ncpsolve'
+    [X,f] = ncpsolve(@(VAR) ncpsolvetransform(VAR,@recsFullPb,s,func,params,grid,e,w,...
+                                              fspace,method,Phi,m,functional,extrapolate),...
+                     LB,UB,X);
+    f     = -f;
+  case 'path'
+    global par
+    par   = {@recsFullPb,s,func,params,grid,e,w,fspace,method,Phi,m,functional,extrapolate};
+    [X,f] = pathmcp(X,LB,UB,'pathtransform');
+    clear global par
 end
 
 if exitflag~=1
   warning('recs:FailureREE','Failure to find a rational expectations equilibrium');
 end
 
+%% Outputs calculations
 x     = reshape(X(1:n*m),m,n)';
 c     = reshape(X(n*m+1:end),[],n)';
+
+switch method
+  case 'expfunapprox'
+    interp.ch = c;
+    interp.cx = funfitxy(fspace,Phi,x); 
+  case 'resapprox-complete'
+  interp.cx = c;
+  if isfield(interp,'ch')
+    interp.ch = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output));
+  end
+end
 
 % Calculation of z
 ind    = (1:n);
 ind    = ind(ones(1,k),:);
 ss     = s(ind,:);
 xx     = x(ind,:);
-output = struct('F',1,'Js',0,'Jx',0);
 snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
 if extrapolate, snextinterp = snext;
 else
@@ -115,15 +135,15 @@ else
 end
 
 switch method
- case 'expfunapprox'
-  h   = funeval(c,fspace,snextinterp);
-  if nargout(func)==6
-    output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-    [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,n),:),snext,zeros(size(snext,1),m),params,output);
-    h                 = h.*hmult;
-  end
-
-   case 'resapprox-complete'
+  case 'expfunapprox'
+    h   = funeval(c,fspace,snextinterp);
+    if nargout(func)==6
+      output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,n),:),snext,zeros(size(snext,1),m),params,output);
+      h                 = h.*hmult;
+    end
+    
+  case 'resapprox-complete'
     [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
     xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
     output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
@@ -134,5 +154,5 @@ switch method
       h               = h.*hmult;
     end
 end
-z     = reshape(w'*reshape(h,k,n*p),n,p);
-
+z         = reshape(w'*reshape(h,k,n*p),n,p);
+interp.cz = funfitxy(fspace,Phi,z); 
