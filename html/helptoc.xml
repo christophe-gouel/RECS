@@ -5,7 +5,8 @@
   <tocitem target="recs_product_page.html">RECS
     <tocitem target="getting_started.html" image="HelpIcon.GETTING_STARTED"> Getting started
       <tocitem target="installation.html"> Installation </tocitem>
-      <tocitem target="def_dsre.html"> Definition of a dynamic stochastic rational expectations problem </tocitem>
+      <tocitem target="def_sre.html"> Definition of a dynamic stochastic rational expectations problem </tocitem>
+      <tocitem target="MCP.html"> Introduction to mixed complementarity problems </tocitem>
     </tocitem>
     
     <tocitem target="user_guide.html" image="HelpIcon.USER_GUIDE"> User's Guide 

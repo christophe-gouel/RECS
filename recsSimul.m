@@ -111,7 +111,7 @@ end
 if isfield(model,'funrand') % Check if a random shocks generator function is provided
   funrand = model.funrand;
 else % Use the discretisation to generate the shocks
-  funrand = @(N) e(discrand(N,w),:);
+  funrand = @(N) e(discrand(N,w),:); % could be implemented also with datasample
 end
 
 fspace  = interp.fspace;
@@ -197,8 +197,6 @@ if (nargout==5 || statdisplay) && (nper > 40)
   varX = mean(y.*y);
   stat.moments = [mX' sqrt(varX)' (mean(y.^3)./varX.^1.5)' (mean(y.^4)./(varX.*varX))' ...
                   min(X)'    max(X)' pLB' pUB'];
-% $$$   stat.moments = [mean(X,1)' std(X,0,1)' skewness(X)' kurtosis(X,1,1)' ...
-% $$$                   min(X)'    max(X)' pLB' pUB'];
   disp('Statistics from simulated variables (excluding the first 20 observations):');
   disp(' Moments');
   disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
