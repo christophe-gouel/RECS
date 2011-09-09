@@ -34,6 +34,14 @@
 % * Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
 %   distribution other than normal.
 
+%% Issues with 64-bit architecture
+% * CompEcon programs cannot be compiled on 64-bit
+%   architecture. You can aks me for how to modify them to achieve
+%   compilation or you can use uncompiled files, which may, however, lead to very slow
+%   programs.
+% * RECS calls Python binaries that are not yet prepared for
+%   64-bit computers. 
+
 %%
 % Copyright (C) 2011 Christophe Gouel
 %
