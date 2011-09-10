@@ -1,8 +1,10 @@
 function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params)
-% RECSDETERMINISTICPB evaluates the equations and Jacobian of the deterministic problem.
+% RECSDETERMINISTICPB Evaluates the equations and Jacobian of the deterministic problem.
 %
 % RECSDETERMINISTICPB is called by RECSSOLVEDETERMINISTICPB. It is not meant
 % to be called directly by the user.
+%
+% See also RECSSOLVEDETERMINISTICPB.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

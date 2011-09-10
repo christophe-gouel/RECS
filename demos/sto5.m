@@ -56,11 +56,13 @@ optset('ncpsolve','type','smooth')
 
 % Solve by Full Newton
 tic
-recsSolveREEFull(interp,model,s,xinit,options);
+options.reemethod = '1-step';  
+recsSolveREE(interp,model,s,xinit,options);
 toc
 
 % Solve by successive approximations
 tic
+options.reemethod = 'iter';  
 interp = recsSolveREE(interp,model,s,xinit,options);
 toc
 

@@ -48,11 +48,13 @@ options = struct('funapprox','expfunapprox',...
 
 % Solve by Full Newton
 if exist('mcppath','file')
-  options.eqsolver = 'path';
+  options.eqsolver  = 'path';
+  options.reemethod = '1-step';
   tic
-    recsSolveREEFull(interp,model,s,xinit,options);
+    recsSolveREE(interp,model,s,xinit,options);
   toc
   options.eqsolver = 'lmmcp';
+  options.reemethod = 'iter';
 end
 
 tic
