@@ -1,8 +1,8 @@
 function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 % RECSSOLVEREE finds the rational expectations equilibrium (REE) of a model
 %
-% RECSSOLVEREE implementes various approximation schemes, residual definition
-% (collocation/least-squares), and equation solvers to find the REE of a model.
+% RECSSOLVEREE implementes various approximation schemes, and equation solvers to
+% find the REE of a model.
 %
 % INTERP = RECSSOLVEREE(INTERP,MODEL,S,X) tries to find the rational expectations
 % equilibrium of the model defined in the structure MODEL, by using the
@@ -120,12 +120,11 @@ fspace = interp.fspace;
 Phi    = interp.Phi;
 if functional, params = [params fspace c]; end
 
-[ns,m] = size(x);
-nc     = size(c,1);
+[n,m]  = size(x);
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 k      = length(w);               % number of shock values
-z      = zeros(ns,0);
+z      = zeros(n,0);
 
 %% Solve for the rational expectations equilibrium
 switch reesolver
@@ -174,7 +173,7 @@ end
 
 %% Outputs calculations
 % Interpolation coefficients
-c = reshape(c,nc,[]);
+c = reshape(c,n,[]);
 switch method
  case 'expapprox'
   interp.cz = c;
@@ -198,15 +197,15 @@ end
 % Calculation of z on the grid for output
 if isempty(z)
   if functional, params{end} = c; end
-  ind    = (1:ns);
+  ind    = (1:n);
   ind    = ind(ones(1,k),:);
   ss     = s(ind,:);
   xx     = x(ind,:);
   output = struct('F',1,'Js',0,'Jx',0);
-  snext  = func('g',ss,xx,[],e(repmat(1:k,1,ns),:),[],[],params,output);
+  snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
   if extrapolate, snextinterp = snext;
   else      
-    snextinterp = max(min(snext,fspace.b(ones(ns*k,1),:)),fspace.a(ones(ns*k,1),:)); 
+    snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
   end
 
   switch method
@@ -214,7 +213,7 @@ if isempty(z)
     h   = funeval(c,fspace,snextinterp);
     if nargout(func)==6
       output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,ns),:),snext,zeros(size(snext,1),m),params,output);
+      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,n),:),snext,zeros(size(snext,1),m),params,output);
       h                 = h.*hmult;
     end
 
@@ -223,14 +222,14 @@ if isempty(z)
     xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
     output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
     if nargout(func)<6
-       h                = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
+       h                = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
     else
-      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
+      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
       h               = h.*hmult;
     end
 
   end
-  z         = reshape(w'*reshape(h,k,ns*p),ns,p);
+  z         = reshape(w'*reshape(h,k,n*p),n,p);
   interp.cz = funfitxy(fspace,Phi,z); 
 end
 
@@ -240,22 +239,22 @@ function [R,FLAG] = ResidualREE(cc)
 
   switch method
     case 'expapprox'
-      cc    = reshape(cc,nc,p);
+      cc    = reshape(cc,n,p);
       if functional, params{end} = cc; end
       
       z     = funeval(cc,fspace,Phi);
       [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
       
-      ind     = (1:ns);
+      ind     = (1:n);
       ind     = ind(ones(1,k),:);
       ss      = s(ind,:);
       xx      = x(ind,:);
       output  = struct('F',1,'Js',0,'Jx',0);
-      snext   = func('g',ss,xx,[],e(repmat(1:k,1,ns),:),[],[],params,output);
+      snext   = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
       if extrapolate, snextinterp = snext;
       else          
-        snextinterp = max(min(snext,fspace.b(ones(ns*k,1),:)),...
-                          fspace.a(ones(ns*k,1),:)); 
+        snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
+                          fspace.a(ones(n*k,1),:)); 
       end
       [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
       
@@ -270,17 +269,17 @@ function [R,FLAG] = ResidualREE(cc)
       
       output              = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
       if nargout(func)<6
-        h                 = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
+        h                 = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
       else
-        [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
+        [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
         h                 = h.*hmult;
       end
-      z     = reshape(w'*reshape(h,k,ns*p),ns,p);
+      z     = reshape(w'*reshape(h,k,n*p),n,p);
       
       R     = funfitxy(fspace,Phi,z)-cc;
       
     case 'expfunapprox'
-      cc    = reshape(cc,nc,p);
+      cc    = reshape(cc,n,p);
       if functional, params{end} = cc; end
       
       [x,f]  = recsSolveEquilibrium(s,x,z,func,params,cc,e,w, fspace,options);
@@ -288,7 +287,7 @@ function [R,FLAG] = ResidualREE(cc)
       R      = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output))-cc;
       
     case {'resapprox-complete','resapprox-simple'}
-      cc    = reshape(cc,nc,m);
+      cc    = reshape(cc,n,m);
       if functional, params{end} = cc; end
       
       if useapprox % x calculated by interpolation
@@ -297,29 +296,29 @@ function [R,FLAG] = ResidualREE(cc)
       end % if not previous x is used
       
       if strcmp(method,'resapprox-simple')
-        ind    = (1:ns);
+        ind    = (1:n);
         ind    = ind(ones(1,k),:);
         ss     = s(ind,:);
         xx     = x(ind,:);
         output = struct('F',1,'Js',0,'Jx',0);
-        snext  = func('g',ss,xx,[],e(repmat(1:k,1,ns),:),[],[],params,output);
+        snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
         
         if extrapolate, snextinterp = snext;
         else          
-          snextinterp = max(min(snext,fspace.b(ones(ns*k,1),:)),...
-                            fspace.a(ones(ns*k,1),:)); 
+          snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
+                            fspace.a(ones(n*k,1),:)); 
         end
         [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
         xnext   = min(max(funeval(cc,fspace,snextinterp),LB),UB);
         
         output              = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
         if nargout(func)<6
-          h                 = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
+          h                 = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
         else
-          [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,ns),:),snext,xnext,params,output);
+          [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
           h                 = h.*hmult;
         end
-        z     = reshape(w'*reshape(h,k,ns*p),ns,p);
+        z     = reshape(w'*reshape(h,k,n*p),n,p);
       end
       
       [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
