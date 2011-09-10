@@ -1,4 +1,4 @@
-function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,method,extrapolate)
+function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,funapprox,extrapolate)
 % RECSEQUILIBRIUM evaluate the equilibrium equations and Jacobian
 %
 % RECSEQUILIBRIUM is called by RECSSOLVEEQUILIBRIUM. It is not meant to be called
@@ -13,7 +13,7 @@ function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,metho
 x     = reshape(x,[],n)';
 m     = size(x,2);
 
-switch method
+switch funapprox
  case {'expapprox','resapprox-simple'}
   if nargout==2 % With Jacobian
     output  = struct('F',1,'Js',0,'Jx',1,'Jz',0);
@@ -39,7 +39,7 @@ switch method
     end
     Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
 
-    switch method
+    switch funapprox
      case 'expfunapprox'
       H                 = funeval(c,fspace,Bsnext,[zeros(1,d); eye(d)]);
       if nargout(func)==6
@@ -71,7 +71,7 @@ switch method
     output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
     [F,~,fx,fz] = func('f',s,x,z,[],[],[],params,output);
 
-    switch method
+    switch funapprox
      case 'expfunapprox'
       Jxtmp = arraymult(hs,gx,k*n,p,d,m);
      case 'resapprox-complete'
@@ -83,7 +83,7 @@ switch method
     if nargout==3
       if ~strcmp(Bsnext.format,'expanded'), Bsnext = funbconv(Bsnext,zeros(1,d)); end
       Bsnext = mat2cell(Bsnext.vals{1}',n,k*ones(n,1))';
-      switch method % The product with fz is vectorized for 'expfunapprox' and
+      switch funapprox % The product with fz is vectorized for 'expfunapprox' and
                     % executed in a loop for resapprox-complete', because it
                     % seems to be the fastest ways to do it.
        case 'expfunapprox'     
@@ -109,7 +109,7 @@ switch method
     output  = struct('F',1,'Js',0,'Jx',0);
     snext   = func('g',ss,xx,[],ee,[],[],params,output);
 
-    switch method
+    switch funapprox
      case 'expfunapprox'
       if extrapolate, snextinterp = snext;
       else,      

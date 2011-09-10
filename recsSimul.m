@@ -41,8 +41,8 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
-%    method           : 'expapprox' (default), 'expfunapprox', 'resapprox-simple'
-%                       or 'resapprox-complete'
+%    funapprox        : 'expapprox', 'expfunapprox', 'resapprox-simple'
+%                       or 'resapprox-complete' (default)
 %    simulmethod      : 'interpolation' (default) or 'solve'
 %    stat             : 1 to ouput summary statistics from the simulation
 %                       (default: 0)
@@ -83,9 +83,9 @@ defaultopt = struct(...
     'eqsolver'        , 'lmmcp'             ,...
     'eqsolveroptions' , struct([])          ,...
     'extrapolate'     , 1                   ,...
+    'funapprox'       , 'resapprox-complete',...
     'functional'      , 0                   ,...
     'loop_over_s'     , 0                   ,...
-    'method'          , 'resapprox-complete',...
     'simulmethod'     , 'interpolation'     ,...
     'stat'            , 0);
 warning('off','catstruct:DuplicatesFound')
@@ -94,7 +94,7 @@ options         = catstruct(defaultopt,options);
 
 extrapolate     = options.extrapolate;
 functional      = options.functional;
-method          = lower(options.method);
+funapprox          = lower(options.funapprox);
 simulmethod     = lower(options.simulmethod);
 statdisplay     = options.stat;
 
@@ -143,7 +143,7 @@ for t=1:nper+1
   xx         = min(max(funeval(cx,fspace,Phi),LB),UB);
   switch simulmethod
    case 'solve'
-    switch method
+    switch funapprox
      case {'expapprox','resapprox-simple'}
       [xx,f] = recsSolveEquilibrium(s0,...
                                     xx,...

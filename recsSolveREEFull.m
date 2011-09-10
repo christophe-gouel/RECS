@@ -17,8 +17,8 @@ defaultopt = struct(                  ...
     'eqsolver'          , 'lmmcp'    ,...
     'eqsolveroptions'   , struct([]) ,...
     'extrapolate'       , 1          ,...
-    'functional'        , 0          ,...
-    'method'            , 'resapprox-complete');
+    'funapprox'         , 'resapprox-complete',...
+    'functional'        , 0);
 warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
@@ -26,8 +26,8 @@ options = catstruct(defaultopt,options);
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 extrapolate      = options.extrapolate;
+funapprox        = lower(options.funapprox);
 functional       = options.functional;
-method           = lower(options.method);
 
 e      = model.e;
 params = model.params;
@@ -40,7 +40,7 @@ else
   error('model.func must be either a string or a function handle')
 end
 
-switch method
+switch funapprox
   case 'expfunapprox'
     c      = interp.ch;
   case 'resapprox-complete'
@@ -64,8 +64,8 @@ X        = [reshape(x',[n*m 1]); reshape(c',[],1)];
 LB       = [reshape(LB',[n*m 1]); -inf(n*size(c,2),1)];
 UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 
-% $$$ [f,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m,functional,extrapolate);
-% $$$ Jnum = numjac(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,method,Phi,m,functional,extrapolate),X);
+% $$$ [f,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate);
+% $$$ Jnum = numjac(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate),X);
 % $$$ spy(J)
 % $$$ figure
 % $$$ spy(Jnum)
@@ -84,22 +84,22 @@ switch eqsolver
                        'Jacobian','on');
     options = optimset(options,eqsolveroptions);
     [X,f,exitflag] = fsolve(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
-                                              method,Phi,m,functional,extrapolate),...
+                                              funapprox,Phi,m,functional,extrapolate),...
                             X,options);
     if exitflag~=1, disp('No convergence'); end
   case 'lmmcp'
     [X,f,exitflag] = lmmcp(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
-                                             method,Phi,m,functional,extrapolate),...
+                                             funapprox,Phi,m,functional,extrapolate),...
                            X,LB,UB,eqsolveroptions);
     if exitflag~=1, disp('No convergence'); end
   case 'ncpsolve'
     [X,f] = ncpsolve(@(VAR) ncpsolvetransform(VAR,@recsFullPb,s,func,params,grid,e,w,...
-                                              fspace,method,Phi,m,functional,extrapolate),...
+                                              fspace,funapprox,Phi,m,functional,extrapolate),...
                      LB,UB,X);
     f     = -f;
   case 'path'
     global par
-    par   = {@recsFullPb,s,func,params,grid,e,w,fspace,method,Phi,m,functional,extrapolate};
+    par   = {@recsFullPb,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate};
     [X,f] = pathmcp(X,LB,UB,'pathtransform');
     clear global par
 end
@@ -112,7 +112,7 @@ end
 x     = reshape(X(1:n*m),m,n)';
 c     = reshape(X(n*m+1:end),[],n)';
 
-switch method
+switch funapprox
   case 'expfunapprox'
     interp.ch = c;
     interp.cx = funfitxy(fspace,Phi,x); 
@@ -134,7 +134,7 @@ else
   snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
 end
 
-switch method
+switch funapprox
   case 'expfunapprox'
     h   = funeval(c,fspace,snextinterp);
     if nargout(func)==6

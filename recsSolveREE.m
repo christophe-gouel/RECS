@@ -35,19 +35,20 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %    eqsolveroptions  : options structure to be passed to eqsolver
 %    extrapolate      : 1 if extrapolation is allowed outside the
 %                       interpolation space or 0 to forbid it (default: 1)
+%    funapprox        : 'expapprox', 'expfunapprox', 'resapprox-simple'
+%                       or 'resapprox-complete' (default)
 %    functional       : 1 if the equilibrium equations are a functional equation
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
-%    method           : 'expapprox', 'expfunapprox', 'resapprox-simple'
-%                       or 'resapprox-complete' (default)
 %    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve' (in test)
 %    reesolveroptions : options structure to be passed to reesolver
-%    useapprox        : (default: 1) behaviour dependent of the chosen method. If
-%                       0 and method is 'expapprox' then next-period responses are
-%                       calculated by equations solve and not just interpolated. If 
-%                       1 and method is 'resapprox', the guess of response variables 
-%                       is found with the new approximation structure
+%    useapprox        : (default: 1) behaviour dependent of the chosen function to
+%                       approximate. If 0 and funapprox is 'expapprox' then
+%                       next-period responses are calculated by equations solve and
+%                       not just interpolated. If 1 and funapprox is 'resapprox', the
+%                       guess of response variables is found with the new
+%                       approximation structure
 %
 % [INTERP,X] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns the value of the response
 % variables on the grid.
@@ -78,7 +79,7 @@ defaultopt = struct(                  ...
     'extrapolate'       , 1          ,...
     'functional'        , 0          ,...
     'loop_over_s'       , 0          ,...
-    'method'            , 'resapprox-complete',...
+    'funapprox'            , 'resapprox-complete',...
     'reesolver'         , 'sa'   ,...
     'reesolveroptions'  , struct([]) ,...
     'useapprox'         , 1);
@@ -87,8 +88,8 @@ warning('off','catstruct:DuplicatesFound')
 options = catstruct(defaultopt,options);
 
 extrapolate        = options.extrapolate;
+funapprox          = lower(options.funapprox);
 functional         = options.functional;
-method             = lower(options.method);
 reesolver          = lower(options.reesolver);
 reesolveroptions   = catstruct(struct('showiters' , options.display,...
                                       'atol'      , sqrt(eps),...
@@ -108,7 +109,7 @@ else
   error('model.func must be either a string or a function handle')
 end
 
-switch method
+switch funapprox
  case 'expapprox'
   c      = interp.cz;
  case 'expfunapprox'
@@ -174,7 +175,7 @@ end
 %% Outputs calculations
 % Interpolation coefficients
 c = reshape(c,n,[]);
-switch method
+switch funapprox
  case 'expapprox'
   interp.cz = c;
   interp.cx = funfitxy(fspace,Phi,x); 
@@ -208,7 +209,7 @@ if isempty(z)
     snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
   end
 
-  switch method
+  switch funapprox
    case 'expfunapprox'
     h   = funeval(c,fspace,snextinterp);
     if nargout(func)==6
@@ -237,7 +238,7 @@ end
 function [R,FLAG] = ResidualREE(cc)
 % RESIDUALREE Calculates the residual of the model with regards to rational expectations
 
-  switch method
+  switch funapprox
     case 'expapprox'
       cc    = reshape(cc,n,p);
       if functional, params{end} = cc; end
@@ -295,7 +296,7 @@ function [R,FLAG] = ResidualREE(cc)
         x       = min(max(funeval(cc,fspace,Phi),LB),UB);
       end % if not previous x is used
       
-      if strcmp(method,'resapprox-simple')
+      if strcmp(funapprox,'resapprox-simple')
         ind    = (1:n);
         ind    = ind(ones(1,k),:);
         ss     = s(ind,:);

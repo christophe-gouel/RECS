@@ -52,18 +52,18 @@ recsSolveREE(interp,model,s,xinit);
 toc
 
 options = struct(...
-    'method','expapprox',...
+    'funapprox','expapprox',...
     'reesolver','krylov');
 tic
 recsSolveREE(interp,model,s,xinit,options);
 toc
 
-options.method = 'expfunapprox';
+options.funapprox = 'expfunapprox';
 tic
 recsSolveREE(interp,model,s,xinit,options);
 toc
 
-options.method = 'resapprox-simple';
+options.funapprox = 'resapprox-simple';
 tic
 interp = recsSolveREE(interp,model,s,xinit,options);
 toc

@@ -1,4 +1,4 @@
-function [G,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,method,Phi,m,functional,extrapolate)
+function [G,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate)
 % RECSFULLPB
 
 % Copyright (C) 2011 Christophe Gouel
@@ -10,7 +10,7 @@ x     = reshape(x,m,n)';
 c     = reshape(X(m*n+1:end),[],n)';
 if functional, params{end} = c; end
 
-switch method
+switch funapprox
  case 'expfunapprox'
   p  = size(c,2);
   if nargout==1
@@ -25,11 +25,11 @@ end
 
 if nargout==2 % With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),...
-                              s,zeros(n,0),func,params,grid,c,e,w,fspace,method,extrapolate);
+                              s,zeros(n,0),func,params,grid,c,e,w,fspace,funapprox,extrapolate);
 
   B = funbas(fspace,s);
 
-  switch method
+  switch funapprox
    case 'expfunapprox'
     output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',1,'hmult',0);
     [h,~,~,~,hxnext] = func('h',[],[],[],[],s,x,params,output);
@@ -50,7 +50,7 @@ if nargout==2 % With Jacobian
        Rx Rc];
 else % Without Jacobian
   F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),...
-                       func,params,grid,c,e,w,fspace,method,extrapolate);
+                       func,params,grid,c,e,w,fspace,funapprox,extrapolate);
 end
 
 G = [F; R];

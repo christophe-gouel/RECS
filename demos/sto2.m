@@ -42,12 +42,12 @@ tic
 recsSolveREE(interp,model,s,xinit);
 toc
 
-options.method = 'resapprox-simple';
+options.funapprox = 'resapprox-simple';
 tic
 recsSolveREE(interp,model,s,xinit,options);
 toc
 
-options.method = 'expapprox';
+options.funapprox = 'expapprox';
 tic
 interp = recsSolveREE(interp,model,s,xinit,options);
 toc
