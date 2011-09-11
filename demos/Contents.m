@@ -1,6 +1,9 @@
 % ************** Variants of the stochastic growth model **************
 % GRO1 Stochastic growth model
-
+%
+% *************** Variants of consumption/saving models ***************
+% CS1 Consumption/saving model with borrowing constraint (Deaton, 1991)
+%
 % ********************* Variants of the storage model *****************
 % STO1 Competitive storage model
 % STO2 Competitive storage with floor-price backed by public storage

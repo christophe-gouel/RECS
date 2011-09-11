@@ -103,52 +103,56 @@ Capital depreciation rate ($\delta$), Discount factor ($\beta$), Elasticity of
 intertemporal substitution ($\tau$), Capital share ($\alpha$), Scale parameter
 ($a$).
 
-\paragraph{Equilibrium equations}
+\paragraph{Equilibrium equation}
 
 \begin{equation}
   C_{t}: C_{t}^{-\tau}=\beta\E_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+a \alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].
 \end{equation}
 
-\paragraph{Transition equation}
+\paragraph{Transition equations}
 
 \begin{align}
   K_{t}&: K_{t}=a e^{Z_{t-1}}K_{t-1}^{\alpha}+\left(1-\delta\right)K_{t-1}-C_{t-1},\\
   Z_{t}&: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.
 \end{align}
 
-\subsection{GRO2: Stochastic growth model with irreversible investment}
-\label{sec:gro1}
+\section{Variants of consumption/saving models}
+
+\subsection{CS1: Consumption/saving model with borrowing constraint}
+
+It corresponds to the model in \citet{Deat91}.
 
 \paragraph{Response variables}
+\label{sec:response-variables}
 
 Consumption ($C$).
 
 \paragraph{State variable}
+\label{sec:state-variable}
 
-Capital stock ($K$), Log of productivity ($Z$).
+Cash on hand ($X$).
 
 \paragraph{Shock}
 
-Innovation to productivity ($\epsilon$).
+Labor income ($Y$).
 
 \paragraph{Parameters}
 
-Capital depreciation rate ($\delta$), Discount factor ($\beta$), Elasticity of
-intertemporal substitution ($\tau$), Capital share ($\alpha$), Scale parameter
-($a$).
+Interest rate ($r$), Rate of time preference ($\delta$), and Elasticity of
+intertemporal substitution ($\rho$).
 
-\paragraph{Equilibrium equations}
+\paragraph{Equilibrium equation}
 
 \begin{equation}
-  C_{t}: C_{t}\le a e^{Z_{t}}K_{t}^{\alpha} \CP C_{t}^{-\tau}\le\beta\E_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+a \alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].
+  C_{t}: C_{t}\le X_{t} \CP
+  \frac{1+r}{1+\delta}\E_{t}\left(C_{t+1}^{-\rho}\right)-C_{t}^{-\rho}\le 0.
 \end{equation}
 
 \paragraph{Transition equation}
 
-\begin{align}
-  K_{t}&: K_{t}=a e^{Z_{t-1}}K_{t-1}^{\alpha}+\left(1-\delta\right)K_{t-1}-C_{t-1},\\
-  Z_{t}&: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.
-\end{align}
+\begin{equation}
+  X_{t}: X_{t}=\left(1+r\right)\left(X_{t-1}-C_{t-1}\right)+Y_{t}
+\end{equation}
 
 \section{Variants of the storage model}
 \label{sec:vari-stor-model}
@@ -367,7 +371,7 @@ For $i \in \left\{a,b\right\}$ and $j \ne i$:
   X_{it}&: X_{it}\ge 0 \CP P_{it}+\theta+\tau_{j}\ge P_{jt}.
 \end{align}
 
-\paragraph{Transition equations}
+\paragraph{Transition equation}
 \label{sec:transition-equation}
 
 For $i \in \left\{a,b\right\}$:

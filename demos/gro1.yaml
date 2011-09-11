@@ -1,3 +1,7 @@
+# GRO1.yaml Model definition file for the stochastic growth model
+# Copyright (C) 2011 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
 declarations:
 
     states: [K, Z]

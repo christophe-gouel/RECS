@@ -1,0 +1,44 @@
+# CS1.yaml Model definition file for the consumption/saving model with borrowing constraint
+# Copyright (C) 2011 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
+declarations:
+
+    states: [X]
+
+    controls: [C]
+
+    expectations: [E]
+
+    shocks: [Y]
+
+    parameters: [r, delta, rho]
+
+equations:
+
+    arbitrage:
+
+        - E*(1+r)/(1+delta)-C^(-rho)=0 | -inf <= C <= X
+
+    transition:
+
+        - X = (1+r)*(X(-1)-C(-1))+Y
+
+    expectation:
+
+        - E = C(1)^(-rho)
+
+calibration:
+
+    parameters:
+        r     : 0.05
+        delta : 0.1
+        rho   : 2
+
+    steady_state:
+        X : 100
+        C : 100
+        E : C^(-rho)
+
+    covariances: |
+      [ [ 100 ] ]
