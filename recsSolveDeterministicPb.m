@@ -28,7 +28,7 @@ function [x,s,z,F] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,options)
 % T-by-m matrix, containing the values of equilibrium equations over the time
 % horizon.
 %
-% See also RECSFIRSTGUESS, RECSSOLVEEQUILIBRIUM, RECSSOLVEREE, RECSSS.
+% See also RECSFIRSTGUESS, RECSSOLVEREE, RECSSS.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

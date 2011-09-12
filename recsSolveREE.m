@@ -65,7 +65,7 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %    1 : RECSSOLVEREE converges to the REE
 %    0 : Failure to converge
 %
-% See also FUNBAS, FUNBASX, FUNDEF, RECSCHECK, RECSSIMUL, RECSSS.
+% See also RECSCHECK, RECSSIMUL, RECSSS.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
