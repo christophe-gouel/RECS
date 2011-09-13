@@ -41,7 +41,7 @@ switch eqsolver
       [x,f]    = pathmcp(x,LB,UB,'pathtransform');
       exitflag = 1;
     catch %#ok<CTCH>
-      f        = [];
+      f        = zeros(size(x));
       exitflag = 0;
     end
     clear global par

@@ -47,6 +47,6 @@ UB      = reshape(UB',[n*m 1]);
 if exitflag~=1, disp('No convergence'); end
 
 x    = reshape(x,m,n)';
-f    = reshape(f,m,n)';
+if ~isempty(f), f = reshape(f,m,n)'; end
 
 return
