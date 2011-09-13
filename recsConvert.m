@@ -28,9 +28,9 @@ interp1.fspace = fundefn('spli',order,smin,smax);                 % function spa
 s              = gridmake(funnode(interp1.fspace));
 interp1.Phi    = funbasx(interp1.fspace);
 
-warning('off','recs:Extrapolation');
+warning('off','RECS:Extrapolation');
 [~,x] = recsSimul(model,interp0,s,0,[],options);
-warning('on','recs:Extrapolation');
+warning('on','RECS:Extrapolation');
 
 interp1.cx = funfitxy(interp1.fspace,interp1.Phi,x);
 

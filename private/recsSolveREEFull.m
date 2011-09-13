@@ -43,38 +43,10 @@ UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 % $$$ z = [];
 % $$$ return
 
-exitflag = 1;
-
 %% Solve for the rational expectations equilibrium
-switch eqsolver
-  case 'fsolve'
-    options = optimset('Display','off',...
-                       'Jacobian','on');
-    options = optimset(options,eqsolveroptions);
-    [X,f,exitflag] = fsolve(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
-                                              funapprox,Phi,m,functional,extrapolate),...
-                            X,options);
-    if exitflag~=1, disp('No convergence'); end
-  case 'lmmcp'
-    [X,f,exitflag] = lmmcp(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,...
-                                             funapprox,Phi,m,functional,extrapolate),...
-                           X,LB,UB,eqsolveroptions);
-    if exitflag~=1, disp('No convergence'); end
-  case 'ncpsolve'
-    [X,f] = ncpsolve(@(VAR) ncpsolvetransform(VAR,@recsFullPb,s,func,params,grid,e,w,...
-                                              fspace,funapprox,Phi,m,functional,extrapolate),...
-                     LB,UB,X);
-    f     = -f;
-  case 'path'
-    global par
-    par   = {@recsFullPb,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate};
-    [X,f] = pathmcp(X,LB,UB,'pathtransform');
-    clear global par
-end
-
-if exitflag~=1
-  warning('recs:FailureREE','Failure to find a rational expectations equilibrium');
-end
+[X,f,exitflag] = runeqsolver(@recsFullPb,X,LB,UB,eqsolver,eqsolveroptions,...
+                             s,func,params,grid,e,w,fspace,funapprox,Phi,...
+                             m,functional,extrapolate);
 
 %% Reshape outputs 
 x     = reshape(X(1:n*m),m,n)';

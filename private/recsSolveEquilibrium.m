@@ -9,6 +9,7 @@ function [x,f] = recsSolveEquilibrium(s,x,z,func,params,c,e,w,fspace,options)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 extrapolate      = options.extrapolate;
@@ -17,6 +18,7 @@ funapprox        = lower(options.funapprox);
 [n,m]   = size(x);
 [LB,UB] = func('b',s,[],[],[],[],[],params);
 
+%% Solve equilibrium equations on grid points
 if options.loop_over_s % Solve separately for each point on the grid
   f                 = zeros(size(x));
   [~,grid]          = spblkdiag(zeros(m,m,1),[],0);
@@ -32,37 +34,18 @@ end
 
 function [x,f] = eqsolve(x,s,z,func,params,eqsolver,grid,c,e,w,fspace,funapprox, ...
                          eqsolveroptions,LB,UB,extrapolate)
+%%
 
 [n,m]   = size(x);
 x       = reshape(x',[n*m 1]);
 LB      = reshape(LB',[n*m 1]);
 UB      = reshape(UB',[n*m 1]);
 
-switch eqsolver
- case 'fsolve'
-  options = optimset('Display','off',...
-                     'Jacobian','on');
-  options = optimset(options,eqsolveroptions);
-  [x,f,exitflag] = fsolve(@(X) recsEquilibrium(X,s,z,func,params,grid,c,e,w,...
-                                               fspace,funapprox,extrapolate),...
-                          x,options);
-  if exitflag~=1, disp('No convergence'); end
- case 'lmmcp'
-  [x,f,exitflag] = lmmcp(@(X) recsEquilibrium(X,s,z,func,params,grid,c,e,w,...
-                                              fspace,funapprox,extrapolate),...
-                         x,LB,UB,eqsolveroptions);
-  if exitflag~=1, disp('No convergence'); end
- case 'ncpsolve'
-  [x,f] = ncpsolve(@(X) ncpsolvetransform(X,@recsEquilibrium,s,z,func,params,...
-                                          grid,c,e,w,fspace,funapprox,extrapolate),...
-                   LB,UB,x);
-  f     = -f;
- case 'path'
-  global par
-  par   = {@recsEquilibrium,s,z,func,params,grid,c,e,w,fspace,funapprox,extrapolate};
-  [x,f] = pathmcp(x,LB,UB,'pathtransform');
-  clear global par
-end
+[x,f,exitflag] = runeqsolver(@recsEquilibrium,x,LB,UB,eqsolver,eqsolveroptions,s,...
+                             z,func,params,grid,c,e,w,fspace,funapprox,extrapolate);
+
+if exitflag~=1, disp('No convergence'); end
+
 x    = reshape(x,m,n)';
 f    = reshape(f,m,n)';
 

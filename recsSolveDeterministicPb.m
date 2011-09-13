@@ -75,11 +75,13 @@ X = reshape(X,n,1);
 
 %% Solve deterministic problem
 % Simple continuation problem applied on a Newton solve
-SCPSubProblem  = @(X0,S0) NewtonProblem(func,S0,xss,X0,p,e,params,...
-                                        LB,UB,eqsolver,eqsolveroptions);
+
+SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver,...
+                                     eqsolveroptions,func,S0,xss,p,e,params);
+
 [X,F,exitflag] = SCP(X,s0,sss,SCPSubProblem,1);
 if exitflag~=1
-  warning('recs:FailureDeterministic',...
+  warning('RECS:FailureDeterministic',...
           'Failure to find the perfect foresight solution');
 end
 
@@ -90,46 +92,6 @@ z = X(:,(m+1):(m+p));
 s = [s0; X(1:end-1,(m+p+1):(m+p+d))];
 if ~isempty(F), F = reshape(F,m+p+d,T)'; end
 
-function [X,F,exitflag] = NewtonProblem(func,s0,xss,X,p,e,params,LB,UB,eqsolver,eqsolveroptions)
-%% NEWTONPROBLEM 
-  
-exitflag = 1;
-switch eqsolver
- case 'fsolve'
-  options = optimset('Display','off',...
-                     'Jacobian','on');
-  options = optimset(options,eqsolveroptions);
-  [X,F,exitflag] = fsolve(@(x) recsDeterministicPb(x,func,s0,xss,p,e,params),...
-                          X,...
-                          options);
-  if exitflag~=1, disp('No convergence'); end
- case 'lmmcp'
-  [X,F,exitflag] = lmmcp(@(x) recsDeterministicPb(x,func,s0,xss,p,e,params),...
-                         X,...
-                         LB,...
-                         UB,...
-                         eqsolveroptions);
-  if exitflag~=1, disp('No convergence'); end
- case 'ncpsolve'
-  [X,F] = ncpsolve(@(x) ncpsolvetransform(x,@recsDeterministicPb,func,s0,xss,p,e,params),...
-                   LB, ...
-                   UB,...
-                   X);
-  F     = -F;
- case 'path'
-  global par
-  par   = {@recsDeterministicPb,func,s0,xss,p,e,params};
-  try
-    [X,F] = pathmcp(X,...
-                    LB, ...
-                    UB,...
-                    'pathtransform');
-  catch
-    F = [];
-    exitflag = 0;
-  end
-  clear global par
-end
 
 function B = bounds(func,s0,params)
 %% BOUNDS Concatenates lower and upper bounds to permit differentiation

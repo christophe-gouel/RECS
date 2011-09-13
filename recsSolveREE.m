@@ -117,7 +117,8 @@ end
 func = model.func;
 
 if strcmp(reemethod,'1-step') && (strcmp(funapprox,'expapprox') || strcmp(funapprox,'resapprox'))
-  warning(['Solving the rational expectations problem is not implemented when ' ...
+  warning('RECS:Switching2Iterative',...
+          ['Solving the rational expectations problem is not implemented when ' ...
            'approximating this funtion. Switching to the iterative scheme.'])
 end
 
@@ -136,7 +137,7 @@ switch reemethod
 end
 
 if exitflag~=1
-  warning('recs:FailureREE','Failure to find a rational expectations equilibrium');
+  warning('RECS:FailureREE','Failure to find a rational expectations equilibrium');
 end
 
 %% Outputs calculations
@@ -181,7 +182,8 @@ if isempty(z)
     h   = funeval(c,fspace,snextinterp);
     if nargout(func)==6
       output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,n),:),snext,zeros(size(snext,1),m),params,output);
+      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,n),:),snext,...
+                               zeros(size(snext,1),m),params,output);
       h                 = h.*hmult;
     end
 

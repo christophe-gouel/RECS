@@ -3,7 +3,7 @@
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-warning off backtrace
+warning('off','backtrace')
 
 recsdirectory = fileparts(which('recsSimul'));
 
