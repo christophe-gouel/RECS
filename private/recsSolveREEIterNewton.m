@@ -36,14 +36,14 @@ function [c,x,z,f,exitflag] = recsSolveREEIterFull(interp,model,s,x,options)
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
-%    method           : 'expapprox' (default), 'expfunapprox', 'resapprox-simple'
+%    funapprox           : 'expapprox' (default), 'expfunapprox', 'resapprox-simple'
 %                       or 'resapprox-complete'
 %    reesolver        : 'krylov' (default), 'mixed', 'SA' or 'fsolve' (in test)
 %    reesolveroptions : options structure to be passed to reesolver
-%    useapprox        : (default: 1) behaviour dependent of the chosen method. If 0 and
-%                       method is 'expapprox' then next-period responses are
+%    useapprox        : (default: 1) behaviour dependent of the chosen funapprox. If 0 and
+%                       funapprox is 'expapprox' then next-period responses are
 %                       calculated by equations solve and not just
-%                       interpolated. If 1 and method is 'resapprox', the guess
+%                       interpolated. If 1 and funapprox is 'resapprox', the guess
 %                       of response variables is found with the new
 %                       approximation structure
 %
@@ -72,9 +72,10 @@ defaultopt = struct(                  ...
     'display'           , 1          ,...
     'eqsolver'          , 'path' ,...
     'eqsolveroptions'   , struct([]) ,...
+    'extrapolate'       , 1,...
     'functional'        , 0          ,...
     'loop_over_s'       , 0          ,...
-    'method'            , 'resapprox-complete',...
+    'funapprox'            , 'resapprox-complete',...
     'reesolver'         , 'fsolve'   ,...
     'reesolveroptions'  , struct([]) ,...
     'useapprox'         , 0);
@@ -82,8 +83,9 @@ warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
 
+extrapolate        = options.extrapolate;
 functional         = options.functional;
-method             = lower(options.method);
+funapprox             = lower(options.funapprox);
 reesolver          = lower(options.reesolver);
 reesolveroptions   = catstruct(struct('showiters' , options.display,...
                                       'atol'      , sqrt(eps),...
@@ -103,7 +105,7 @@ else
   error('model.func must be either a string or a function handle')
 end
 
-switch method
+switch funapprox
  case 'expapprox'
   c      = interp.cz;
  case 'expfunapprox'
@@ -170,7 +172,7 @@ if isempty(z)
   xx     = x(ind,:);
   output = struct('F',1,'Js',0,'Jx',0);
   snext  = func('g',ss,xx,[],e(repmat(1:K,1,n),:),[],[],params,output);
-  switch method
+  switch funapprox
    case 'expfunapprox'
     h   = funeval(c,fspace,snext);
     if nargout(func)==6
@@ -200,17 +202,17 @@ function [R,dRdc] = ResidualFunction(cc)
   cc    = reshape(cc,[],n)';
   if functional, params{end} = cc; end
     
-  if useapprox && strcmp(method,'resapprox-complete') % x calculated by interpolation
+  if useapprox && strcmp(funapprox,'resapprox-complete') % x calculated by interpolation
     [LB,UB] = func('b',s,[],[],[],[],[],params);
     x       = min(max(funeval(cc,fspace,Phi),LB),UB);
   end % if not previous x is used
 
   [x,f]  = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
   if nargout==1
-    R = recsResidual(s,x,func,params,cc,fspace,method,Phi);
+    R = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
   else
-    [R,Rx,Rc] = recsResidual(s,x,func,params,cc,fspace,method,Phi);
-    [F,Fx,Fc] = recsEquilibrium(x,s,z,func,params,grid,cc,e,w,fspace,method);
+    [R,Rx,Rc] = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
+    [F,Fx,Fc] = recsEquilibrium(x,s,z,func,params,grid,cc,e,w,fspace,funapprox,extrapolate);
     dRdc = -Rx*(Fx\Fc)+Rc;
   end
 
