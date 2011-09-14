@@ -41,7 +41,7 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
-%    reemethod        : 'iter' (default) or '1-step'  
+%    reemethod        : 'iter' (default), 'iter-newton' or '1-step'  
 %    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve' (in test)
 %    reesolveroptions : options structure to be passed to reesolver
 %    useapprox        : (default: 1) behaviour dependent of the chosen function to
@@ -132,6 +132,8 @@ z      = zeros(n,0);
 switch reemethod
   case 'iter'
     [c,x,z,f,exitflag] = recsSolveREEIter(interp,model,s,x,c,options);
+  case 'iter-newton'
+    [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);  
   case '1-step'
     [c,x,f,exitflag] = recsSolveREEFull(interp,model,s,x,c,options);
 end
