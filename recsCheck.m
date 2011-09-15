@@ -1,19 +1,32 @@
 function [err,discrepancy] = recsCheck(model,s,x,z,e,snext,xnext)
 % RECSCHECK Checks analytical derivatives against numerical ones
 %
-% RECSCHECK(MODEL,S,X,Z)
+% When the model file is not generated automatically by dolo-recs, RECSCHECK is
+% useful to verify that the hand-coded Jacobians are good.
 %
-% RECSCHECK(MODEL,S,X,Z,E)
+% RECSCHECK(MODEL,S,X,Z) checks analytical derivatives on the point defined by
+% the 1-by-d vector of state variables, S, the 1-by-m vector of response
+% variables, X, and the 1-by-p vector of expectations variables, Z. In this
+% default case, RECSCHECK tests the derivatives for shocks at their mean level;
+% for next-period state variables equal to S; and for next-period response
+% variables equal to X.
 %
-% RECSCHECK(MODEL,S,X,Z,E,SNEXT)
+% RECSCHECK(MODEL,S,X,Z,E) checks derivatives for the value of the shocks
+% supplied in E.
 %
-% RECSCHECK(MODEL,S,X,Z,E,SNEXT,XNEXT)
+% RECSCHECK(MODEL,S,X,Z,E,SNEXT) checks derivatives for the value of next-period
+% state variables supplied in SNEXT.
 %
-% ERR = RECSCHECK(MODEL,S,X,Z,...) returns ERR, a 1x6 vector containing the maximal
+% RECSCHECK(MODEL,S,X,Z,E,SNEXT,XNEXT) checks derivatives for the value of
+% next-period response variables supplied in XNEXT.
+%
+% ERR = RECSCHECK(MODEL,S,X,Z,...) returns ERR, a 1x9 vector containing the maximal
 % differences between analytical and numerical derivatives.
 %
 % [ERR,DISCREPANCY] = RECSCHECK(MODEL,S,X,Z,...) returns DISCREPANCY, a structure
 % containing the detailed differences between analytical and numerical derivatives.
+%
+% See also RECSMODELINIT.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
