@@ -1,7 +1,29 @@
 function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 % RECSFIRSTGUESS finds a first guess using the perfect foresight solution
 %
-% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS)
+% RECSFIRSTGUESS tries to find a first-guess for the rational expectations model
+% by solving the corresponding perfect foresight solution on all the grid points
+% of the state variables. By default, it considers that the model goes back to
+% its deterministic steady state in 50 periods.
+%
+% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS) uses the interpolation structure
+% defined in the structure INTERP to fit the perfect foresight solution of the
+% model defined in the structure MODEL. The grid of state variables is provided in
+% the n-by-d matrix S. A first guess for the steady state of the model is provided
+% in SSS and XSS for state and response variables. RECSFIRSTGUESS returns an
+% interpolation structure, INTERP, containing the first guess.
+% INTERP is a structure, which has to include the following fields:
+%    fspace       : a definition structure for the interpolation family (created
+%                   by the function fundef)
+%    Phi          : a basis structure defined on the grid S (created by funbas
+%                   or funbasx)
+% MODEL is a structure, which has to include the following fields:
+%    [e,w]  : discrete distribution with finite support with e the values and w the
+%             probabilities (it could be also the discretisation of a continuous
+%             distribution through quadrature or Monte Carlo drawings)
+%    func   : function name or anonymous function that defines the model's equations
+%    params : model's parameters, it is preferable to pass them as a cell array
+%             but other formats are acceptable
 %
 % INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T) uses T (integer) for time horizon.
 %
