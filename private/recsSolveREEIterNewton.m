@@ -1,6 +1,9 @@
 function [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
 % RECSSOLVEREEITERFULL 
-  
+%
+% RECSSOLVEREEITERFULL is still in development. It does not produce a scarce
+% Jacobian so it is not possible to use Path with it.
+    
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
@@ -8,10 +11,11 @@ function [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
 extrapolate        = options.extrapolate;
 functional         = options.functional;
 funapprox          = lower(options.funapprox);
+reesolver          = lower(options.reesolver);
 reesolveroptions   = catstruct(struct('showiters' , options.display,...
-                                      'atol'      , sqrt(eps),...
-                                      'lmeth'     , 3,...
-                                      'rtol'      , eps),...
+                                      'display','iter-detailed',...
+                                      'Diagnostics','on',...
+                                      'DerivativeCheck','on'),...
                                options.reesolveroptions);
 useapprox          = options.useapprox;
 
@@ -28,14 +32,10 @@ z        = zeros(n,0);
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 
 %% Solve for the rational expectations equilibrium
-if options.display==1
-  reesolveroptions = optimset('display','iter-detailed',...
-                              'Diagnostics','on',...
-                              'Jacobian','on',...
-                              'DerivativeCheck','on');
-end
-[c,~,exitflag] = fsolve(@ResidualFunction, reshape(c',[],1), reesolveroptions);
-
+LB = -inf(numel(c),1);
+UB = +inf(numel(c),1);
+[X,f,exitflag] = runeqsolver(@ResidualFunction,reshape(c',[],1),LB,UB,...
+                             reesolver,reesolveroptions);
 c = reshape(c,[],n)';
 c = c(:);
 
