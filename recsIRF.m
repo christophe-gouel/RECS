@@ -1,17 +1,30 @@
 function [si,xi] = recsIRF(model,interp,shock,nrep,nper,options)
-% RECSIRF Computes Impulse Response Functions
-% 
-% SI = RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER)
+% RECSIRF Computes Impulse Response Functions (IRF)
 %
-% RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER,OPTIONS)
+% RECSIRF computes IRF based on the approach of Koop et al. [1].
 %
-% [SI,XI] = RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER,...)
+% SI = RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER) computes the IRF for the model defined
+% in the structure MODEL, by using the interpolation structure defined in the
+% structure INTERP. The IRF are calculated on NREP scenarios of NPER periods
+% each. The impulse is given by the 1-by-q vector SHOCK which is applied at the
+% initial period while the model is on its risky steady state (for a definition,
+% see Coeurdacier et al. [2]). RECSIRF produces plots of the IRF and returns the
+% NPER-by-d matrix SI, containing the difference between the reference simulation
+% and the shock simulation (e.g., the IRF) for the state variables.
+%
+% RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER,OPTIONS) computes the IRF with the
+% parameters defined by the structure OPTIONS. The fields of the structure are
+% those used in recsSimul.
+%
+% [SI,XI] = RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER,...) returns the NPER-by-m matrix
+% XI, containing the IRF for the response variables.
 %
 % References
 % [1] Koop, G., Pesaran, M. H. and Potter, S. M. (1996), Impulse response
 % analysis in nonlinear multivariate models, Journal of Econometrics, 74(1), 119-147.
+% DOI: <a href="http://dx.doi.org/10.1016/0304-4076(95)01753-4">10.1016/0304-4076(95)01753-4</a>
 % [2] Coeurdacier, N., Rey, H. and Winant, P. (2011), The Risky Steady State,
-% American Economic Review - Papers and Proceedings, 101(3), 398-401.  
+% American Economic Review - Papers and Proceedings, 101(3), 398-401.
 % DOI: <a href="http://dx.doi.org/10.1257/aer.101.3.398">10.1257/aer.101.3.398</a>
 %
 % See also RECSSIMUL.
