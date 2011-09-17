@@ -3,12 +3,13 @@ function [s,x,z] = recsSS(model,s,x,options)
 %
 % RECSSS cannot find the deterministic steady state of a functional
 % equation problem since, in this case, the steady state depends on
-% the model solution.
+% the model solution. It is not possible either to solve models in which bounds
+% depend on state variables.
 %
 % S = RECSSS(MODEL,S,X) tries to find the non-stochastic steady
 % state of the model defined in the structure MODEL, by using as
 % first guess the vector of state and response variables S and
-% X. RECSSS returns the value of the state variables at steady state.  
+% X. RECSSS returns the value of the state variables at steady state.
 % MODEL is a structure, which has to include the following fields:
 %    [e,w] : discrete distribution with finite support with e the values and w the
 %            probabilities (it could be also the discretisation of a continuous
@@ -62,6 +63,10 @@ else
   error('model.func must be either a string or a function handle')
 end
 
+if norm(numjac(@(S) bounds(func,S,params),s),Inf)>eps
+  error('Bounds should be independent of state variables')
+end
+
 %% Prepare input variables
 X       = [s(:); x(:)];
 [LB,UB] = func('b',s,[],[],[],[],[],params);
@@ -73,14 +78,15 @@ UB      = [+inf(size(s(:))); UB(:)];
                              func,params,e,d,m);
 
 if exitflag~=1
-  warning('RECS:SSNotFound','Failure to find a deterministic steady state'); 
+  warning('RECS:SSNotFound','Failure to find a deterministic steady state');
 end
 
-%% Prepare outputs 
+%% Prepare outputs
 s      = X(1:d)';
 x      = X(d+1:d+m)';
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 z      = func('h',s,x,[],e,s,x,params,output);
+
 
 function [F,J] = SSResidual(X,func,params,e,d,m)
 %% SSRESIDUAL evaluates the equations and Jacobians of the steady-state finding problem
@@ -111,9 +117,9 @@ if nargout==2 % With Jacobian calculation
   J(d+1:d+m,1:d)     = permute(fs,[2 3 1])+fz*permute(hs+hsnext,[2 3 1]);
   J(d+1:d+m,d+1:d+m) = permute(fx,[2 3 1])+fz*permute(hx+hxnext,[2 3 1]);
   J                  = sparse(J);
-  
+
   F      = [ss-g f]';
-  
+
 else % Without Jacobian calculation
   output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
   zz     = func('h',ss,xx,[],e ,ss,xx,params,output);
@@ -121,5 +127,13 @@ else % Without Jacobian calculation
   f      = func('f',ss,xx,zz,[],[],[],params,output);
   F      = [ss-g f]';
 end
+
+
+function B = bounds(func,s0,params)
+%% BOUNDS Concatenates lower and upper bounds to permit differentiation
+
+[LB,UB]     = func('b',s0,[],[],[],[],[],params);
+B           = [LB(:); UB(:)];
+B(isinf(B)) = 0;
 
 return
