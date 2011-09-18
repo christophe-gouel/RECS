@@ -21,12 +21,8 @@ model = recsmodelinit('cs1.yaml',...
                       struct('Mu',100,'Sigma',100,'order',5));
 %}
 
-%% Find deterministic steady-state
-disp('Deterministic steady-state')
-[sss,xss,zss] = recsSS(model,100,100)
-
 %% Define approximation space
-interp.fspace = fundefn('spli',20,sss*0.5,sss*2);           % function space
+interp.fspace = fundefn('spli',20,50,200);           % function space
 s             = gridmake(funnode(interp.fspace));                    % state collocaton nodes
 interp.Phi    = funbasx(interp.fspace);
 
@@ -47,4 +43,4 @@ xlabel('Cash on hand')
 ylabel('Consumption')
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200);
+[~,~,~,~,stat] = recsSimul(model,interp,100*ones(1000,1),200);
