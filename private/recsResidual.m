@@ -1,9 +1,15 @@
 function [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,method,Phi)
-% RECSRESIDUAL
-  
+% RECSRESIDUAL evaluates the residual of rational expectations and its Jacobians
+%
+% RECSRESIDUAL is called by recsSolveREEIterNewton. It is not meant to be called
+% directly by the user.
+%
+% See also RECSFULLPB, RECSSOLVEREEITERNEWTON.
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%%
 [n,m] = size(x);
 
 switch method
@@ -14,14 +20,15 @@ switch method
     R = funeval(c,fspace,Phi)-func('h',[],[],[],[],s,x,params,output);
     R = reshape(R',n*p,1);
   end
-  
+
  case 'resapprox-complete'
   R = funeval(c,fspace,Phi)-x;
   R = reshape(R',n*m,1);
-  
+
 end
-  
+
 if nargout>=2
+  %% With Jacobian
   B = funbas(fspace,s);
 
   switch method
@@ -33,11 +40,11 @@ if nargout>=2
     Rx = -spblkdiag(permute(hxnext,[2 3 1]));
 
     Rc = kron(B,speye(p));
-   
+
    case 'resapprox-complete'
     Rx = -speye(n*m);
 
     Rc = kron(B,speye(m));
-  
+
   end
 end

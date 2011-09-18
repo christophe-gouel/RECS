@@ -1,14 +1,15 @@
 function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params)
 % RECSDETERMINISTICPB Evaluates the equations and Jacobian of the deterministic problem.
 %
-% RECSDETERMINISTICPB is called by RECSSOLVEDETERMINISTICPB. It is not meant
-% to be called directly by the user.
+% RECSDETERMINISTICPB is called by recsSolveDeterministicPb. It is not meant to be
+% called directly by the user.
 %
 % See also RECSSOLVEDETERMINISTICPB.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
 d = size(s0,2);
 m = size(xss,2);
 
@@ -25,7 +26,9 @@ z     = X(:,(m+1):(m+p));
 snext = X(:,(m+p+1):(m+p+d));
 s     = [s0; snext(1:end-1,:)];
 
-if nargout==2
+%% Computation of equations and Jacobian
+if nargout==2  
+  %% With Jacobian
   output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',1);
   [f,fs,fx,fz]                    = func('f',s,x,z ,[],[]   ,[]   ,params,output);
   if nargout(func)<6
@@ -58,6 +61,7 @@ if nargout==2
   J = blktridiag(permute(Jmd,[2 3 1]),permute(Jsub,[2 3 1]),permute(Jsup,[2 3 1]));
 
 else
+  %% Without Jacobian
   output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
   f                   = func('f',s,x,z ,[],[]   ,[]   ,params,output);
   if nargout(func)<6

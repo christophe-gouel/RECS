@@ -1,7 +1,7 @@
 function [x,f] = recsSolveEquilibrium(s,x,z,func,params,c,e,w,fspace,options)
 % RECSSOLVEEQUILIBRIUM Solves the system of equilibrium equations using x as starting values
 %
-% RECSSOLVEEQUILIBRIUM is called by RECSSIMUL and RECSSOLVEREE. It is
+% RECSSOLVEEQUILIBRIUM is called by recsSimul and recsSolveREE. It is
 % not meant to be called directly by the user.
 %
 % See also RECSSIMUL, RECSSOLVEREE.
@@ -19,14 +19,16 @@ funapprox        = lower(options.funapprox);
 [LB,UB] = func('b',s,[],[],[],[],[],params);
 
 %% Solve equilibrium equations on grid points
-if options.loop_over_s % Solve separately for each point on the grid
+if options.loop_over_s
+  %% Solve separately for each point on the grid
   f                 = zeros(size(x));
   [~,grid]          = spblkdiag(zeros(m,m,1),[],0);
   for i=1:n
     [x(i,:),f(i,:)] = eqsolve(x(i,:),s(i,:),z(i,:),func,params,eqsolver,grid,c,e,w,...
                               fspace,funapprox,eqsolveroptions,LB(i,:),UB(i,:),extrapolate);
   end
-else % Solve all the grid in one step
+else
+  %% Solve all the grid in one step
   [~,grid] = spblkdiag(zeros(m,m,n),[],0);
   [x,f]    = eqsolve(x,s,z,func,params,eqsolver,grid,c,e,w,fspace,funapprox, ...
                      eqsolveroptions,LB,UB,extrapolate);
@@ -34,7 +36,7 @@ end
 
 function [x,f] = eqsolve(x,s,z,func,params,eqsolver,grid,c,e,w,fspace,funapprox, ...
                          eqsolveroptions,LB,UB,extrapolate)
-%%
+%% Eqsolve
 
 [n,m]   = size(x);
 x       = reshape(x',[n*m 1]);

@@ -7,6 +7,7 @@ function [F,J] = ncpsolvetransform(x,model,varargin)
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%%
 if nargout==2
   [F,J] = model(x,varargin{:});
   J     = -J;

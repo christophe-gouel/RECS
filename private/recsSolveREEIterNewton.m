@@ -55,8 +55,10 @@ function [R,dRdc] = ResidualFunction(cc)
 
   [x,f]  = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
   if nargout==1
+    %% Without Jacobian
     R = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
   else
+    %% With Jacobian
     [R,Rx,Rc] = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
     [~,Fx,Fc] = recsEquilibrium(x,s,z,func,params,grid,cc,e,w,fspace,...
                                 funapprox,extrapolate);

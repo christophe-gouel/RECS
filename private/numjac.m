@@ -5,11 +5,12 @@ function J = numjac(FUN,x,epsilon,varargin)
 % applied to function FUN (function name or function handle) that accepts a vector
 % x as input and return a vector F. The Jacobian is evaluated at x.
 %
-% J = NUMJAC(FUN,x,epsilon) uses epsilon as step size (default value=srqt(eps))  
+% J = NUMJAC(FUN,x,epsilon) uses epsilon as step size (default value=srqt(eps))
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
 if isa(FUN,'char')
   FUN = str2func(FUN);
 elseif ~isa(FUN,'function_handle')
@@ -23,8 +24,10 @@ step  = epsilon.*scale;
 x1    = x+step;
 x0    = x-step;
 n     = length(x);
+
+%% Computation of finite difference Jacobian
 for j=1:n
-   xx     = x; 
+   xx     = x;
    xx(j)  = x1(j);
    f1     = FUN(xx,varargin{:});
    xx(j)  = x0(j);
