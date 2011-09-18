@@ -45,3 +45,13 @@ OPTIONAL INSTALLATION
   equilibrium.
 * Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
   distribution other than normal.
+
+ISSUES WITH 64-BIT COMPUTERS
+============================
+
+* The mex files in the CompEcon toolbox are not designed for 64-bit computers,
+  which may result in a slow execution of RECS files.
+* There is no compiled version of dolo-recs for 64-bit computers (because I do not
+  have one), so Matlab model files including the Jacobians have to be written by
+  hand. To circunvent this problem you can use dolo-recs from its Python source:
+  <https://github.com/albop/dynare-python>.
