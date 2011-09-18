@@ -1,10 +1,10 @@
 function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,funapprox,extrapolate)
 % RECSEQUILIBRIUM evaluate the equilibrium equations and Jacobian
 %
-% RECSEQUILIBRIUM is called by RECSSOLVEEQUILIBRIUM. It is not meant to be called
-% directly by the user.
+% RECSEQUILIBRIUM is called by recsFullPb and recsSolveEquilibrium. It is not meant
+% to be called directly by the user.
 %
-% See also RECSSOLVEEQUILIBRIUM.
+% See also RECSFULLPB, RECSSOLVEEQUILIBRIUM.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -35,7 +35,7 @@ switch funapprox
     [snext,~,gx]        = func('g',ss,xx,[],ee,[],[],params,output);
     if extrapolate, snextinterp = snext;
     else
-      snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
+      snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
     end
     Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
 
@@ -79,18 +79,18 @@ switch funapprox
     end
     Jxtmp = reshape(w'*reshape(Jxtmp,k,n*p*m),n,p,m);
     Jx    = fx+arraymult(fz,Jxtmp,n,m,p,m);
-    
+
     if nargout==3
       if ~strcmp(Bsnext.format,'expanded'), Bsnext = funbconv(Bsnext,zeros(1,d)); end
       Bsnext = mat2cell(Bsnext.vals{1}',n,k*ones(n,1))';
       switch funapprox % The product with fz is vectorized for 'expfunapprox' and
                     % executed in a loop for resapprox-complete', because it
                     % seems to be the fastest ways to do it.
-       case 'expfunapprox'     
+       case 'expfunapprox'
         [~,gridJc] = spblkdiag(zeros(1,n,p),[],0);
         Jc    = cellfun(@(X) full(spblkdiag((X*w)',gridJc,1,p)),...
                         Bsnext,'UniformOutput',false);
-        Jc    = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);     
+        Jc    = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);
         Jc    = arraymult(fz,Jc,n,m,p,numel(c));
         Jc    = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
        case 'resapprox-complete'
@@ -112,9 +112,9 @@ switch funapprox
     switch funapprox
      case 'expfunapprox'
       if extrapolate, snextinterp = snext;
-      else,      
+      else,
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
-                          fspace.a(ones(n*k,1),:));       
+                          fspace.a(ones(n*k,1),:));
       end
       h                   = funeval(c,fspace,snextinterp);
       if nargout(func)==6
@@ -128,7 +128,7 @@ switch funapprox
       if extrapolate, snextinterp = snext;
       else
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
-                          fspace.a(ones(n*k,1),:)); 
+                          fspace.a(ones(n*k,1),:));
       end
       xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
       output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);

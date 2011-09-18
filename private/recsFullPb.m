@@ -1,5 +1,10 @@
 function [G,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate)
-% RECSFULLPB
+% RECSFULLPB evaluates the equations and Jacobian of the complete rational expectations problem
+%
+% RECSFULLPB is called by recsSolveREEFull. It is not meant to be called directly
+% by the user.
+%
+% See also RECSSOLVEREEFULL.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -38,7 +43,7 @@ if nargout==2 % With Jacobian
     Rx = -spblkdiag(permute(hxnext,[2 3 1]));
 
     Rc = kron(B,speye(p));
-   
+
    case 'resapprox-complete'
     Rx = -speye(n*m);
 

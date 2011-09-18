@@ -1,9 +1,11 @@
 function [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
-% RECSSOLVEREEITERFULL 
+% RECSSOLVEREEITERNEWTON finds the REE of a model by doing a Newton iteration for the rational expectations step
 %
-% RECSSOLVEREEITERFULL is still in development. It does not produce a scarce
-% Jacobian so it is not possible to use Path with it.
-    
+% RECSSOLVEREEITERNEWTON is called by recsSolveREE. It is not meant to be called
+% directly by the user.
+%
+% See also RECSSOLVEREE, RECSSOLVEREEITER, RECSSOLVEREEFULL.
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
@@ -13,7 +15,7 @@ functional         = options.functional;
 funapprox          = lower(options.funapprox);
 reesolver          = lower(options.reesolver);
 reesolveroptions   = catstruct(struct('showiters' , options.display,...
-                                      'display','iter-detailed',...
+                                      'Display','iter',...
                                       'Diagnostics','on',...
                                       'DerivativeCheck','on'),...
                                options.reesolveroptions);
@@ -34,18 +36,18 @@ z        = zeros(n,0);
 %% Solve for the rational expectations equilibrium
 LB = -inf(numel(c),1);
 UB = +inf(numel(c),1);
-[X,f,exitflag] = runeqsolver(@ResidualFunction,reshape(c',[],1),LB,UB,...
-                             reesolver,reesolveroptions);
-c = reshape(c,[],n)';
-c = c(:);
 
-%%
+[c,~,exitflag] = runeqsolver(@ResidualFunction,c(:),LB,UB,reesolver,...
+                             reesolveroptions);
+
+
+%% Nested function
 function [R,dRdc] = ResidualFunction(cc)
 % RESIDUALFUNCTION Calculates the residual of the model with regards to rational expectations
 
-  cc    = reshape(cc,[],n)';
+  cc    = reshape(cc,n,[]);
   if functional, params{end} = cc; end
-    
+
   if useapprox && strcmp(funapprox,'resapprox-complete') % x calculated by interpolation
     [LB,UB] = func('b',s,[],[],[],[],[],params);
     x       = min(max(funeval(cc,fspace,Phi),LB),UB);
@@ -56,8 +58,10 @@ function [R,dRdc] = ResidualFunction(cc)
     R = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
   else
     [R,Rx,Rc] = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
-    [~,Fx,Fc] = recsEquilibrium(x,s,z,func,params,grid,cc,e,w,fspace,funapprox,extrapolate);
-    dRdc = -Rx*(Fx\Fc)+Rc;
+    [~,Fx,Fc] = recsEquilibrium(x,s,z,func,params,grid,cc,e,w,fspace,...
+                                funapprox,extrapolate);
+    Fc        = sparse(Fc);
+    dRdc      = -Rx*(Fx\Fc)+Rc;
   end
 
 end

@@ -5,7 +5,7 @@ function [c,x,f,exitflag] = recsSolveREEFull(interp,model,s,x,c,options)
 % by the user.
 %
 % See also RECSSOLVEEREE, RECSSOLVEEREEITER.
-  
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
@@ -44,11 +44,12 @@ UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 % $$$ return
 
 %% Solve for the rational expectations equilibrium
-[X,f,exitflag] = runeqsolver(@recsFullPb,X,LB,UB,eqsolver,eqsolveroptions,...
+[X,G,exitflag] = runeqsolver(@recsFullPb,X,LB,UB,eqsolver,eqsolveroptions,...
                              s,func,params,grid,e,w,fspace,funapprox,Phi,...
                              m,functional,extrapolate);
 
-%% Reshape outputs 
+%% Reshape outputs
 x     = reshape(X(1:n*m),m,n)';
 c     = reshape(X(n*m+1:end),[],n)';
+f     = reshape(G(1:n*m),m,n)';
 
