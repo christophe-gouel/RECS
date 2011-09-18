@@ -7,11 +7,11 @@
 % numerical ones
 % * <matlab:doc('recsConvert') |recsConvert|> - Convert the
 % interpolation structure of a model to another form
+% * <matlab:doc('recsdemos') |recsdemos|> - Run all RECS demonstration files
 % * <matlab:doc('recsFirstGuess') |recsFirstGuess|> - Find a first guess using the
 % perfect foresight solution
 % * <matlab:doc('recsInstall') |recsInstall|> - Finalize RECS installation
-% * <matlab:doc('recsSimul') |recsSimul|> - Simulate a model from starting values
-%   given in s0 and for nper period
+% * <matlab:doc('recsSimul') |recsSimul|> - Simulate a model
 % * <matlab:doc('recsSolveDeterministicPb') |recsSolveDeterministicPb|> - Solve a
 % perfect foresight problem
 % * <matlab:doc('recsSolveREE') |recsSolveREE|> - Find the rational expectations

@@ -1,5 +1,9 @@
 function isfilepresent(filename)
-  
+% ISFILEPRESENT
+
+% Copyright (C) 2011 Christophe Gouel
+% Licensed under the Expat license, see LICENSE.txt
+
 if exist(filename,'file')
   doc(filename);
 else
@@ -11,4 +15,4 @@ else
       web(['file://' fullfile(recsdirectory,'html','pathnotinstalled.html')], ...
           '-helpbrowser');
   end
-end  
+end

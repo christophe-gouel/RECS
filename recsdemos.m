@@ -1,4 +1,4 @@
-% RECSDEMOS
+% RECSDEMOS runs all RECS demonstration files
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -10,6 +10,7 @@ recsdirectory = fileparts(which('recsSimul'));
 addpath([recsdirectory '/demos'])
 
 gro1
+cs1
 sto1
 sto2
 sto3
