@@ -1,10 +1,10 @@
 function [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,funapprox,Phi)
 % RECSRESIDUAL evaluates the residual of rational expectations and its Jacobians
 %
-% RECSRESIDUAL is called by recsFullPb and recsSolveREEIterNewton. It is not meant
-% to be called directly by the user.
+% RECSRESIDUAL is called by recsSolveREEFull and recsSolveREEIterNewton. It is not
+% meant to be called directly by the user.
 %
-% See also RECSFULLPB, RECSSOLVEREEITERNEWTON.
+% See also RECSSOLVEREEFULL, RECSSOLVEREEITERNEWTON.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

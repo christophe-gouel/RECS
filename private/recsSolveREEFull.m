@@ -32,8 +32,8 @@ X        = [reshape(x',[n*m 1]); reshape(c',[],1)];
 LB       = [reshape(LB',[n*m 1]); -inf(n*size(c,2),1)];
 UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 
-% $$$ [f,J] = recsFullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate);
-% $$$ Jnum = numjac(@(VAR) recsFullPb(VAR,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate),X);
+% $$$ [f,J] = FullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate);
+% $$$ Jnum = numjac(@(VAR) FullPb(VAR,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate),X);
 % $$$ spy(J)
 % $$$ figure
 % $$$ spy(Jnum)
@@ -44,7 +44,7 @@ UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 % $$$ return
 
 %% Solve for the rational expectations equilibrium
-[X,G,exitflag] = runeqsolver(@recsFullPb,X,LB,UB,eqsolver,eqsolveroptions,...
+[X,G,exitflag] = runeqsolver(@FullPb,X,LB,UB,eqsolver,eqsolveroptions,...
                              s,func,params,grid,e,w,fspace,funapprox,Phi,...
                              m,functional,extrapolate);
 
@@ -53,3 +53,31 @@ x     = reshape(X(1:n*m),m,n)';
 c     = reshape(X(n*m+1:end),[],n)';
 f     = reshape(G(1:n*m),m,n)';
 
+function [G,J] = FullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate)
+% FULLPB evaluates the equations and Jacobian of the complete rational expectations problem
+
+%% Initialization
+n     = size(s,1);
+x     = X(1:m*n);
+x     = reshape(x,m,n)';
+c     = reshape(X(m*n+1:end),[],n)';
+if functional, params{end} = c; end
+
+%% Evaluate equations and Jacobian
+if nargout==2
+  %% With Jacobian
+  [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),func,params,...
+                              grid,c,e,w,fspace,funapprox,extrapolate);
+  [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,funapprox,Phi);
+
+  J = [Fx Fc;
+       Rx Rc];
+else
+  %% Without Jacobian
+  F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),...
+                       func,params,grid,c,e,w,fspace,funapprox,extrapolate);
+  R = recsResidual(s,x,func,params,c,fspace,funapprox,Phi);
+end
+
+% Concatenate equilibrium equations and rational expectations residual
+G = [F; R];

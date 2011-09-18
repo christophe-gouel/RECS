@@ -1,10 +1,10 @@
 function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,funapprox,extrapolate)
 % RECSEQUILIBRIUM evaluates the equilibrium equations and Jacobian
 %
-% RECSEQUILIBRIUM is called by recsFullPb and recsSolveEquilibrium. It is not meant
-% to be called directly by the user.
+% RECSEQUILIBRIUM is called by recsSolveREEFull and recsSolveEquilibrium. It is not
+% meant to be called directly by the user.
 %
-% See also RECSFULLPB, RECSSOLVEEQUILIBRIUM.
+% See also RECSSOLVEREEFULL, RECSSOLVEEQUILIBRIUM.
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
