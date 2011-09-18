@@ -1,8 +1,8 @@
-function [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,method,Phi)
+function [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,funapprox,Phi)
 % RECSRESIDUAL evaluates the residual of rational expectations and its Jacobians
 %
-% RECSRESIDUAL is called by recsSolveREEIterNewton. It is not meant to be called
-% directly by the user.
+% RECSRESIDUAL is called by recsFullPb and recsSolveREEIterNewton. It is not meant
+% to be called directly by the user.
 %
 % See also RECSFULLPB, RECSSOLVEREEITERNEWTON.
 
@@ -12,7 +12,7 @@ function [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,method,Phi)
 %%
 [n,m] = size(x);
 
-switch method
+switch funapprox
  case 'expfunapprox'
   p  = size(c,2);
   if nargout==1
@@ -31,7 +31,7 @@ if nargout>=2
   %% With Jacobian
   B = funbas(fspace,s);
 
-  switch method
+  switch funapprox
    case 'expfunapprox'
     output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',1,'hmult',0);
     [h,~,~,~,hxnext] = func('h',[],[],[],[],s,x,params,output);
