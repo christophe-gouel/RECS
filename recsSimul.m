@@ -67,6 +67,7 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
 if nargin<6
   options = struct([]);
   if nargin<5;
@@ -94,7 +95,7 @@ options         = catstruct(defaultopt,options);
 
 extrapolate     = options.extrapolate;
 functional      = options.functional;
-funapprox          = lower(options.funapprox);
+funapprox       = lower(options.funapprox);
 simulmethod     = lower(options.simulmethod);
 statdisplay     = options.stat;
 
@@ -123,6 +124,7 @@ if functional, params = [params fspace cx]; end
 m        = size(interp.cx,2);
 q        = size(funrand(1),2);
 
+%% Generate shocks
 output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
 ssim   = zeros(nrep,d,nper+1);
 xsim   = zeros(nrep,m,nper+1);
@@ -134,10 +136,11 @@ else
   esim(:,:,2:end) = shocks;
 end
 
+%% Simulate the model
 for t=1:nper+1
   if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params,output); end
   if extrapolate, sinterp = s0;
-  else, sinterp = max(min(s0,fspace.b(ones(nrep,1),:)),fspace.a(ones(nrep,1),:)); end
+  else sinterp = max(min(s0,fspace.b(ones(nrep,1),:)),fspace.a(ones(nrep,1),:)); end
   [LB,UB]    = func('b',sinterp,[],[],[],[],[],params);
   Phi        = funbasx(fspace,sinterp);
   xx         = min(max(funeval(cx,fspace,Phi),LB),UB);
@@ -175,13 +178,13 @@ for t=1:nper+1
   if nargout>=4, fsim(:,:,t) = f; end
 end
 
-% Check if state satisfies bounds
+%% Check if state satisfies bounds
 snmin = min(reshape(permute(ssim,[1 3 2]),[],d));
 snmax = max(reshape(permute(ssim,[1 3 2]),[],d));
 if any(snmin<fspace.a), warning('RECS:Extrapolation','Extrapolating beyond smin'), end;
 if any(snmax>fspace.b), warning('RECS:Extrapolation','Extrapolating beyond smax'), end;
 
-% Compute some descriptive statistics
+%% Compute some descriptive statistics
 if (nargout==5 || statdisplay) && (nper > 40)
   X = cat(2,ssim,xsim);
   X = permute(X(:,:,20:end),[2 1 3]);
@@ -226,7 +229,7 @@ end
 
 
 function acor = autocor(x)
-% AUTOCOR Computes the sample autocorrelation of a matrix of time-series x
+%% AUTOCOR Computes the sample autocorrelation of a matrix of time-series x
 
 maxlag = 5;
 [N,d]  = size(x);
