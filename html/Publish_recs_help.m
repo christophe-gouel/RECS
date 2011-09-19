@@ -14,3 +14,5 @@ publish('ug_solvers_eq.m',options);
 publish('recs_functions.m',options);
 publish('pathnotinstalled.m',options);
 publish('ug_setting_up.m',options);
+
+builddocsearchdb(fullfile(recsdirectory,'html'));

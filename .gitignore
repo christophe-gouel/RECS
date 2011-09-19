@@ -11,3 +11,4 @@ demo/*.log
 !/Doc/recsdemos.tex
 !/Doc/recs.bib
 /exe/*
+/html/helpsearch/*
