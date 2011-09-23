@@ -1,20 +1,22 @@
 function [interp1,s,x] =  recsConvert(interp0,model,order,smin,smax,options)
 % RECSCONVERT Converts the interpolation structure of a model to another form
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL) convert the interpolation structure
-% INTERP0 corresponding to the model defined in the structure MODEL. It returns
-% a new interpolation structure INTERP1.
+% INTERP1 = RECSCONVERT(INTERP0,MODEL) convert the interpolation structure INTERP0
+% corresponding to the model defined in the structure MODEL. It returns a new
+% interpolation structure INTERP1. Without any more arguments this command does not
+% change the interpolation structure. See below for entering new parameters.
 %
 % INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER) changes the order of the
 % interpolation structure using ORDER as the new order.
 %
 % INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMIN) changes the minimum values of
-% the interpolation grid using SMIN as the new minimum.
+% the interpolation grid using SMIN as the new minimum. The input ORDER can be
+% left empty (ORDER=[]) is you want to change only the minimum.
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMAX) changes the maximum values of
-% the interpolation grid using SMAX as the new maximum.
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMIN,SMAX) changes the maximum values
+% of the interpolation grid using SMAX as the new maximum.
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMAX,OPTIONS) converts the
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMIN,SMAX,OPTIONS) converts the
 % interpolation structure with the parameters defined by the structure OPTIONS.
 % The fields of the structure are those used in recsSimul.
 %
