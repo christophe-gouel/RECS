@@ -38,7 +38,7 @@
 % expectations, their information set and realized outcomes. Solving a rational
 % expectations model amounts to find an approximation or an algebraic
 % representation of the expectations terms so that the model can be reduced to
-% something easier to solve. 
+% something easier to solve.
 %
 % For example, if it is possible to find an approximation of the relationship
 % between expectations and current-period state variables (i.e., the parameterized
@@ -47,7 +47,7 @@
 % $$\underline{x}(s) \le x \le \overline{x}(s) \perp f\left(s,x,\phi(s)\right),$$
 %
 % where $z \approx \phi(s)$. This equation can be solved for x with any
-% <ug_solvers_eq.html MCP solvers>. 
+% <ug_solvers_eq.html MCP solvers>.
 %
 % The RECS solver implements various methods to solve rational expectations
 % models and find approximation of expectations terms. See <ug_methods.html
@@ -55,17 +55,17 @@
 
 %% References
 %
-% [1] <http://dx.doi.org/10.1007/s10614-005-1784-z Fackler, P. L. (2005). A MATLAB
-% Solver for Nonlinear Rational Expectations Models. Computational Economics,
-% 26(2), 173-181.>
+% [1] <http://dx.doi.org/10.1007/s10614-005-1784-z Fackler, P. L. (2005). A
+% MATLAB Solver for Nonlinear Rational Expectations Models. _Computational
+% Economics_, 26(2), 173-181.>
 %
 % [2] <http://dx.doi.org/10.3982/ECTA6297 Winschel, V. and Krätzig,
 % M. (2010). Solving, Estimating, and Selecting Nonlinear Dynamic Models Without
-% the Curse of Dimensionality. Econometrica, 78(2), 803-821.>
+% the Curse of Dimensionality. _Econometrica_, 78(2), 803-821.>
 %
 % [3] <http://www.jstor.org/stable/1391746 den Haan, W. J. and Marcet, A.
 % (1990). Solving the Stochastic Growth Model by Parameterizing
-% Expectations. Journal of Business & Economic Statistics, 8(1), 31-34.>
+% Expectations. _Journal of Business & Economic Statistics_, 8(1), 31-34.>
 
 %%
 % Copyright (C) 2011 Christophe Gouel

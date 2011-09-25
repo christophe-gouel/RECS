@@ -21,7 +21,7 @@
 % MATLAB internal command, the name of the Path MATLAB file is |pathmcp.m|.
 
 %% Nonlinear equations solver
-% |fsolve| is the only nonlinear equations solver implemented in RECS. You need
+% |fsolve| is the only nonlinear equations solver interfaced with RECS. You need
 % to have MATLAB Optimization Toolbox to use this solver.
 
 %% See also

@@ -9,6 +9,7 @@ publish('recs_product_page.m',options);
 publish('getting_started.m',options);
 publish('installation.m',options);
 publish('def_sre.m',options);
+publish('MCP.m',options);
 publish('user_guide.m',options);
 publish('ug_solvers_eq.m',options);
 publish('recs_functions.m',options);
