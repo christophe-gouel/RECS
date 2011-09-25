@@ -17,8 +17,6 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %                   response variables for cx, or of the expectations for cz
 %    fspace       : a definition structure for the interpolation family (created
 %                   by the function fundef)
-%    Phi          : a basis structure defined on the grid S (created by funbas
-%                   or funbasx)
 % MODEL is a structure, which has to include the following fields:
 %    [e,w] : discrete distribution with finite support with e the values and w the
 %            probabilities (it could be also the discretisation of a continuous
