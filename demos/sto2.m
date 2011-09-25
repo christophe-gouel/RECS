@@ -32,7 +32,6 @@ smax          = 2;
 interp.fspace = fundefn('spli',order,smin,smax);                 % function space
 snodes        = funnode(interp.fspace);                             % state collocaton nodes
 s             = gridmake(snodes);
-interp.Phi    = funbasx(interp.fspace);
 
 %% Find a first guess through the perfect foresight solution
 [interp,xinit,zinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);
@@ -54,8 +53,8 @@ toc
 
 options.eqsolver = 'ncpsolve';
 optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
-interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
-interp.cz = funfitxy(interp.fspace,interp.Phi,zinit);
+interp.cx = funfitxy(interp.fspace,s,xinit);
+interp.cz = funfitxy(interp.fspace,s,zinit);
 tic
 interp = recsSolveREE(interp,model,s,xinit,options);
 toc

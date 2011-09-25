@@ -24,11 +24,10 @@ model = recsmodelinit('cs1.yaml',...
 %% Define approximation space
 interp.fspace = fundefn('spli',20,50,200);           % function space
 s             = gridmake(funnode(interp.fspace));                    % state collocaton nodes
-interp.Phi    = funbasx(interp.fspace);
 
 %% First-guess: Consumption equal to cash on hand
 x         = s;
-interp.cx = funfitxy(interp.fspace,interp.Phi,x);
+interp.cx = funfitxy(interp.fspace,s,x);
 interp.ch = [];  % To force the solve to compute the approximation of the
                  % expectations function
 

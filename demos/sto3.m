@@ -33,7 +33,6 @@ smax          = [1.4; Sgbar];
 interp.fspace = fundefn('spli',order,smin,smax);               % function space
 snodes        = funnode(interp.fspace);                        % state collocaton nodes
 s             = gridmake(snodes);
-interp.Phi    = funbasx(interp.fspace);
 n             = prod(order);
 
 %% Provide a first guess

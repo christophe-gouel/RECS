@@ -27,7 +27,7 @@ function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 %
 % INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T) uses T (integer) for time horizon.
 %
-% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T,OPTIONS) solves the problem with the 
+% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T,OPTIONS) solves the problem with the
 % parameters defined by the structure OPTIONS. The fields of the structure are
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver (default:
@@ -40,7 +40,7 @@ function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 % containing the value of the expectations variables in the first period.
 %
 % See also RECSSOLVEDETERMINISTICPB, RECSSOLVEREE, RECSSS.
-  
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
@@ -55,6 +55,8 @@ elseif isa(model.func,'function_handle')
 else
   error('model.func must be either a string or a function handle')
 end
+
+interp.Phi = funbasx(interp.fspace);
 
 %% Solve for the deterministic steady state
 [sss,xss,zss] = recsSS(model,sss,xss,options);

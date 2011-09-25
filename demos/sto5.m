@@ -37,14 +37,13 @@ smax          = [pstat^(1/mu)*2; pstat^(1/mu)*eta*2];
 interp.fspace = fundefn('spli',order,smin,smax);               % function space
 snodes        = funnode(interp.fspace);                        % state collocaton nodes
 s             = gridmake(snodes);
-interp.Phi    = funbasx(interp.fspace);
 n             = prod(order);
 
 %% Provide a first guess
 xinit         = [0.1*zeros(n,2) max(s(:,1).^(1/alpha),0.8) ...
                  max((s(:,2)/lambda).^(1/alpha),0.8) zeros(n,2) ones(n,2)];
 interp.cz     = ones(n,4);
-interp.cx     = funfitxy(interp.fspace,interp.Phi,xinit);
+interp.cx     = funfitxy(interp.fspace,s,xinit);
 interp.ch     = ones(n,4);
 
 %% Solve for rational expectations
@@ -56,13 +55,13 @@ optset('ncpsolve','type','smooth')
 
 % Solve by Full Newton
 tic
-options.reemethod = '1-step';  
+options.reemethod = '1-step';
 recsSolveREE(interp,model,s,xinit,options);
 toc
 
 % Solve by successive approximations
 tic
-options.reemethod = 'iter';  
+options.reemethod = 'iter';
 interp = recsSolveREE(interp,model,s,xinit,options);
 toc
 

@@ -30,14 +30,13 @@ smax          = 2;
 interp.fspace = fundefn('spli',order,smin,smax);                 % function space
 snodes        = funnode(interp.fspace);                             % state collocaton nodes
 s             = gridmake(snodes);
-interp.Phi    = funbasx(interp.fspace);
 n             = order;
 
 %% Provide a first guess
 xinit  = [zeros(n,1) ones(n,1) s.^(1/alpha)];
-interp.cz = funfitxy(interp.fspace,interp.Phi,ones(n,2));
-interp.cx = funfitxy(interp.fspace,interp.Phi,xinit);
-interp.ch = funfitxy(interp.fspace,interp.Phi,[s.^(1/alpha) s.^(1/alpha)]);
+interp.cz = funfitxy(interp.fspace,s,ones(n,2));
+interp.cx = funfitxy(interp.fspace,s,xinit);
+interp.ch = funfitxy(interp.fspace,s,[s.^(1/alpha) s.^(1/alpha)]);
 
 %% Find deterministic steady-state
 disp('Deterministic steady-state')

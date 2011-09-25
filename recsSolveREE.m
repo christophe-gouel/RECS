@@ -28,7 +28,7 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %             (compulsory with the functional option) but other formats are
 %             acceptable
 %
-% INTERP = RECSSOLVEREE(INTERP,MODEL,S,X,OPTIONS) solves the problem with the 
+% INTERP = RECSSOLVEREE(INTERP,MODEL,S,X,OPTIONS) solves the problem with the
 % parameters defined by the structure OPTIONS. The fields of the structure are
 %    display          : 1 to show iterations (default: 1)
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
@@ -41,7 +41,7 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
-%    reemethod        : 'iter' (default), 'iter-newton' or '1-step'  
+%    reemethod        : 'iter' (default), 'iter-newton' or '1-step'
 %    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve' (in test)
 %    reesolveroptions : options structure to be passed to reesolver
 %    useapprox        : (default: 1) behaviour dependent of the chosen function to
@@ -102,8 +102,9 @@ switch funapprox
  otherwise
   c      = interp.cx;
 end
-fspace = interp.fspace;
-Phi    = interp.Phi;
+fspace     = interp.fspace;
+interp.Phi = funbasx(fspace);
+Phi        = interp.Phi;
 if functional, model.params = [model.params fspace c]; end
 
 e      = model.e;
@@ -133,7 +134,7 @@ switch reemethod
   case 'iter'
     [c,x,z,f,exitflag] = recsSolveREEIter(interp,model,s,x,c,options);
   case 'iter-newton'
-    [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);  
+    [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);
   case '1-step'
     [c,x,f,exitflag] = recsSolveREEFull(interp,model,s,x,c,options);
 end
@@ -148,14 +149,14 @@ c = reshape(c,n,[]);
 switch funapprox
  case 'expapprox'
   interp.cz = c;
-  interp.cx = funfitxy(fspace,Phi,x); 
+  interp.cx = funfitxy(fspace,Phi,x);
   if isfield(interp,'ch')
     output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
     interp.ch = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output));
   end
  case 'expfunapprox'
   interp.ch = c;
-  interp.cx = funfitxy(fspace,Phi,x); 
+  interp.cx = funfitxy(fspace,Phi,x);
  otherwise
   interp.cx = c;
   if ~isempty(z), interp.cz = funfitxy(fspace,Phi,z); end
@@ -175,8 +176,8 @@ if isempty(z)
   output = struct('F',1,'Js',0,'Jx',0);
   snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
   if extrapolate, snextinterp = snext;
-  else      
-    snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:)); 
+  else
+    snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
   end
 
   switch funapprox
@@ -202,6 +203,6 @@ if isempty(z)
 
   end
   z         = reshape(w'*reshape(h,k,n*p),n,p);
-  interp.cz = funfitxy(fspace,Phi,z); 
+  interp.cz = funfitxy(fspace,Phi,z);
 end
 
