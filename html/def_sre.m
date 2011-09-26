@@ -70,4 +70,4 @@
 %%
 % Copyright (C) 2011 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:licensetohelp LICENSE.txt>
+% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>

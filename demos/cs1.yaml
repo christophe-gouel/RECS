@@ -4,41 +4,42 @@
 
 declarations:
 
-    states: [X]
+  states: [X]
 
-    controls: [C]
+  controls: [C]
 
-    expectations: [E]
+  expectations: [E]
 
-    shocks: [Y]
+  shocks: [Y]
 
-    parameters: [r, delta, rho]
+  parameters: [r, delta, rho]
 
+  
 equations:
 
-    arbitrage:
+  arbitrage:
 
-        - E*(1+r)/(1+delta)-C^(-rho)=0 | -inf <= C <= X
+    - E*(1+r)/(1+delta)-C^(-rho)=0 | -inf <= C <= X
 
-    transition:
+  transition:
 
-        - X = (1+r)*(X(-1)-C(-1))+Y
+    - X = (1+r)*(X(-1)-C(-1))+Y
 
-    expectation:
+  expectation:
 
-        - E = C(1)^(-rho)
+    - E = C(1)^(-rho)
 
+    
 calibration:
 
-    parameters:
-        r     : 0.05
-        delta : 0.1
-        rho   : 2
+  parameters:
 
-    steady_state:
-        X : 100
-        C : 100
-        E : C^(-rho)
+    r     : 0.05
+    delta : 0.1
+    rho   : 2
 
-    covariances: |
-      [ [ 100 ] ]
+  steady_state:
+
+    X : 100
+    C : 100
+    E : C^(-rho)
