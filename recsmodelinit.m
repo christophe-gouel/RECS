@@ -20,18 +20,18 @@ function model = recsmodelinit(inputfile,shocks,outputfile)
 %    order : 1-by-q vector (or scalar) defining the number of nodes of each
 %            shock variables in the gaussian quadrature. If a scalar is passed,
 %            it is extended to allow the same number of nodes for all variables.
-%    Sigma : q-by-q, symmetric, positive-semidefinite, covariance matrix 
+%    Sigma : q-by-q, symmetric, positive-semidefinite, covariance matrix
 % If the shocks do not follow a multivariate normal distribution, the shocks
 % information has to be produce manually.
 %
 % MODEL = RECSMODELINIT(INPUTFILE,SHOCKS,OUTPUTFILE) uses the string OUTPUTFILE
 % to name the m-file containing the model.
-  
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 if nargin<3, outputfile = strrep(inputfile,'.yaml','model.m'); end
-  
+
 %% Run dolo-recs on the yaml file
 recsdirectory = fileparts(which('recsSimul'));
 
@@ -41,10 +41,10 @@ end
 
 if ispc
   status = system([fullfile(recsdirectory,'exe',computer('arch'),'dolo-recs.exe') ...
-                   ' ' inputfile ' ' outputfile]);
+                   ' ' which(inputfile) ' ' outputfile]);
 else
   status = system([fullfile(recsdirectory,'exe',computer('arch'),'dolo-recs') ...
-                   ' ' inputfile ' ' outputfile]);
+                   ' ' which(inputfile) ' ' outputfile]);
 end
 
 if status~=0
@@ -56,14 +56,14 @@ model.func        = eval(['@' strrep(outputfile,'.m','')]);
 model.params      = model.func('params');
 
 % Prepare shocks information
-if nargin>=2 && ~isempty(shocks)  
+if nargin>=2 && ~isempty(shocks)
   % Unpack shocks
   Mu    = shocks.Mu;
   q     = length(Mu);
   order = shocks.order;
   if isscalar(order) && q>1, order = order*ones(1,q); end
   Sigma = shocks.Sigma;
-  
+
   % Check if Sigma is positive-semidefinite and symmetric
   if ~isequal(Sigma,Sigma') || ...
         ~all(diag(Sigma)>=0) || ...
@@ -71,7 +71,7 @@ if nargin>=2 && ~isempty(shocks)
     error('shocks.Sigma is not a symmetric, positive-semidefinite matrix')
   end
   R = chol(Sigma);
-  
+
   % Gaussian quadrature
   [model.e,model.w] = qnwnorm(order,Mu,Sigma);
   % Random number generator
