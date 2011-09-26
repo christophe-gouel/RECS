@@ -34,6 +34,7 @@ if nargin<3, outputfile = strrep(inputfile,'.yaml','model.m'); end
 
 %% Run dolo-recs on the yaml file
 recsdirectory = fileparts(which('recsSimul'));
+inputfiledirectory = fileparts(which(inputfile));
 
 if ~(strcmp(computer('arch'),'win32') || strcmp(computer('arch'),'glnx86'))
   error('Not available on this platform')
@@ -41,10 +42,10 @@ end
 
 if ispc
   status = system([fullfile(recsdirectory,'exe',computer('arch'),'dolo-recs.exe') ...
-                   ' ' which(inputfile) ' ' outputfile]);
+                   ' ' which(inputfile) ' ' fullfile(inputfiledirectory,outputfile)]);
 else
   status = system([fullfile(recsdirectory,'exe',computer('arch'),'dolo-recs') ...
-                   ' ' which(inputfile) ' ' outputfile]);
+                   ' ' which(inputfile) ' ' fullfile(inputfiledirectory,outputfile)]);
 end
 
 if status~=0
