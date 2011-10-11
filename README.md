@@ -28,7 +28,8 @@ launches all demonstration files.
 DEPENDENCIES
 ============
 
-RECS programs depend on the following packages, which have to be installed:
+In addition to Matlab (from 7.9 (R2009b) to 7.13 (R2011b)), RECS programs depend
+on the following packages, which have to be installed:
 
 * CompEcon (<http://www4.ncsu.edu/~pfackler/compecon/>).
 

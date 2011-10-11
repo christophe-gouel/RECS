@@ -13,18 +13,18 @@ function [sol, it_hist, ierr, x_hist] = nsoli(f,x,options)
 %
 % This is a modification by Christophe Gouel of the original file, which can be
 % downloaded from:
-% http://www4.ncsu.edu/~ctk/newtony.html  
+% http://www4.ncsu.edu/~ctk/newtony.html
 % The changes are surrounded above and below by "%% Change CG" % and "%%". They
 % only concern the way of handling inputs (particularly options).
 %
 % INPUT
 %        function = f
 %        initial iterate = x
-%        options = structure whose fields are  
+%        options = structure whose fields are
 %                    atol : absolute error tolerances for the nonlinear
-%                           iteration (default = sqrt(eps)) 
+%                           iteration (default = sqrt(eps))
 %                    rtol : absolute error tolerances for the nonlinear
-%                           iteration (default = sqrt(eps))   
+%                           iteration (default = sqrt(eps))
 %                    maxit : maximum number of nonlinear iterations (default = 40)
 %                    lmaxit : maximum number of inner iterations before restart. In
 %                             GMRES(m), m = maxitl. For iterative methods other
@@ -80,6 +80,7 @@ function [sol, it_hist, ierr, x_hist] = nsoli(f,x,options)
 %
 
 % ------------Initialization----------------
+%% Change CG
 defaultopt = struct(...
     'atol'          ,sqrt(eps),...
     'etamax'        ,0.9,...
@@ -91,6 +92,7 @@ defaultopt = struct(...
     'showiters'     ,0);
 
 if nargin < 3, options = struct([]); end
+warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
 
