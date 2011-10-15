@@ -1,6 +1,6 @@
 % Publish help pages to html
 
-recsdirectory = fileparts(which('recsSimul'));
+recsdirectory   = fileparts(which('recsSimul'));
 targetdirectory = fullfile(recsdirectory,'html');
 
 delete(fullfile(recsdirectory,'html','*.png'));
@@ -17,8 +17,8 @@ publish('pathnotinstalled.m',options);
 publish('ug_setting_up.m',options);
 publish('demos.m',options);
 
-cd('../demos')
+currentfolder = cd(fullfile(recsdirectory,'demos'));
 publish('cs1.m',options);
-cd('../html')
+cd(currentfolder)
 
 builddocsearchdb(fullfile(recsdirectory,'html'));
