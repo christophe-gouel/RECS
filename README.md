@@ -1,7 +1,7 @@
 **RECS**
 
-A solver for nonlinear, dynamic, stochastic, rational expectations equilibrium
-models.
+A Matlab solver for nonlinear, dynamic, stochastic, rational expectations
+equilibrium models.
 
 [Christophe Gouel](http://www.christophegouel.com) (<christophe.gouel@grignon.inra.fr>)
 
@@ -20,7 +20,7 @@ To use the solver you have to
 1. Install the CompEcon toolbox (see Dependencies), follow CompEcon installation
    instructions and do not forget to create the mex files.
 2. Add the solver folder to the Matlab path.
-3. Run `recsInstall.m` to copy a mex file from CompEcon to the solver folder.
+3. Run `recsInstall.m` to finalize RECS installation.
 
 When the installation is finished, you can test it by running `recsdemos.m`, which
 launches all demonstration files.
@@ -39,7 +39,7 @@ OPTIONAL INSTALLATION
 * Path solver for Matlab (<http://www.cs.wisc.edu/cpnet/cpnetsoftware/>). This is
   the reference solver for mixed complementarity problems. It is highly recommended
   to install if difficult complementarity problems need to be solved.
-* Matlab Optimization Toolbox. The solver fsolve can be used to solve both the
+* Matlab Optimization Toolbox. The solver `fsolve` can be used to solve both the
   equilibrium equations and the rational expectations equilibrium.
 * Sundials Toolbox (<https://computation.llnl.gov/casc/sundials/main.html>), which
   provides a compiled Newton-Krylov solver for solving the rational expectations

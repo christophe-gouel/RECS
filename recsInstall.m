@@ -34,13 +34,6 @@ else
   fprintf('Done.\n');
 end
 
-
-%% Publish html help files
-fprintf(' - Create html help: ')
-addpath(fullfile(recsdirectory,'html'))
-Publish_recs_help
-fprintf('Done.\n');
-
 %% Install binary files
 fprintf(' - Download dolo-recs executable from Internet: ')
 if ispc
@@ -64,12 +57,19 @@ else
   fprintf('Failure.\n');
   warning('RECS:FailureDownloadingURL',...
           ['Failure to download dolo-recs executable. RECS is not properly ' ...
-           'installed, see http://code.google.com/p/dynare-python/downloads/list ' ...
-           'for download it manually.']);
+           'installed, see <a href="%s">%s</a> to download dolo-recs manually.'],...
+          'http://code.google.com/p/dynare-python/downloads/list',...
+          'http://code.google.com/p/dynare-python/downloads/list');
   else
     fprintf('Done.\n');
   end
 end
+
+%% Publish html help files
+fprintf(' - Create html help: ')
+addpath(fullfile(recsdirectory,'html'))
+Publish_recs_help
+fprintf('Done.\n');
 
 %% Check if there is the solver Path
 disp('Check dependencies:')
