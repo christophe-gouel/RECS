@@ -10,7 +10,7 @@ function recsInstall
 %     the executable corresponding to the platform in use is
 %     downloaded, so if you use several OS, you need to launch
 %     RECSINSTALL on all of them.
-  
+
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
@@ -49,7 +49,8 @@ else
   extension = '';
 end
 
-if ~(strcmp(computer('arch'),'win32') || strcmp(computer('arch'),'glnx86'))
+if ~(strcmp(computer('arch'),'win32') || strcmp(computer('arch'),'glnx86') ||...
+     strcmp(computer('arch'),'glnxa64'))
   fprintf('Failure.\n');
   warning('RECS:NoExecForThisArch',...
           'Executable not available on this platform.')
@@ -74,7 +75,7 @@ if exist('pathmcp','file')
             'http://pages.cs.wisc.edu/~ferris/path.html')
   else
     disp(' - Existing license for PATH.')
-  end    
+  end
 else
   disp(' - Solver PATH is not installed.')
 end

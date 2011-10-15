@@ -36,7 +36,8 @@ if nargin<3, outputfile = strrep(inputfile,'.yaml','model.m'); end
 recsdirectory = fileparts(which('recsSimul'));
 inputfiledirectory = fileparts(which(inputfile));
 
-if ~(strcmp(computer('arch'),'win32') || strcmp(computer('arch'),'glnx86'))
+if ~(strcmp(computer('arch'),'win32') || strcmp(computer('arch'),'glnx86') ||...
+     strcmp(computer('arch'),'glnxa64'))
   error('Not available on this platform')
 end
 
