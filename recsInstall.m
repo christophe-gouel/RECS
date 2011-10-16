@@ -4,12 +4,12 @@ function recsInstall
 % RECSINSTALL does three things:
 %   - it copies mex files from CompEcon, so the installation of
 %     CompEcon must be complete before running RECSINSTALL;
-%   - it prepares the html help files;
 %   - it downloads a dolo-recs executable from google code
 %     (http://code.google.com/p/dynare-python/downloads/list). Only
 %     the executable corresponding to the platform in use is
 %     downloaded, so if you use several OS, you need to launch
 %     RECSINSTALL on all of them.
+%   - it prepares the html help files;
 
 % Copyright (C) 2011 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

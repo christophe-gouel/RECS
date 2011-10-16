@@ -47,21 +47,21 @@ switch reesolver
   reesolveroptions.maxit = 40;
   reesolveroptions.atol  = 1E-7;
   reesolveroptions.rtol  = 1E-25;
-  [c,~,exitflag] = nsoli(@ResidualREE, c(:), reesolveroptions);
-  if exitflag==0, exitflag = 1; else exitflag = 0; end
+  [c,~,exitREE] = nsoli(@ResidualREE, c(:), reesolveroptions);
+  if exitREE==0, exitREE = 1; else exitREE = 0; end
 
  case 'krylov'
-  [c,~,exitflag] = nsoli(@ResidualREE, c(:), reesolveroptions);
-  if exitflag==0, exitflag = 1; else exitflag = 0; end
+  [c,~,exitREE] = nsoli(@ResidualREE, c(:), reesolveroptions);
+  if exitREE==0, exitREE = 1; else exitREE = 0; end
 
  case 'sa'
-  [c,~,exitflag] = SA(@ResidualREE, c(:), reesolveroptions);
+  [c,~,exitREE] = SA(@ResidualREE, c(:), reesolveroptions);
 
  case 'fsolve' % In test - Slow, because it uses numerical derivatives
   if options.display==1
     reesolveroptions = optimset('display','iter-detailed','Diagnostics','on');
   end
-  [c,~,exitflag] = fsolve(@ResidualREE, c(:), reesolveroptions);
+  [c,~,exitREE] = fsolve(@ResidualREE, c(:), reesolveroptions);
 
  case 'kinsol'
   neq = numel(c);
@@ -72,8 +72,14 @@ switch reesolver
   KINInit(@ResidualREE,neq,KINoptions);
   [status, c] = KINSol(c(:),'LineSearch',ones(neq,1),ones(neq,1));
   KINFree;
-  if status==0 || status==1, exitflag = 1; else exitflag = 0; end
+  if status==0 || status==1, exitREE = 1; else exitREE = 0; end
 
+end
+
+if exitREE==1 && exitEQ==1
+  exitflag = 1;
+else
+  exitflag = 0;
 end
 
 %% Nested function
@@ -86,7 +92,7 @@ function [R,FLAG] = ResidualREE(cc)
       if functional, params{end} = cc; end
 
       z     = funeval(cc,fspace,Phi);
-      [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
+      [x,f,exitEQ] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
 
       ind     = (1:n);
       ind     = ind(ones(1,k),:);
@@ -125,7 +131,7 @@ function [R,FLAG] = ResidualREE(cc)
       cc    = reshape(cc,n,p);
       if functional, params{end} = cc; end
 
-      [x,f]  = recsSolveEquilibrium(s,x,z,func,params,cc,e,w, fspace,options);
+      [x,f,exitEQ] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w, fspace,options);
       output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
       R      = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output))-cc;
 
@@ -164,7 +170,7 @@ function [R,FLAG] = ResidualREE(cc)
         z     = reshape(w'*reshape(h,k,n*p),n,p);
       end
 
-      [x,f] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
+      [x,f,exitEQ] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
       R     = funfitxy(fspace,Phi,x)-cc;
   end
 
