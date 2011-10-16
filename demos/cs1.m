@@ -65,6 +65,7 @@ interp.ch = [];
 [interp,x] = recsSolveREE(interp,model,s,x);
 
 %% Plot the decision rule
+figure
 plot(s,x)
 xlabel('Cash on hand')
 ylabel('Consumption')

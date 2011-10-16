@@ -115,7 +115,8 @@ elseif ~isa(model.func,'function_handle')
 end
 func = model.func;
 
-if strcmp(reemethod,'1-step') && (strcmp(funapprox,'expapprox') || strcmp(funapprox,'resapprox'))
+if strcmp(reemethod,'1-step') &&
+  (strcmp(funapprox,'expapprox') || strcmp(funapprox,'resapprox'))
   warning('RECS:Switching2Iterative',...
           ['Solving the rational expectations problem is not implemented when ' ...
            'approximating this funtion. Switching to the iterative scheme.'])
