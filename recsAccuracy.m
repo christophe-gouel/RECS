@@ -1,10 +1,12 @@
-function recsAccuracy(model,interp,s,options)
+function [se,lEE,Ef] = recsAccuracy(model,interp,s,options)
 % RECSACCURACY Evaluates approximation accuracy
 %
-% RECSACCURACY(MODEL,INTERP,S) evaluates the accuracy of the approximation
+% SE = RECSACCURACY(MODEL,INTERP,S) evaluates the accuracy of the approximation
 % defined in the interpolition structure INTERP for the model defined in the
 % structure MODEL. The accuracy is assessed over the state variables contained
-% in the n-by-d-by-y array S.
+% in the n-by-d-by-y array S, as output by resSimul. RECSACCURACY returns a
+% n*y-by-d matrix SE containing the state variables on which the accuracy was
+% evaluated.
 % MODEL is a structure, which includes the following fields:
 %    func    : function name or anonymous function that defines the model's equations
 %    params  : model's parameters, it is preferable to pass them as a cell array
@@ -17,9 +19,16 @@ function recsAccuracy(model,interp,s,options)
 %
 % RECSACCURACY(MODEL,INTERP,S,OPTIONS) evaluates the accuracy with the
 % parameters defined by the structure OPTIONS. The fields of the
-% structure are  
+% structure are
 %    extrapolate      : 1 if extrapolation is allowed outside the
 %                       interpolation space or 0 to forbid it (default: 1)
+%
+% [SE,LEE] = RECSACCURACY(MODEL,INTERP,S,...) returns the matrix LEE containing
+% the value of Euler equation error (in log10) evaluated on the grid points SE.
+%
+% [SE,LEE,EF] = RECSACCURACY(MODEL,INTERP,S,...) returns the nxy-by-m matrix EF
+% containing the value of equilibrium equation error evaluated on the grid
+% points SE.
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
@@ -56,8 +65,8 @@ se      = reshape(se,n*t,d);
 
 [LB,UB]    = func('b',se,[],[],[],[],[],params);
 if extrapolate, seinterp = se;
-else      
-  seinterp = max(min(se,fspace.b(ones(n*t,1),:)),fspace.a(ones(n*t,1),:)); 
+else
+  seinterp = max(min(se,fspace.b(ones(n*t,1),:)),fspace.a(ones(n*t,1),:));
 end
 xe         = min(max(funeval(cx,fspace,seinterp),LB),UB);
 
@@ -70,8 +79,8 @@ output    = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
 sen       = func('g',ss,xx,[],e(repmat(1:k,1,n*t),:),[],[],params,output);
 [LBn,UBn] = func('b',sen,[],[],[],[],[],params);
 if extrapolate, seninterp = sen;
-else      
-  seninterp = max(min(sen,fspace.b(ones(n*t*k,1),:)),fspace.a(ones(n*t*k,1),:)); 
+else
+  seninterp = max(min(sen,fspace.b(ones(n*t*k,1),:)),fspace.a(ones(n*t*k,1),:));
 end
 xen       = min(max(funeval(cx,fspace,seninterp),LBn),UBn);
 if nargout(func)<6
@@ -87,24 +96,26 @@ disp('Accuracy of the solution');
 
 %% Euler equation error
 EE      = func('e',se,xe,ze,[],[],[],params);
-lEE     = [log10(max(abs(EE)));
+lEE     = log10(abs(EE));
+lEE_res = [log10(max(abs(EE)));
            log10(sum(abs(EE))/size(EE,1))];
 
-if ~isnan(lEE)
+if ~isnan(lEE_res)
   disp(' Euler equation error (in log10)');
   disp('    Max       Mean');
-  disp(lEE');
+  disp(lEE_res');
 end
 
 %% Equilibrium equation error
 fe      = func('f',se,xe,ze,[],[],[],params,output);
 
-Ef = min(max(-fe,LB-xe),UB-xe);
-Ef = [max(abs(Ef));
-      mean(abs(Ef))];
+Ef      = min(max(-fe,LB-xe),UB-xe);
+Ef      = abs(Ef);
+Ef_res  = [max(Ef);
+           mean(Ef)];
 
 disp(' Equilibrium equation error (minmax formulation)');
 disp('    Max       Mean');
-disp(Ef');
+disp(Ef_res');
 
 
