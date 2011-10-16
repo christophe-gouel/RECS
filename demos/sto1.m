@@ -90,8 +90,16 @@ reset(RandStream.getDefaultStream);
 [ssim,xsim,esim,~,stat] = recsSimul(model,interp,ones(1000,1),200);
 
 % Solution accuracy
-recsAccuracy(model,interp,ssim)
+[se,lEE] = recsAccuracy(model,interp,ssim);
 
+figure
+[~,i] = sort(se);
+plot(se(i),lEE(i,1))
+title('Euler equation error on storage-arbitrage equation')
+xlabel('Availability')
+ylabel(texlabel('log_{10}|EE|'))
+
+% Decision rules
 figure
 subplot(1,3,1)
 plot(ssim(:),reshape(xsim(:,1,:),[],1),'.')
