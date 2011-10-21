@@ -9,9 +9,12 @@ function [se,lEE,Ef] = recsAccuracy(model,interp,s,options)
 % evaluated.
 % MODEL is a structure, which includes the following fields:
 %    func    : function name or anonymous function that defines the model's equations
-%    params  : model's parameters, it is preferable to pass them as a cell array
-%              (compulsory with the functional option) but other formats are
-%              acceptable
+%    params : model's parameters, it is preferable to pass them as a cell array
+%             (compulsory with the functional option) but other formats are
+%             acceptable. If it is problem with functional equations, please
+%             provide as the two last cell elements of params fspace and the
+%             interpolation matrix used: 
+%             mode.params = [model.params interp.fspace interp.c]
 % INTERP is a structure, which includes the following fields:
 %    cx      : coefficient matrix of the interpolation of the response variables
 %    fspace  : a definition structure for the interpolation family (created by
