@@ -15,6 +15,8 @@ disp('CS1 Consumption/Saving model with borrowing constraint');
 clear interp model options
 cs1
 
+disp('STO1 Competitive storage model');
+clear interp model options
 sto1
 sto2
 sto3

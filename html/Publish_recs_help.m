@@ -4,21 +4,22 @@ recsdirectory   = fileparts(which('recsSimul'));
 targetdirectory = fullfile(recsdirectory,'html');
 
 delete(fullfile(recsdirectory,'html','*.png'));
-options = struct('outputDir',targetdirectory);
-publish('recs_product_page.m',options);
-publish('getting_started.m',options);
-publish('installation.m',options);
-publish('def_sre.m',options);
-publish('MCP.m',options);
-publish('user_guide.m',options);
-publish('ug_solvers_eq.m',options);
-publish('recs_functions.m',options);
-publish('pathnotinstalled.m',options);
-publish('ug_setting_up.m',options);
-publish('demos.m',options);
+PublishOptions = struct('outputDir',targetdirectory);
+publish('recs_product_page.m',PublishOptions);
+publish('getting_started.m',PublishOptions);
+publish('installation.m',PublishOptions);
+publish('def_sre.m',PublishOptions);
+publish('MCP.m',PublishOptions);
+publish('user_guide.m',PublishOptions);
+publish('ug_solvers_eq.m',PublishOptions);
+publish('recs_functions.m',PublishOptions);
+publish('pathnotinstalled.m',PublishOptions);
+publish('ug_setting_up.m',PublishOptions);
+publish('demos.m',PublishOptions);
 
 currentfolder = cd(fullfile(recsdirectory,'demos'));
-publish('cs1.m',options);
+publish('cs1.m',PublishOptions);
+publish('sto1.m',PublishOptions);
 cd(currentfolder)
 
 builddocsearchdb(fullfile(recsdirectory,'html'));
