@@ -1,4 +1,4 @@
-function [out1,out2,out3,out4,out5] = mf_cs1(flag,s,x,z,e,snext,xnext,p,out);
+function [out1,out2,out3,out4,out5] = cs1model(flag,s,x,z,e,snext,xnext,p,out);
 
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'Jz',0,'hmult',0);
 
@@ -41,7 +41,6 @@ switch flag
     % df/ds
     if output.Js
       out2 = zeros(n,1,1);
-      out2(:,1,1) = 0; % d eq_1 w.r.t. X
     end
 
     % df/dx
@@ -86,17 +85,14 @@ switch flag
 
     if output.Js
       out2 = zeros(n,1,1);
-      out2(:,1,1) = 0; % d eq_1 w.r.t. X
     end
 
     if output.Jx
       out3 = zeros(n,1,1);
-      out3(:,1,1) = 0; % d eq_1 w.r.t. C
     end
 
     if output.Jsn
       out4 = zeros(n,1,1);
-      out4(:,1,1) = 0; % d eq_1 w.r.t. X(1)
     end
 
     if output.Jxn

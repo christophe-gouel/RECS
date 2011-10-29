@@ -15,6 +15,7 @@ publish('ug_solvers_eq.m',PublishOptions);
 publish('recs_functions.m',PublishOptions);
 publish('pathnotinstalled.m',PublishOptions);
 publish('ug_setting_up.m',PublishOptions);
+publish('ug_model_files.m',PublishOptions);
 publish('demos.m',PublishOptions);
 
 currentfolder = cd(fullfile(recsdirectory,'demos'));

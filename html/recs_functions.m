@@ -11,6 +11,7 @@
 % * <matlab:doc('recsFirstGuess') |recsFirstGuess|> - Find a first guess using the
 % perfect foresight solution
 % * <matlab:doc('recsInstall') |recsInstall|> - Finalize RECS installation
+% * <matlab:doc('recsmodelinit') |recsmodelinit|> - Prepare a RECS model structure
 % * <matlab:doc('recsSimul') |recsSimul|> - Simulate a model
 % * <matlab:doc('recsSolveDeterministicPb') |recsSolveDeterministicPb|> - Solve a
 % perfect foresight problem

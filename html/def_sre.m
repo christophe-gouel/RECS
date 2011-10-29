@@ -8,7 +8,7 @@
 % $\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z)$, where
 % $f:R^{d+m+p}\rightarrow R^{m}$,
 %
-% $z = \mathrm{E}_t \left[h(s,x,\dot e,\dot s,\dot x)\right]$, where
+% $z = \mathrm{E}_{\dot e} \left[h(s,x,\dot e,\dot s,\dot x)\right]$, where
 % $h:R^{d+m+q+d+m}\rightarrow R^{p}$,
 %
 % $\dot s = g(s,x,\dot e)$, where $g:R^{d+m+q}\rightarrow R^{d}$.

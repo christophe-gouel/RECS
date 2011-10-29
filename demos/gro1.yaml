@@ -45,6 +45,3 @@ calibration:
         K : 1
         C : a-delta
         E : C^(-tau)/beta
-
-    covariances: |
-      [ [ 0.007 ] ]

@@ -8,6 +8,7 @@
 %   recsdemos                - Run all RECS demonstration files.
 %   recsFirstGuess           - Find a first guess using the perfect foresight solution.
 %   recsInstall              - Finalize RECS installation.
+%   recsmodelinit            - Prepare a RECS model structure
 %   recsSimul                - Simulate a model.
 %   recsSolveDeterministicPb - Solve a perfect foresight problem.
 %   recsSolveREE             - Find the rational expectations equilibrium (REE) of a model.
