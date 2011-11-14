@@ -36,18 +36,19 @@ if nargin<3, outputfile = strrep(inputfile,'.yaml','model.m'); end
 recsdirectory = fileparts(which('recsSimul'));
 inputfiledirectory = fileparts(which(inputfile));
 
-if ~(strcmp(computer('arch'),'win32') || strcmp(computer('arch'),'glnx86') ||...
-     strcmp(computer('arch'),'glnxa64'))
+if ~(ispc || strcmp(computer('arch'),'glnx86'))
   error('Not available on this platform')
 end
 
 if ispc
-  status = system([fullfile(recsdirectory,'exe',computer('arch'),'dolo-recs.exe') ...
-                   ' ' which(inputfile) ' ' fullfile(inputfiledirectory,outputfile)]);
+  txt = 'win32';
+  extension = '.exe';
 else
-  status = system([fullfile(recsdirectory,'exe',computer('arch'),'dolo-recs') ...
-                   ' ' which(inputfile) ' ' fullfile(inputfiledirectory,outputfile)]);
+  txt = computer('arch');
+  extension = '';
 end
+status = system([fullfile(recsdirectory,'exe',txt,['dolo-recs' extension]) ...
+                 ' ' which(inputfile) ' ' fullfile(inputfiledirectory,outputfile)]);
 
 if status~=0
   error('Failure to create the model file')

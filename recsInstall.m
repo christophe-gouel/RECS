@@ -42,16 +42,20 @@ else
   extension = '';
 end
 
-if ~(strcmp(computer('arch'),'win32') || strcmp(computer('arch'),'glnx86') ||...
-     strcmp(computer('arch'),'glnxa64'))
+if ~(ispc || strcmp(computer('arch'),'glnx86'))
   fprintf('Failure.\n');
   warning('RECS:NoExecForThisArch',...
           'Executable not available on this platform.')
 else
-  [~,~]  = mkdir(recsdirectory,fullfile('exe',computer('arch')));
+  if ispc
+    txt = 'win32';
+  else
+    txt = computer('arch');
+  end
+  [~,~]  = mkdir(recsdirectory,fullfile('exe',txt));
   [~,s3] = urlwrite(['http://dynare-python.googlecode.com/files/dolo-recs-'...
-                     computer('arch') extension],...
-                    fullfile(recsdirectory,'exe',computer('arch'),...
+                     txt extension],...
+                    fullfile(recsdirectory,'exe',txt,...
                              ['dolo-recs' extension]));
   if ~s3
   fprintf('Failure.\n');
