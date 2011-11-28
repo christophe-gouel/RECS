@@ -3,8 +3,7 @@
 *.log
 demo/*.tmp
 demo/*.log
-*.mexglx
-*.mexw32
+*.mex*
 *.html
 *.png
 /Doc/*
