@@ -99,7 +99,7 @@ reset(RandStream.getDefaultStream);
 [ssim,xsim,esim,~,stat] = recsSimul(model,interp,ones(1000,1),200);
 
 % Solution accuracy
-recsAccuracy(model,interp,ssim)
+recsAccuracy(model,interp,ssim);
 
 figure
 subplot(1,3,1)
