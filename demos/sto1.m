@@ -27,7 +27,7 @@
 % $$A_{t}: A_{t}=\left(1-\delta\right)S_{t-1}+H_{t-1}\epsilon_{t}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <matlab:filetohelp('sto1model.m') |sto1model.m|>.
+% The model is defined in a Matlab file: <matlab:filetohelp('sto1model.txt') |sto1model.m|>.
 
 %% Enter model parameters
 alpha = -0.4;

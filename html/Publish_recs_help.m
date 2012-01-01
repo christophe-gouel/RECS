@@ -1,5 +1,8 @@
 % Publish help pages to html
 
+% Copyright (C) 2011-2012 Christophe Gouel
+% Licensed under the Expat license, see LICENSE.txt
+
 recsdirectory   = fileparts(which('recsSimul'));
 targetdirectory = fullfile(recsdirectory,'html');
 
@@ -19,6 +22,9 @@ publish('ug_model_files.m',PublishOptions);
 publish('demos.m',PublishOptions);
 
 currentfolder = cd(fullfile(recsdirectory,'demos'));
+copyfile('cs1.yaml',fullfile(targetdirectory,'cs1.txt'));
+copyfile('cs1model.m',fullfile(targetdirectory,'cs1model.txt'));
+copyfile('sto1model.m',fullfile(targetdirectory,'sto1model.txt'));
 publish('cs1.m',PublishOptions);
 publish('sto1.m',PublishOptions);
 cd(currentfolder)

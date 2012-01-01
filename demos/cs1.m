@@ -21,7 +21,7 @@
 % $$X_{t}: X_{t}=\left(1+r\right)\left(X_{t-1}-C_{t-1}\right)+Y_{t}.$$
 
 %% Writing the model
-% The model is defined in a yaml file: <matlab:filetohelp('cs1.yaml') |cs1.yaml|>.
+% The model is defined in a yaml file: <matlab:filetohelp('cs1.txt') |cs1.yaml|>.
 
 %% Pack model structure
 Mu                = 100;
@@ -34,9 +34,9 @@ model = recsmodelinit('cs1.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
 %%
-% This command creates a Matlab file, <matlab:filetohelp('cs1model.m') |cs1model.m|>,
+% This command creates a Matlab file, <matlab:filetohelp('cs1model.txt') |cs1model.m|>,
 % containing the definition the model and all its Jacobian from the human readable file
-% <matlab:filetohelp('cs1.yaml') |cs1.yaml|>.
+% <matlab:filetohelp('cs1.txt') |cs1.yaml|>.
 
 %%
 % If not, you have to pack yourself the different elements inside a structure
