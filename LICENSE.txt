@@ -1,5 +1,5 @@
 Format: http://dep.debian.net/deps/dep5/
-Upstream-Contact: Christophe Gouel <christophe.gouel@grignon.inra.fr>
+Upstream-Contact: Christophe Gouel <cgouel@worldbank.org>
 
 Files: *
 Copyright: 2011, Christophe Gouel

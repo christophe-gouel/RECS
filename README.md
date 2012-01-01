@@ -3,7 +3,7 @@
 A Matlab solver for nonlinear, dynamic, stochastic, rational expectations
 equilibrium models.
 
-[Christophe Gouel](http://www.christophegouel.com) (<christophe.gouel@grignon.inra.fr>)
+[Christophe Gouel](http://www.christophegouel.com) (<cgouel@worldbank.org>)
 
 INSTALL
 =======
