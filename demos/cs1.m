@@ -24,6 +24,7 @@
 % The model is defined in a yaml file: <matlab:filetohelp('cs1.txt') |cs1.yaml|>.
 
 %% Pack model structure
+% Mean and standard deviation of the shocks
 Mu                = 100;
 sigma             = 10;
 
@@ -39,7 +40,8 @@ model = recsmodelinit('cs1.yaml',...
 % <matlab:filetohelp('cs1.txt') |cs1.yaml|>.
 
 %%
-% If not, you have to pack yourself the different elements inside a structure
+% If your installation is not complete, you have to pack yourself the different
+% elements inside a structure
 [model.e,model.w] = qnwnorm(5,Mu,sigma^2);
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 model.func        = @cs1model;
@@ -85,6 +87,6 @@ ylabel('Frequency')
 % 59(5), 1221-1248.
 
 %%
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>

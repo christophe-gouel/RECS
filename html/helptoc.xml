@@ -21,6 +21,7 @@
     <tocitem target="recs_functions.html" image="HelpIcon.FUNCTION"> Functions </tocitem>
     <tocitem target="demos.html" image="HelpIcon.DEMOS"> Demos
       <tocitem target="cs1.html"> Consumption/Saving model with borrowing constraint </tocitem>
+      <tocitem target="gro1.html"> Stochastic growth model </tocitem>
       <tocitem target="sto.html"> Variants of the storage model
         <tocitem target="sto1.html"> Competitive storage model </tocitem>
       </tocitem>

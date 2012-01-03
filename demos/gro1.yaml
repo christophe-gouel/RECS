@@ -1,47 +1,50 @@
 # GRO1.yaml Model definition file for the stochastic growth model
-# Copyright (C) 2011 Christophe Gouel
+# Copyright (C) 2011-2012 Christophe Gouel
 # Licensed under the Expat license, see LICENSE.txt
 
 declarations:
 
-    states: [K, Z]
+  states: [K, Z]
+  
+  controls: [C]
 
-    controls: [C]
+  expectations: [E]
 
-    expectations: [E]
+  shocks: [Epsilon]
 
-    shocks: [Epsilon]
+  parameters: [a, tau, delta, beta, rho, alpha]
 
-    parameters: [a, tau, delta, beta, rho, alpha]
-
+  
 equations:
 
-    arbitrage:
+  arbitrage:
 
-        - C^(-tau)-beta*E=0 | -inf <= C <= inf
+    - C^(-tau)-beta*E=0 | -inf <= C <= inf
 
-    transition:
+  transition:
 
-        - K = a*exp(Z(-1))*K(-1)^alpha+(1-delta)*K(-1)-C(-1)
-        - Z = rho*Z(-1)+Epsilon
+    - K = a*exp(Z(-1))*K(-1)^alpha+(1-delta)*K(-1)-C(-1)
+    - Z = rho*Z(-1)+Epsilon
 
-    expectation:
+  expectation:
 
-        - E = C(1)^(-tau)*(1-delta+a*alpha*exp(Z(1))*K(1)^(alpha-1))
+    - E = C(1)^(-tau)*(1-delta+a*alpha*exp(Z(1))*K(1)^(alpha-1))
 
+    
 calibration:
 
-    parameters:
+  parameters:
 
-        tau : 2
-        delta : 0.0196
-        beta : 0.95
-        rho : 0.9
-        alpha : 0.33
-        a : (1/beta-1+delta)/alpha
+    tau : 2
+    delta : 0.0196
+    beta : 0.95
+    rho : 0.9
+    alpha : 0.33
+    a : (1/beta-1+delta)/alpha
+    
+  steady_state:
 
-    steady_state:
-        Z : 0
-        K : 1
-        C : a-delta
-        E : C^(-tau)/beta
+    Z : 0
+    K : 1
+    C : a-delta
+    E : C^(-tau)/beta
