@@ -136,6 +136,9 @@ switch reemethod
     [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);
   case '1-step'
     [c,x,f,exitflag] = recsSolveREEFull(interp,model,s,x,c,options);
+  otherwise
+    error(['%s is not a valid value for reemethod. Valid values are ''iter'' ' ...
+           '(default), ''iter-newton'' and ''1-step''.'],reemethod)
 end
 
 if exitflag~=1
