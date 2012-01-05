@@ -3,19 +3,21 @@ function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,A,b,t,mu)
 %
 % Z = PATHMCP(Z,L,U,CPFJ) tries to solve, using Z as a starting point, the mixed
 % complementarity problem of the form:
-% L =Z    =>   CPFJ(Z)>0,
-% L<=Z<=U =>   CPFJ(Z)=0,
-%    Z =U =>   CPFJ(Z)<0.
+% L =Z    =>   F(Z)>0,
+% L<=Z<=U =>   F(Z)=0,
+%    Z =U =>   F(Z)<0.
 % L and U are the lower and upper bounds on Z. PATHMCP returns Z the solution.
-% CPFJ is the name of the m-file for evaluating the function F and its Jacobian
-% J (without .m-extension). The m-file must be supplied (where default name is
-% 'mcp_funjac.m' unless stated otherwise in the variable CPFJ). 'mcp_funjac.m'
-% contains function [F,J,DOMERR]=CPFJ(Z,JACFLAG) that computes the function F
-% and if JACFLAG=1 the sparse Jacobian J at the point Z. DOMERR returns the
-% number of domain violations.
+% CPFJ is the name (without .m-extension) of the m-file for evaluating the
+% function F and its Jacobian J. The m-file must be supplied (where default name
+% is 'mcp_funjac.m' unless stated otherwise in the variable
+% CPFJ). 'mcp_funjac.m' contains function [F,J,DOMERR]=MCP_FUNJAC(Z,JACFLAG)
+% that computes the function F and if JACFLAG=1 the sparse Jacobian J at the
+% point Z. DOMERR returns the number of domain violations.
 % Solver options can be defined through an option file present in the working
 % directory and named 'path.opt'. Many options are described in the following file:
 % http://www.cs.wisc.edu/~ferris/path/options.pdf
+% PATHMCP returns also a log file named 'logfile.tmp'. From Matlab, it can be
+% displayed by 'type logfile.tmp'.
 %
 % Z = PATHMCP(Z,L,U,CPFJ,A,B,T,MU)
 %  A  - constraint matrix
@@ -52,6 +54,8 @@ function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,A,b,t,mu)
 %   thesis, University of Wisonsin-Madison.
 
 % Copyright (C) Michael C. Ferris and Todd S. Munson
+% This is a modification by Christophe Gouel of the original file, which can be
+% downloaded from: http://pages.cs.wisc.edu/~ferris/path.html.
 
 %% Initialization
 Big = 1e20;
