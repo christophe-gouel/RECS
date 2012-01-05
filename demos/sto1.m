@@ -60,7 +60,7 @@ smax          = 2;
 % Interpolation structure
 interp.fspace = fundefn('spli',n,smin,smax);           
 %%
-% State collocaton nodes
+% State collocation nodes
 s             = gridmake(funnode(interp.fspace));
 
 %% Provide a first guess

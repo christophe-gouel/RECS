@@ -65,7 +65,7 @@ smax          = [1.15*sss(1) max(model.e)*4];
 % Function space
 interp.fspace = fundefn('cheb',order,smin,smax);           
 %%
-% State collocaton nodes
+% State collocation nodes
 s             = gridmake(funnode(interp.fspace));
 
 %% Find a first guess through the perfect foresight solution

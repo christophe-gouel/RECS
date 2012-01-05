@@ -1,6 +1,6 @@
 % RECSDEMOS runs all RECS demonstration files
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 warning('off','backtrace')
@@ -9,6 +9,8 @@ recsdirectory = fileparts(which('recsSimul'));
 
 addpath([recsdirectory '/demos'])
 
+disp('GRO1 Stochastic growth model')
+clear interp model options
 gro1
 
 disp('CS1 Consumption/Saving model with borrowing constraint');

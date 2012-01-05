@@ -64,7 +64,8 @@ else
 end
 
 if norm(numjac(@(S) bounds(func,S,params),s),Inf)>eps
-  error('Bounds should be independent of state variables')
+  error(['This program cannot solve for the deterministic steady state of a ' ...
+         'problem with bounds that are function of state variables'])
 end
 
 %% Prepare input variables

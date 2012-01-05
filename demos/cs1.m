@@ -52,7 +52,7 @@ model.params      = cs1model('params');
 % Define approximation function
 interp.fspace = fundefn('spli',20,50,200);
 %%
-% State collocaton nodes
+% State collocation nodes
 s             = gridmake(funnode(interp.fspace));
 
 %% First-guess: Consumption equal to cash on hand
