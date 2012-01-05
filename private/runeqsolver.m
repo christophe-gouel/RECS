@@ -4,7 +4,7 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,vara
 % RUNEQSOLVER is called by recsSolveDeterministicPb, recsSolveEquilibrium,
 % recsSolveREEFull, recsSS. It is not meant to be called directly by the user.
   
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %%  
@@ -37,13 +37,7 @@ switch eqsolver
   case 'path'
     global par %#ok<TLEV>
     par        = [{func} varargin];
-    try
-      [x,f]    = pathmcp(x,LB,UB,'pathtransform');
-      exitflag = 1;
-    catch %#ok<CTCH>
-      f        = zeros(size(x));
-      exitflag = 0;
-    end
+    [x,f,exitflag] = pathmcp(x,LB,UB,'pathtransform');
     clear global par
 
 end

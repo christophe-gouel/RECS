@@ -11,7 +11,7 @@ function recsInstall
 %     RECSINSTALL on all of them.
 %   - it prepares the html help files;
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialize
@@ -77,7 +77,7 @@ fprintf('Done.\n');
 
 %% Check if there is the solver Path
 disp('Check dependencies:')
-if exist('pathmcp','file')
+if exist('mcppath','file')
   disp(' - Solver PATH is installed.')
   if isequal(getenv('PATH_LICENSE_STRING'),'')
     disp(' - No license, PATH is in demo mode.')

@@ -111,3 +111,7 @@ Comment: This is a modification by Christophe Gouel of the original file. The
  concern the way of handling inputs (particularly options).
 Source: http://www4.ncsu.edu/~ctk/newtony.html
 
+Files: pathmcp.m
+Copyright: Michael C. Ferris and Todd S. Munson. 
+Comment: This is a modification by Christophe Gouel of the original file.
+Source: http://pages.cs.wisc.edu/~ferris/path.html
