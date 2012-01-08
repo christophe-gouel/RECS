@@ -7,6 +7,6 @@ function filetohelp(filename)
 recsdirectory = fileparts(which('recsSimul'));
 addpath(fullfile(recsdirectory,'html'))
 
-web(['file://' which(filename)],'-helpbrowser');
+web(['file://' strrep(which(filename),'\','/')],'-helpbrowser');
 
 rmpath(fullfile(recsdirectory,'html'))
