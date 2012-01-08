@@ -73,6 +73,7 @@ end
 fprintf(' - Create html help: ')
 addpath(fullfile(recsdirectory,'html'))
 Publish_recs_help
+rmpath(fullfile(recsdirectory,'html'))
 fprintf('Done.\n');
 
 %% Check if there is the solver Path

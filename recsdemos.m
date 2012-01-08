@@ -7,7 +7,7 @@ warning('off','backtrace')
 
 recsdirectory = fileparts(which('recsSimul'));
 
-addpath([recsdirectory '/demos'])
+addpath(fullfile(recsdirectory,'demos'))
 
 disp('GRO1 Stochastic growth model')
 clear interp model options
@@ -24,3 +24,5 @@ sto2
 sto3
 sto4
 sto5
+
+rmpath(fullfile(recsdirectory,'demos'))
