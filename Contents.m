@@ -1,5 +1,5 @@
 % RECS Toolbox
-% Version 0.4-beta 18-Sep-2011
+% Version 0.4 09-Jan-2012
 %
 % RECS functions
 %   recsAccuracy             - Evaluate accuracy of a RECS solution.
@@ -22,5 +22,5 @@
 %   pathmcp    - Solve mixed complementarity problems.
 %   SA         - Solve a system of equations by successive approximation.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
