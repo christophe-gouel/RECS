@@ -12,8 +12,9 @@
 %
 % *Parameters* Unit physical storage cost ($k$), Depreciation share ($\delta$),
 % Interest rate ($r$), Scale parameter for the production cost function ($h$),
-% Inverse of supply elasticity ($\mu$), Demand price elasticity ($\alpha$) and
-% Floor price ($P^{\mathrm{F}}$).
+% Inverse of supply elasticity ($\mu$), Demand price elasticity ($\alpha$),
+% Floor price ($P^{\mathrm{F}}$) and Capacity constraint on public stock
+% ($\bar{S}^{\mathrm{G}}$).
 %
 % *Equilibrium equations* 
 %
@@ -23,7 +24,7 @@
 %
 % $$P_{t}: A_{t}={P_{t}}^{\alpha}+S^{\mathrm{S}}_{t}+S^{\mathrm{G}}_{t}.$$
 %
-% $$S^{\mathrm{G}}_{t}: S^{\mathrm{G}}_{t}\ge 0 \quad \perp \quad P_t \ge P^{\mathrm{F}}$$
+% $$S^{\mathrm{G}}_{t}: 0\le S^{\mathrm{G}}_{t}\le \bar{S}^{\mathrm{G}} \quad \perp \quad P_t - P^{\mathrm{F}}$$
 %
 % *Transition equation*
 %
@@ -68,8 +69,7 @@ smax          = 2;
 interp.fspace = fundefn('spli',order,smin,smax); 
 %%
 % State collocation nodes
-snodes        = funnode(interp.fspace);          
-s             = gridmake(snodes);
+s             = gridmake(funnode(interp.fspace));          
 
 %% Find a first guess through the perfect foresight solution
 [interp,xinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);

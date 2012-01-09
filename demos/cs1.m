@@ -36,7 +36,7 @@ model = recsmodelinit('cs1.yaml',...
 
 %%
 % This command creates a Matlab file, <matlab:filetohelp('cs1model.txt') |cs1model.m|>,
-% containing the definition the model and all its Jacobian from the human readable file
+% containing the definition the model and all its Jacobians from the human readable file
 % <matlab:filetohelp('cs1.txt') |cs1.yaml|>.
 
 %%

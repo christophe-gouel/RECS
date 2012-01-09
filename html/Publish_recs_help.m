@@ -1,4 +1,5 @@
-% Publish help pages to html
+function Publish_recs_help
+% PUBLISH_RECS_HELP publishes help pages to html
 
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
