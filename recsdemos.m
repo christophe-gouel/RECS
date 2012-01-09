@@ -26,6 +26,9 @@ clear interp model options
 sto2
 
 sto3
+
+disp('STO4 One small-country storage-trade model');
+clear interp model options
 sto4
 sto5
 

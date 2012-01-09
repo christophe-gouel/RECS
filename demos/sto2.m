@@ -22,9 +22,9 @@
 %
 % $$H_{t}: \frac{1}{1+r}\mathrm{E}_{t}\left(P_{t+1}\epsilon_{t+1}\right)=h {H_{t}}^{\mu},$$
 %
-% $$P_{t}: A_{t}={P_{t}}^{\alpha}+S^{\mathrm{S}}_{t}+S^{\mathrm{G}}_{t}.$$
+% $$P_{t}: A_{t}={P_{t}}^{\alpha}+S^{\mathrm{S}}_{t}+S^{\mathrm{G}}_{t},$$
 %
-% $$S^{\mathrm{G}}_{t}: 0\le S^{\mathrm{G}}_{t}\le \bar{S}^{\mathrm{G}} \quad \perp \quad P_t - P^{\mathrm{F}}$$
+% $$S^{\mathrm{G}}_{t}: 0\le S^{\mathrm{G}}_{t}\le \bar{S}^{\mathrm{G}} \quad \perp \quad P_t - P^{\mathrm{F}}.$$
 %
 % *Transition equation*
 %
@@ -59,7 +59,6 @@ model.params = {k,delta,r,mu,alpha,PF,Sgbar};
 %% Define approximation space
 % Approximation order
 order         = 50;                                        
-n             = 30;  
 %%
 % Minimum and maximum values of the state variable grid
 smin          = min(model.e)*0.95;
