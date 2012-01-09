@@ -1,4 +1,4 @@
-function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,A,b,t,mu)
+function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
 % PATHMCP solves a polyhedrally constrained variational inequality using PATH
 %
 % Z = PATHMCP(Z,L,U,CPFJ) tries to solve, using Z as a starting point, the mixed
@@ -19,7 +19,11 @@ function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,A,b,t,mu)
 % PATHMCP returns also a log file named 'logfile.tmp'. From Matlab, it can be
 % displayed by 'type logfile.tmp'.
 %
-% Z = PATHMCP(Z,L,U,CPFJ,A,B,T,MU)
+% Z = PATHMCP(Z,L,U,CPFJ,NNZJ) uses NNZJ the number of non-zero elements in the
+% Jacobian to initialize the memory allocation for the Jacobian. If NNZJ is not
+% provided, it is evaluated at the starting point Z.
+%
+% Z = PATHMCP(Z,L,U,CPFJ,NNZJ,A,B,T,MU)
 %  A  - constraint matrix
 %  B  - right hand side of the constraints
 %  T  - types of the constraints
@@ -40,8 +44,8 @@ function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,A,b,t,mu)
 % [Z,F,EXITFLAG,J] = PATHMCP(Z,L,U,CPFJ,...) returns J the Jacobian evaluation
 % at the solution.
 %
-% [Z,F,EXITFLAG,J,MU] = PATHMCP(Z,L,U,CPFJ,A,B,T,MU) returns MU the multipliers
-% on the constraints at the solution.
+% [Z,F,EXITFLAG,J,MU] = PATHMCP(Z,L,U,CPFJ,NNZJ,A,B,T,MU) returns MU the
+% multipliers on the constraints at the solution.
 %
 % For more information, see the following references 
 % Dirkse, S. P. and Ferris, M. C. (1995), The PATH solver: A non-monotone
@@ -103,12 +107,12 @@ l_p = [];
 u_p = [];
 
 %%
-if (nargin > 4)
+if (nargin > 5)
   %% With Polyhedral constraints
-  if (nargin < 6)
+  if (nargin < 7)
     error('Polyhedral constraints require A and b');
   end
-
+  
   if (~issparse(A))
     A = sparse(A);
   end
@@ -124,11 +128,11 @@ if (nargin > 4)
       error('Polyhedral constraints of incompatible sizes');
     end
 
-    if (nargin < 7 || isempty(t))
+    if (nargin < 8 || isempty(t))
       t = ones(m,1);
     end
 
-    if (nargin < 8 || isempty(mu))
+    if (nargin < 9 || isempty(mu))
       mu = zeros(m,1);
     end
 
@@ -152,11 +156,11 @@ if (nargin > 4)
 
     mu = min(max(mu,l_p),u_p);
   else
-    if (nargin >= 8 && ~isempty(mu))
+    if (nargin >= 9 && ~isempty(mu))
       error('No polyhedral constraints -- multipliers set.');
     end
 
-    if (nargin >= 7 && ~isempty(t))
+    if (nargin >= 8 && ~isempty(t))
       error('No polyhedral constraints -- equation types set.');
     end
   end
@@ -180,12 +184,12 @@ if ~issparse(J)
   error([cpfj ' must return a sparse Jacobian']);
 end
 
-nnzJ = nzmax(J);
+if (nargin<5 || isempty(nnzJ))
+  nnzJ = nzmax(J)*1.05;
+end
 
 row = n + m;
-% Change CG
-%ele = nnzJ + 2*nzmax(A);
-ele = nnzJ*1.05 + 2*nzmax(A);
+ele = nnzJ + 2*nzmax(A);
 
 %% Solve the problem
 init = [z; mu];
