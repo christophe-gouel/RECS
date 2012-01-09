@@ -110,8 +110,18 @@ options.simulmethod = 'solve';
 [ssim,xsim] = recsSimul(model,interp,ones(20,1),200,[],options);
 
 %% Plot storage rules
+subplot(2,1,1)
 plot(ssim(:),reshape(xsim(:,1,:),[],1),'.',...
      ssim(:),reshape(xsim(:,4,:),[],1),'.')
+leg = legend('Private stock','Public stock');
+set(leg,'Location','NorthWest')
+set(leg,'Box','off')
+xlabel('Availability')
+ylabel('Stock')
+subplot(2,1,2)
+plot(ssim(:),reshape(xsim(:,3,:),[],1),'.')
+xlabel('Availability')
+ylabel('Price')
 
 %% References
 %
