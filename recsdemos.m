@@ -20,7 +20,11 @@ cs1
 disp('STO1 Competitive storage model');
 clear interp model options
 sto1
+
+disp('STO2 Competitive storage with floor-price backed by public storage');
+clear interp model options
 sto2
+
 sto3
 sto4
 sto5

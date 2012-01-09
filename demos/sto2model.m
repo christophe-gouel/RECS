@@ -1,4 +1,4 @@
-function [out1,out2,out3,out4,out5] = sto2model(flag,s,x,z,e,snext,xnext,params,output)
+function [out1,out2,out3,out4,out5,out6] = sto2model(flag,s,x,z,e,snext,xnext,params,output)
 % STO2MODEL Equations of a competitive storage model with floor-price backed by public storage
 
 % Copyright (C) 2011 Christophe Gouel
@@ -84,11 +84,11 @@ switch flag
   if output.F
     out1      = zeros(n,p);
     out1(:,1) = xnext(:,iP);
-    out1(:,2) = e.*xnext(:,iP);
+    out1(:,2) = xnext(:,iP);
   end
 
   % dh/ds
-  if output.Js,  out2 = zeros(n,p,d); end
+  if output.Js, out2 = zeros(n,p,d); end
 
   % dh/dx
   if output.Jx, out3 = zeros(n,p,m); end
@@ -100,9 +100,15 @@ switch flag
   if output.Jxn
     out5         = zeros(n,p,m);
     out5(:,1,iP) = ones(n,1,1);
-    out5(:,2,iP) = e;
+    out5(:,2,iP) = ones(n,1,1);
   end
-  
+
+  % hmult
+  if output.hmult
+    out6      = ones(n,p);
+    out6(:,2) = e;
+  end
+
  case 'b' % BOUND FUNCTION
   out1 = [zeros(n,1) -inf(n,2) zeros(n,1)];
   out2 = [inf(n,3) Sgbar*ones(n,1)];

@@ -27,9 +27,16 @@ copyfile('cs1model.m',fullfile(targetdirectory,'cs1model.txt'));
 copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
 copyfile('gro1model.m',fullfile(targetdirectory,'gro1model.txt'));
 copyfile('sto1model.m',fullfile(targetdirectory,'sto1model.txt'));
+copyfile('sto2model.m',fullfile(targetdirectory,'sto2model.txt'));
+publish('clearpublish.m',PublishOptions);
 publish('cs1.m',PublishOptions);
+publish('clearpublish.m',PublishOptions);
 publish('gro1.m',PublishOptions);
+publish('clearpublish.m',PublishOptions);
 publish('sto1.m',PublishOptions);
+publish('clearpublish.m',PublishOptions);
+publish('sto2.m',PublishOptions);
+delete(fullfile(recsdirectory,'html','clearpublish.html'));
 cd(currentfolder)
 
 builddocsearchdb(fullfile(recsdirectory,'html'));

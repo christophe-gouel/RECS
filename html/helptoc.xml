@@ -24,6 +24,7 @@
       <tocitem target="gro1.html"> Stochastic growth model </tocitem>
       <tocitem target="sto.html"> Variants of the storage model
         <tocitem target="sto1.html"> Competitive storage model </tocitem>
+        <tocitem target="sto2.html"> Competitive storage with floor-price backed by public storage </tocitem>
       </tocitem>
     </tocitem>
   </tocitem>
