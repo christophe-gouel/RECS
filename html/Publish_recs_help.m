@@ -31,6 +31,7 @@ copyfile('sto1model.m',fullfile(targetdirectory,'sto1model.txt'));
 copyfile('sto2model.m',fullfile(targetdirectory,'sto2model.txt'));
 copyfile('sto3model.m',fullfile(targetdirectory,'sto3model.txt'));
 copyfile('sto4model.m',fullfile(targetdirectory,'sto4model.txt'));
+copyfile('sto5model.m',fullfile(targetdirectory,'sto5model.txt'));
 publish('clearpublish.m',PublishOptions);
 publish('cs1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
@@ -43,6 +44,8 @@ publish('clearpublish.m',PublishOptions);
 publish('sto3.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
 publish('sto4.m',PublishOptions);
+publish('clearpublish.m',PublishOptions);
+publish('sto5.m',PublishOptions);
 delete(fullfile(recsdirectory,'html','clearpublish.html'));
 cd(currentfolder)
 

@@ -32,6 +32,9 @@ sto3
 disp('STO4 One small-country storage-trade model');
 clear interp model options
 sto4
+
+disp('STO5 Two-country storage-trade model');
+clear interp model options
 sto5
 
 rmpath(fullfile(recsdirectory,'demos'))

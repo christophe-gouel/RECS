@@ -127,7 +127,7 @@ ylabel('Frequency')
 %% References
 %
 % [1] Miranda, M. J. and Helmberger, P. G. (1988). The effects of commodity price
-% stabilization programs. The American Economic Review, 78(1), 46-58.
+% stabilization programs. _The American Economic Review_, 78(1), 46-58.
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
