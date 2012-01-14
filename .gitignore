@@ -6,9 +6,6 @@ demo/*.log
 *.mex*
 *.html
 *.png
-/Doc/*
-!/Doc/recsdemos.tex
-!/Doc/recs.bib
 /exe/*
 /html/helpsearch/*
 /html/*.txt
