@@ -79,11 +79,25 @@
 % |expectations|, |shocks|, and |parameters| have to be indented at the same
 % level.
 %
-% * *Comments:* Comments are introduced by the character #.
+% * *Comments:* Comments are introduced by the character |#|.
+%
+% * *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.
+%
+% * *Timing convention:* The following timing conventions are to be
+% respected. Transition equations are written by defining the new state variable
+% at current time as a function of lagged response and state variables: $s_t =
+% g(s_{t-1},x_{t-1},e_t).$
+%
+% * Do not use |lambda| as a variable/parameter name, this is a restricted word.
+%
+% * Write equations in the same order than the order of variables declaration.
+%
+% * Yaml files are case sensitive.
+%
 
 %% Writing a model the hard way
 
 %%
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
