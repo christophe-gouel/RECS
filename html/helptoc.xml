@@ -25,7 +25,9 @@
       <tocitem target="sto.html"> Variants of the storage model
         <tocitem target="sto1.html"> Competitive storage model </tocitem>
         <tocitem target="sto2.html"> Competitive storage with floor-price backed by public storage </tocitem>
+        <tocitem target="sto3.html"> Competitive storage with price-band backed by public storage </tocitem>
         <tocitem target="sto4.html"> Storage-trade model of a small country </tocitem>
+        <tocitem target="sto5.html"> Two-country storage-trade model with supply reaction, fixed tariffs </tocitem>
       </tocitem>
     </tocitem>
   </tocitem>

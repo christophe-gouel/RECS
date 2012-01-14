@@ -25,6 +25,8 @@ disp('STO2 Competitive storage with floor-price backed by public storage');
 clear interp model options
 sto2
 
+disp('STO3 Competitive storage with price-band backed by public storage');
+clear interp model options
 sto3
 
 disp('STO4 One small-country storage-trade model');
