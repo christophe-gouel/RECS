@@ -1,7 +1,7 @@
 %% Installation
 
 %% How to get RECS latest version?
-% * With <http://git-scm.com/ git>, you can get the latest version with 
+% * With <http://git-scm.com/ git>, you can get the latest version with
 %   |git clone https://github.com/christophe-gouel/RECS.git recs|.
 % * Without git, you can download an archive of the latest version by clicking on
 %   the *Downloads* button on
@@ -11,10 +11,8 @@
 % # Install the CompEcon toolbox.
 % # (optional) Install other dependencies
 % # Add RECS folder to the Matlab path.
-% # Run |recsInstall| to copy a mex file from CompEcon to the solver folder.
-%
-% When the installation is finished, you can test it by running |recsdemos|, which
-% launches all demonstration files.
+% # Run |recsInstall| to complete RECS installation. It takes 2-3 minutes,
+%   because it creates RECS documentation by simulating all demonstration files.
 
 %% CompEcon toolbox
 % RECS depends on the CompEcon toolbox for many programs (especially with respect
@@ -40,9 +38,9 @@
 %   compilation or you can use uncompiled files, which may, however, lead to very slow
 %   programs.
 % * RECS calls Python binaries that are not yet prepared for
-%   64-bit computers. 
+%   64-bit computers.
 
 %%
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>

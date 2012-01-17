@@ -5,36 +5,36 @@
 %% Model's structure
 %
 % *Response variables* Speculative storage ($S^{\mathrm{S}}$), Increase in
-% public stock level ($\Delta S^{\textsc{g}+}$), Decrease in public stock level
-% ($\Delta S^{\textsc{g}-}$), Planned production ($H$) and Price ($P$).
+% public stock level ($\Delta S^{\mathrm{G}+}$), Decrease in public stock level
+% ($\Delta S^{\mathrm{G}-}$), Planned production ($H$) and Price ($P$).
 %
-% *State variable* Availability ($A$) and Public stock ($S^{\textsc{g}}$).
+% *State variable* Availability ($A$) and Public stock ($S^{\mathrm{G}}$).
 %
 % *Shock* Productivity shocks ($\epsilon$).
 %
 % *Parameters* Unit physical storage cost ($k$), Depreciation share ($\delta$),
 % Interest rate ($r$), Scale parameter for the production cost function ($h$),
 % Inverse of supply elasticity ($\mu$), Demand price elasticity ($\alpha$),
-% Floor price ($P^{\mathrm{F}}$), Ceiling price ($P^{\textsc{c}}$) and Capacity
+% Floor price ($P^{\mathrm{F}}$), Ceiling price ($P^{\mathrm{c}}$) and Capacity
 % constraint on public stock ($\bar{S}^{\mathrm{G}}$).
 %
-% *Equilibrium equations* 
+% *Equilibrium equations*
 %
 % $$S^{\mathrm{S}}_{t}: S^{\mathrm{S}}_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{t+1}\right)\ge 0,$$
 %
 % $$H_{t}: \frac{1}{1+r}\mathrm{E}_{t}\left(P_{t+1}\epsilon_{t+1}\right)=h {H_{t}}^{\mu},$$
 %
-% $$P_{t}: A_{t}+\Delta S^{\textsc{g}-}_{t}={P_{t}}^{\alpha}+S^{\mathrm{S}}_{t}+\Delta S^{\textsc{g}+}_{t},$$
+% $$P_{t}: A_{t}+\Delta S^{\mathrm{G}-}_{t}={P_{t}}^{\alpha}+S^{\mathrm{S}}_{t}+\Delta S^{\mathrm{G}+}_{t},$$
 %
-% $$\Delta S^{\textsc{g}+}_{t}:0\le\Delta S^{\textsc{g}+}_{t}\le\bar{S}^{\mathrm{G}}-\left(1-\delta\right)S^{\mathrm{G}}_{t-1} \quad \perp \quad P_{t}-P^{\mathrm{F}},$$
+% $$\Delta S^{\mathrm{G}+}_{t}:0\le\Delta S^{\mathrm{G}+}_{t}\le\bar{S}^{\mathrm{G}}-\left(1-\delta\right)S^{\mathrm{G}}_{t-1} \quad \perp \quad P_{t}-P^{\mathrm{F}},$$
 %
-% $$\Delta S^{\textsc{g}-}_{t}:0\le\Delta S^{\textsc{g}-}_{t}\le\left(1-\delta\right)S^{\mathrm{G}}_{t-1} \quad \perp \quad P^{\textsc{c}}-P_{t}.$$
+% $$\Delta S^{\mathrm{G}-}_{t}:0\le\Delta S^{\mathrm{G}-}_{t}\le\left(1-\delta\right)S^{\mathrm{G}}_{t-1} \quad \perp \quad P^{\mathrm{c}}-P_{t}.$$
 %
 % *Transition equation*
 %
 % $$A_{t}: A_{t}=\left(1-\delta\right)\left(S^{\mathrm{S}}_{t-1}+\right)+H_{t-1}\epsilon_{t},$$
 %
-% $$S^{\mathrm{G}}_{t}: S^{\mathrm{G}}_{t}= \left(1-\delta\right)S^{\mathrm{G}}_{t}+\Delta S^{\textsc{g}+}_{t}-\Delta S^{\textsc{g}-}_{t}.$$
+% $$S^{\mathrm{G}}_{t}: S^{\mathrm{G}}_{t}= \left(1-\delta\right)S^{\mathrm{G}}_{t}+\Delta S^{\mathrm{G}+}_{t}-\Delta S^{\mathrm{G}-}_{t}.$$
 
 %% Writing the model
 % The model is defined in a Matlab file: <matlab:filetohelp('sto3model.txt')
@@ -73,10 +73,10 @@ smin          = [0.74 0    ];
 smax          = [1.4  Sgbar];
 %%
 % Interpolation structure
-interp.fspace = fundefn('spli',order,smin,smax);             
+interp.fspace = fundefn('spli',order,smin,smax);
 %%
 % State collocation nodes
-s             = gridmake(funnode(interp.fspace));                      
+s             = gridmake(funnode(interp.fspace));
 
 %% Provide a very simple first guess
 xinit         = [zeros(n,1) ones(n,2) zeros(n,2)];
