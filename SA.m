@@ -3,7 +3,7 @@ function [x,fval,exitflag] = SA(f,x,options,varargin)
 %
 % SA solves a system of equations by iterating on the evaluations of
 % the equations: x[i+1] = x[i]+lambda*f(x[i]) until x has converged.
-%  
+%
 % X = SA(F,X0) tries to solve the system of equations F(X)=0 and
 % start at the vector X0. F accepts a vector X and return a vector
 % of equation values F evaluated at X. SA returns the vector X the
@@ -38,7 +38,7 @@ defaultopt = struct(...
     'showiters',0,...
     'lambda',1);
 
-if nargin < 3, options = []; end
+if nargin < 3, options = struct([]); end
 
 options = catstruct(defaultopt,options);
 
