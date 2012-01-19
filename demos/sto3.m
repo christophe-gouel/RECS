@@ -80,8 +80,6 @@ s             = gridmake(funnode(interp.fspace));
 
 %% Provide a very simple first guess
 xinit         = [zeros(n,1) ones(n,2) zeros(n,2)];
-interp.cz     = funfitxy(interp.fspace,s,ones(n,2));
-interp.cx     = funfitxy(interp.fspace,s,xinit);
 
 %% Solve for rational expectations
 % If |PATH| is installed, this will solved the model using |PATH| to solve the

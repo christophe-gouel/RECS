@@ -13,7 +13,7 @@
 % Interest rate ($r$), Demand price elasticity ($\alpha$), World price
 % autocorrelation ($\rho$) and Trade cost ($\theta$).
 %
-% *Equilibrium equations* 
+% *Equilibrium equations*
 %
 % $$S_{t}: S_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{t+1}\right)\ge 0,$$
 %
@@ -50,10 +50,10 @@ model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*Sigma;
 
 %% Pack model structure
 % Model functions
-model.func   = @sto4model;                                
+model.func   = @sto4model;
 %%
 % Model parameters
-model.params = {delta,r,k,alpha,tau,rho,sigma};           
+model.params = {delta,r,k,alpha,tau,rho,sigma};
 
 %% Define approximation space
 % Approximation order
@@ -68,12 +68,11 @@ smax          = [1.6; 2.05];
 interp.fspace = fundefn('spli',order,smin,smax);
 %%
 % State collocation nodes
-s             = gridmake(funnode(interp.fspace));         
+s             = gridmake(funnode(interp.fspace));
 
 %% Provide a first guess
 xinit         = [zeros(n,1) max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau) zeros(n,2)];
 interp.cz     = funfitxy(interp.fspace,s,max(min(ones(n,1),s(:,2).^rho+tau),s(:,2).^rho-tau));
-interp.cx     = funfitxy(interp.fspace,s,xinit);
 interp.ch     = funfitxy(interp.fspace,s,max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau));
 
 %% Solve for rational expectations

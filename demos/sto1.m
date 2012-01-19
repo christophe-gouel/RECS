@@ -14,7 +14,7 @@
 % Interest rate ($r$), Scale parameter for the production cost function ($h$),
 % Inverse of supply elasticity ($\mu$) and Demand price elasticity ($\alpha$).
 %
-% *Equilibrium equations* 
+% *Equilibrium equations*
 %
 % $$S_{t}: S_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{t+1}\right)\ge 0,$$
 %
@@ -44,21 +44,21 @@ model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 %% Pack model structure
 % Model function
-model.func   = @sto1model;                               
+model.func   = @sto1model;
 %%
 % Model parameters
-model.params = {alpha,k,delta,r,mu};               
+model.params = {alpha,k,delta,r,mu};
 
 %% Define approximation space
 % Approximation order
-n             = 30;  
+n             = 30;
 %%
 % Minimum and maximum values of the state variable grid
 smin          = 0.5;
 smax          = 2;
 %%
 % Interpolation structure
-interp.fspace = fundefn('spli',n,smin,smax);           
+interp.fspace = fundefn('spli',n,smin,smax);
 %%
 % State collocation nodes
 s             = gridmake(funnode(interp.fspace));
@@ -66,7 +66,6 @@ s             = gridmake(funnode(interp.fspace));
 %% Provide a first guess
 xinit     = [zeros(n,1) ones(n,1) s.^(1/alpha)];
 interp.cz = funfitxy(interp.fspace,s,ones(n,2));
-interp.cx = funfitxy(interp.fspace,s,xinit);
 interp.ch = funfitxy(interp.fspace,s,[s.^(1/alpha) s.^(1/alpha)]);
 
 %% Find deterministic steady state

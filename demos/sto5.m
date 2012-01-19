@@ -18,7 +18,7 @@
 % Inverse of supply elasticity ($\mu$), Demand price elasticity ($\alpha$),
 % Trade cost ($\theta$) and Tariff ($\tau_{i}$).
 %
-% *Equilibrium equations* 
+% *Equilibrium equations*
 %
 % For $i \in \left\{a,b\right\}$ and $j \ne i$:
 %
@@ -52,7 +52,7 @@ lambda = 1;
 %%
 % Relative supply size, such that the unit production cost of eta $Q$ in $b$ is
 % the same as $Q$ in $a$
-eta    = 1;  
+eta    = 1;
 mu     = 10;
 %%
 % Tariffs in countries $a$ and $b$:
@@ -65,16 +65,16 @@ Mu                = [1 1];
 %%
 % Std-deviation of production shocks in $a$ and $b$
 sigma             = [0.05 0;
-                     0    0.05];   
+                     0    0.05];
 [model.e,model.w] = qnwnorm([5 5],Mu,sigma^2);
 model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*sigma;
 
 %% Pack model structure
 % Model function
-model.func   = @sto5model;                                    
+model.func   = @sto5model;
 %%
 % Model parameters
-model.params = {delta,r,k,alpha,theta,lambda,eta,mu,taua,taub};       
+model.params = {delta,r,k,alpha,theta,lambda,eta,mu,taua,taub};
 
 %% Find deterministic steady state
 [sss,xss,zss] = recsSS(model,[1 1],[0 0 1 1 1 1 0 0])
@@ -100,14 +100,11 @@ smax          = sss*2;
 interp.fspace = fundefn('spli',order,smin,smax);
 %%
 % State collocation nodes
-s             = gridmake(funnode(interp.fspace));                      
+s             = gridmake(funnode(interp.fspace));
 
 %% Provide a first guess
 xinit         = [0.1*zeros(n,2) max(s(:,1).^(1/alpha),0.8) ...
                  max((s(:,2)/lambda).^(1/alpha),0.8) zeros(n,2) ones(n,2)];
-interp.cz     = funfitxy(interp.fspace,s,ones(n,4));
-interp.cx     = funfitxy(interp.fspace,s,xinit);
-interp.ch     = funfitxy(interp.fspace,s,ones(n,4));
 
 %% Solve for rational expectations
 % Define options:

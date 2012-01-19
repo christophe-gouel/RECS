@@ -57,7 +57,6 @@ s             = gridmake(funnode(interp.fspace));
 
 %% First-guess: Consumption equal to cash on hand
 x         = s;
-interp.cx = funfitxy(interp.fspace,s,x);
 %%
 % To force the solver to compute the approximation of the expectations
 % function, it is necessary to add at least an empty value for |interp.ch|
@@ -68,7 +67,10 @@ interp.ch = [];
 
 %% Plot the decision rule
 figure
-plot(s,x)
+plot(s,x,s,s)
+legend('Policy rule','45 degree line')
+legend('Location','NorthWest')
+legend('boxoff')
 xlabel('Cash on hand')
 ylabel('Consumption')
 
