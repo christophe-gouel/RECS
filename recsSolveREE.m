@@ -11,12 +11,14 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 % first guess of response variables on the grid. RECSSOLVEREE returns the
 % interpolation structure containing the coefficient matrices cx
 % and cz, and ch if this field was initially included in INTERP.
-% INTERP is a structure, which has to include the following fields:
+% INTERP is a structure, which has to include the following field:
+%    fspace       : a definition structure for the interpolation family (created
+%                   by the function fundef)
+% Optionally INTERP can also include first guess for the coefficients of
+% approximation. If absent, an approximation is made from X.
 %    ch, cx or cz : a coefficient matrix providing a first guess of the
 %                   approximation of the expectations function for ch, of the
 %                   response variables for cx, or of the expectations for cz
-%    fspace       : a definition structure for the interpolation family (created
-%                   by the function fundef)
 % MODEL is a structure, which has to include the following fields:
 %    [e,w] : discrete distribution with finite support with e the values and w the
 %            probabilities (it could be also the discretisation of a continuous
@@ -92,19 +94,7 @@ funapprox          = lower(options.funapprox);
 functional         = options.functional;
 reemethod          = lower(options.reemethod);
 
-switch funapprox
- case 'expapprox'
-  c      = interp.cz;
- case 'expfunapprox'
-  c      = interp.ch;
- otherwise
-  c      = interp.cx;
-end
-fspace     = interp.fspace;
-interp.Phi = funbasx(fspace);
-Phi        = interp.Phi;
-if functional, model.params = [model.params fspace c]; end
-
+% Extract fields of model
 e      = model.e;
 params = model.params;
 w      = model.w;
@@ -122,11 +112,66 @@ if strcmp(reemethod,'1-step') && ...
            'approximating this funtion. Switching to the iterative scheme.'])
 end
 
+% Identify variables dimensions
 [n,m]  = size(x);
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 k      = length(w);               % number of shock values
 z      = zeros(n,0);
+
+% Extract fields of interp
+fspace     = interp.fspace;
+interp.Phi = funbasx(fspace);
+Phi        = interp.Phi;
+% If the coefficients of approximation are not present in interp, they are
+% calculated from the first guess on x
+switch funapprox
+  case 'expapprox'
+    if isfield(interp,'cz') && ~isempty(interp.cz)
+      c      = interp.cz;
+    elseif functional
+      error(['With functional problems, a first guess has to be provided for ' ...
+             'the approximation coefficients.'])
+    else
+      ind    = (1:n);
+      ind    = ind(ones(1,k),:);
+      ss     = s(ind,:);
+      xx     = x(ind,:);
+      output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+      snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
+      if extrapolate, snextinterp = snext;
+      else
+        snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
+      end
+      [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
+      xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
+      if nargout(func)<6
+        h                 = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
+      else
+        [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
+        h                 = h.*hmult;
+      end
+      z         = reshape(w'*reshape(h,k,n*p),n,p);
+      c = funfitxy(fspace,Phi,z);
+    end
+  case 'expfunapprox'
+    if isfield(interp,'ch') && ~isempty(interp.ch)
+      c      = interp.ch;
+    elseif functional
+      error(['With functional problems, a first guess has to be provided for ' ...
+             'the approximation coefficients.'])
+    else
+      output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+      c      = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output));
+    end
+  otherwise
+    if isfield(interp,'cx') && ~isempty(interp.cx)
+      c = interp.cx;
+    else
+      c = funfitxy(fspace,Phi,x);
+    end
+end
+if functional, model.params = [model.params fspace c]; end
 
 %% Solve for the rational expectations equilibrium
 switch reemethod
