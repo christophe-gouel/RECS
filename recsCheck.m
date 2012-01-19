@@ -101,7 +101,7 @@ err = [err norm(hxnext(:)-hxnextnum(:),inf)];
 if max(err)>1.e-4
    disp('Possible Error in Derivatives')
    disp('Discrepancies in derivatives = ')
-   fprintf(1,'fs      fx      fz      gs      gx      hs      hx      hsnext  hxnext\n');
+   fprintf(1,'fs       fx       fz       gs       gx       hs       hx       hsnext   hxnext\n');
    fprintf(1,'%1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e\n',err);
 end
 
