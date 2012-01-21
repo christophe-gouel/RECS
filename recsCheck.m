@@ -1,4 +1,4 @@
-function [err,discrepancy] = recsCheck(model,s,x,z,e,snext,xnext)
+function [err,discrepancy] = recsCheck(model,s,x,z,e,snext,xnext,precision)
 % RECSCHECK Checks analytical derivatives against numerical ones
 %
 % When the model file is not generated automatically by dolo-recs, RECSCHECK is
@@ -20,20 +20,28 @@ function [err,discrepancy] = recsCheck(model,s,x,z,e,snext,xnext)
 % RECSCHECK(MODEL,S,X,Z,E,SNEXT,XNEXT) checks derivatives for the value of
 % next-period response variables supplied in XNEXT.
 %
+% RECSCHECK(MODEL,S,X,Z,E,SNEXT,XNEXT,PRECISION) uses the scalar PRECISION as a
+% limit (default: 1e-4).
+%
 % ERR = RECSCHECK(MODEL,S,X,Z,...) returns ERR, a 1x9 vector containing the maximal
 % differences between analytical and numerical derivatives.
 %
-% [ERR,DISCREPANCY] = RECSCHECK(MODEL,S,X,Z,...) returns DISCREPANCY, a structure
-% containing the detailed differences between analytical and numerical derivatives.
+% [ERR,DISCREPANCY] = RECSCHECK(MODEL,S,X,Z,...) returns DISCREPANCY, a
+% structure containing the detailed differences between analytical and numerical
+% derivatives. Each structure field contains a 3-column matrix indicating the
+% element showing a discrepancy higher than PRECISION. The first column
+% indicates the equations, the second column the variables and the third the
+% discrepancy.
 %
 % See also RECSMODELINIT.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-if nargin < 7 || isempty(xnext), xnext = x;                end
-if nargin < 6 || isempty(snext), snext = s;                end
-if nargin < 5 || isempty(e)    , e     = model.w'*model.e; end
+if nargin < 8 || isempty(precision), precision = 1e-4;         end
+if nargin < 7 || isempty(xnext)    , xnext = x;                end
+if nargin < 6 || isempty(snext)    , snext = s;                end
+if nargin < 5 || isempty(e)        , e     = model.w'*model.e; end
 
 if size(s,1)~=1 || size(x,1)~=1 || size(e,1)~=1 || size(snext,1)~=1 || size(xnext,1)~=1
   error('Derivatives can only be check at one location, not on a grid');
@@ -98,17 +106,43 @@ err = [err norm(hx(:)-hxnum(:),inf)];
 err = [err norm(hsnext(:)-hsnextnum(:),inf)];
 err = [err norm(hxnext(:)-hxnextnum(:),inf)];
 
-if max(err)>1.e-4
+if max(err)>precision
    disp('Possible Error in Derivatives')
    disp('Discrepancies in derivatives = ')
    fprintf(1,'fs       fx       fz       gs       gx       hs       hx       hsnext   hxnext\n');
    fprintf(1,'%1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e %1.1e\n',err);
 end
 
-discrepancy    = struct(...
-    'fx', reshape(fx,size(fxnum))-fxnum, ...
-    'fz', reshape(fz,size(fznum))-fznum, ...
-    'gx', reshape(gx,size(gxnum))-gxnum, ...
-    'hx', reshape(hx,size(hxnum))-hxnum, ...
-    'hsnext', reshape(hsnext,size(hsnextnum))-hsnextnum, ...
-    'hxnext', reshape(hxnext,size(hxnextnum))-hxnextnum);
+if nargout==2
+  fxdis = reshape(fx,size(fxnum))-fxnum;
+  [r,c] = find(abs(fxdis)>precision);
+  fxdis = [r c fxdis(sub2ind(size(fxdis),r,c))];
+
+  fzdis = reshape(fz,size(fznum))-fznum;
+  [r,c] = find(abs(fzdis)>precision);
+  fzdis = [r c fzdis(sub2ind(size(fzdis),r,c))];
+
+  gxdis = reshape(gx,size(gxnum))-gxnum;
+  [r,c] = find(abs(gxdis)>precision);
+  gxdis = [r c gxdis(sub2ind(size(gxdis),r,c))];
+
+  hxdis = reshape(hx,size(hxnum))-hxnum;
+  [r,c] = find(abs(hxdis)>precision);
+  hxdis = [r c hxdis(sub2ind(size(hxdis),r,c))];
+  
+  hsnextdis = reshape(hsnext,size(hsnextnum))-hsnextnum;
+  [r,c] = find(abs(hsnextdis)>precision);
+  hsnextdis = [r c hsnextdis(sub2ind(size(hsnextdis),r,c))];
+  
+  hxnextdis = reshape(hxnext,size(hxnextnum))-hxnextnum;
+  [r,c] = find(abs(hxnextdis)>precision);
+  hxnextdis = [r c hxnextdis(sub2ind(size(hxnextdis),r,c))];
+  
+  discrepancy    = struct(...
+      'fx', fxdis, ...
+      'fz', fzdis, ...
+      'gx', gxdis, ...
+      'hx', hxdis, ...
+      'hsnext', hsnextdis, ...
+      'hxnext', hxnextdis);
+end
