@@ -115,7 +115,6 @@ end
 % Identify variables dimensions
 [n,m]  = size(x);
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 k      = length(w);               % number of shock values
 z      = zeros(n,0);
 
@@ -171,7 +170,11 @@ switch funapprox
       c = funfitxy(fspace,Phi,x);
     end
 end
-if functional, model.params = [model.params fspace c]; end
+if functional
+  model.params = [model.params fspace c];
+  params       = model.params;
+end
+p              = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 
 %% Solve for the rational expectations equilibrium
 switch reemethod
