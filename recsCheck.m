@@ -114,6 +114,10 @@ if max(err)>precision
 end
 
 if nargout==2
+  fsdis = reshape(fs,size(fsnum))-fsnum;
+  [r,c] = find(abs(fsdis)>precision);
+  fsdis = [r c fsdis(sub2ind(size(fsdis),r,c))];
+
   fxdis = reshape(fx,size(fxnum))-fxnum;
   [r,c] = find(abs(fxdis)>precision);
   fxdis = [r c fxdis(sub2ind(size(fxdis),r,c))];
@@ -121,6 +125,10 @@ if nargout==2
   fzdis = reshape(fz,size(fznum))-fznum;
   [r,c] = find(abs(fzdis)>precision);
   fzdis = [r c fzdis(sub2ind(size(fzdis),r,c))];
+
+  gsdis = reshape(gs,size(gsnum))-gsnum;
+  [r,c] = find(abs(gsdis)>precision);
+  gsdis = [r c gsdis(sub2ind(size(gsdis),r,c))];
 
   gxdis = reshape(gx,size(gxnum))-gxnum;
   [r,c] = find(abs(gxdis)>precision);
@@ -139,8 +147,10 @@ if nargout==2
   hxnextdis = [r c hxnextdis(sub2ind(size(hxnextdis),r,c))];
   
   discrepancy    = struct(...
+      'fs', fsdis, ...
       'fx', fxdis, ...
       'fz', fzdis, ...
+      'gs', gsdis, ...
       'gx', gxdis, ...
       'hx', hxdis, ...
       'hsnext', hsnextdis, ...
