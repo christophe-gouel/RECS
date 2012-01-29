@@ -16,7 +16,7 @@
 %
 % $$C_{t}: C_{t}^{-\tau}=\beta\mathrm{E}_{t}\left[C_{t+1}^{-\tau}\left(1-\delta+a \alpha e^{Z_{t+1}}K_{t+1}^{\alpha-1}\right)\right].$$
 %
-% *Transition equation*
+% *Transition equations*
 %
 % $$K_{t}: K_{t}=a e^{Z_{t-1}}K_{t-1}^{\alpha}+\left(1-\delta\right)K_{t-1}-C_{t-1},$$
 %

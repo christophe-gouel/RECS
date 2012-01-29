@@ -1,0 +1,54 @@
+# GRO2.yaml Model definition file for the stochastic growth model with irreversible investment
+# Copyright (C) 2011-2012 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
+declarations:
+
+  states: [K, Z]
+  
+  controls: [C, I, Mu]
+
+  expectations: [E]
+
+  shocks: [Epsilon]
+
+  parameters: [a, tau, delta, beta, rho, alpha]
+
+  
+equations:
+
+  arbitrage:
+
+    - C+I = a*exp(Z)*K^alpha | -inf <= C  <= inf
+    - C^(-tau)+Mu            |    0 <= I  <= inf
+    - Mu+beta*E = 0          | -inf <= Mu <= inf
+
+  transition:
+
+    - K = (1-delta)*K(-1)+I(-1)
+    - Z = rho*Z(-1)+Epsilon
+
+  expectation:
+
+    - E = C(1)^(-tau)*a*alpha*exp(Z(1))*K(1)^(alpha-1)-Mu(1)*(1-delta)
+
+    
+calibration:
+
+  parameters:
+
+    tau   : 1
+    delta : 0.0196
+    beta  : 0.95
+    rho   : 0.9
+    alpha : 0.3
+    a     : (1/beta-1+delta)/alpha
+    
+  steady_state:
+
+    Z  : 0
+    K  : 1
+    C  : a-delta
+    I  : 0
+    Mu : 0
+    E  : C^(-tau)/beta
