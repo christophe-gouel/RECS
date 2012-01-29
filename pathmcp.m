@@ -170,10 +170,12 @@ end
 
 %% Check for domain error at starting point and Jacobian
 % this is a fix, nnz may be bigger than this
-[~,J,domerr] = feval(cpfj,z+1e-5*ones(size(z))+1e-5*abs(z),1);
+[~,~,domerr1] = feval(cpfj,z,0);
+[~,J,domerr2] = feval(cpfj,z+1e-5*ones(size(z))+1e-5*abs(z),1);
+domerr = max(domerr1,domerr2);
 
 if (domerr > 0)
-  [~,J,domerr] = feval(cpfj,z,1);
+  [~,J] = feval(cpfj,z,1);
 end
 
 if (domerr > 0)
