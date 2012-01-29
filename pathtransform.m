@@ -11,20 +11,17 @@ global par
 model = par{1};
 
 if (jacflag)
-  [F,J] = model(x,par{2:end});
+  [F,J]     = model(x,par{2:end});
+  isdomerrJ = any((~isfinite(J) | (imag(J)~=0) | isnan(J)),2);
 else
-  F     = model(x,par{2:end});
-  J     = [];
+  F         = model(x,par{2:end});
+  J         = [];
+  isdomerrJ = zeros(size(F));
 end
 
-%%  Calculation of number of domain errors
-domerr = 0;
-% Domain errors should be calculated from the situation when x values exceed
-% domain definition of the functions used. Instead, for simplicity, here the
-% number of domain errors is calculated from the output: the number of infinite,
-% complex or NaN numbers in F:
-isdomerr = ~isfinite(F) | (imag(F)~=0) | isnan(F);
-if any(isdomerr)
-%  fprintf(1,'domerr = %i \n',sum(isdomerr));
-  domerr = sum(isdomerr);
-end
+%%  Calculation of number of ex-post domain errors
+isdomerrF = ~isfinite(F) | (imag(F)~=0) | isnan(F);
+domerr    = sum(any([isdomerrF isdomerrJ],2));
+% if domerr>0
+%   fprintf(1,'domerr = %i \n',domerr);
+% end
