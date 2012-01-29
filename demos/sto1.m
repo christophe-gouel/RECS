@@ -178,10 +178,10 @@ ylabel(texlabel('log_{10}|EE|'))
 % [1] Wright, B. D. and Williams, J. C. (1982). The economic role of commodity
 % storage. _The Economic Journal_, 92(367), 596-614.
 %
-% [2] Gouel, C. (2010). Comparing numerical methods for solving the competitive
-% storage model. Mimeo.
+% [2] Gouel, C. (forthcoming). Comparing numerical methods for solving the competitive
+% storage model. _Computational Economics_.
 
 %%
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
