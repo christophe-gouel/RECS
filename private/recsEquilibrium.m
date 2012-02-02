@@ -38,7 +38,7 @@ switch funapprox
       %% With Jacobians
       output              = struct('F',1,'Js',0,'Jx',1);
       [snext,~,gx]        = func('g',ss,xx,[],ee,[],[],params,output);
-      if extrapolate, snextinterp = snext;
+      if extrapolate>=1, snextinterp = snext;
       else
           snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
       end
@@ -124,7 +124,7 @@ switch funapprox
 
       switch funapprox
         case 'expfunapprox'
-          if extrapolate, snextinterp = snext;
+          if extrapolate>=1, snextinterp = snext;
           else
             snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
                               fspace.a(ones(n*k,1),:));
@@ -139,7 +139,7 @@ switch funapprox
 
         case 'resapprox-complete'
           [LB,UB] = func('b',snext,[],[],[],[],[],params);
-          if extrapolate, snextinterp = snext;
+          if extrapolate>=1, snextinterp = snext;
           else
             snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
                               fspace.a(ones(n*k,1),:));

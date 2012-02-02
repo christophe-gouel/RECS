@@ -100,7 +100,7 @@ function [R,FLAG] = ResidualREE(cc)
       xx      = x(ind,:);
       output  = struct('F',1,'Js',0,'Jx',0);
       snext   = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
-      if extrapolate, snextinterp = snext;
+      if extrapolate>=1, snextinterp = snext;
       else
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
                           fspace.a(ones(n*k,1),:));
@@ -152,7 +152,7 @@ function [R,FLAG] = ResidualREE(cc)
         output = struct('F',1,'Js',0,'Jx',0);
         snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
 
-        if extrapolate, snextinterp = snext;
+        if extrapolate>=1, snextinterp = snext;
         else
           snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
                             fspace.a(ones(n*k,1),:));

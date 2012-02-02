@@ -181,8 +181,12 @@ end
 %% Check if state satisfies bounds
 snmin = min(reshape(permute(ssim,[1 3 2]),[],d));
 snmax = max(reshape(permute(ssim,[1 3 2]),[],d));
-if any(snmin<fspace.a), warning('RECS:Extrapolation','Extrapolating beyond smin'), end;
-if any(snmax>fspace.b), warning('RECS:Extrapolation','Extrapolating beyond smax'), end;
+if any(snmin<fspace.a)
+  warning('RECS:Extrapolation','Extrapolating beyond smin')
+end
+if any(snmax>fspace.b)
+  warning('RECS:Extrapolation','Extrapolating beyond smax')
+end
 
 %% Compute some descriptive statistics
 if (nargout==5 || statdisplay) && (nper > 40)

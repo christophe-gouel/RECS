@@ -1,4 +1,4 @@
-function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
+function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 % RECSSOLVEREE finds the rational expectations equilibrium (REE) of a model
 %
 % RECSSOLVEREE implementes various approximation schemes, and equation solvers to
@@ -20,9 +20,9 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %                   approximation of the expectations function for ch, of the
 %                   response variables for cx, or of the expectations for cz
 % MODEL is a structure, which has to include the following fields:
-%    [e,w] : discrete distribution with finite support with e the values and w the
-%            probabilities (it could be also the discretisation of a continuous
-%            distribution through quadrature or Monte Carlo drawings)
+%    [e,w]  : discrete distribution with finite support with e the values and w the
+%             probabilities (it could be also the discretisation of a continuous
+%             distribution through quadrature or Monte Carlo drawings)
 %    func   : function name or anonymous function that defines the model's equations
 %    params : model's parameters, it is preferable to pass them as a cell array
 %             (compulsory with the functional option) but other formats are
@@ -33,8 +33,10 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %    display          : 1 to show iterations (default: 1)
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
-%    extrapolate      : 1 if extrapolation is allowed outside the
-%                       interpolation space or 0 to forbid it (default: 1)
+%    extrapolate      : 1 or 2 if extrapolation is allowed outside the
+%                       interpolation space, 0 or -1 to forbid it (default: 1).
+%                       For -1 and 2, RECSSOLVEREE displays a warning if state
+%                       variables exceed the interpolation space.
 %    funapprox        : 'expapprox', 'expfunapprox', 'resapprox-simple'
 %                       or 'resapprox-complete' (default)
 %    functional       : 1 if the equilibrium equations are a functional equation
@@ -65,9 +67,13 @@ function [interp,x,z,f,exitflag] = recsSolveREE(interp,model,s,x,options)
 %    1 : RECSSOLVEREE converges to the REE
 %    0 : Failure to converge
 %
+% [INTERP,X,Z,F,EXITFLAG,OUTPUt] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns
+% OUTPUT, a structure containing the fields snextmin and snextmax, minimum and
+% maximum of next-period state variables.
+%
 % See also RECSCHECK, RECSSIMUL, RECSSS.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -138,7 +144,7 @@ switch funapprox
       xx     = x(ind,:);
       output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
       snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
-      if extrapolate, snextinterp = snext;
+      if extrapolate>=1, snextinterp = snext;
       else
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
       end
@@ -194,6 +200,8 @@ if exitflag~=1
 end
 
 %% Outputs calculations
+if functional, params{end} = c; end
+
 % Interpolation coefficients
 c = reshape(c,n,[]);
 switch funapprox
@@ -216,16 +224,27 @@ switch funapprox
   end
 end
 
+% Check if state satisfies bounds
+ind    = (1:n);
+ind    = ind(ones(1,k),:);
+ss     = s(ind,:);
+xx     = x(ind,:);
+output = struct('F',1,'Js',0,'Jx',0);
+snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
+output = struct('snextmin',min(snext),...
+                'snextmax',max(snext));
+if extrapolate==2 || extrapolate==-1
+  if any(min(snext)<fspace.a)
+    warning('RECS:Extrapolation','State variables beyond smin')
+  end
+  if any(max(snext)>fspace.b)
+    warning('RECS:Extrapolation','State variables beyond smax')
+  end
+end
+
 % Calculation of z on the grid for output
 if isempty(z)
-  if functional, params{end} = c; end
-  ind    = (1:n);
-  ind    = ind(ones(1,k),:);
-  ss     = s(ind,:);
-  xx     = x(ind,:);
-  output = struct('F',1,'Js',0,'Jx',0);
-  snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
-  if extrapolate, snextinterp = snext;
+  if extrapolate>=1, snextinterp = snext;
   else
     snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
   end
