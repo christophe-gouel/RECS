@@ -67,7 +67,7 @@ function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 %    1 : RECSSOLVEREE converges to the REE
 %    0 : Failure to converge
 %
-% [INTERP,X,Z,F,EXITFLAG,OUTPUt] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns
+% [INTERP,X,Z,F,EXITFLAG,OUTPUT] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns
 % OUTPUT, a structure containing the fields snextmin and snextmax, minimum and
 % maximum of next-period state variables.
 %
