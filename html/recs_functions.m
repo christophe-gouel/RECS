@@ -3,6 +3,8 @@
 %% RECS functions
 % * <matlab:doc('recsAccuracy') |recsAccuracy|> - Evaluate accuracy
 % of a RECS solution
+% * <matlab:doc('recsAuxiliary') |recsAuxiliary|> - Calculate auxiliary
+% variables not included in the core model
 % * <matlab:doc('recsCheck') |recsCheck|> - Check analytical derivatives against
 % numerical ones
 % * <matlab:doc('recsConvert') |recsConvert|> - Convert the

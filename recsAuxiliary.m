@@ -1,15 +1,32 @@
-function [interp,xa,za] = recsAuxilary(model,interp,s,x,z,xa,options)
-% RECSAUXILARY calculates auxilary variables not included in the core model
+function [interp,xa,za] = recsAuxiliary(model,interp,s,x,z,xa,options)
+% RECSAUXILIARY calculates auxiliary variables not included in the core model
 %
-% INTERP = RECSAUXILARY(MODEL,INTERP,S,X,Z)
+% INTERP = RECSAUXILIARY(MODEL,INTERP,S,X,Z) 
+% For the definition of MODEL and INTERP structure, see recsSolveREE
+% documentation. RECSAUXILIARY returns the interpolation structure INTERP, in
+% which the coefficients matrices cxa (for auxiliary variables) and cza (for
+% auxiliary expectations) have been added as new fields.
 %
-% INTERP = RECSAUXILARY(MODEL,INTERP,S,X,Z,XA)
+% INTERP = RECSAUXILIARY(MODEL,INTERP,S,X,Z,XA) uses XA as first guess for the
+% value of the auxiliary variables on the grid. This is only useful when
+% auxiliary variables are function of auxiliary expectations. In this case, it
+% can reduce a lot the time to reach the solution to start from a good first
+% guess.
 %
-% INTERP = RECSAUXILARY(MODEL,INTERP,S,X,Z,XA,OPTIONS)
+% INTERP = RECSAUXILIARY(MODEL,INTERP,S,X,Z,XA,OPTIONS) solves for auxiliary
+% variables with the parameters defined by the structure OPTIONS. The fields of
+% the structure are
+%    extrapolate      : 1 or 2 if extrapolation is allowed outside the
+%                       interpolation space, 0 or -1 to forbid it (default: 1).
+%    saoptions        : options structure to be passed to solve SA
 %
-% [INTERP,XA] = RECSAUXILARY(MODEL,INTERP,S,X,Z,...)
+% [INTERP,XA] = RECSAUXILIARY(MODEL,INTERP,S,X,Z,...) returns the value of the
+% auxiliary variables on the grid.
 %
-% [INTERP,XA,ZA] = RECSAUXILARY(MODEL,INTERP,S,X,Z,...)
+% [INTERP,XA,ZA] = RECSAUXILIARY(MODEL,INTERP,S,X,Z,...) returns the value of
+% the auxiliary expectations on the grid.
+%
+% See also RECSSIMUL, RECSSOLVEREE.
 
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -53,25 +70,25 @@ Phinext       = funbasx(fspace,snextinterp);
 %% xnext
 xnext = funeval(cx,fspace,Phinext);
 
-%% pa (dimension of auxilary expectations)
+%% pa (dimension of auxiliary expectations)
 za  = func('ha',s(1,:),x(1,:),[],e(1,:),snext(1,:),xnext(1,:),params);
 pa  = size(za,2);
 
 %%
 if pa>0
-  %% With auxilary expectations function
+  %% With auxiliary expectations function
   if nargin<=5 || isempty(xa)
     xa  = func('xa',s,x,[z zeros(n,pa)],[],[],[],params);
   end
   [xa,~,exitflag] = SA(@ResidualVFI, xa, options.saoptions);
 
   if exitflag~=1
-    warning('RECS:FailureVFI','Failure to converge for auxilary variables');
+    warning('RECS:FailureVFI','Failure to converge for auxiliary variables');
   end
 
   interp.cza = funfitxy(fspace,Phi,za);
 else
-  %% Without auxilary expectations function
+  %% Without auxiliary expectations function
   xa  = func('xa',s,x,[z zeros(n,pa)],[],[],[],params);
   cxa = funfitxy(fspace,Phi,xa);
   za  = zeros(n,0);
