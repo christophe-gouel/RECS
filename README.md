@@ -19,7 +19,8 @@ To use the solver you have to
 
 1. Install the CompEcon toolbox (see Dependencies), follow CompEcon installation
    instructions and do not forget to create the mex files.
-2. Add the solver folder to the Matlab path.
+2. Add the solver folder (avoid folder name with space, even for parent folders)
+   to the Matlab path.
 3. Run `recsInstall.m` to finalize RECS installation.
 
 When the installation is finished, you can test it by running `recsdemos.m`, which
@@ -36,7 +37,7 @@ on the following packages, which have to be installed:
 OPTIONAL INSTALLATION
 ---------------------
 
-* Path solver for Matlab (<http://www.cs.wisc.edu/cpnet/cpnetsoftware/>). This is
+* Path solver for Matlab (<http://pages.cs.wisc.edu/~ferris/path.html>). This is
   the reference solver for mixed complementarity problems. It is highly recommended
   to install if difficult complementarity problems need to be solved.
 * Matlab Optimization Toolbox. The solver `fsolve` can be used to solve both the

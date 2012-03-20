@@ -20,6 +20,14 @@ recsdirectory     = fileparts(which('recsSimul'));
 compecondirectory = fileparts(which('remsolve'));
 fprintf('RECS installation:\n')
 
+%% Check recs folder location
+if ~isempty(strfind(recsdirectory,' '))
+  warning('RECS:SpaceinFolderName',...
+          ['RECS folder name, or parent folders, includes spaces, ' ...
+           'which may create errors. To avoid errors, please ' ...
+           'relocate RECS in a folder without space in its name.'])
+end
+
 %% Copy CompEcon mex files
 s1 = copyfile(fullfile(compecondirectory,'private','arraymult.mex*'),recsdirectory);
 s2 = copyfile(fullfile(compecondirectory,'arraymult.mex*'),recsdirectory);
