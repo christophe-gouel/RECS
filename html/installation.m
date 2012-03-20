@@ -10,7 +10,8 @@
 %% Installation instructions
 % # Install the CompEcon toolbox.
 % # (optional) Install other dependencies
-% # Add RECS folder to the Matlab path.
+% # Add RECS folder (avoid folder name with space, even for parent folders) to
+%   the Matlab path.
 % # Run |recsInstall| to complete RECS installation. It takes 2-3 minutes,
 %   because it creates RECS documentation by simulating all demonstration files.
 
@@ -21,7 +22,7 @@
 % installation instructions; in particular, do not forget to create the mex files!
 
 %% Optional dependencies
-% * Path solver for Matlab (<http://www.cs.wisc.edu/cpnet/cpnetsoftware/>). This is
+% * Path solver for Matlab (<http://pages.cs.wisc.edu/~ferris/path.html>). This is
 %   the reference solver for mixed complementarity problems. It is highly
 %   recommended to install if difficult complementarity problems need to be solved.
 % * MATLAB Optimization Toolbox. The solver fsolve can be used to solve both the
@@ -32,13 +33,13 @@
 % * Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
 %   distribution other than normal.
 
-%% Issues with 64-bit architecture
-% * CompEcon programs cannot be compiled on 64-bit
-%   architecture. You can aks me for how to modify them to achieve
-%   compilation or you can use uncompiled files, which may, however, lead to very slow
-%   programs.
-% * RECS calls Python binaries that are not yet prepared for
-%   64-bit computers.
+%%Supported platforms
+% RECS Matlab files work on any platform supported by Matlab. However, the
+% parser that calculates automatically the Jacobians has been written in
+% Python. Executables have been prepared for Windows (32- and 64-bit) and Linux
+% (32-bit). For other platforms, you can use dolo-recs from its Python sources:
+% <https://github.com/albop/dynare-python>. Send me an email if you need help on
+% this!
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel

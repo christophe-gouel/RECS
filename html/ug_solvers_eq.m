@@ -17,7 +17,7 @@
 % problems). It is included in RECS files. |ncpsolve| comes with the CompEcon
 % toolbox, which has to be installed for RECS to run. Path has to be installed
 % separately. To install Path, see
-% <http://www.cs.wisc.edu/cpnet/cpnetsoftware/>. To distinguish Path from the
+% <http://pages.cs.wisc.edu/~ferris/path.html>. To distinguish Path from the
 % MATLAB internal command, the name of the Path MATLAB file is |pathmcp.m|.
 
 %% Nonlinear equations solver
@@ -29,6 +29,6 @@
 % <matlab:doc('ncpsolve') |ncpsolve|> <matlab:doc('pathmcp') |pathmcp|>
 
 %%
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>

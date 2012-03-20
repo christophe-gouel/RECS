@@ -48,12 +48,12 @@ OPTIONAL INSTALLATION
 * Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
   distribution other than normal.
 
-ISSUES WITH 64-BIT COMPUTERS
-============================
+Supported platforms
+===================
 
-* The mex files in the CompEcon toolbox are not designed for 64-bit computers,
-  which may result in a slow execution of RECS files.
-* There is no compiled version of dolo-recs for 64-bit computers (because I do not
-  have one), so Matlab model files including the Jacobians have to be written by
-  hand. To circunvent this problem you can use dolo-recs from its Python source:
-  <https://github.com/albop/dynare-python>.
+RECS Matlab files work on any platform supported by Matlab. However, the parser
+that calculates automatically the Jacobians has been written in
+Python. Executables have been prepared for Windows (32- and 64-bit) and Linux
+(32-bit). For other platforms, you can use dolo-recs from its Python sources:
+<https://github.com/albop/dynare-python>. Send me an email if you need help on
+this!
