@@ -30,10 +30,12 @@ function [s,x,z] = recsSS(model,s,x,options)
 % [S,X,Z] = RECSSS(MODEL,S,X,...) returns the value of the
 % expectations variable at steady state.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
+if nargin<2 || isempty(s), s = model.func('ss'); end
+if nargin<3 || isempty(x), [~,x] = model.func('ss'); end
 if nargin<4, options = struct([]); end
 
 defaultopt = struct(...

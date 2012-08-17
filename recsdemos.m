@@ -13,6 +13,10 @@ disp('GRO1 Stochastic growth model')
 clear interp model options
 gro1
 
+disp('GRO2 Stochastic growth model with irreversible investment')
+clear interp model options
+gro2
+
 disp('CS1 Consumption/Saving model with borrowing constraint');
 clear interp model options
 cs1
