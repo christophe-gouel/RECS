@@ -33,7 +33,7 @@
 % * Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
 %   distribution other than normal.
 
-%%Supported platforms
+%% Supported platforms
 % RECS Matlab files work on any platform supported by Matlab. However, the
 % parser that calculates automatically the Jacobians has been written in
 % Python. Executables have been prepared for Windows (32- and 64-bit) and Linux
