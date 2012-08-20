@@ -1,5 +1,5 @@
 %% STO2 Competitive storage with floor-price backed by public storage
-% This model is close to one of the models presented in Wright and Williams [1].
+% This model is close to one of the models presented in Wright and Williams (1988).
 
 %% Model's structure
 %
@@ -31,8 +31,7 @@
 % $$A_{t}: A_{t}=\left(1-\delta\right)\left(S^{\mathrm{S}}_{t-1}+S^{\mathrm{G}}_{t-1}\right)+H_{t-1}\epsilon_{t}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <matlab:filetohelp('sto2model.txt')
-% |sto2model.m|>.
+% The model is defined in a Matlab file: <sto2model.html sto2model.m>.
 
 %% Enter model parameters
 k     = 0.02;
@@ -124,11 +123,11 @@ ylabel('Price')
 
 %% References
 %
-% [1] Wright, B. D. and Williams, J. C. (1988). The incidence of market-stabilising
+% Wright, B. D. and Williams, J. C. (1988). The incidence of market-stabilising
 % price support schemes. _The Economic Journal_, 98(393), 1183-1198.
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
+% Licensed under the Expat license, see <LICENSE.txt>
 

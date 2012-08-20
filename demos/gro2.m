@@ -1,5 +1,5 @@
 %% GRO2 Stochastic growth model with irreversible investment
-% This is an implementation of the model in Christiano and Fisher [1].
+% This is an implementation of the model in Christiano and Fisher (2000).
 
 %% Model's structure
 %
@@ -29,7 +29,7 @@
 % $$Z_{t}: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.$$
 
 %% Writing the model
-% The model is defined in a yaml file: <matlab:filetohelp('gro2.txt') |gro2.yaml|>.
+% The model is defined in a yaml file: <gro2.yaml>.
 
 %% Pack model structure
 % Mean and standard deviation of the shocks
@@ -41,9 +41,9 @@ model = recsmodelinit('gro2.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %%
-% This command creates a Matlab file, <matlab:filetohelp('gro2model.txt')
-% |gro2model.m|>, containing the definition the model and all its Jacobians from
-% the human readable file <matlab:filetohelp('gro2.txt') |gro2.yaml|>.
+% This command creates a Matlab file, <gro2model.html gro2model.m>, containing
+% the definition the model and all its Jacobians from the human readable file
+% <gro2.yaml>.
 
 %% Find deterministic steady-state
 a             = model.params(1);
@@ -93,11 +93,11 @@ ylabel('Frequency')
 
 %% References
 %
-% [1] Christiano, L.J. and Fisher, J.D.M. (2000). Algorithms for solving dynamic
+% Christiano, L.J. and Fisher, J.D.M. (2000). Algorithms for solving dynamic
 % models with occasionally binding constraints. _Journal of Economic Dynamics
 % and Control_, 24(8), 1179-1232.
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
+% Licensed under the Expat license, see <LICENSE.txt>

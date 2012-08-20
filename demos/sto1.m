@@ -1,6 +1,6 @@
 %% STO1 Competitive storage model
 % This model is a standard competitive storage model with supply reaction. Its
-% setting is close to Wright and Williams [1].
+% setting is close to Wright and Williams (1982).
 
 %% Model's structure
 %
@@ -27,7 +27,7 @@
 % $$A_{t}: A_{t}=\left(1-\delta\right)S_{t-1}+H_{t-1}\epsilon_{t}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <matlab:filetohelp('sto1model.txt') |sto1model.m|>.
+% The model is defined in a Matlab file: <sto1model.html sto1model.m>.
 
 %% Enter model parameters
 alpha = -0.4;
@@ -163,7 +163,7 @@ ylabel('Frequency')
 [se,lEE] = recsAccuracy(model,interp,ssim);
 
 %%
-% Plot the Euler equation error (see Gouel [2] for definition)
+% Plot the Euler equation error (see Gouel (forthcoming) for definition)
 figure
 [~,i] = sort(se);
 plot(se(i),lEE(i,1))
@@ -175,13 +175,13 @@ ylabel(texlabel('log_{10}|EE|'))
 
 %% References
 %
-% [1] Wright, B. D. and Williams, J. C. (1982). The economic role of commodity
+% Wright, B. D. and Williams, J. C. (1982). The economic role of commodity
 % storage. _The Economic Journal_, 92(367), 596-614.
 %
-% [2] Gouel, C. (forthcoming). Comparing numerical methods for solving the competitive
-% storage model. _Computational Economics_.
+% Gouel, C. (forthcoming). Comparing numerical methods for solving the
+% competitive storage model. _Computational Economics_.
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
+% Licensed under the Expat license, see <LICENSE.txt>

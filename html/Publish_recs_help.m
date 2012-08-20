@@ -8,7 +8,14 @@ recsdirectory   = fileparts(which('recsSimul'));
 targetdirectory = fullfile(recsdirectory,'html');
 
 delete(fullfile(recsdirectory,'html','*.png'));
+delete(fullfile(recsdirectory,'html','*.txt'));
+delete(fullfile(recsdirectory,'html','*.yaml'));
+delete(fullfile(recsdirectory,'html','*.html'));
 PublishOptions = struct('outputDir',targetdirectory);
+PublishOptionsNoExec = struct('outputDir',targetdirectory,...
+                              'evalCode',false);
+
+%% Documentation
 publish('recs_product_page.m',PublishOptions);
 publish('getting_started.m',PublishOptions);
 publish('installation.m',PublishOptions);
@@ -22,18 +29,22 @@ publish('ug_setting_up.m',PublishOptions);
 publish('ug_model_files.m',PublishOptions);
 publish('demos.m',PublishOptions);
 
+%% License
+copyfile(fullfile(recsdirectory,'LICENSE.txt'),fullfile(targetdirectory,'LICENSE.txt'));
+
+%% Demonstration
 currentfolder = cd(fullfile(recsdirectory,'demos'));
-copyfile('cs1.yaml',fullfile(targetdirectory,'cs1.txt'));
-copyfile('cs1model.m',fullfile(targetdirectory,'cs1model.txt'));
-copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
-copyfile('gro1model.m',fullfile(targetdirectory,'gro1model.txt'));
-copyfile('gro2.yaml',fullfile(targetdirectory,'gro2.txt'));
-copyfile('gro2model.m',fullfile(targetdirectory,'gro2model.txt'));
-copyfile('sto1model.m',fullfile(targetdirectory,'sto1model.txt'));
-copyfile('sto2model.m',fullfile(targetdirectory,'sto2model.txt'));
-copyfile('sto3model.m',fullfile(targetdirectory,'sto3model.txt'));
-copyfile('sto4model.m',fullfile(targetdirectory,'sto4model.txt'));
-copyfile('sto5model.m',fullfile(targetdirectory,'sto5model.txt'));
+copyfile('cs1.yaml',fullfile(targetdirectory,'cs1.yaml'));
+copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.yaml'));
+copyfile('gro2.yaml',fullfile(targetdirectory,'gro2.yaml'));
+publish('cs1model.m',PublishOptionsNoExec);
+publish('gro1model.m',PublishOptionsNoExec);
+publish('gro2model.m',PublishOptionsNoExec);
+publish('sto1model.m',PublishOptionsNoExec);
+publish('sto2model.m',PublishOptionsNoExec);
+publish('sto3model.m',PublishOptionsNoExec);
+publish('sto4model.m',PublishOptionsNoExec);
+publish('sto5model.m',PublishOptionsNoExec);
 publish('clearpublish.m',PublishOptions);
 publish('cs1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);

@@ -9,3 +9,4 @@ demo/*.log
 /exe/*
 /html/helpsearch/*
 /html/*.txt
+/html/*.yaml

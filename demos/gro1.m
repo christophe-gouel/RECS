@@ -23,7 +23,7 @@
 % $$Z_{t}: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.$$
 
 %% Writing the model
-% The model is defined in a yaml file: <matlab:filetohelp('gro1.txt') |gro1.yaml|>.
+% The model is defined in a yaml file: <gro1.yaml>.
 
 %% Pack model structure
 % Mean and standard deviation of the shocks
@@ -37,9 +37,9 @@ model = recsmodelinit('gro1.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
 %%
-% This command creates a Matlab file, <matlab:filetohelp('gro1model.txt')
-% |gro1model.m|>, containing the definition the model and all its Jacobians from
-% the human readable file <matlab:filetohelp('gro1.txt') |gro1.yaml|>.
+% This command creates a Matlab file, <gro1model.html gro1model.m>, containing
+% the definition the model and all its Jacobians from the human readable file
+% <gro1.yaml>.
 
 %%
 % If your installation is not complete, you have to pack yourself the different
@@ -95,4 +95,4 @@ ylabel('Frequency')
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
+% Licensed under the Expat license, see <LICENSE.txt>

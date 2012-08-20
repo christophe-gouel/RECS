@@ -64,9 +64,7 @@
 %
 %    steady_state:
 %
-% See <matlab:filetohelp('cs1.yaml') |cs1.yaml|> or
-% <matlab:filetohelp('gro1.yaml') |gro1.yaml|> for examples of complete yaml
-% files.
+% See <cs1.yaml> or <gro1.yaml> for examples of complete yaml files.
 %
 % *Yaml syntax conventions*
 % 
@@ -100,4 +98,4 @@
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
+% Licensed under the Expat license, see <LICENSE.txt>

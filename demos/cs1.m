@@ -1,5 +1,5 @@
 %% CS1 Consumption/Saving model with borrowing constraint
-% This is an implementation of the model in Deaton [1].
+% This is an implementation of the model in Deaton (1991).
 
 %% Model's structure
 %
@@ -21,7 +21,7 @@
 % $$X_{t}: X_{t}=\left(1+r\right)\left(X_{t-1}-C_{t-1}\right)+Y_{t}.$$
 
 %% Writing the model
-% The model is defined in a yaml file: <matlab:filetohelp('cs1.txt') |cs1.yaml|>.
+% The model is defined in a yaml file: <cs1.yaml>.
 
 %% Pack model structure
 % Mean and standard deviation of the shocks
@@ -35,9 +35,9 @@ model = recsmodelinit('cs1.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
 %%
-% This command creates a Matlab file, <matlab:filetohelp('cs1model.txt') |cs1model.m|>,
-% containing the definition the model and all its Jacobians from the human readable file
-% <matlab:filetohelp('cs1.txt') |cs1.yaml|>.
+% This command creates a Matlab file, <cs1model.html cs1model.m>, containing the
+% definition the model and all its Jacobians from the human readable file
+% <cs1.yaml>.
 
 %%
 % If your installation is not complete, you have to pack yourself the different
@@ -85,10 +85,10 @@ ylabel('Frequency')
 
 %% References
 %
-% [1] Deaton, A. (1991). Saving and liquidity constraints. _Econometrica_,
-% 59(5), 1221-1248.
+% Deaton, A. (1991). Saving and liquidity constraints. _Econometrica_, 59(5),
+% 1221-1248.
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
+% Licensed under the Expat license, see <LICENSE.txt>

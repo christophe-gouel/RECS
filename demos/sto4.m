@@ -30,8 +30,7 @@
 % $$P^w_{t}: \ln P^w_{t} = \rho\ln P^w_{t-1}+\nu_{t}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <matlab:filetohelp('sto4model.txt')
-% |sto4model.m|>.
+% The model is defined in a Matlab file: <sto4model.html sto4model.m>.
 
 %% Enter model parameters
 delta = 0;
@@ -134,5 +133,4 @@ ylabel('Frequency')
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
-
+% Licensed under the Expat license, see <LICENSE.txt>

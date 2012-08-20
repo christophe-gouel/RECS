@@ -1,8 +1,8 @@
 %% STO5 Two-country storage-trade model
-% Model close to Miranda and Glauber [1]. Countries $a$ and $b$ are indicated by
-% the subscript $i \in \left\{a,b\right\}$. When variables corresponding to both
-% countries appear in the same equation, the foreign country is indicated by the
-% subscript $j$.
+% Model close to Miranda and Glauber (1995). Countries $a$ and $b$ are indicated
+% by the subscript $i \in \left\{a,b\right\}$. When variables corresponding to
+% both countries appear in the same equation, the foreign country is indicated
+% by the subscript $j$.
 
 %% Model's structure
 %
@@ -37,8 +37,7 @@
 % $$A_{it}: A_{it}=\left(1-\delta\right)S_{it-1}+H_{it-1}\epsilon_{it}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <matlab:filetohelp('sto5model.txt')
-% |sto5model.m|>.
+% The model is defined in a Matlab file: <sto5model.html sto5model.m>.
 
 %% Enter model parameters
 delta  = 0;
@@ -140,12 +139,11 @@ toc
 
 %% References
 %
-% [1] Miranda, M. J. and Glauber, J. W. (1995). Solving stochastic models of
+% Miranda, M. J. and Glauber, J. W. (1995). Solving stochastic models of
 % competitive storage and trade by Chebychev collocation methods. _Agricultural
 % and Resource Economics Review_, 24(1), 70-77.
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
-
+% Licensed under the Expat license, see <LICENSE.txt>

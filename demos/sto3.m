@@ -1,6 +1,6 @@
 %% STO3 Competitive storage with price-band backed by public storage
-% This model is an extension of Miranda and Helmberger [1] to include a capacity
-% constraint on the public stock level.
+% This model is an extension of Miranda and Helmberger (1988) to include a
+% capacity constraint on the public stock level.
 
 %% Model's structure
 %
@@ -37,8 +37,7 @@
 % $$S^{\mathrm{G}}_{t}: S^{\mathrm{G}}_{t}= \left(1-\delta\right)S^{\mathrm{G}}_{t}+\Delta S^{\mathrm{G}+}_{t}-\Delta S^{\mathrm{G}-}_{t}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <matlab:filetohelp('sto3model.txt')
-% |sto3model.m|>.
+% The model is defined in a Matlab file: <sto3model.html sto3model.m>.
 
 %% Enter model parameters
 delta = 0;
@@ -124,11 +123,10 @@ ylabel('Frequency')
 
 %% References
 %
-% [1] Miranda, M. J. and Helmberger, P. G. (1988). The effects of commodity price
+% Miranda, M. J. and Helmberger, P. G. (1988). The effects of commodity price
 % stabilization programs. _The American Economic Review_, 78(1), 46-58.
 
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
-% Licensed under the Expat license, see <matlab:filetohelp('LICENSE.txt') LICENSE.txt>
-
+% Licensed under the Expat license, see <LICENSE.txt>
