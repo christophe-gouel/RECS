@@ -1,4 +1,4 @@
-function [s,x,z] = recsSS(model,s,x,options)
+function [s,x,z,exitflag] = recsSS(model,s,x,options)
 % RECSSS Solves for the deterministic steady state in rational expectations models
 %
 % RECSSS cannot find the deterministic steady state of a functional
@@ -29,6 +29,11 @@ function [s,x,z] = recsSS(model,s,x,options)
 %
 % [S,X,Z] = RECSSS(MODEL,S,X,...) returns the value of the
 % expectations variable at steady state.
+%
+% [S,X,Z,EXITFLAG] = RECSSS(MODEL,S,X,...) returns EXITFLAG,
+% which describes the exit conditions. Possible values are
+%    1 : RECSSS converges to the deterministic steady state
+%    0 : Failure to converge
 
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
