@@ -27,7 +27,7 @@ function model = recsmodelinit(inputfile,shocks,outputfile)
 % MODEL = RECSMODELINIT(INPUTFILE,SHOCKS,OUTPUTFILE) uses the string OUTPUTFILE
 % to name the m-file containing the model.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 if nargin<3, outputfile = strrep(inputfile,'.yaml','model.m'); end
@@ -58,7 +58,7 @@ end
 model.func        = eval(['@' strrep(outputfile,'.m','')]);
 model.params      = model.func('params');
 
-% Prepare shocks information
+%% Prepare shocks information
 if nargin>=2 && ~isempty(shocks)
   % Unpack shocks
   Mu    = shocks.Mu;
@@ -79,4 +79,22 @@ if nargin>=2 && ~isempty(shocks)
   [model.e,model.w] = qnwnorm(order,Mu,Sigma);
   % Random number generator
   model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,q)*R;
+  
+  %% Check steady state
+  [sss0,xss0] = model.func('ss');
+  if ~isempty(sss0) & ~isempty(xss0)
+    [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0);
+    if exitflag==1
+      disp('Deterministic steady state')
+      disp(' State variable:')
+      disp(sss)
+      disp(' Response variable:')
+      disp(xss)
+      disp(' Expectations variable:')
+      disp(zss)
+    end
+    model.sss = sss;
+    model.xss = xss;
+    model.zss = zss;
+  end
 end
