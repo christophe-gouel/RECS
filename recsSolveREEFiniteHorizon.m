@@ -24,9 +24,7 @@ function [interp,X,exitflag] = recsSolveREEFiniteHorizon(interp,model,s,x,xT,T,o
 %             probabilities (it could be also the discretisation of a continuous
 %             distribution through quadrature or Monte Carlo drawings)
 %    func   : function name or anonymous function that defines the model's equations
-%    params : model's parameters, it is preferable to pass them as a cell array
-%             (compulsory with the functional option) but other formats are
-%             acceptable
+%    params : model's parameters
 %
 % INTERP = RECSSOLVEREE(INTERP,MODEL,S,X,OPTIONS) solves the problem with the
 % parameters defined by the structure OPTIONS. The fields of the structure are
@@ -39,11 +37,8 @@ function [interp,X,exitflag] = recsSolveREEFiniteHorizon(interp,model,s,x,xT,T,o
 %                       variables exceed the interpolation space.
 %    funapprox        : 'expapprox', 'expfunapprox', 'resapprox-simple'
 %                       or 'resapprox-complete' (default)
-%    functional       : 1 if the equilibrium equations are a functional equation
-%                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
-%    reemethod        : 'iter' (default), 'iter-newton' or '1-step'
 %    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve' (in test)
 %    reesolveroptions : options structure to be passed to reesolver
 %    useapprox        : (default: 1) behaviour dependent of the chosen function to
@@ -80,21 +75,14 @@ defaultopt = struct(                           ...
     'eqsolver'          , 'lmmcp'             ,...
     'eqsolveroptions'   , struct([])          ,...
     'extrapolate'       , 1                   ,...
-    'functional'        , 0                   ,...
     'loop_over_s'       , 0                   ,...
     'funapprox'         , 'resapprox-complete',...
-    'reemethod'         , 'iter'              ,...
     'reesolver'         , 'sa'                ,...
     'reesolveroptions'  , struct([])          ,...
     'useapprox'         , 1);
 warning('off','catstruct:DuplicatesFound')
 
 options = catstruct(defaultopt,options);
-
-extrapolate        = options.extrapolate;
-funapprox          = lower(options.funapprox);
-functional         = options.functional;
-reemethod          = lower(options.reemethod);
 
 % Extract fields of model
 e      = model.e;
@@ -107,23 +95,14 @@ elseif ~isa(model.func,'function_handle')
 end
 func = model.func;
 
-if strcmp(reemethod,'1-step') && ...
-  (strcmp(funapprox,'expapprox') || strcmp(funapprox,'resapprox'))
-  warning('RECS:Switching2Iterative',...
-          ['Solving the rational expectations problem is not implemented when ' ...
-           'approximating this funtion. Switching to the iterative scheme.'])
-end
-
 % Identify variables dimensions
 [n,m]  = size(x);
-[~,d]  = size(s);
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-k      = length(w);               % number of shock values
 z      = zeros(n,0);
 p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 
 X      = zeros(n,m,T);
-S      = zeros(n,d,T);
+cX     = zeros(size(X));
 
 X(:,:,T) = xT;
 
@@ -143,7 +122,14 @@ if any(reshape(isnan(X(:,:,T)),n*m,1))
   X(:,:,T) = recsSolveEquilibriumFH(s,x,z,func,params,c,e,w,fspace,LB,UB,optionsT);
 end
 
-[interp.cX,X,exitflag] = recsSolveREEIterFiniteHorizon(interp,model,s,x,X,options);
+%% Solve for the rational expectations equilibrium
+for t=T-1:-1:1
+  cX(:,:,t+1)           = funfitxy(fspace,Phi,X(:,:,t+1));
+  [X(:,:,t),~,exitflag] = recsSolveEquilibrium(s,X(:,:,t+1),z,func,params,...
+                                               cX(:,:,t+1),e,w,fspace,options);
+end
+
+interp.cX = cX;
 
 if exitflag~=1
   warning('RECS:FailureREE','Failure to find a rational expectations equilibrium');
