@@ -92,8 +92,13 @@ end
 %% Prepare outputs
 s      = X(1:d)';
 x      = X(d+1:d+m)';
-output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-z      = func('h',s,x,[],e,s,x,params,output);
+output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+if nargout(func)<6
+  z = func('h',s,x,[],e,s,x,params,output);
+else
+  [h,~,~,~,~,hmult] = func('h',s,x,[],e,s,x,params,output);
+  z = h.*hmult;
+end
 
 
 function [F,J] = SSResidual(X,func,params,e,d,m)
