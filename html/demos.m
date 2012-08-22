@@ -22,7 +22,11 @@
 % * <sto4.html One small-country storage-trade model>
 %
 % * <sto5.html Two-country storage-trade model>
-
+%
+% <html>
+% <hr/>
+% </html>
+%
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %

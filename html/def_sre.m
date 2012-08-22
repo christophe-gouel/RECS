@@ -1,9 +1,10 @@
 %% Definition of a stochastic rational expectations problem
 
 %% Rational expectation models
-% We adopt here the framework proposed in Fackler [1], and used also in Winschel et
-% Krätzig [2]. A model can be defined by the following three equations, where
-% next-period variables are indicated with a dot on top of the character
+% We adopt here the framework proposed in Fackler (2005), and used also in
+% Winschel et Krätzig (2010). A model can be defined by the following three
+% equations, where next-period variables are indicated with a dot on top of the
+% character
 %
 % $\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z)$, where
 % $f:R^{d+m+p}\rightarrow R^{m}$,
@@ -41,8 +42,9 @@
 % something easier to solve.
 %
 % For example, if it is possible to find an approximation of the relationship
-% between expectations and current-period state variables (i.e., the parameterized
-% expectations approach [3]), the equilibrium equation can be simplified to
+% between expectations and current-period state variables (i.e., the
+% parameterized expectations approach of Marcet and Marimon, 1990), the
+% equilibrium equation can be simplified to
 %
 % $$\underline{x}(s) \le x \le \overline{x}(s) \perp f\left(s,x,\phi(s)\right),$$
 %
@@ -54,19 +56,22 @@
 % Solution methods> for further information.
 
 %% References
+% <http://dx.doi.org/10.1007/s10614-005-1784-z Fackler, P. L. (2005). A MATLAB
+% Solver for Nonlinear Rational Expectations Models. _Computational Economics_,
+% 26(2), 173-181.>
 %
-% [1] <http://dx.doi.org/10.1007/s10614-005-1784-z Fackler, P. L. (2005). A
-% MATLAB Solver for Nonlinear Rational Expectations Models. _Computational
-% Economics_, 26(2), 173-181.>
-%
-% [2] <http://dx.doi.org/10.3982/ECTA6297 Winschel, V. and Krätzig,
+% <http://dx.doi.org/10.3982/ECTA6297 Winschel, V. and Krätzig,
 % M. (2010). Solving, Estimating, and Selecting Nonlinear Dynamic Models Without
 % the Curse of Dimensionality. _Econometrica_, 78(2), 803-821.>
 %
-% [3] <http://www.jstor.org/stable/1391746 den Haan, W. J. and Marcet, A.
+% <http://www.jstor.org/stable/1391746 den Haan, W. J. and Marcet, A.
 % (1990). Solving the Stochastic Growth Model by Parameterizing
 % Expectations. _Journal of Business & Economic Statistics_, 8(1), 31-34.>
-
+%
+% <html>
+% <hr/>
+% </html>
+%
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %

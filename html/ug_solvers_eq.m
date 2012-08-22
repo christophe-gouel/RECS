@@ -27,7 +27,11 @@
 %% See also
 % <matlab:doc('fsolve') |fsolve|> <matlab:doc('lmmcp') |lmmcp|>
 % <matlab:doc('ncpsolve') |ncpsolve|> <matlab:doc('pathmcp') |pathmcp|>
-
+%
+% <html>
+% <hr/>
+% </html>
+%
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %

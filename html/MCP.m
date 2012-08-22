@@ -1,12 +1,13 @@
 %% Introduction to mixed complementarity problems
 % All equilibrium equations are represented in RECS as mixed complementarity
 % problems (MCP), so we present here a short introduction to this kind of
-% problems. For more information, see Rutherford [1], and Ferris and Pang [2].
+% problems. For more information, see Rutherford (1995), and Ferris and Pang
+% (1997).
 
 %% Definition of a mixed complementarity problem
 % Complementarity problem is an extension of square system of nonlinear
 % equations. Many economic problems can be expressed as complementarity
-% problems. A MCP is defined as follows (adapted from Munson [3]):
+% problems. A MCP is defined as follows (adapted from Munson, 2002):
 %
 % *Definition (Mixed Complementarity Problem)* Given a continuously
 % differentiable function $F: R^n\rightarrow R^n$, and lower and upper
@@ -46,7 +47,7 @@
 % as $S\ge 0 \perp P-P^I\ge 0$, where $S$, $P$ and $P^I$ are, respectively,
 % the storage, price and intervention price.
 % * *A Walrasian equilibrium* can be formulated as a complementarity problem
-% (Mathiesen [4]).
+% (Mathiesen, 1987).
 
 %% Conventions of notations adopted for representing and solving complementarity problems
 % For solving complementarity problems, RECS uses several solvers listed in
@@ -57,23 +58,26 @@
 % your model, be careful to respect this convention.
 
 %% References
-%
-% [1] <http://dx.doi.org/10.1016/0165-1889(94)00831-2 Rutherford,
+% <http://dx.doi.org/10.1016/0165-1889(94)00831-2 Rutherford,
 % T. F. (1995). Extension of GAMS for complementarity problems arising in
 % applied economic analysis. _Journal of Economic Dynamics and Control_, 19(8),
 % 1299-1324.>
 %
-% [2] <http://www.jstor.org/pss/2132696 Ferris, M. C. and Pang,
+% <http://www.jstor.org/pss/2132696 Ferris, M. C. and Pang,
 % J. S. (1997). Engineering and economic applications of complementarity
 % problems. _Siam Review_, 39(4), 669-713.>
 %
-% [3] Munson, T. (2002). Algorithms and Environments for
+% Munson, T. (2002). Algorithms and Environments for
 % Complementarity. Unpublished PhD thesis from University of Wisconsin, Madison.
 %
-% [4] <http://dx.doi.org/10.1007/BF02591680 Mathiesen, L. (1987). An algorithm
-% based on a sequence of linear complementarity problems applied to a Walrasian
+% <http://dx.doi.org/10.1007/BF02591680 Mathiesen, L. (1987). An algorithm based
+% on a sequence of linear complementarity problems applied to a Walrasian
 % equilibrium model: An example. _Mathematical Programming_, 37, 1-18.>
-
+%
+% <html>
+% <hr/>
+% </html>
+%
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %

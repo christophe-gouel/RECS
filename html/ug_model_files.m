@@ -94,7 +94,11 @@
 %
 
 %% Writing a model the hard way
-
+%
+% <html>
+% <hr/>
+% </html>
+%
 %%
 % Copyright (C) 2011-2012 Christophe Gouel
 %

@@ -18,6 +18,10 @@
 % <h2>Available documentation</h2>
 % </html>
 %
+% RECS documentation is still not complete in particular with respect to
+% advanced features, but it is sufficient to build standard models (many
+% examples are provided in Demos).
+%
 % * <getting_started.html Getting started>
 % * <user_guide.html User's Guide>
 % * <recs_functions.html Functions>
