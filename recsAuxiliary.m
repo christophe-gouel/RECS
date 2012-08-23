@@ -32,14 +32,15 @@ function [interp,xa,za] = recsAuxiliary(model,interp,s,x,z,xa,options)
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin <=6, options = struct([]); end
-
 defaultopt = struct(         ...
     'extrapolate', 1        ,...
     'saoptions'  ,struct([]));
-warning('off','catstruct:DuplicatesFound')
-
-options = catstruct(defaultopt,options);
+if nargin <=6
+  options = defaultopt; 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
 
 e      = model.e;
 func   = model.func;

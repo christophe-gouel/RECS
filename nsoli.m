@@ -91,10 +91,12 @@ defaultopt = struct(...
     'restart_limit' ,20,...
     'showiters'     ,0);
 
-if nargin < 3, options = struct([]); end
-warning('off','catstruct:DuplicatesFound')
-
-options = catstruct(defaultopt,options);
+if nargin < 3
+  options = defaultopt; 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
 
 atol          = options.atol;
 etamax        = options.etamax;

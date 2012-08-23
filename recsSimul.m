@@ -64,17 +64,14 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 %
 % See also RECSACCURACY.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin<6
-  options = struct([]);
-  if nargin<5;
-    shocks = [];
-    if nargin<4
-      error('Nor enough input arguments');
-    end
+if nargin<5;
+  shocks = [];
+  if nargin<4
+    error('Nor enough input arguments');
   end
 end
 
@@ -89,9 +86,12 @@ defaultopt = struct(...
     'loop_over_s'     , 0                   ,...
     'simulmethod'     , 'interpolation'     ,...
     'stat'            , 0);
-warning('off','catstruct:DuplicatesFound')
-
-options         = catstruct(defaultopt,options);
+if nargin<6
+  options = defaultopt;
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
 
 extrapolate     = options.extrapolate;
 functional      = options.functional;

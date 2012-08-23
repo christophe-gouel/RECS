@@ -41,15 +41,17 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 %% Initialization
 if nargin<2 || isempty(s), s = model.func('ss'); end
 if nargin<3 || isempty(x), [~,x] = model.func('ss'); end
-if nargin<4, options = struct([]); end
 
 defaultopt = struct(...
     'eqsolver'        , 'lmmcp',...
     'eqsolveroptions' , struct([]),...
     'functional'      , 0);
-warning('off','catstruct:DuplicatesFound')
-
-options = catstruct(defaultopt,options);
+if nargin<4
+  options = defaultopt; 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
 
 if options.functional
   error(['This program cannot solve for the deterministic steady state of a ' ...
@@ -71,7 +73,8 @@ else
 end
 
 if norm(numjac(@(S) bounds(func,S,params),s),Inf)>eps
-  error(['This program cannot solve for the deterministic steady state of a ' ...
+  error('RECS:VariableBounds',...
+        ['This program cannot solve for the deterministic steady state of a ' ...
          'problem with bounds that are function of state variables'])
 end
 

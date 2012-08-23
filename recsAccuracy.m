@@ -35,15 +35,18 @@ function [se,lEE,Ef] = recsAccuracy(model,interp,s,options)
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
 % Options
-if nargin <=4, options = struct([]); end
 defaultopt  = struct('extrapolate',1);
-warning('off','catstruct:DuplicatesFound')
-options     = catstruct(defaultopt,options);
+if nargin <=4
+  options   = defaultopt; 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options   = catstruct(defaultopt,options);
+end
 extrapolate = options.extrapolate;
 
 e      = model.e;

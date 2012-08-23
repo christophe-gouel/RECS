@@ -30,17 +30,20 @@ function [x,s,z,F] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,options)
 %
 % See also RECSFIRSTGUESS, RECSSOLVEREE, RECSSS.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin <=6, options = struct([]); end
 
 defaultopt = struct(              ...
     'eqsolver'         , 'lmmcp' ,...
     'eqsolveroptions'  , struct([]));
-warning('off','catstruct:DuplicatesFound')
-options = catstruct(defaultopt,options);
+if nargin <=6
+  options = defaultopt; 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 

@@ -77,8 +77,6 @@ function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin <=4, options = struct([]); end
-
 defaultopt = struct(                           ...
     'display'           , 1                   ,...
     'eqsolver'          , 'lmmcp'             ,...
@@ -91,9 +89,12 @@ defaultopt = struct(                           ...
     'reesolver'         , 'sa'                ,...
     'reesolveroptions'  , struct([])          ,...
     'useapprox'         , 1);
-warning('off','catstruct:DuplicatesFound')
-
-options = catstruct(defaultopt,options);
+if nargin <=4
+  options = defaultopt; 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
 
 extrapolate        = options.extrapolate;
 funapprox          = lower(options.funapprox);

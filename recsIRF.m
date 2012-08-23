@@ -29,21 +29,22 @@ function [si,xi] = recsIRF(model,interp,shock,nrep,nper,options)
 %
 % See also RECSSIMUL.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin < 6
-  options = struct([]);
-  if nargin < 5
-    error('Nor enough input arguments');
-  end
+if nargin < 5
+  error('Nor enough input arguments');
 end
 
 defaultopt = struct(...
     'stat'        , 0);
-
-options    = catstruct(options,defaultopt);
+if nargin < 6
+  options = defaultopt;
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(options,defaultopt);
+end
 
 e       = model.e;
 funrand = model.funrand;

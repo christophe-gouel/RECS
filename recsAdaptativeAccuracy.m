@@ -1,18 +1,20 @@
 function res = recsAdaptativeAccuracy(interp,model,snodes,options)
 % RECSADAPTATIVEACCURACY 
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin <=3, options = struct([]); end
-
 defaultopt = struct('simulmethod','solve',...
                     'stat'       ,0);
-warning('off','catstruct:DuplicatesFound')
+if nargin <=3
+  options = struct(defaultopt); 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(options,defaultopt);
+end
 
-options = catstruct(options,defaultopt);
-
+%%
 res = zeros(size(snodes,2),1);             
 for i=1:size(snodes,2)
   MidPoints = blktridiag(1,1,0,length(snodes{i}))/2;

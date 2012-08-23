@@ -27,7 +27,7 @@ function [x,fval,exitflag] = SA(f,x,options,varargin)
 %       1 : SA converged to a root
 %       0 : Too many iterations
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -37,10 +37,12 @@ defaultopt = struct(...
     'rtol',sqrt(eps),...
     'showiters',0,...
     'lambda',1);
-
-if nargin < 3, options = struct([]); end
-
-options = catstruct(defaultopt,options);
+if nargin < 3
+  options = defaultopt; 
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
 
 maxit     = options.maxit;
 atol      = options.atol;

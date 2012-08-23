@@ -28,17 +28,14 @@ function [interp1,s,x] =  recsConvert(interp0,model,order,smin,smax,options)
 %
 % See also RECSSIMUL.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin < 6
-  options = struct([]);
-  if nargin < 5
-    smax = [];
-    if nargin < 4
-      smin = [];
-    end
+if nargin < 5
+  smax = [];
+  if nargin < 4
+    smin = [];
   end
 end
 
@@ -49,8 +46,12 @@ if isempty(smin),  smin  = interp0.fspace.a'; end
 defaultopt = struct(...
     'simulmethod' , 'solve',...
     'stat'        , 0);
-
-options = catstruct(options,defaultopt);
+if nargin < 6
+  options = defaultopt;
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(options,defaultopt);
+end
 
 %% Define new interpolation structure
 interp1.fspace = fundefn('spli',order,smin,smax);

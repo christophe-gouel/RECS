@@ -108,22 +108,20 @@ defaultopt = struct(...
     'tmin',       1e-12,...
     'watchdog',   1);
 
-if nargin < 5
-  options = struct([]);
-  if nargin < 4
-    ub = inf(size(x));
-    if nargin < 3
-      lb = -inf(size(x));
-    end
+if nargin < 4
+  ub = inf(size(x));
+  if nargin < 3
+    lb = -inf(size(x));
   end
 end
 
-if isempty(options) && ~isstruct(options)
-  options = struct([]);
+if nargin < 5 || isempty(options) || ~isstruct(options)
+  options = defaultopt;
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
 end
 
-warning('off','catstruct:DuplicatesFound')
-options = catstruct(defaultopt,options);
 
 switch options.Display
     case {'off','none'}

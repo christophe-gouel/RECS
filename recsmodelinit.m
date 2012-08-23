@@ -83,18 +83,27 @@ if nargin>=2 && ~isempty(shocks)
   %% Check steady state
   [sss0,xss0] = model.func('ss');
   if ~isempty(sss0) & ~isempty(xss0)
-    [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0);
-    if exitflag==1
-      disp('Deterministic steady state')
-      disp(' State variable:')
-      disp(sss)
-      disp(' Response variable:')
-      disp(xss)
-      disp(' Expectations variable:')
-      disp(zss)
+    try
+      [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0);
+      if exitflag==1
+        disp('Deterministic steady state')
+        disp(' State variable:')
+        disp(sss)
+        disp(' Response variable:')
+        disp(xss)
+        disp(' Expectations variable:')
+        disp(zss)
+      end
+      model.sss = sss;
+      model.xss = xss;
+      model.zss = zss;
+    catch exception
+      if strcmp(exception.identifier,'RECS:VariableBounds')
+        warning('RECS:SSNotFound',['Steady state not checked because RECS ' ...
+                            'cannot solve for the deterministic steady state ' ...
+                            'of a problem with bounds that are function ' ...
+                            'of state variables']);
+      end
     end
-    model.sss = sss;
-    model.xss = xss;
-    model.zss = zss;
   end
 end
