@@ -227,10 +227,10 @@ else
   f      = func('f',ss,xx,zz,[],[],[],params,output);
 end
 
-f(ix(:,1)) = f(ix(:,1))-ww;
-f(ix(:,2)) = f(ix(:,2))+vv;
-  
-F = [ss-g f xx(ix(:,1))-LBx(ix(:,1)) UBx(ix(:,2))-xx(ix(:,2))]';
+f(:,ix(:,1)) = f(:,ix(:,1))-ww;
+f(:,ix(:,2)) = f(:,ix(:,2))+vv;
+
+F = [ss-g f xx(:,ix(:,1))-LBx(:,ix(:,1)) UBx(:,ix(:,2))-xx(:,ix(:,2))]';
 
 
 function B = Bounds(func,s0,params,output,ix)
@@ -240,9 +240,9 @@ Big = 1E20;
 [LBx,UBx]     = func('b',s0,[],[],[],[],[],params);
 
 if output==1
-  B = LBx(ix(:,1));
+  B = LBx(:,ix(:,1));
 else
-  B = UBx(ix(:,2));
+  B = UBx(:,ix(:,2));
 end
 
 B(isinf(B)) = sign(B(isinf(B)))*Big;
