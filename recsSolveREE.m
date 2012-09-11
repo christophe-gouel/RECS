@@ -90,7 +90,7 @@ defaultopt = struct(                           ...
     'reesolveroptions'  , struct([])          ,...
     'useapprox'         , 1);
 if nargin <=4
-  options = defaultopt; 
+  options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
@@ -124,6 +124,7 @@ end
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 k      = length(w);               % number of shock values
 z      = zeros(n,0);
+p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 
 % Extract fields of interp
 fspace     = interp.fspace;
@@ -150,7 +151,7 @@ switch funapprox
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
       end
       [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
-      xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
+      xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LB),UB);
       if nargout(func)<6
         h                 = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
       else
@@ -181,7 +182,6 @@ if functional
   model.params = [model.params fspace c];
   params       = model.params;
 end
-p              = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 
 %% Solve for the rational expectations equilibrium
 switch reemethod

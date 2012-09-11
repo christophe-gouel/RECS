@@ -92,4 +92,15 @@ switch flag
     out1 = [100.0];
     out2 = [100.0];
 
+  case 'J'
+    out1.fs = [0];
+    out1.fx = [1];
+    out1.fz = [1];
+    out1.gs = [1];
+    out1.gx = [1];
+    out1.hs = [0];
+    out1.hx = [0];
+    out1.hsnext = [0];
+    out1.hxnext = [1];
+
 end

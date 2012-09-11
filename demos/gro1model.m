@@ -93,7 +93,18 @@ switch flag
     out1 = [ 0.21888357  2.          0.0196      0.95        0.9         0.33      ];
 
   case 'ss'
-    out1 = [1.0 ; 0.0];
+    out1 = [1.0  0.0];
     out2 = [0.199283572568];
+
+  case 'J'
+    out1.fs = [0 0];
+    out1.fx = [1];
+    out1.fz = [1];
+    out1.gs = [1 1; 0 1];
+    out1.gx = [1; 0];
+    out1.hs = [0 0];
+    out1.hx = [0];
+    out1.hsnext = [1 1];
+    out1.hxnext = [1];
 
 end

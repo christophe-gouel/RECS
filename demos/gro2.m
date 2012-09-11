@@ -45,27 +45,22 @@ model = recsmodelinit('gro2.yaml',...
 % the definition the model and all its Jacobians from the human readable file
 % <gro2.yaml>.
 
-%% Find deterministic steady-state
-a             = model.params(1);
-delta         = model.params(3);
-[sss,xss,zss] = recsSS(model,[1 0],[a-delta 0 0])
-
 %% Define approximation space
 % Degree of approximation
-order         = [14 14];                                 
+order         = [14 14];
 %%
 % Limits of the state space
-smin          = [0.47*sss(1)  min(model.e)*3.5];
-smax          = [1.72*sss(1)  max(model.e)*3.5];
+smin          = [0.47*model.sss(1)  min(model.e)*3.5];
+smax          = [1.72*model.sss(1)  max(model.e)*3.5];
 %%
 % Function space
-interp.fspace = fundefn('spli',order,smin,smax);           
+interp.fspace = fundefn('spli',order,smin,smax);
 %%
 % State collocation nodes
 s             = gridmake(funnode(interp.fspace));
 
 %% Find a first guess through the perfect foresight solution
-[interp,x] = recsFirstGuess(interp,model,s,sss,xss,50);
+[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);
 
 %% Define options
 options = struct('reesolver','krylov');
@@ -74,7 +69,7 @@ options = struct('reesolver','krylov');
 interp = recsSolveREE(interp,model,s,x,options);
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200);
+[~,~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1000,1),:),200);
 subplot(2,3,1)
 xlabel('Capital stock')
 ylabel('Frequency')

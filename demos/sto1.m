@@ -65,8 +65,6 @@ s             = gridmake(funnode(interp.fspace));
 
 %% Provide a first guess
 xinit     = [zeros(n,1) ones(n,1) s.^(1/alpha)];
-interp.cz = funfitxy(interp.fspace,s,ones(n,2));
-interp.ch = funfitxy(interp.fspace,s,[s.^(1/alpha) s.^(1/alpha)]);
 
 %% Find deterministic steady state
 [sss,xss,zss] = recsSS(model,1,[0 1 1])

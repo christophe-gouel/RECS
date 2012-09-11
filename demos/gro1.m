@@ -52,18 +52,18 @@ model.params      = gro1model('params');
 %% Find deterministic steady-state
 a             = model.params(1);
 delta         = model.params(3);
-[sss,xss,zss] = recsSS(model,[1 0],a-delta)
+[sss,xss,zss] = recsSS(model,[1 0],a-delta);
 
 %% Define approximation space
 % Degree of approximation
-order         = [10 10];                                 
+order         = [10 10];
 %%
 % Limits of the state space
 smin          = [0.85*sss(1) min(model.e)*4];
 smax          = [1.15*sss(1) max(model.e)*4];
 %%
 % Function space
-interp.fspace = fundefn('cheb',order,smin,smax);           
+interp.fspace = fundefn('cheb',order,smin,smax);
 %%
 % State collocation nodes
 s             = gridmake(funnode(interp.fspace));

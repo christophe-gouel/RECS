@@ -39,15 +39,6 @@ model = recsmodelinit('cs1.yaml',...
 % definition the model and all its Jacobians from the human readable file
 % <cs1.yaml>.
 
-%%
-% If your installation is not complete, you have to pack yourself the different
-% elements inside a structure
-[model.e,model.w] = qnwnorm(5,Mu,sigma^2);
-model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
-model.func        = @cs1model;
-model.params      = cs1model('params');
-
-
 %% Define approximation space
 % Define approximation function
 interp.fspace = fundefn('spli',20,50,200);

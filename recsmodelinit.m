@@ -79,19 +79,20 @@ if nargin>=2 && ~isempty(shocks)
   [model.e,model.w] = qnwnorm(order,Mu,Sigma);
   % Random number generator
   model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,q)*R;
-  
+
   %% Check steady state
   [sss0,xss0] = model.func('ss');
   if ~isempty(sss0) & ~isempty(xss0)
     [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0);
     if exitflag==1
       disp('Deterministic steady state')
-      disp(' State variables:')
-      disp(sss)
-      disp(' Response variables:')
-      disp(xss)
-      disp(' Expectations variables:')
-      disp(zss)
+      fprintf(1,' State variables:\n\t\t')
+      fprintf(1,'%0.4g\t',sss)
+      fprintf(1,'\n\n Response variables:\n\t\t')
+      fprintf(1,'%0.4g\t',xss)
+      fprintf(1,'\n\n Expectations variables:\n\t\t')
+      fprintf(1,'%0.4g\t',zss)
+      fprintf(1,'\n\n')
     end
     model.sss = sss;
     model.xss = xss;
