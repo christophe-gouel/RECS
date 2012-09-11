@@ -54,7 +54,7 @@ a             = model.params(1);
 delta         = model.params(3);
 [sss,xss,zss] = recsSS(model,[1 0],a-delta);
 
-%% Define approximation space
+%% Define approximation space using Chebyshev polynomials
 % Degree of approximation
 order         = [10 10];
 %%
@@ -62,11 +62,7 @@ order         = [10 10];
 smin          = [0.85*sss(1) min(model.e)*4];
 smax          = [1.15*sss(1) max(model.e)*4];
 %%
-% Function space
-interp.fspace = fundefn('cheb',order,smin,smax);
-%%
-% State collocation nodes
-s             = gridmake(funnode(interp.fspace));
+[interp,s] = recsinterpinit(order,smin,smax,'cheb');
 
 %% Find a first guess through the perfect foresight solution
 [interp,x] = recsFirstGuess(interp,model,s,sss,xss,50);

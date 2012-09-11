@@ -40,11 +40,7 @@ model = recsmodelinit('cs1.yaml',...
 % <cs1.yaml>.
 
 %% Define approximation space
-% Define approximation function
-interp.fspace = fundefn('spli',20,50,200);
-%%
-% State collocation nodes
-s             = gridmake(funnode(interp.fspace));
+[interp,s] = recsinterpinit(20,model.sss/2,model.sss*2);
 
 %% First-guess: Consumption equal to cash on hand
 x         = s;
@@ -66,7 +62,7 @@ xlabel('Cash on hand')
 ylabel('Consumption')
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,100*ones(1000,1),200);
+[~,~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1000,1),:),200);
 subplot(1,2,1)
 xlabel('Cash on hand')
 ylabel('Frequency')
