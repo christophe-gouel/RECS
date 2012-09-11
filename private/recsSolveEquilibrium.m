@@ -1,12 +1,12 @@
 function [x,f,exitflag] = recsSolveEquilibrium(s,x,z,func,params,c,e,w,fspace,options)
 % RECSSOLVEEQUILIBRIUM Solves the system of equilibrium equations using x as starting values
 %
-% RECSSOLVEEQUILIBRIUM is called by recsSimul and recsSolveREE. It is
-% not meant to be called directly by the user.
+% RECSSOLVEEQUILIBRIUM is called by recsSimul, recsSolveREEIter and
+% recsSolveREEIterNewton. It is not meant to be called directly by the user.
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -23,7 +23,7 @@ if options.loop_over_s
   %% Solve separately for each point on the grid
   f                 = zeros(size(x));
   [~,grid]          = spblkdiag(zeros(m,m,1),[],0);
-  for i=1:n
+  parfor i=1:n
     [x(i,:),f(i,:),exitflag] = eqsolve(x(i,:),s(i,:),z(i,:),func,params,eqsolver,...
                                        grid,c,e,w,fspace,funapprox,...
                                        eqsolveroptions,LB(i,:),UB(i,:),extrapolate);

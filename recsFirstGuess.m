@@ -39,7 +39,7 @@ function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 %
 % See also RECSSOLVEDETERMINISTICPB, RECSSOLVEREE, RECSSS.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -64,7 +64,7 @@ x = zeros(n,size(xss,2));
 z = zeros(n,size(zss,2));
 
 %% Solve the perfect foresight problem on each point of the grid
-for i=1:n
+parfor i=1:n
   [X,~,Z] = recsSolveDeterministicPb(model,s(i,:),T,xss,zss,sss,options);
   x(i,:) = X(1,:);
   z(i,:) = Z(1,:);

@@ -82,7 +82,7 @@ if nargin>=2 && ~isempty(shocks)
 
   %% Check steady state
   [sss0,xss0] = model.func('ss');
-  if ~isempty(sss0) & ~isempty(xss0)
+  if ~isempty(sss0) && ~isempty(xss0)
     [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0);
     if exitflag==1
       disp('Deterministic steady state')
