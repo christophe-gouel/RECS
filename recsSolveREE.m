@@ -124,7 +124,9 @@ end
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 k      = length(w);               % number of shock values
 z      = zeros(n,0);
-p      = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
+if ~functional
+  p    = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
+end
 
 % Extract fields of interp
 fspace     = interp.fspace;
@@ -181,6 +183,7 @@ end
 if functional
   model.params = [model.params fspace c];
   params       = model.params;
+  p            = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
 end
 
 %% Solve for the rational expectations equilibrium
