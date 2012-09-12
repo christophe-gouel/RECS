@@ -196,14 +196,14 @@ if (nargout==5 || statdisplay) && (nper > 40)
 
   % Percent of time spent at the bounds
   [LB,UB] = func('b',X(:,1:d),[],[],[],[],[],params);
-  pLB     = [zeros(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps)*100];
-  pUB     = [zeros(1,d) mean(abs(UB-X(:,d+1:d+m))<eps)*100];
+  pLB     = [zeros(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps,1)*100];
+  pUB     = [zeros(1,d) mean(abs(UB-X(:,d+1:d+m))<eps,1)*100];
 
-  mX   = mean(X);
+  mX   = mean(X,1);
   y    = bsxfun(@minus,X,mX);
-  varX = mean(y.*y);
-  stat.moments = [mX' sqrt(varX)' (mean(y.^3)./varX.^1.5)' (mean(y.^4)./(varX.*varX))' ...
-                  min(X)'    max(X)' pLB' pUB'];
+  varX = mean(y.*y,1);
+  stat.moments = [mX' sqrt(varX)' (mean(y.^3,1)./varX.^1.5)' ...
+                  (mean(y.^4,1)./(varX.*varX))' min(X)' max(X)' pLB' pUB'];
   disp('Statistics from simulated variables (excluding the first 20 observations):');
   disp(' Moments');
   disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
@@ -220,12 +220,11 @@ if (nargout==5 || statdisplay) && (nper > 40)
   end
 
   X = cat(2,ssim,xsim);
-  X = permute(X(:,:,20:end),[3 1 2]);
-  X = reshape(X,[],nrep*(d+m));
-
-  stat.acor = autocor(X);
-  stat.acor = reshape(stat.acor,nrep,d+m,[]);
-  stat.acor = squeeze(mean(stat.acor,1));
+  X = permute(X(:,:,20:end),[3 2 1]);
+  stat.acor = zeros(d+m,5);
+  for n=1:nrep
+    stat.acor = stat.acor+autocor(X(:,:,n))/nrep;
+  end
   disp(' Autocorrelation');
   disp('    1         2         3         4         5');
   disp(stat.acor);
@@ -239,7 +238,7 @@ maxlag = 5;
 [N,d]  = size(x);
 acov   = zeros(maxlag+1,d);
 for n=0:maxlag
-  acov(n+1,:) = mean(x(1+n:N,:).*x(1:N-n,:))-mean(x(1+n:N,:)).*mean(x(1:N-n,:));
+  acov(n+1,:) = mean(x(1+n:N,:).*x(1:N-n,:),1)-mean(x(1+n:N,:),1).*mean(x(1:N-n,:),1);
 end
 acor   = (acov(2:maxlag+1,:)./acov(ones(maxlag,1),:))';
 
