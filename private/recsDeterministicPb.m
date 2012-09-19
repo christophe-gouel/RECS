@@ -1,4 +1,4 @@
-function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params)
+function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params,ix,nx)
 % RECSDETERMINISTICPB Evaluates the equations and Jacobian of the deterministic problem.
 %
 % RECSDETERMINISTICPB is called by recsSolveDeterministicPb. It is not meant to be
@@ -6,7 +6,7 @@ function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params)
 %
 % See also RECSSOLVEDETERMINISTICPB.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -14,16 +14,18 @@ d = size(s0,2);
 m = size(xss,2);
 
 n = size(X,1);
-T = n/(m+p+d);
+T = n/(m+p+d+sum(nx));
 
 e = e(ones(T,1),:);
 
-X = reshape(X,m+p+d,T)';
+X = reshape(X,m+p+d+sum(nx),T)';
 
 x     = X(:,1:m);
 xnext = [x(2:end,:); xss];
-z     = X(:,(m+1):(m+p));
-snext = X(:,(m+p+1):(m+p+d));
+w     = X(:,(m+1):(m+nx(1)));
+v     = X(:,(m+nx(1)+1):(m+nx(1)+nx(2)))
+z     = X(:,(m+nx(1)+nx(2)+1):(m+nx(1)+nx(2)+p));
+snext = X(:,(m+nx(1)+nx(2)+p+1):(m+nx(1)+nx(2)+p+d));
 s     = [s0; snext(1:end-1,:)];
 
 %% Computation of equations and Jacobian
