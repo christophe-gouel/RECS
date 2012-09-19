@@ -73,34 +73,19 @@ end
 
 %% Solve for the deterministic steady state
 
-[LBx,UBx] = func('b',s,[],[],[],[],[],params);
 ix = [sum(numjac(@(S) Bounds(func,S,params,1,true(m,2)),s)~=0,2,'native') ...
       sum(numjac(@(S) Bounds(func,S,params,2,true(m,2)),s)~=0,2,'native')];
 nx = int16(sum(ix,1));
 
-if sum(nx)>0
-  %% Endogenous bounds
-  w = zeros(nx(1),1);
-  v = zeros(nx(2),1);
-  X = [s(:); x(:); w; v];
-  LBxmod             = -inf(size(LBx));
-  LBxmod(~(ix(:,1))) = LBx(~(ix(:,1)));
-  UBxmod             = +inf(size(UBx));
-  UBxmod(~(ix(:,2))) = UBx(~(ix(:,2)));
-  LB = [-inf(size(s(:))); LBxmod(:); zeros(size(w(:))); zeros(size(v(:)))];
-  UB = [+inf(size(s(:))); UBxmod(:);  +inf(size(w(:)));  +inf(size(v(:)))];
+w = zeros(nx(1),1);
+v = zeros(nx(2),1);
+X = [s(:); x(:); w; v];
+[LBx,UBx] = mcptransform(func,'b',s,[],[],[],[],[],params,[],ix,nx);
+LB = [-inf(size(s(:))); LBx(:)];
+UB = [+inf(size(s(:))); UBx(:)];
 
-  [X,~,exitflag] = runeqsolver(@SSResidualEndogenousBounds,X,LB,UB,eqsolver,...
-                               eqsolveroptions,func,params,e,d,m,ix,nx);
-else
-  %% Exogenous bounds
-  X       = [s(:); x(:)];
-  LB      = [-inf(size(s(:))); LBx(:)];
-  UB      = [+inf(size(s(:))); UBx(:)];
-  
-  [X,~,exitflag] = runeqsolver(@SSResidual,X,LB,UB,eqsolver,...
-                               eqsolveroptions,func,params,e,d,m);
-end
+[X,~,exitflag] = runeqsolver(@SSResidual,X,LB,UB,eqsolver,...
+                             eqsolveroptions,func,params,e,d,m,ix,nx);
 
 if exitflag~=1
   warning('RECS:SSNotFound','Failure to find a deterministic steady state');
@@ -118,119 +103,43 @@ else
 end
 
 
-function [F,J] = SSResidual(X,func,params,e,d,m)
+function [F,J] = SSResidual(X,func,params,e,d,m,ix,nx)
 %% SSRESIDUAL evaluates the equations and Jacobians of the steady-state finding problem
-
-ss     = X(1:d)';
-xx     = X(d+1:d+m)';
-
-if nargout==2 
-  %% With Jacobian calculation
-  output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',1);
-  if nargout(func)<6
-    [zz,hs,hx,hsnext,hxnext]       = func('h',ss,xx,[],e ,ss,xx,params,output);
-  else
-    [h,hs,hx,hsnext,hxnext,hmult]  = func('h',ss,xx,[],e ,ss,xx,params,output);
-    zz     = h.*hmult;
-    hs     = hs.*hmult(:,:,ones(d,1));
-    hx     = hx.*hmult(:,:,ones(m,1));
-    hsnext = hsnext.*hmult(:,:,ones(d,1));
-    hxnext = hxnext.*hmult(:,:,ones(m,1));
-  end
-  [f,fs,fx,fz] = func('f',ss,xx,zz,[],[],[],params,output);
-  fz           = permute(fz,[2 3 1]);
-  [g,gs,gx]    = func('g',ss,xx,[],e ,[],[],params,output);
-
-  J                  = zeros(d+m,d+m);
-  J(1:d,1:d)         = eye(d)-permute(gs,[2 3 1]);
-  J(1:d,d+1:d+m)     = -permute(gx,[2 3 1]);
-  J(d+1:d+m,1:d)     = permute(fs,[2 3 1])+fz*permute(hs+hsnext,[2 3 1]);
-  J(d+1:d+m,d+1:d+m) = permute(fx,[2 3 1])+fz*permute(hx+hxnext,[2 3 1]);
-  J                  = sparse(J);
-
-else
-  %% Without Jacobian calculation
-  output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
-  zz     = func('h',ss,xx,[],e ,ss,xx,params,output);
-  g      = func('g',ss,xx,[],e ,[],[],params,output);
-  f      = func('f',ss,xx,zz,[],[],[],params,output);
-end
-
-F      = [ss-g f]';
-
-function [F,J] = SSResidualEndogenousBounds(X,func,params,e,d,m,ix,nx)
-%% SSRESIDUALENDOGENOUSBOUNDS evaluates the equations and Jacobians of the steady-state finding problem
 
 ss     = X(1:d)';
 xx     = X(d+1:d+m)';
 ww     = X(d+m+1:d+m+nx(1))';
 vv     = X(d+m+nx(1)+1:d+m+nx(1)+nx(2))';
 
-[LBx,UBx] = func('b',ss,[],[],[],[],[],params);
+M = m+nx(1)+nx(2);
 
 if nargout==2 
   %% With Jacobian calculation
-  output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',1);
-  if nargout(func)<6
-    [zz,hs,hx,hsnext,hxnext]       = func('h',ss,xx,[],e ,ss,xx,params,output);
-  else
-    [h,hs,hx,hsnext,hxnext,hmult]  = func('h',ss,xx,[],e ,ss,xx,params,output);
-    zz     = h.*hmult;
-    hs     = hs.*hmult(:,:,ones(d,1));
-    hx     = hx.*hmult(:,:,ones(m,1));
-    hsnext = hsnext.*hmult(:,:,ones(d,1));
-    hxnext = hxnext.*hmult(:,:,ones(m,1));
-  end
-  [f,fs,fx,fz] = func('f',ss,xx,zz,[],[],[],params,output);
-  fz           = permute(fz,[2 3 1]);
-  [g,gs,gx]    = func('g',ss,xx,[],e ,[],[],params,output);
+  output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1);
+  [zz,hs,hx,hsnext,hxnext] = mcptransform(func,'h',ss,xx,[],e ,ss,xx,params,output,ix,nx,[],[]);
+  [f,fs,fx,fz]             = mcptransform(func,'f',ss,xx,zz,[],[],[],params,output,ix,nx,ww,vv);
+  [g,gs,gx]                = mcptransform(func,'g',ss,xx,[],e ,[],[],params,output,ix,nx,[],[]);
+  fz                       = permute(fz,[2 3 1]);
 
-  J                  = zeros(d+m+nx(1)+nx(2),d+m+nx(1)+nx(2));
+  J               = zeros(d+M,d+M);
   % With respect to s
-  J(1:d                        ,1:d) = eye(d)-permute(gs,[2 3 1]);
-  J(d+1:d+m                    ,1:d) = permute(fs,[2 3 1])+fz*permute(hs+hsnext,[2 3 1]);
-  J(d+m+1:d+m+nx(1)            ,1:d) = -numjac(@(S) Bounds(func,S,params,1,ix),ss);
-  J(d+m+nx(1)+1:d+m+nx(1)+nx(2),1:d) =  numjac(@(S) Bounds(func,S,params,2,ix),ss);
-  % With respect to x
-  J(1:d     ,d+1:d+m) = -permute(gx,[2 3 1]);
-  J(d+1:d+m ,d+1:d+m) =  permute(fx,[2 3 1])+fz*permute(hx+hxnext,[2 3 1]);
-  iter = 0;
-  for i=find(ix(:,1))
-    iter = iter+1;
-    J(d+m+iter,d+i) = 1;
-  end
-  iter = 0;
-  for i=find(ix(:,2))
-    iter = iter+1;
-    J(d+m+nx(1)+iter,d+i) = -1;
-  end
-  % With respect to w
-  iter = 0;
-  for i=find(ix(:,1))
-    iter = iter+1;
-    J(d+i,d+m+iter) = -1;
-  end
-  % With respect to v
-  iter = 0;
-  for i=find(ix(:,2))
-    iter = iter+1;
-    J(d+i,d+m+nx(1)+iter) = 1;
-  end
+  J(1:d     ,1:d) = eye(d)-permute(gs,[2 3 1]);
+  J(d+1:d+M ,1:d) = permute(fs,[2 3 1])+fz*permute(hs+hsnext,[2 3 1]);
+  % With respect to X
+  J(1:d     ,d+1:d+M) = -permute(gx,[2 3 1]);
+  J(d+1:d+M ,d+1:d+M) =  permute(fx,[2 3 1])+fz*permute(hx+hxnext,[2 3 1]);
   % Aggregation into a sparse matrix
   J = sparse(J);
   
 else
   %% Without Jacobian calculation
-  output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
-  zz     = func('h',ss,xx,[],e ,ss,xx,params,output);
-  g      = func('g',ss,xx,[],e ,[],[],params,output);
-  f      = func('f',ss,xx,zz,[],[],[],params,output);
+  output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0);
+  zz = mcptransform(func,'h',ss,xx,[],e ,ss,xx,params,output,ix,nx,[],[]);
+  f  = mcptransform(func,'f',ss,xx,zz,[],[],[],params,output,ix,nx,ww,vv);
+  g  = mcptransform(func,'g',ss,xx,[],e ,[],[],params,output,ix,nx,[],[]);
 end
 
-f(:,ix(:,1)) = f(:,ix(:,1))-ww;
-f(:,ix(:,2)) = f(:,ix(:,2))+vv;
-
-F = [ss-g f xx(:,ix(:,1))-LBx(:,ix(:,1)) UBx(:,ix(:,2))-xx(:,ix(:,2))]';
+F = [ss-g f]';
 
 
 function B = Bounds(func,s0,params,output,ix)
