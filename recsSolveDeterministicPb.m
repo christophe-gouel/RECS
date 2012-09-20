@@ -62,37 +62,20 @@ else
 end
 params = model.params;
 
-if norm(numjac(@(S) bounds(func,S,params),s0),Inf)>eps
-  error('Bounds should be independent of state variables')
-end
-
-[LBx,UBx] = func('b',sss,[],[],[],[],[],params);
 ix = [sum(numjac(@(S) Bounds(func,S,params,1,true(m,2)),sss)~=0,2,'native') ...
       sum(numjac(@(S) Bounds(func,S,params,2,true(m,2)),sss)~=0,2,'native')];
 nx = int16(sum(ix,1));
+M  = m+sum(nx);
 
 n = n+T*sum(nx);
 
 w = zeros(1,nx(1));
 v = zeros(1,nx(2));
 
-if sum(nx)>0
-  %% Endogenous bounds
-  LBxmod             = -inf(size(LBx));
-  LBxmod(~(ix(:,1))) = LBx(~(ix(:,1)));
-  UBxmod             = +inf(size(UBx));
-  UBxmod(~(ix(:,2))) = UBx(~(ix(:,2)));
+[LBx,UBx] = mcptransform(func,'b',sss,[],[],[],[],[],params,[],ix,nx);
+LB = [LBx -inf(1,p+d)];
+UB = [UBx +inf(1,p+d)];
 
-  LB = [LBxmod zeros(size(w)) zeros(size(v)) -inf(1,p+d)];
-  UB = [UBxmod  +inf(size(w))  +inf(size(v)) +inf(1,p+d)];
-
-else
-  %% Exogenous bounds
-
-  LB = [LBx -inf(1,p+d)];
-  UB = [UBx +inf(1,p+d)];
-
-end
 LB = reshape(LB(ones(T,1),:)',n,1);
 UB = reshape(UB(ones(T,1),:)',n,1);
 
@@ -104,7 +87,7 @@ X = reshape(X,n,1);
 % Simple continuation problem applied on a Newton solve
 
 SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver,...
-                                     eqsolveroptions,func,S0,xss,p,e,params);
+                                     eqsolveroptions,func,S0,xss,p,e,params,ix,nx);
 
 [X,F,exitflag] = SCP(X,s0,sss,SCPSubProblem,1);
 if exitflag~=1
@@ -113,32 +96,8 @@ if exitflag~=1
 end
 
 %% Prepare output
-X = reshape(X,m+p+d,T)';
+X = reshape(X,M+p+d,T)';
 x = X(:,1:m);
-z = X(:,(m+1):(m+p));
-s = [s0; X(1:end-1,(m+p+1):(m+p+d))];
-if ~isempty(F), F = reshape(F,m+p+d,T)'; end
-
-% function B = bounds(func,s0,params)
-% %% BOUNDS Concatenates lower and upper bounds to permit differentiation
-%   
-% [LB,UB]     = func('b',s0,[],[],[],[],[],params);
-% B           = [LB(:); UB(:)];
-% B(isinf(B)) = 0;
-
-function B = Bounds(func,s0,params,output,ix)
-%% BOUNDS Allows differentiation of bounds
-
-Big = 1E20;
-[LBx,UBx]     = func('b',s0,[],[],[],[],[],params);
-
-if output==1
-  B = LBx(:,ix(:,1));
-else
-  B = UBx(:,ix(:,2));
-end
-
-B(isinf(B)) = sign(B(isinf(B)))*Big;
-B           = B(:);
-
-return
+z = X(:,(M+1):(M+p));
+s = [s0; X(1:end-1,(M+p+1):(M+p+d))];
+if ~isempty(F), F = reshape(F,M+p+d,T)'; end

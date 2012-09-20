@@ -34,9 +34,11 @@ switch flag
     if output.Js
       dLBxds = zeros(n,nx(1),d);
       dUBxds = zeros(n,nx(2),d);
-      for i=1:n
-        dLBxds(i,:,:) = numjac(@(S) Bounds(func,S,params,1,ix),s(i,:));
-        dUBxds(i,:,:) = numjac(@(S) Bounds(func,S,params,2,ix),s(i,:));
+      if sum(nx)
+        for i=1:n
+          if nx(1), dLBxds(i,:,:) = numjac(@(S) Bounds(func,S,params,1,ix),s(i,:)); end
+          if nx(2), dUBxds(i,:,:) = numjac(@(S) Bounds(func,S,params,2,ix),s(i,:)); end
+        end
       end
       out2 = cat(2,fs,-dLBxds,dUBxds);
     end
@@ -52,8 +54,8 @@ switch flag
       dfdv = permute(dfdv(:,:,ones(n,1)),[3 1 2]);
       out3 = cat(2,...
                  cat(3,fx                    ,-dfdw               ,dfdv                ),...
-                 cat(3, permute(dfdw,[1 3 2]),zeros(n,nx(1),nx(1)),zeros(n,nx(1),nx(2))),...
-                 cat(3,-permute(dfdv,[1 3 2]),zeros(n,nx(2),nx(1)),zeros(n,nx(2),nx(2))));
+                 cat(3, permute(dfdw,[1 3 2]),zeros(n,nx(1),nx(1)+nx(2))),...
+                 cat(3,-permute(dfdv,[1 3 2]),zeros(n,nx(2),nx(1)+nx(2))));
     end
     
     % dF/dz
@@ -92,20 +94,3 @@ switch flag
     if output.Jxn, out5 = cat(3,hxnext,zeros(n,p,nx(1)+nx(2))); end
 
 end
-
-function B = Bounds(func,s0,params,output,ix)
-%% BOUNDS Allows differentiation of bounds
-
-Big = 1E20;
-[LBx,UBx]     = func('b',s0,[],[],[],[],[],params);
-
-if output==1
-  B = LBx(:,ix(:,1));
-else
-  B = UBx(:,ix(:,2));
-end
-
-B(isinf(B)) = sign(B(isinf(B)))*Big;
-B           = B(:);
-
-return
