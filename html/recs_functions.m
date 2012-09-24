@@ -28,5 +28,5 @@
 % * <matlab:doc('ncpsolve') |ncpsolve|> - Solve mixed complementarity problems
 % * <matlab:doc('nsoli') |nsoli|> - Solve system of nonlinear
 % equations by a Jacobian-free Newton-Krylov solver
-% * <matlab:isfilepresent('pathmcp') |pathmcp|> - Solve mixed complementarity problems
+% * <matlab:doc('recspathmcp') |recspathmcp|> - Solve mixed complementarity problems
 % * <matlab:doc('SA') |SA|> - Solve a system of equations by successive approximation

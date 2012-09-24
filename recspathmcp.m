@@ -1,12 +1,12 @@
-function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
-% PATHMCP solves a polyhedrally constrained variational inequality using PATH
+function [z,f,exitflag,J,mu] = recspathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
+% RECSPATHMCP solves a polyhedrally constrained variational inequality using PATH
 %
-% Z = PATHMCP(Z,L,U,CPFJ) tries to solve, using Z as a starting point, the mixed
+% Z = RECSPATHMCP(Z,L,U,CPFJ) tries to solve, using Z as a starting point, the mixed
 % complementarity problem of the form:
 % L =Z    =>   F(Z)>0,
 % L<=Z<=U =>   F(Z)=0,
 %    Z =U =>   F(Z)<0.
-% L and U are the lower and upper bounds on Z. PATHMCP returns Z the solution.
+% L and U are the lower and upper bounds on Z. RECSPATHMCP returns Z the solution.
 % CPFJ is the name (without .m-extension) of the m-file for evaluating the
 % function F and its Jacobian J. The m-file must be supplied (where default name
 % is 'mcp_funjac.m' unless stated otherwise in the variable
@@ -16,14 +16,14 @@ function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
 % Solver options can be defined through an option file present in the working
 % directory and named 'path.opt'. Many options are described in the following file:
 % http://www.cs.wisc.edu/~ferris/path/options.pdf
-% PATHMCP returns also a log file named 'logfile.tmp'. From Matlab, it can be
+% RECSPATHMCP returns also a log file named 'logfile.tmp'. From Matlab, it can be
 % displayed by 'type logfile.tmp'.
 %
-% Z = PATHMCP(Z,L,U,CPFJ,NNZJ) uses NNZJ the number of non-zero elements in the
+% Z = RECSPATHMCP(Z,L,U,CPFJ,NNZJ) uses NNZJ the number of non-zero elements in the
 % Jacobian to initialize the memory allocation for the Jacobian. If NNZJ is not
 % provided, it is evaluated at the starting point Z.
 %
-% Z = PATHMCP(Z,L,U,CPFJ,NNZJ,A,B,T,MU)
+% Z = RECSPATHMCP(Z,L,U,CPFJ,NNZJ,A,B,T,MU)
 %  A  - constraint matrix
 %  B  - right hand side of the constraints
 %  T  - types of the constraints
@@ -33,18 +33,18 @@ function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
 %      We have AZ ? B, ? is the type of constraint
 %  MU - multipliers on the constraints
 %
-% [Z,F] = PATHMCP(Z,L,U,CPFJ,...) returns F the function evaluation at the
+% [Z,F] = RECSPATHMCP(Z,L,U,CPFJ,...) returns F the function evaluation at the
 % solution.
 %
-% [Z,F,EXITFLAG] = PATHMCP(Z,L,U,CPFJ,...) returns EXITFLAG that describes
+% [Z,F,EXITFLAG] = RECSPATHMCP(Z,L,U,CPFJ,...) returns EXITFLAG that describes
 % the exit conditions. Possible values listed below.
 %       1 : solved
 %       0 : failed to solve
 %
-% [Z,F,EXITFLAG,J] = PATHMCP(Z,L,U,CPFJ,...) returns J the Jacobian evaluation
+% [Z,F,EXITFLAG,J] = RECSPATHMCP(Z,L,U,CPFJ,...) returns J the Jacobian evaluation
 % at the solution.
 %
-% [Z,F,EXITFLAG,J,MU] = PATHMCP(Z,L,U,CPFJ,NNZJ,A,B,T,MU) returns MU the
+% [Z,F,EXITFLAG,J,MU] = RECSPATHMCP(Z,L,U,CPFJ,NNZJ,A,B,T,MU) returns MU the
 % multipliers on the constraints at the solution.
 %
 % For more information, see the following references 
@@ -58,7 +58,7 @@ function [z,f,exitflag,J,mu] = pathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
 %   thesis, University of Wisonsin-Madison.
 
 % Copyright (C) Michael C. Ferris and Todd S. Munson
-% This is a modification by Christophe Gouel of the original file, which can be
+% This is a modification by Christophe Gouel of the original file pathmcp.m, which can be
 % downloaded from: http://pages.cs.wisc.edu/~ferris/path.html.
 
 %% Initialization

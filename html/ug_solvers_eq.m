@@ -18,7 +18,7 @@
 % toolbox, which has to be installed for RECS to run. Path has to be installed
 % separately. To install Path, see
 % <http://pages.cs.wisc.edu/~ferris/path.html>. To distinguish Path from the
-% MATLAB internal command, the name of the Path MATLAB file is |pathmcp.m|.
+% MATLAB internal command, the name of the Path MATLAB file is |recspathmcp.m|.
 
 %% Nonlinear equations solver
 % |fsolve| is the only nonlinear equations solver interfaced with RECS. You need
@@ -26,7 +26,7 @@
 
 %% See also
 % <matlab:doc('fsolve') |fsolve|> <matlab:doc('lmmcp') |lmmcp|>
-% <matlab:doc('ncpsolve') |ncpsolve|> <matlab:doc('pathmcp') |pathmcp|>
+% <matlab:doc('ncpsolve') |ncpsolve|> <matlab:doc('recspathmcp') |recspathmcp|>
 %
 % <html>
 % <hr/>

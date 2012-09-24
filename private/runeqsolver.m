@@ -46,7 +46,7 @@ switch eqsolver
   case 'path'
     global par %#ok<TLEV>
     par        = [{func} varargin];
-    [x,f,exitflag] = pathmcp(x,LB,UB,'pathtransform');
+    [x,f,exitflag] = recspathmcp(x,LB,UB,'pathtransform');
     clear global par
 
 end
