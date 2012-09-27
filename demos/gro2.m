@@ -93,6 +93,11 @@ ylabel('Frequency')
 % and Control_, 24(8), 1179-1232.
 
 %%
+%
+% <html>
+% <hr/>
+% </html>
+%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <LICENSE.txt>

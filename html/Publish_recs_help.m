@@ -58,6 +58,8 @@ publish('sto1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
 publish('sto2.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
+publish('sto3.m',PublishOptions);
+publish('clearpublish.m',PublishOptions);
 publish('sto4.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
 publish('sto5.m',PublishOptions);

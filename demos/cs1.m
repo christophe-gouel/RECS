@@ -76,6 +76,11 @@ ylabel('Frequency')
 % 1221-1248.
 
 %%
+%
+% <html>
+% <hr/>
+% </html>
+%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <LICENSE.txt>

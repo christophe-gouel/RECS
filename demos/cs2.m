@@ -1,5 +1,5 @@
 %% CS2 Finite horizon consumption/saving model with borrowing constraint
-% This is the same problem as CS1, except that it has a finite horizon.
+% This is the same problem as <cs1.html CS1>, except that it has a finite horizon.
 
 %% Pack model structure
 model = recsmodelinit('cs1.yaml',...

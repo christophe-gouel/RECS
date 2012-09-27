@@ -1,5 +1,6 @@
 % ************** Variants of the stochastic growth model **************
 % GRO1 Stochastic growth model
+% GRO2 Stochastic growth model with irreversible investment
 %
 % *************** Variants of consumption/saving models ***************
 % CS1 Consumption/saving model with borrowing constraint (Deaton, 1991)

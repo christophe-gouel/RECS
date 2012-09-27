@@ -21,6 +21,8 @@
 %
 % * <sto2.html Competitive storage with floor-price backed by public storage>
 %
+% * <sto3.html Anticipated switch to a public storage policy>
+%
 % * <sto4.html Competitive storage with price-band backed by public storage>
 %
 % * <sto5.html One small-country storage-trade model>
