@@ -99,25 +99,19 @@ toc
 options.eqsolver = 'ncpsolve';
 optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
 tic
-interp = recsSolveREE(interp,model,s,xinit,options);
+[interp,x] = recsSolveREE(interp,model,s,xinit,options);
 toc
-
-%% Simulate the model
-% Use high precision to be able to draw precisely decision rules 
-options.simulmethod = 'solve';
-[ssim,xsim] = recsSimul(model,interp,ones(20,1),200,[],options);
 
 %% Plot storage rules
 subplot(2,1,1)
-plot(ssim(:),reshape(xsim(:,1,:),[],1),'.',...
-     ssim(:),reshape(xsim(:,4,:),[],1),'.')
+plot(s,x(:,[1 4]))
 leg = legend('Private stock','Public stock');
 set(leg,'Location','NorthWest')
 set(leg,'Box','off')
 xlabel('Availability')
 ylabel('Stock')
 subplot(2,1,2)
-plot(ssim(:),reshape(xsim(:,3,:),[],1),'.')
+plot(s,x(:,3))
 xlabel('Availability')
 ylabel('Price')
 
@@ -127,6 +121,11 @@ ylabel('Price')
 % price support schemes. _The Economic Journal_, 98(393), 1183-1198.
 
 %%
+%
+% <html>
+% <hr/>
+% </html>
+%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <LICENSE.txt>
