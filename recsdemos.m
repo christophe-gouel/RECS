@@ -17,9 +17,13 @@ disp('GRO2 Stochastic growth model with irreversible investment')
 clear interp model options
 gro2
 
-disp('CS1 Consumption/Saving model with borrowing constraint');
+disp('CS1 Consumption/saving model with borrowing constraint');
 clear interp model options
 cs1
+
+disp('CS2 Finite horizon consumption/saving model with borrowing constraint');
+clear interp model options
+cs2
 
 disp('STO1 Competitive storage model');
 clear interp model options
@@ -29,16 +33,16 @@ disp('STO2 Competitive storage with floor-price backed by public storage');
 clear interp model options
 sto2
 
-disp('STO3 Competitive storage with price-band backed by public storage');
-clear interp model options
-sto3
-
-disp('STO4 One small-country storage-trade model');
+disp('STO4 Competitive storage with price-band backed by public storage');
 clear interp model options
 sto4
 
-disp('STO5 Two-country storage-trade model');
+disp('STO5 One small-country storage-trade model');
 clear interp model options
 sto5
+
+disp('STO6 Two-country storage-trade model');
+clear interp model options
+sto6
 
 rmpath(fullfile(recsdirectory,'demos'))

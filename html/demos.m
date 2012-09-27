@@ -21,11 +21,11 @@
 %
 % * <sto2.html Competitive storage with floor-price backed by public storage>
 %
-% * <sto3.html Competitive storage with price-band backed by public storage>
+% * <sto4.html Competitive storage with price-band backed by public storage>
 %
-% * <sto4.html One small-country storage-trade model>
+% * <sto5.html One small-country storage-trade model>
 %
-% * <sto5.html Two-country storage-trade model>
+% * <sto6.html Two-country storage-trade model>
 %
 % <html>
 % <hr/>

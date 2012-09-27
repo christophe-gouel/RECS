@@ -1,99 +1,67 @@
-%% STO5 Two-country storage-trade model
-% Model close to Miranda and Glauber (1995). Countries $a$ and $b$ are indicated
-% by the subscript $i \in \left\{a,b\right\}$. When variables corresponding to
-% both countries appear in the same equation, the foreign country is indicated
-% by the subscript $j$.
+%% STO5 Storage-trade model of a small country
 
 %% Model's structure
 %
-% *Response variables* Storage ($S_{i}$), Planned production ($H_{i}$), Price
-% ($P_{i}$) and Export ($X_{i}$).
+% *Response variables* Storage ($S$), Price ($P$), Import ($M$) and Export
+% ($X$).
 %
-% *State variable* Availability ($A_{i}$).
+% *State variable* Availability ($A$) and World price ($P^{w}$).
 %
-% *Shock* Productivity shocks ($\epsilon_{i}$).
+% *Shock* Production shocks ($\epsilon$) and Innovation on world price ($\nu$).
 %
 % *Parameters* Unit physical storage cost ($k$), Depreciation share ($\delta$),
-% Interest rate ($r$), Scale parameter for the production cost function ($h$),
-% Inverse of supply elasticity ($\mu$), Demand price elasticity ($\alpha$),
-% Trade cost ($\theta$) and Tariff ($\tau_{i}$).
+% Interest rate ($r$), Demand price elasticity ($\alpha$), World price
+% autocorrelation ($\rho$) and Trade cost ($\theta$).
 %
 % *Equilibrium equations*
 %
-% For $i \in \left\{a,b\right\}$ and $j \ne i$:
+% $$S_{t}: S_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{t+1}\right)\ge 0,$$
 %
-% $$S_{it}: S_{it}\ge 0 \quad \perp \quad P_{it}+k-\frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{it+1}\right)\ge 0,$$
+% $$P_{t}: A_{t}+M_t={P_{t}}^{\alpha}+S_{t}+X_t,$$
 %
-% $$H_{it}: \frac{1}{1+r}\mathrm{E}_{t}\left(P_{it+1}\epsilon_{it+1}\right)=h {H_{it}}^{\mu},$$
+% $$M_{t}: M_{t}\ge 0 \quad \perp \quad P^w_{t}+\theta\ge P_{t},$$
 %
-% $$P_{it}: A_{it}+X_{jt}={P_{it}}^{\alpha}+S_{it}+X_{it},$$
-%
-% $$X_{it}: X_{it}\ge 0 \quad \perp \quad P_{it}+\theta+\tau_{j}\ge P_{jt}.$$
+% $$X_{t}: X_{t}\ge 0 \quad \perp \quad P_{t}\ge P^w_{t}-\theta.$$
 %
 % *Transition equation*
 %
-% For $i \in \left\{a,b\right\}$:
+% $$A_{t}: A_{t}=\left(1-\delta\right)S_{t-1}+\epsilon_{t},$$
 %
-% $$A_{it}: A_{it}=\left(1-\delta\right)S_{it-1}+H_{it-1}\epsilon_{it}.$$
+% $$P^w_{t}: \ln P^w_{t} = \rho\ln P^w_{t-1}+\nu_{t}.$$
 
 %% Writing the model
 % The model is defined in a Matlab file: <sto5model.html sto5model.m>.
 
 %% Enter model parameters
-delta  = 0;
-r      = 0.05;
-k      = 0.02;
-alpha  = -0.4;
-theta  = 0.1;
-%%
-% Relative demand size, equals $D(b)/D(a)$ for the same price
-lambda = 1;
-%%
-% Relative supply size, such that the unit production cost of eta $Q$ in $b$ is
-% the same as $Q$ in $a$
-eta    = 1;
-mu     = 10;
-%%
-% Tariffs in countries $a$ and $b$:
-taua   = 0.06;
-taub   = 0;
+delta = 0;
+r     = 0.05;
+k     = 0.02;
+alpha = -0.4;
+tau   = 0.2;
+rho   = 0.6;
+sigma = 0.16;
 
 %% Define shock distribution
-% Mean of production shocks in $a$ and $b$
-Mu                = [1 1];
-%%
-% Std-deviation of production shocks in $a$ and $b$
-sigma             = [0.05 0;
-                     0    0.05];
-[model.e,model.w] = qnwnorm([5 5],Mu,sigma^2);
-model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*sigma;
+Mu                = [1 0];
+Sigma             = [0.05 0;0 sigma];
+[model.e,model.w] = qnwnorm([5 5],Mu,Sigma^2);
+model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*Sigma;
 
 %% Pack model structure
-% Model function
+% Model functions
 model.func   = @sto5model;
 %%
 % Model parameters
-model.params = {delta,r,k,alpha,theta,lambda,eta,mu,taua,taub};
-
-%% Find deterministic steady state
-[sss,xss,zss] = recsSS(model,[1 1],[0 0 1 1 1 1 0 0])
-
-%%
-% *Check derivatives on steady state*
-%
-% Since model derivatives have been calculated by hand, it is important to check
-% that there is no error.
-recsCheck(model,sss,xss,zss);
+model.params = {delta,r,k,alpha,tau,rho,sigma};
 
 %% Define approximation space
 % Approximation order
-order         = [15 15];
+order         = [15; 15];
 n             = prod(order);
 %%
-% Minimum and maximum values of the state variable grid (use the steady state to
-% find good bounds)
-smin          = sss*0.73;
-smax          = sss*2;
+% Minimum and maximum values of the state variable grid
+smin          = [min(model.e(:,1))*0.95; 0.4];
+smax          = [1.6; 2.05];
 %%
 % Interpolation structure
 interp.fspace = fundefn('spli',order,smin,smax);
@@ -102,48 +70,72 @@ interp.fspace = fundefn('spli',order,smin,smax);
 s             = gridmake(funnode(interp.fspace));
 
 %% Provide a first guess
-xinit         = [0.1*zeros(n,2) max(s(:,1).^(1/alpha),0.8) ...
-                 max((s(:,2)/lambda).^(1/alpha),0.8) zeros(n,2) ones(n,2)];
+xinit         = [zeros(n,1) max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau) zeros(n,2)];
+interp.cz     = funfitxy(interp.fspace,s,max(min(ones(n,1),s(:,2).^rho+tau),s(:,2).^rho-tau));
+interp.ch     = funfitxy(interp.fspace,s,max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau));
 
 %% Solve for rational expectations
-% Define options:
-%
-% * Use |ncpsolve| to solve equilibrium equations.
-%
-% * Reduce the step of successive iterations to 0.5.
-%
-% * Do not use the approximation structure to find the new guess of response variables.
-options =struct('eqsolver','ncpsolve',...
-                'reesolveroptions',struct('lambda',0.5),...
-                'useapprox',0);
+% Define options
+options = struct('funapprox','expfunapprox',...
+                 'simulmethod','solve',...
+                 'stat',1);
 %%
-% * Approach the MCP problem by smooth transformation
-optset('ncpsolve','type','smooth')
+% If available, we will use successively different methods to find the solution.
+%
+% * Solve by Full Newton
+if exist('mcppath','file')
+  options.eqsolver  = 'path';
+  options.reemethod = '1-step';
+  tic
+  recsSolveREE(interp,model,s,xinit,options);
+  toc
+  options.eqsolver = 'lmmcp';
+  options.reemethod = 'iter';
+end
 
 %%
-% *Solve by Full Newton*
-tic
-options.reemethod = '1-step';
-recsSolveREE(interp,model,s,xinit,options);
-toc
+% * Solve by Newton-Krylov
+if exist('KINSol','file')
+  options.reesolver = 'kinsol';
+  tic
+  recsSolveREE(interp,model,s,xinit,options);
+  toc
+  options.reesolver = 'SA';
+end
 
 %%
-% *Solve by successive approximations* (this is the default option)
+% * Solve by successive approximation
 tic
-options.reemethod = 'iter';
 interp = recsSolveREE(interp,model,s,xinit,options);
 toc
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,sss(ones(100,1),:),1000,[],options);
-
-%% References
-%
-% Miranda, M. J. and Glauber, J. W. (1995). Solving stochastic models of
-% competitive storage and trade by Chebychev collocation methods. _Agricultural
-% and Resource Economics Review_, 24(1), 70-77.
+recsSimul(model,interp,repmat([1 1],10,1),200,[],options);
+subplot(2,3,1)
+xlabel('Availability')
+ylabel('Frequency')
+subplot(2,3,2)
+xlabel('World price')
+ylabel('Frequency')
+subplot(2,3,3)
+xlabel('Storage')
+ylabel('Frequency')
+subplot(2,3,4)
+xlabel('Price')
+ylabel('Frequency')
+subplot(2,3,5)
+xlabel('Import')
+ylabel('Frequency')
+subplot(2,3,6)
+xlabel('Export')
+ylabel('Frequency')
 
 %%
+%
+% <html>
+% <hr/>
+% </html>
+%
 % Copyright (C) 2011-2012 Christophe Gouel
 %
 % Licensed under the Expat license, see <LICENSE.txt>

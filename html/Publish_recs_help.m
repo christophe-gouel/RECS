@@ -42,9 +42,9 @@ publish('gro1model.m',PublishOptionsNoExec);
 publish('gro2model.m',PublishOptionsNoExec);
 publish('sto1model.m',PublishOptionsNoExec);
 publish('sto2model.m',PublishOptionsNoExec);
-publish('sto3model.m',PublishOptionsNoExec);
 publish('sto4model.m',PublishOptionsNoExec);
 publish('sto5model.m',PublishOptionsNoExec);
+publish('sto6model.m',PublishOptionsNoExec);
 publish('clearpublish.m',PublishOptions);
 publish('cs1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
@@ -58,11 +58,11 @@ publish('sto1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
 publish('sto2.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
-publish('sto3.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
 publish('sto4.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
 publish('sto5.m',PublishOptions);
+publish('clearpublish.m',PublishOptions);
+publish('sto6.m',PublishOptions);
 delete(fullfile(recsdirectory,'html','clearpublish.html'));
 cd(currentfolder)
 
