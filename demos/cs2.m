@@ -20,7 +20,7 @@ xT         = s;
 %% Plot the decision rules
 figure
 plot(s,squeeze(X))
-legend([repmat('Period ',10,1),num2str((10:-1:1)')])
+legend([repmat('Period ',10,1),num2str((1:10)')])
 legend('Location','NorthWest')
 legend('boxoff')
 xlabel('Cash on hand')
