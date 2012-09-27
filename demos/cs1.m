@@ -1,4 +1,4 @@
-%% CS1 Consumption/Saving model with borrowing constraint
+%% CS1 Consumption/saving model with borrowing constraint
 % This is an implementation of the model in Deaton (1991).
 
 %% Model's structure

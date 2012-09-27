@@ -3,6 +3,7 @@
 %
 % *************** Variants of consumption/saving models ***************
 % CS1 Consumption/saving model with borrowing constraint (Deaton, 1991)
+% CS2 Finite horizon consumption/saving model with borrowing constraint
 %
 % ********************* Variants of the storage model *****************
 % STO1 Competitive storage model

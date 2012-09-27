@@ -3,7 +3,11 @@
 % All Matlab files for RECS demos can be found in the |demos| folder inside RECS
 % folder. And below are the links to each demos:
 %
+% *Variants of the consumption/saving model*
+%
 % * <cs1.html Consumption/saving model with borrowing constraint>
+%
+% * <cs2.html Finite horizon consumption/saving model with borrowing constraint>
 %
 % *Variants of the stochastic growth model*
 %

@@ -20,7 +20,11 @@
 
     <tocitem target="recs_functions.html" image="HelpIcon.FUNCTION"> Functions </tocitem>
     <tocitem target="demos.html" image="HelpIcon.DEMOS"> Demos
-      <tocitem target="cs1.html"> Consumption/Saving model with borrowing constraint </tocitem>
+      <tocitem target="cs.html"> Variants of the consumption/saving model
+      
+        <tocitem target="cs1.html"> Consumption/saving model with borrowing constraint </tocitem>  
+        <tocitem target="cs2.html"> Finite horizon consumption/saving model with borrowing constraint </tocitem>
+      </tocitem>
       <tocitem target="gro.html"> Variants of the stochastic growth model
         <tocitem target="gro1.html"> Stochastic growth model </tocitem>
         <tocitem target="gro2.html"> Stochastic growth model with irreversible investment </tocitem>

@@ -48,6 +48,8 @@ publish('sto5model.m',PublishOptionsNoExec);
 publish('clearpublish.m',PublishOptions);
 publish('cs1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
+publish('cs2.m',PublishOptions);
+publish('clearpublish.m',PublishOptions);
 publish('gro1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
 publish('gro2.m',PublishOptions);
