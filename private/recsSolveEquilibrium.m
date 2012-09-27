@@ -23,11 +23,13 @@ if options.loop_over_s
   %% Solve separately for each point on the grid
   f                 = zeros(size(x));
   [~,grid]          = spblkdiag(zeros(m,m,1),[],0);
+  exitflag          = zeros(n,1);
   parfor i=1:n
-    [x(i,:),f(i,:),exitflag] = eqsolve(x(i,:),s(i,:),z(i,:),func,params,eqsolver,...
-                                       grid,c,e,w,fspace,funapprox,...
-                                       eqsolveroptions,LB(i,:),UB(i,:),extrapolate);
+    [x(i,:),f(i,:),exitflag(i)] = eqsolve(x(i,:),s(i,:),z(i,:),func,params,eqsolver,...
+                                          grid,c,e,w,fspace,funapprox,...
+                                          eqsolveroptions,LB(i,:),UB(i,:),extrapolate);
   end
+  exitflag = all(exitflag);
 else
   %% Solve all the grid in one step
   [~,grid] = spblkdiag(zeros(m,m,n),[],0);
