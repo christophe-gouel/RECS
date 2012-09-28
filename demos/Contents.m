@@ -9,6 +9,7 @@
 % ********************* Variants of the storage model *****************
 % STO1 Competitive storage model
 % STO2 Competitive storage with floor-price backed by public storage
+% STO3 Anticipated switch to a public storage policy
 % STO4 Competitive storage with price-band backed by public storage
 % STO5 One small-country storage-trade model
 % STO6 Two-country storage-trade model
