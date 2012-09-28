@@ -68,6 +68,7 @@ for t=T-1:-1:1
     warning('RECS:FailureREE','Failure to find a rational expectations equilibrium');
   end
 end
+cX(:,:,1)               = funfitxy(fspace,Phi,X(:,:,1));
 
 interp.cX = cX;
 
