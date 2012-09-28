@@ -74,7 +74,7 @@ License: BSD-2-clause
 Source: http://www.mathworks.com/matlabcentral/fileexchange/7842
 
 Files: dolo-recs, dolo-recs.exe
-Copyright: 2010-2011, Pablo Winant
+Copyright: 2010-2012, Pablo Winant
 License: BSD-2-clause
  All rights reserved.
  .
@@ -97,7 +97,7 @@ License: BSD-2-clause
  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-Source: https://github.com/albop/dynare-python
+Source: https://github.com/albop/dolo
 
 Files: lmmcp.m
 Copyright: 2005, Christian Kanzow and Stefania Petra
@@ -111,7 +111,8 @@ Comment: This is a modification by Christophe Gouel of the original file. The
  concern the way of handling inputs (particularly options).
 Source: http://www4.ncsu.edu/~ctk/newtony.html
 
-Files: pathmcp.m
+Files: recspathmcp.m
 Copyright: Michael C. Ferris and Todd S. Munson. 
-Comment: This is a modification by Christophe Gouel of the original file.
+Comment: This is a modification by Christophe Gouel of the original pathmcp.m
+file.
 Source: http://pages.cs.wisc.edu/~ferris/path.html
