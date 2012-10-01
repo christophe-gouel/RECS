@@ -10,3 +10,4 @@ demo/*.log
 /html/helpsearch/*
 /html/*.txt
 /html/*.yaml
+Python/dolo/*

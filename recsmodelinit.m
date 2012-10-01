@@ -2,7 +2,7 @@ function [model,statequant] = recsmodelinit(inputfile,shocks,outputfile,options)
 % RECSMODELINIT Prepares a RECS model structure
 %
 % RECSMODELINIT uses dolo (https://github.com/albop/dolo), a python
-% preprocessor, to convert the model described in a yaml file to a file readable
+% preprocessor, to convert the model described in a Yaml file to a file readable
 % by MATLAB and RECS programs. In the conversion, dolo calculates the analytic
 % representation of all partial derivatives.
 %
@@ -33,6 +33,15 @@ function [model,statequant] = recsmodelinit(inputfile,shocks,outputfile,options)
 %    eqsolver         : solver used to find the steady state 'fsolve', 'lmmcp'
 %                       (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
+%
+% [MODEL,STATEQUANT] = RECSMODELINIT(INPUTFILE,SHOCKS,...) returns the
+% 6-by-d matrix STATEQUANT that contains the quantiles (0%, 0.1%, 1%,
+% 99%, 99.9% 100%) for the state variables when maintaining response
+% variables at their values at the deterministic steady
+% state. STATEQUANT is useful for determining the extent of the
+% state space for exogenous state variables.
+%
+% See also RECSINTERPINIT.
 
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -53,23 +62,21 @@ else
   options = catstruct(defaultopt,options);
 end
 
-%% Run dolo-recs on the yaml file
+%% Run dolo-recs on the Yaml file
 recsdirectory = fileparts(which('recsSimul'));
 inputfiledirectory = fileparts(which(inputfile));
-
-if ~(ispc || strcmp(computer('arch'),'glnx86'))
-  error('Not available on this platform')
-end
+dolo = fullfile(recsdirectory,'Python','dolo','src');
 
 if ispc
-  txt = 'win32';
-  extension = '.exe';
+  status = system([fullfile(dolo,'bin','dolo-recs.exe') ' ' which(inputfile) ...
+                   ' ' fullfile(inputfiledirectory,outputfile)]);
+elseif isunix && ~ismac
+  dolorecs = fullfile(dolo,'bin','dolo-recs.py');
+  status = system(['PYTHONPATH=' dolo ' python ' dolorecs ' ' which(inputfile) ...
+                   ' '  fullfile(inputfiledirectory,outputfile)]);
 else
-  txt = computer('arch');
-  extension = '';
+  error('Not available on this platform')
 end
-status = system([fullfile(recsdirectory,'exe',txt,['dolo-recs' extension]) ...
-                 ' ' which(inputfile) ' ' fullfile(inputfiledirectory,outputfile)]);
 
 if status~=0
   error('Failure to create the model file')
