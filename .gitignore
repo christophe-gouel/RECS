@@ -11,3 +11,5 @@ demo/*.log
 /html/*.txt
 /html/*.yaml
 Python/dolo/*
+demos/*model.m
+!demos/sto*model.m
