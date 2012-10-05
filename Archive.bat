@@ -4,15 +4,15 @@ md recs-archive
 md recs-archive\private
 md recs-archive\html
 md recs-archive\demos
-md recs-archive\exe\win32
+md recs-archive\Python
 
 REM matlab -wait -nosplash -nojvm -noFigureWindows -r html/Publish_recs_help.m
 
 copy /Y . recs-archive
 copy /Y private recs-archive\private
-copy /Y html recs-archive\html
+robocopy html recs-archive\html /E
 copy /Y demos recs-archive\demos
-copy /Y exe\win32 recs-archive\exe\win32
+robocopy Python recs-archive\Python /E
 copy /Y Archive\README.txt recs-archive
 
 cd recs-archive
