@@ -98,6 +98,11 @@ functional      = options.functional;
 funapprox       = lower(options.funapprox);
 simulmethod     = lower(options.simulmethod);
 statdisplay     = options.stat;
+if ~strcmp(simulmethod,'interpolation') && ~strcmp(simulmethod,'solve')
+  warning('RECS:OptionError',['The simulmethod field can take only the values ' ...
+                      '''interpolation'' or ''solve''. Simulations will '        ...
+                      'be carried out using the default option, ''interpolation''.'])
+end
 
 e       = model.e;
 params  = model.params;
@@ -179,8 +184,10 @@ for t=1:nper+1
                                           params,...
                                           interp.ch,e,w,fspace,options);
         end
-      case 'interpolation'
-        if nargout>=4, f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params,output); end
+      otherwise
+        if nargout>=4
+          f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params,output);
+        end
     end
   end
   ssim(:,:,t) = s0;
