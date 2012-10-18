@@ -5,10 +5,10 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 % equation problem since, in this case, the steady state depends on
 % the model solution.
 %
-% S = RECSSS(MODEL,S,X) tries to find the non-stochastic steady
-% state of the model defined in the structure MODEL, by using as
-% first guess the vector of state and response variables S and
-% X. RECSSS returns the value of the state variables at steady state.
+% S = RECSSS(MODEL) tries to find the non-stochastic steady state of the model
+% defined in the structure MODEL. This function call uses as first guess for
+% steady-state state and response variable the output of the call
+% model.func('ss'). RECSSS returns the value of the state variables at steady state.
 % MODEL is a structure, which has to include the following fields:
 %    [e,w] : discrete distribution with finite support with e the values and w the
 %            probabilities (it could be also the discretisation of a continuous
@@ -18,18 +18,24 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 %             (compulsory with the functional option) but other formats are
 %             acceptable
 %
+% S = RECSSS(MODEL,S) uses the vector S as first guess for steady-state state
+% variables.
+%
+% S = RECSSS(MODEL,S,X) uses the vector X as first guess for steady-state response
+% variables.
+%
 % S = RECSSS(MODEL,S,X,OPTIONS) solves the problem with the parameters
 % defined by the structure OPTIONS. The fields of the structure are
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
 %
-% [S,X] = RECSSS(MODEL,S,X,...) returns the value of the response
+% [S,X] = RECSSS(MODEL,...) returns the value of the response
 % variables at steady state.
 %
-% [S,X,Z] = RECSSS(MODEL,S,X,...) returns the value of the
+% [S,X,Z] = RECSSS(MODEL,...) returns the value of the
 % expectations variable at steady state.
 %
-% [S,X,Z,EXITFLAG] = RECSSS(MODEL,S,X,...) returns EXITFLAG,
+% [S,X,Z,EXITFLAG] = RECSSS(MODEL,...) returns EXITFLAG,
 % which describes the exit conditions. Possible values are
 %    1 : RECSSS converges to the deterministic steady state
 %    0 : Failure to converge

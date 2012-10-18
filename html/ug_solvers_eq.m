@@ -1,4 +1,4 @@
-%% Solvers for equilibrium equations
+%% Solvers for systems of nonlinear equations and for mixed complementarity problems
 
 %% Overview of solvers for equilibrium equations
 % There are two types of solver for solving equilibrium equations: solvers for
@@ -27,12 +27,3 @@
 %% See also
 % <matlab:doc('fsolve') |fsolve|> <matlab:doc('lmmcp') |lmmcp|>
 % <matlab:doc('ncpsolve') |ncpsolve|> <matlab:doc('recspathmcp') |recspathmcp|>
-%
-% <html>
-% <hr/>
-% </html>
-%
-%%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

@@ -73,13 +73,3 @@ ylabel('Frequency')
 %% References
 % <http://www.jstor.org/stable/2938366 Deaton, A. (1991). Saving and liquidity
 % constraints. _Econometrica_, 59(5), 1221-1248.>
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

@@ -87,13 +87,3 @@ ylabel('Frequency')
 subplot(2,2,3)
 xlabel('Consumption')
 ylabel('Frequency')
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

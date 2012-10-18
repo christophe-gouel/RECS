@@ -26,7 +26,7 @@ sigma   = 0.05;
 % *Pack model structure*
 model2.e       = e;
 model2.w       = w;
-model2.func    = @sto2model;                               
+model2.func    = @sto2model;
 PF             = 1.02;
 Sgbar          = 0.4;
 model2.params  = {k,delta,r,mu,alpha,PF,Sgbar};
@@ -35,7 +35,7 @@ model2.params  = {k,delta,r,mu,alpha,PF,Sgbar};
 % *Find a first guess through the perfect foresight solution*
 [interp2,x2] = recsFirstGuess(interp,model2,s,1,[0 1 1 0],5);
 
-%% 
+%%
 % *Solve for rational expectations*
 [~,x2] = recsSolveREE(interp2,model2,s,x2);
 
@@ -43,7 +43,7 @@ model2.params  = {k,delta,r,mu,alpha,PF,Sgbar};
 % *Pack model structure*
 model1.e       = e;
 model1.w       = w;
-model1.func    = @sto1model;                               
+model1.func    = @sto1model;
 model1.params  = {alpha,k,delta,r,mu};
 %%
 % The policy is announced 6 periods before it begins (so $T=7$). In the seventh
@@ -68,15 +68,3 @@ legend('boxoff')
 xlabel('Availability')
 ylabel('Price')
 title('Price function in each period')
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>
-
-

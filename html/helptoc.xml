@@ -3,32 +3,55 @@
 <toc version="0.4">
 
   <tocitem target="recs_product_page.html">RECS
-    <tocitem target="getting_started.html" image="HelpIcon.GETTING_STARTED"> Getting started
-      <tocitem target="installation.html"> Installation </tocitem>
-      <tocitem target="def_sre.html"> Definition of a dynamic stochastic rational expectations problem </tocitem>
-      <tocitem target="MCP.html"> Introduction to mixed complementarity problems </tocitem>
+
+    <tocitem target="getting_started.html"
+    image="HelpIcon.GETTING_STARTED"> Getting started
+
+       <tocitem target="installation.html"> Installation </tocitem>
+       <tocitem target="tutorial.html"> Tutorial </tocitem>
+       <tocitem target="def_sre.html"> Definition of a dynamic stochastic rational expectations problem </tocitem>
+       <tocitem target="MCP.html"> Introduction to mixed complementarity problems </tocitem>
+
     </tocitem>
 
     <tocitem target="user_guide.html" image="HelpIcon.USER_GUIDE"> User's Guide
+
       <tocitem target="ug_setting_up.html"> Setting Up a Rational Expectations Problem
         <tocitem target="ug_model_files.html"> Writing model files </tocitem>
+	<tocitem target="ug_model_struct.html"> Defining the model structure </tocitem>
+        <tocitem target="ug_interpolation.html"> Defining the interpolation structure </tocitem>
       </tocitem>
+      <tocitem target="ss.html"> Steady states </tocitem>
+
+      <tocitem target="first_guess.html"> First guess for the rational expectations problem </tocitem>
+      <tocitem target="solve_REE.html"> Solve the rational expectations problem </tocitem>
+      <tocitem target="simulate.html"> Simulate the model </tocitem>
+      <tocitem target="calibration.html"> Calibration </tocitem>
+      <tocitem target="accuracy.html"> Accuracy of the solution </tocitem>
+      <tocitem target="finite_horizon.html"> Finite-horizon problems </tocitem>
+      <tocitem target="deterministic.html"> Deterministic problems </tocitem>
+      <tocitem target="ug_solvers_eq.html"> Solvers for nonlinear equations and for mixed complementarity problems </tocitem>
       <tocitem target="ug_methods.html"> Solution methods </tocitem>
-      <tocitem target="ug_solvers_eq.html"> Solvers for equilibrium equations </tocitem>
-      <tocitem target="ug_solvers_ree.html"> Solvers for the rational expectations problem for two-step approaches </tocitem>
+      <!-- <tocitem target="ug_solvers_ree.html"> Solvers for the rational -->
+      <!-- expectations problem for two-step approaches </tocitem> -->
+      <!-- Auxiliary variabels -->
+
     </tocitem>
 
     <tocitem target="recs_functions.html" image="HelpIcon.FUNCTION"> Functions </tocitem>
+
     <tocitem target="demos.html" image="HelpIcon.DEMOS"> Demos
+
       <tocitem target="cs.html"> Variants of the consumption/saving model
-      
-        <tocitem target="cs1.html"> Consumption/saving model with borrowing constraint </tocitem>  
+        <tocitem target="cs1.html"> Consumption/saving model with borrowing constraint </tocitem>
         <tocitem target="cs2.html"> Finite horizon consumption/saving model with borrowing constraint </tocitem>
       </tocitem>
+
       <tocitem target="gro.html"> Variants of the stochastic growth model
         <tocitem target="gro1.html"> Stochastic growth model </tocitem>
         <tocitem target="gro2.html"> Stochastic growth model with irreversible investment </tocitem>
       </tocitem>
+
       <tocitem target="sto.html"> Variants of the storage model
         <tocitem target="sto1.html"> Competitive storage model </tocitem>
         <tocitem target="sto2.html"> Competitive storage with floor-price backed by public storage </tocitem>
@@ -37,6 +60,9 @@
         <tocitem target="sto5.html"> Storage-trade model of a small country </tocitem>
         <tocitem target="sto6.html"> Two-country storage-trade model with supply reaction, fixed tariffs </tocitem>
       </tocitem>
+
     </tocitem>
+
   </tocitem>
+
 </toc>

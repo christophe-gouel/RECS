@@ -51,9 +51,9 @@
 %    parameters:
 %
 %  equations:
-%    
+%
 %    arbitrage:
-%    
+%
 %    transition:
 %
 %    expectation:
@@ -67,7 +67,7 @@
 % See <cs1.yaml> or <gro1.yaml> for examples of complete yaml files.
 %
 % *Yaml syntax conventions*
-% 
+%
 % For the file to be readable, it is necessary to respect some syntax
 % conventions:
 %
@@ -95,11 +95,4 @@
 
 %% Writing a model the hard way
 %
-% <html>
-% <hr/>
-% </html>
-%
-%%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>
+% To be completed

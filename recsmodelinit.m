@@ -101,7 +101,12 @@ if nargin>=2 && ~isempty(shocks)
         ~all(diag(Sigma)'>=sum(abs(Sigma-diag(diag(Sigma)))))
     error('shocks.Sigma is not a symmetric, positive-semidefinite matrix')
   end
-  R = chol(Sigma);
+  if isequal(diag(diag(Sigma)),Sigma)
+    % Diagonal matrix
+    R = sqrt(Sigma);
+  else
+    R = chol(Sigma);
+  end
 
   % Gaussian quadrature
   [model.e,model.w] = qnwnorm(order,Mu,Sigma);
@@ -126,7 +131,7 @@ if nargin>=2 && ~isempty(shocks)
     model.xss = xss;
     model.zss = zss;
   end
-  
+
   %% Simulate state variables dynamics with response at steady-state
   % Provide a first guess of the relevant state space
   if nargout==2 && exitflag==1

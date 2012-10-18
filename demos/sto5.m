@@ -129,13 +129,3 @@ ylabel('Frequency')
 subplot(2,3,6)
 xlabel('Export')
 ylabel('Frequency')
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

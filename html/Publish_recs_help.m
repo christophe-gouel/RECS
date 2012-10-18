@@ -12,22 +12,44 @@ delete(fullfile(recsdirectory,'html','*.txt'));
 delete(fullfile(recsdirectory,'html','*.yaml'));
 delete(fullfile(recsdirectory,'html','*.html'));
 PublishOptions = struct('outputDir',targetdirectory);
-PublishOptionsNoExec = struct('outputDir',targetdirectory,...
-                              'evalCode',false);
+if exist('html.xsl')
+  PublishOptions = catstruct(PublishOptions,struct('stylesheet','html.xsl'));
+end
+PublishOptionsNoExec = catstruct(PublishOptions,struct('evalCode',false));
 
 %% Documentation
 publish('recs_product_page.m',PublishOptions);
+
+% Getting started
 publish('getting_started.m',PublishOptions);
 publish('installation.m',PublishOptions);
+publish('tutorial.m',PublishOptions);
 publish('def_sre.m',PublishOptions);
 publish('MCP.m',PublishOptions);
+
+% User guide
 publish('user_guide.m',PublishOptions);
-publish('ug_solvers_eq.m',PublishOptions);
-publish('recs_functions.m',PublishOptions);
-publish('pathnotinstalled.m',PublishOptions);
 publish('ug_setting_up.m',PublishOptions);
 publish('ug_model_files.m',PublishOptions);
+publish('ug_model_struct.m',PublishOptions);
+publish('ug_interpolation.m',PublishOptions);
+addpath(fullfile(recsdirectory,'demos'))
+publish('ss.m',PublishOptions);
+rmpath(fullfile(recsdirectory,'demos'))
+publish('first_guess.m',PublishOptions);
+publish('solve_REE.m',PublishOptions);
+publish('simulate.m',PublishOptions);
+publish('calibration.m',PublishOptions);
+publish('accuracy.m',PublishOptions);
+publish('finite_horizon.m',PublishOptions);
+publish('deterministic.m',PublishOptions);
+publish('ug_solvers_eq.m',PublishOptions);
+publish('ug_methods.m',PublishOptions);
+
+% Others
+publish('recs_functions.m',PublishOptions);
 publish('demos.m',PublishOptions);
+publish('pathnotinstalled.m',PublishOptions);
 
 %% License
 copyfile(fullfile(recsdirectory,'LICENSE.txt'),fullfile(targetdirectory,'LICENSE.txt'));

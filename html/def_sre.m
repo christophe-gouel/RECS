@@ -29,8 +29,9 @@
 %
 % $0=f(s,x,z)$.
 %
-% The second equation defines the expectations. The last equation is the
-% transition equation.
+% The second equation defines the expectations. The last equation is the state
+% transition equation that defines how state variables are updated based on past
+% response, past state and contemporaneous shocks.
 
 %% Solving a rational expectations model
 % The problem created by rational expectations models is that the second
@@ -67,12 +68,3 @@
 % <http://www.jstor.org/stable/1391746 den Haan, W. J. and Marcet, A.
 % (1990). Solving the Stochastic Growth Model by Parameterizing
 % Expectations. _Journal of Business & Economic Statistics_, 8(1), 31-34.>
-%
-% <html>
-% <hr/>
-% </html>
-%
-%%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

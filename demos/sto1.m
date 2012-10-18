@@ -178,8 +178,3 @@ ylabel(texlabel('log_{10}|EE|'))
 %
 % Gouel, C. (forthcoming). Comparing numerical methods for solving the
 % competitive storage model. _Computational Economics_.
-
-%%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

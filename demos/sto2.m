@@ -16,7 +16,7 @@
 % Floor price ($P^{\mathrm{F}}$) and Capacity constraint on public stock
 % ($\bar{S}^{\mathrm{G}}$).
 %
-% *Equilibrium equations* 
+% *Equilibrium equations*
 %
 % $$S^{\mathrm{S}}_{t}: S^{\mathrm{S}}_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{t+1}\right)\ge 0,$$
 %
@@ -50,24 +50,24 @@ model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
 %% Pack model structure
 % Model functions
-model.func   = @sto2model;                               
+model.func   = @sto2model;
 %%
 % Model parameters
 model.params = {k,delta,r,mu,alpha,PF,Sgbar};
 
 %% Define approximation space
 % Approximation order
-order         = 50;                                        
+order         = 50;
 %%
 % Minimum and maximum values of the state variable grid
 smin          = min(model.e)*0.95;
 smax          = 2;
 %%
 % Interpolation structure
-interp.fspace = fundefn('spli',order,smin,smax); 
+interp.fspace = fundefn('spli',order,smin,smax);
 %%
 % State collocation nodes
-s             = gridmake(funnode(interp.fspace));          
+s             = gridmake(funnode(interp.fspace));
 
 %% Find a first guess through the perfect foresight solution
 [interp,xinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);
@@ -119,14 +119,3 @@ ylabel('Price')
 %
 % Wright, B. D. and Williams, J. C. (1988). The incidence of market-stabilising
 % price support schemes. _The Economic Journal_, 98(393), 1183-1198.
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>
-

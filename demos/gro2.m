@@ -91,13 +91,3 @@ ylabel('Frequency')
 % Christiano, L.J. and Fisher, J.D.M. (2000). Algorithms for solving dynamic
 % models with occasionally binding constraints. _Journal of Economic Dynamics
 % and Control_, 24(8), 1179-1232.
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

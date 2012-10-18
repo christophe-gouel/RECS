@@ -148,12 +148,3 @@
 % <http://dx.doi.org/10.1007/BF02591680 Mathiesen, L. (1987). An algorithm based
 % on a sequence of linear complementarity problems applied to a Walrasian
 % equilibrium model: An example. _Mathematical Programming_, 37, 1-18.>
-%
-% <html>
-% <hr/>
-% </html>
-%
-%%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

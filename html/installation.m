@@ -40,12 +40,3 @@
 % (32-bit). For other platforms, you can use dolo-recs from its Python sources:
 % <https://github.com/albop/dynare-python>. Send me an email if you need help on
 % this!
-%
-% <html>
-% <hr/>
-% </html>
-%
-%%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

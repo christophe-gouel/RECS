@@ -142,13 +142,3 @@ toc
 % Miranda, M. J. and Glauber, J. W. (1995). Solving stochastic models of
 % competitive storage and trade by Chebychev collocation methods. _Agricultural
 % and Resource Economics Review_, 24(1), 70-77.
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>

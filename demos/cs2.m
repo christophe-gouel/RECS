@@ -25,14 +25,3 @@ legend('Location','NorthWest')
 legend('boxoff')
 xlabel('Cash on hand')
 ylabel('Consumption')
-
-%%
-%
-% <html>
-% <hr/>
-% </html>
-%
-% Copyright (C) 2011-2012 Christophe Gouel
-%
-% Licensed under the Expat license, see <LICENSE.txt>
-
