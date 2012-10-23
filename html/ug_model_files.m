@@ -12,87 +12,116 @@
 %
 % *Expectations definition*
 %
-% $$z = \mathrm{E}_{\dot e} \left[h(s,x,\dot e,\dot s,\dot x)\right].$$
+% $$z = \mathrm{E}_{e_{+}} \left[h(s,x,e_{+},s_{+},x_{+})\right].$$
 %
 % *Transition equations*
 %
-% $$\dot s = g(s,x,\dot e).$$
+% $$s = g(s_{-},x_{-},e).$$
 %
 % When defining your model, it is important to try to minimize the number of
 % state variables. Currently, RECS is designed to solve small-scale models,
 % which means that with more than 3 or 4 state variables you are in unknown
 % territory. One way of doing this is, when it is possible, to sum together the
 % predetermined variables than can be summed. You can see in demonstrations
-% files (e.g., <cs1.html cs1> or <sto1.html sto1>) that states variables are
+% files (e.g., <cs1.html CS1> or <sto1.html STO1>) that states variables are
 % often defined as sums of other predetermined variables.
 
-%% Writing a model the easy way
-% It is possible to write the model in a way that is quite similar to the
-% original mathematical notations (as is proposed in most algebraic modeling
-% languages). The model file that has to be created is called a yaml file
-% (because it is written in <http://yaml.org YAML>). A yaml file is easily
-% readable by human, but not by Matlab. So the file needs to be processed for
-% Matlab to be able read it. This is done by the function
-% <matlab:doc('recsmodelinit') |recsmodelinit|>, which calls a Python
-% preprocessor, dolo-recs, to do the job.
+%% Structure of RECS model files
+% A RECS model can be written in a way that is quite similar to the original
+% mathematical notations (as is proposed in most algebraic modeling
+% languages). The model file that has to be created is called a Yaml file
+% (because it is written in <http://yaml.org YAML> and ends with the |.yaml|
+% extension). A Yaml file is easily readable by human, but not by Matlab. So the
+% file needs to be processed for Matlab to be able read it. This is done by the
+% function <matlab:doc('recsmodelinit') |recsmodelinit|>, which calls a Python
+% preprocessor, |dolo-recs|, to do the job.
+%
+% RECS Yaml files require three basic components, written successively:
+%
+% * |declarations| - The block declarations contains the declaration of all the
+% variables, shocks and parameters that are used in the model.
+% * |equations| - The block equations declares model's equations.
+% * |calibration| - The block calibration provides numerical values for
+% parameters and a first-guess for the deterministic steady-state.
 %
 % *Yaml file structure*
 %
+% To illustrate a complete Yaml file lets consider how one would write in Yaml a
+% standard stochastic growth model (see <gro1.html GRO1> for the complete example):
+%
 %  declarations:
-%
-%    states:
-%
-%    controls:
-%
-%    expectations:
-%
-%    shocks:
-%
-%    parameters:
-%
+%  
+%    states: [K, Z]
+%    
+%    controls: [C]
+% 
+%    expectations: [E]
+% 
+%    shocks: [Epsilon]
+% 
+%    parameters: [a, tau, delta, beta, rho, alpha]
+% 
+%   
 %  equations:
-%
+% 
 %    arbitrage:
-%
+% 
+%      - C^(-tau)-beta*E=0 | -inf <= C <= inf
+% 
 %    transition:
-%
+% 
+%      - K = a*exp(Z(-1))*K(-1)^alpha+(1-delta)*K(-1)-C(-1)
+%      - Z = rho*Z(-1)+Epsilon
+% 
 %    expectation:
-%
+% 
+%      - E = C(1)^(-tau)*(1-delta+a*alpha*exp(Z(1))*K(1)^(alpha-1))
+% 
+%     
 %  calibration:
-%
+% 
 %    parameters:
-%
+% 
+%      tau   : 2
+%      delta : 0.0196
+%      beta  : 0.95
+%      rho   : 0.9
+%      alpha : 0.33
+%      a     : (1/beta-1+delta)/alpha
+%     
 %    steady_state:
+% 
+%      Z : 0
+%      K : 1
+%      C : a-delta
+%      E : C^(-tau)/beta
 %
-% See <cs1.yaml> or <gro1.yaml> for examples of complete yaml files.
+% See <demos.html Demos> for other examples of complete yaml files.
+%
+% Yaml files can be written with any text editor, including Matlab editor.
 %
 % *Yaml syntax conventions*
 %
 % For the file to be readable, it is necessary to respect some syntax
 % conventions:
 %
+% * *Association equilibrium equations/control variables/bounds:* Each
+% equilibrium equation has to be associated to a control variable. I really
+% matters for equations with complementarity constraints, if it is not the case,
+% the precise association does not matter. The equation and its associated
+% variable are separated by the symbol |. Control variables have to be
+% associated with bounds, which can be infinite.
 % * *Indentation:* Inside each block the elements of same scope have to be
 % indented using the same number of spaces (do not use tabs). For the above
 % example, inside the |declarations| block, |states|, |controls|,
-% |expectations|, |shocks|, and |parameters| have to be indented at the same
+% |expectations|, |shocks|, and |parameters| are indented at the same
 % level.
-%
 % * *Comments:* Comments are introduced by the character |#|.
-%
 % * *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.
-%
-% * *Timing convention:* The following timing conventions are to be
-% respected. Transition equations are written by defining the new state variable
-% at current time as a function of lagged response and state variables: $s_t =
-% g(s_{t-1},x_{t-1},e_t).$
-%
+% * *Timing convention:* Transition equations are written by defining the new
+% state variable at current time as a function of lagged response and state
+% variables: $s_t = g(s_{t-1},x_{t-1},e_t).$
 % * Do not use |lambda| as a variable/parameter name, this is a restricted word.
-%
 % * Write equations in the same order than the order of variables declaration.
-%
 % * Yaml files are case sensitive.
 %
-
-%% Writing a model the hard way
-%
-% To be completed

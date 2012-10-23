@@ -1,24 +1,24 @@
 %% Definition of a stochastic rational expectations problem
 
 %% Rational expectation models
-% We adopt here the framework proposed in Fackler (2005), and used also in
+% RECS adopts the framework proposed in Fackler (2005), and used also in
 % Winschel et Krätzig (2010). A model can be defined by the following three
-% equations, where next-period variables are indicated with a dot on top of the
-% character
+% equations, where next-period variables are indicated with the $+$ subscript,
+% while previous-period variables are indicated with the $-$ subscript.
 %
 % $\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z)$, where
 % $f:R^{d+m+p}\rightarrow R^{m}$,
 %
-% $z = \mathrm{E}_{\dot e} \left[h(s,x,\dot e,\dot s,\dot x)\right]$, where
+% $z = \mathrm{E}_{e_{+}} \left[h(s,x,e_{+},s_{+},x_{+})\right]$, where
 % $h:R^{d+m+q+d+m}\rightarrow R^{p}$,
 %
-% $\dot s = g(s,x,\dot e)$, where $g:R^{d+m+q}\rightarrow R^{d}$.
+% $s = g(s_{-},x_{-},e)$, where $g:R^{d+m+q}\rightarrow R^{d}$.
 %
 % Variables have been partitioned into state variables, $s$, response variables,
 % $x$, and shocks, $e$. Response variables can have lower and upper bounds,
 % $\underline{x}$ and $\overline{x}$, which can themselves be function of state
-% variables. Expectations variables, denoted by $z$, are defined in addition since
-% they are necessary for solving the model.
+% variables. Expectations variables, denoted by $z$, are defined in addition, because
+% they are necessary for solving the model considering the implemented algorithms.
 %
 % The first equation is the equilibrium equation. It characterizes the behavior of
 % response variables given state variables and expectations about next period. For
@@ -33,14 +33,50 @@
 % transition equation that defines how state variables are updated based on past
 % response, past state and contemporaneous shocks.
 
+%% Restrictions imposed by RECS convention
+%
+%
+% *Distinction between state variables and other variables*
+%
+% It happens often in models that the state transition equation
+% $s=g\left(s_{-},x_{-},e\right)$ can be simplified. For example to $s=e$ when
+% shocks are not serially correlated, or to $s=x_{-}$ when state is just a
+% previous period response variables. In this latter case, one may want to
+% reduce the number of variables in the model by introducing directly the lag
+% response variable in the equilibrium equation. This should not be done. A
+% state variable corresponding to the lagged response variable has to be created.
+%
+% One consequence is that lags can only appear in state transition equations and
+% in no other equations.
+%
+% *Lags and leads*
+%
+% RECS only deals with lags and leads of one period. For a model with lags/leads
+% of more periods, additional variables have to be included to reduce the number
+% of periods.
+%
+% In addition, leads can only appear in the equations defining expectations
+% definition. So no leads or lags should ever appear in the equilibrium
+% equation.
+%
+% *Timing convention*
+%
+% In RECS, the timing of each variable reflects when that variable is
+% decided/determined. But RECS convention implies that state variables are
+% determined by a transition equation that includes shocks and so are always
+% contemporaneous to shocks, even when they are not defined by shocks. This
+% convention implies that the timing of each variable depends on the way the
+% model is written.
+%
+
 %% Solving a rational expectations model
 % The problem created by rational expectations models is that the second
 % equation, defining the expectations, is not a traditional algebraic
 % equation. It is an equation that expresses the consistency between agents'
 % expectations, their information set and realized outcomes. Solving a rational
-% expectations model amounts to find an approximation or an algebraic
+% expectations model could be done by finding an approximation or an algebraic
 % representation of the expectations terms so that the model can be reduced to
-% something easier to solve.
+% something that we know ho to solve.
 %
 % For example, if it is possible to find an approximation of the relationship
 % between expectations and current-period state variables (i.e., the

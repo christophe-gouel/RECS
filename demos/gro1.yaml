@@ -35,12 +35,12 @@ calibration:
 
   parameters:
 
-    tau : 2
+    tau   : 2
     delta : 0.0196
-    beta : 0.95
-    rho : 0.9
+    beta  : 0.95
+    rho   : 0.9
     alpha : 0.33
-    a : (1/beta-1+delta)/alpha
+    a     : (1/beta-1+delta)/alpha
     
   steady_state:
 

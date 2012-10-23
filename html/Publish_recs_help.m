@@ -31,9 +31,10 @@ publish('MCP.m',PublishOptions);
 publish('user_guide.m',PublishOptions);
 publish('ug_setting_up.m',PublishOptions);
 publish('ug_model_files.m',PublishOptions);
-publish('ug_model_struct.m',PublishOptions);
-publish('ug_interpolation.m',PublishOptions);
 addpath(fullfile(recsdirectory,'demos'))
+publish('ug_model_struct.m',PublishOptions);
+delete('gro1model.m')
+publish('ug_interpolation.m',PublishOptions);
 publish('ss.m',PublishOptions);
 rmpath(fullfile(recsdirectory,'demos'))
 publish('first_guess.m',PublishOptions);
@@ -56,9 +57,9 @@ copyfile(fullfile(recsdirectory,'LICENSE.txt'),fullfile(targetdirectory,'LICENSE
 
 %% Demonstration
 currentfolder = cd(fullfile(recsdirectory,'demos'));
-copyfile('cs1.yaml',fullfile(targetdirectory,'cs1.yaml'));
-copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.yaml'));
-copyfile('gro2.yaml',fullfile(targetdirectory,'gro2.yaml'));
+copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
+copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
+copyfile('gro2.yaml',fullfile(targetdirectory,'gro2.txt'));
 publish('cs1model.m',PublishOptionsNoExec);
 publish('gro1model.m',PublishOptionsNoExec);
 publish('gro2model.m',PublishOptionsNoExec);

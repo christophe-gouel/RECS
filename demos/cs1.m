@@ -21,7 +21,7 @@
 % $$X_{t}: X_{t}=\left(1+r\right)\left(X_{t-1}-C_{t-1}\right)+Y_{t}.$$
 
 %% Writing the model
-% The model is defined in a yaml file: <cs1.yaml>.
+% The model is defined in a Yaml file: <cs1.txt cs1.yaml>.
 
 %% Pack model structure
 % Mean and standard deviation of the shocks
@@ -37,7 +37,7 @@ model = recsmodelinit('cs1.yaml',...
 %%
 % This command creates a Matlab file, <cs1model.html cs1model.m>, containing the
 % definition the model and all its Jacobians from the human readable file
-% <cs1.yaml>.
+% <cs1.txt cs1.yaml>.
 
 %% Define approximation space
 [interp,s] = recsinterpinit(20,model.sss/2,model.sss*2);

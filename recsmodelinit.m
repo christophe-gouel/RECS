@@ -1,7 +1,7 @@
 function [model,statequant] = recsmodelinit(inputfile,shocks,outputfile,options)
 % RECSMODELINIT Prepares a RECS model structure
 %
-% RECSMODELINIT uses dolo (https://github.com/albop/dolo), a python
+% RECSMODELINIT uses dolo (https://github.com/albop/dolo), a Python
 % preprocessor, to convert the model described in a Yaml file to a file readable
 % by MATLAB and RECS programs. In the conversion, dolo calculates the analytic
 % representation of all partial derivatives.
@@ -94,6 +94,7 @@ if nargin>=2 && ~isempty(shocks)
   order = shocks.order;
   if isscalar(order) && q>1, order = order*ones(1,q); end
   Sigma = shocks.Sigma;
+  if length(Sigma)==length(Sigma(:)), Sigma = diag(Sigma); end
 
   % Check if Sigma is positive-semidefinite and symmetric
   if ~isequal(Sigma,Sigma') || ...
@@ -117,19 +118,21 @@ if nargin>=2 && ~isempty(shocks)
   [sss0,xss0] = model.func('ss');
   if ~isempty(sss0) && ~isempty(xss0)
     [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0,options);
-    if exitflag==1 && options.display==1
-      disp('Deterministic steady state')
-      fprintf(1,' State variables:\n\t\t')
-      fprintf(1,'%0.4g\t',sss)
-      fprintf(1,'\n\n Response variables:\n\t\t')
-      fprintf(1,'%0.4g\t',xss)
-      fprintf(1,'\n\n Expectations variables:\n\t\t')
-      fprintf(1,'%0.4g\t',zss)
-      fprintf(1,'\n\n')
+    if exitflag==1 
+      model.sss = sss;
+      model.xss = xss;
+      model.zss = zss;
+      if options.display==1
+        disp('Deterministic steady state')
+        fprintf(1,' State variables:\n\t\t')
+        fprintf(1,'%0.4g\t',sss)
+        fprintf(1,'\n\n Response variables:\n\t\t')
+        fprintf(1,'%0.4g\t',xss)
+        fprintf(1,'\n\n Expectations variables:\n\t\t')
+        fprintf(1,'%0.4g\t',zss)
+        fprintf(1,'\n\n')
+      end
     end
-    model.sss = sss;
-    model.xss = xss;
-    model.zss = zss;
   end
 
   %% Simulate state variables dynamics with response at steady-state

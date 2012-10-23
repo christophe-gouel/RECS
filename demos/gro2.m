@@ -29,7 +29,7 @@
 % $$Z_{t}: Z_{t}=\rho Z_{t-1}+\epsilon_{t}.$$
 
 %% Writing the model
-% The model is defined in a yaml file: <gro2.yaml>.
+% The model is defined in a Yaml file: <gro2.txt gro2.yaml>.
 
 %% Pack model structure
 % Mean and standard deviation of the shocks
@@ -43,7 +43,7 @@ model = recsmodelinit('gro2.yaml',...
 %%
 % This command creates a Matlab file, <gro2model.html gro2model.m>, containing
 % the definition the model and all its Jacobians from the human readable file
-% <gro2.yaml>.
+% <gro2.txt gro2.yaml>.
 
 %% Define approximation space
 % Degree of approximation

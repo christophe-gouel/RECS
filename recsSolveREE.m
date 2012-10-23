@@ -130,7 +130,7 @@ end
 
 % Extract fields of interp
 fspace     = interp.fspace;
-interp.Phi = funbasx(fspace);
+if ~isfield(interp,'Phi'), interp.Phi = funbasx(fspace); end
 Phi        = interp.Phi;
 % If the coefficients of approximation are not present in interp, they are
 % calculated from the first guess on x

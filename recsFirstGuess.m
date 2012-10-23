@@ -54,7 +54,7 @@ else
   error('model.func must be either a string or a function handle')
 end
 
-interp.Phi = funbasx(interp.fspace);
+if ~isfield(interp,'Phi'), interp.Phi = funbasx(interp.fspace); end
 
 %% Solve for the deterministic steady state
 [sss,xss,zss] = recsSS(model,sss,xss,options);
