@@ -13,12 +13,16 @@
 % * <matlab:doc('recsFirstGuess') |recsFirstGuess|> - Find a first guess using the
 % perfect foresight solution
 % * <matlab:doc('recsInstall') |recsInstall|> - Finalize RECS installation
+% * <matlab:doc('recsinterpinit') |recsinterpinit|> - Prepare a RECS
+% interpolation structure
 % * <matlab:doc('recsmodelinit') |recsmodelinit|> - Prepare a RECS model structure
 % * <matlab:doc('recsSimul') |recsSimul|> - Simulate a model
 % * <matlab:doc('recsSolveDeterministicPb') |recsSolveDeterministicPb|> - Solve a
 % perfect foresight problem
 % * <matlab:doc('recsSolveREE') |recsSolveREE|> - Find the rational expectations
 %   equilibrium (REE) of a model
+% * <matlab:doc('recsSolveREEFiniteHorizon') |recsSolveREEFiniteHorizon|> -
+% Solve a finite horizon rational expectations problem
 % * <matlab:doc('recsSS') |recsSS|> - Solve for the deterministic
 % steady state of a model
 

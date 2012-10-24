@@ -6,16 +6,17 @@ function Publish_recs_help
 
 recsdirectory   = fileparts(which('recsSimul'));
 targetdirectory = fullfile(recsdirectory,'html');
+PublishOptions = struct('outputDir',targetdirectory);
+if exist('html.xsl','file')
+  PublishOptions = catstruct(PublishOptions,struct('stylesheet','html.xsl'));
+end
+PublishOptionsNoExec = catstruct(PublishOptions,struct('evalCode',false));
+PublishOptionsNoShow = catstruct(PublishOptions,struct('showCode',false));
 
 delete(fullfile(recsdirectory,'html','*.png'));
 delete(fullfile(recsdirectory,'html','*.txt'));
 delete(fullfile(recsdirectory,'html','*.yaml'));
 delete(fullfile(recsdirectory,'html','*.html'));
-PublishOptions = struct('outputDir',targetdirectory);
-if exist('html.xsl')
-  PublishOptions = catstruct(PublishOptions,struct('stylesheet','html.xsl'));
-end
-PublishOptionsNoExec = catstruct(PublishOptions,struct('evalCode',false));
 
 %% Documentation
 publish('recs_product_page.m',PublishOptions);
@@ -39,7 +40,9 @@ publish('ss.m',PublishOptions);
 rmpath(fullfile(recsdirectory,'demos'))
 publish('first_guess.m',PublishOptions);
 publish('solve_REE.m',PublishOptions);
-publish('simulate.m',PublishOptions);
+addpath(fullfile(recsdirectory,'demos'))
+publish('simulate.m',PublishOptionsNoShow);
+rmpath(fullfile(recsdirectory,'demos'))
 publish('calibration.m',PublishOptions);
 publish('accuracy.m',PublishOptions);
 publish('finite_horizon.m',PublishOptions);

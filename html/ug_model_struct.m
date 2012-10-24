@@ -55,6 +55,15 @@
 % function call in <gro1.html gro1.m> is:
 model = recsmodelinit('gro1.yaml',...
                       struct('Mu',0,'Sigma',0.007^2,'order',5));
+%%
+% It is *important to notice* that variables names are not displayed here and
+% they won't be in later steps. Variables names are only used in the symbolic
+% model definition in the Yaml file. Once the Yaml file has been processed,
+% variables are just ordered based on their original order in the Yaml file. In
+% this case, it means that, in the steady-state results above, for state
+% variables the first number is for capital and the second is for the log of
+% productivity.
+
 %% 
 % The model structure has the following fields:
 disp(model)

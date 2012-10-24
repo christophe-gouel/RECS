@@ -42,17 +42,17 @@
 
     <tocitem target="demos.html" image="HelpIcon.DEMOS"> Demos
 
-      <tocitem target="cs.html"> Variants of the consumption/saving model
+      <tocitem target="demos.html"> Variants of the consumption/saving model
         <tocitem target="cs1.html"> Consumption/saving model with borrowing constraint </tocitem>
         <tocitem target="cs2.html"> Finite horizon consumption/saving model with borrowing constraint </tocitem>
       </tocitem>
 
-      <tocitem target="gro.html"> Variants of the stochastic growth model
+      <tocitem target="demos.html"> Variants of the stochastic growth model
         <tocitem target="gro1.html"> Stochastic growth model </tocitem>
         <tocitem target="gro2.html"> Stochastic growth model with irreversible investment </tocitem>
       </tocitem>
 
-      <tocitem target="sto.html"> Variants of the storage model
+      <tocitem target="demos.html"> Variants of the storage model
         <tocitem target="sto1.html"> Competitive storage model </tocitem>
         <tocitem target="sto2.html"> Competitive storage with floor-price backed by public storage </tocitem>
         <tocitem target="sto3.html"> Anticipated switch to a public storage policy </tocitem>
