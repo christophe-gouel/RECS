@@ -123,7 +123,13 @@ if nargin>=2 && ~isempty(shocks)
       model.xss = xss;
       model.zss = zss;
       if options.display==1
-        disp('Deterministic steady state')
+        deltass = max(abs([sss xss]-[sss0 xss0]));
+        if deltass<sqrt(eps)
+          fprintf(1,'Deterministic steady state (equal to first guess)\n')
+        else
+          fprintf(1,['Deterministic steady state (different from first guess, ' ...
+                     'delta=%g)\n'],deltass)
+        end
         fprintf(1,' State variables:\n\t\t')
         fprintf(1,'%0.4g\t',sss)
         fprintf(1,'\n\n Response variables:\n\t\t')
