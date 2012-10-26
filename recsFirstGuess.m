@@ -43,6 +43,20 @@ function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
+if nargin <=3 || isempty(sss)
+  if isfield(model,'sss')
+    sss = model.sss;
+  else
+  sss = []; 
+  end
+end
+if nargin <=4 || isempty(xss)
+  if isfield(model,'xss')
+    xss = model.xss;
+  else
+    xss = []; 
+  end
+end
 if nargin <=5 || isempty(T), T = 50; end
 if nargin <=6, options = struct([]); end
 
