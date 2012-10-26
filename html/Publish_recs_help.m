@@ -34,7 +34,6 @@ publish('ug_setting_up.m',PublishOptions);
 publish('ug_model_files.m',PublishOptions);
 addpath(fullfile(recsdirectory,'demos'))
 publish('ug_model_struct.m',PublishOptions);
-delete('gro1model.m')
 publish('ug_interpolation.m',PublishOptions);
 publish('ss.m',PublishOptions);
 rmpath(fullfile(recsdirectory,'demos'))
@@ -60,7 +59,7 @@ copyfile(fullfile(recsdirectory,'LICENSE.txt'),fullfile(targetdirectory,'LICENSE
 
 %% Demonstration
 currentfolder = cd(fullfile(recsdirectory,'demos'));
-copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
+copyfile('cs1.yaml',fullfile(targetdirectory,'cs1.txt'));
 copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
 copyfile('gro2.yaml',fullfile(targetdirectory,'gro2.txt'));
 publish('cs1model.m',PublishOptionsNoExec);

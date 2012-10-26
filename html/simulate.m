@@ -1,13 +1,53 @@
-%% Simulate
+%% Simulate the model
 
-% to speed-up: possible to start from several initial points at once
-
-% Random number from funrand (or without it from random draw from discretize shocks based on their probability).
-% reset random number generator
-
-% Long-run statistics (exclude first 20 obs): mean of autocorrelation
-
-% Variables organization
+%% Running a simulation
+% Once the rational expectations equilibrium has been found, it is possible to
+% simulate the model using the function |recsSimul| with the following call:
+%
+%  [ssim,xsim] = recsSimul(model,interp,s0,nper);
+%
+% where |model| and |interp| have been defined previously as the model and the
+% interpolation structure. |s0| is the initial state and |nper| is the number of
+% simulation periods.
+%
+% |s0| is not necessarily a unique vector of state variables. It is possible to
+% provide a matrix of initial states from which simulations will be carried for
+% |nper| periods. Even when starting from a unique state, it is useful to use
+% this feature to speed-up simulations.
+%
+% *Shocks* 
+%
+% The shocks used in the simulation can be provided as the fifth input to the function:
+%
+%  [ssim,xsim] = recsSimul(model,interp,s0,nper,shocks);
+%
+% However, by default, |recsSimul| uses the function |funrand| defined in the
+% model structure (see <ug_model_struct.html Define the model structure>) to
+% draw random shocks. If this function is not provided random draws are made
+% from the shock discretization, using the associated probabilities.
+%
+% If you want to reproduce previously run results, remember to reset the random
+% number generator using the Matlab function |reset|.
+%
+% *Asymptotic statistics*
+%
+% If in the options the field |stat| is set to 1 or if 5 arguments are required
+% as output of |recsSimul|, then some statistics over the asymptotic
+% distribution are calculated. For this, the first 20 observations are
+% discarded. The statistics calculated are the mean, standard deviation,
+% skweness, kurtosis, minimum, maximum, percentage of time spent at the lower
+% and upper bounds, correlation matrix, and the 5 first-order autocorrelation
+% coefficients. In addition, histograms of the variables distribution are drawn.
+%
+% These statistics are available as a structure in the fifth output of
+% |recsSimul|:
+%
+%  [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper);
+% 
+% Since RECS does not retain the variables names, when displaying the statistics
+% variables are organized as follows: first state variables, then response
+% variables, and for both they follow the order of their definition in the Yaml
+% file.
 
 %% Choice of simulation techniques
 % They are two principal approaches to simulate the model once an approximated
@@ -27,6 +67,9 @@
 %
 % $$s_{t+1}=g\left(s_t,x_t,e_{t+1}\right)$$
 %
+% This is the default simulation method. It is chosen in the options structure
+% by setting the field |simulmethod| to |interpolation|.
+%
 % *Solve equilibrium equations using approximated expectations*
 %
 % The second uses the function being approximated (the decisions rules, the
@@ -42,10 +85,13 @@
 %
 % $$\underline{x}(s_t) \le x_t \le \overline{x}(s_t) \perp f\left(s_t,x_t,\mathcal{Z}\left(s_t,c_z\right)\right)$$
 %
-% Draw a shock realization $e_{t+1} from its distribution and update the state
+% Draw a shock realization $e_{t+1}$ from its distribution and update the state
 % variable:
 %
 % $$s_{t+1}=g\left(s_t,x_t,e_{t+1}\right)$$
+%
+% This simulation method is chosen in the options structure by setting the field
+% |simulmethod| to |solve|.
 %
 % The two approaches differ in speed and in precision. Simulating a model
 % through the recursive application of approximated decision rules is very fast
