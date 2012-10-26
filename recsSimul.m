@@ -57,10 +57,11 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 % nrep-by-m-by-nper+1 array FSIM that contains the value of the equilibrium
 % equations on the simulation.
 %
-% [SSIM,XSIM,ESIM,FSIM,STAT] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns summary
-% statistics as a structure that contains the moments (STAT.MOMENTS), the
-% correlation between variables (STAT.COR), and the autocorrelation
-% (STAT.ACOR). Asking RECSSIMUL to return STAT forces the OPTIONS.STAT to 1.
+% [SSIM,XSIM,ESIM,FSIM,STAT] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns
+% summary statistics as a structure that contains the number of observations
+% (STAT.N), the moments (STAT.MOMENTS), the correlation between variables
+% (STAT.COR), and the autocorrelation (STAT.ACOR). Asking RECSSIMUL to return
+% STAT forces the OPTIONS.STAT to 1.
 %
 % See also RECSACCURACY.
 
@@ -75,7 +76,9 @@ if nargin<5;
   end
 end
 
-if ~isempty(shocks), nper = size(shocks,3); end
+[nrep,d] = size(s0);
+
+if ~isempty(shocks) && prod(size(shocks))~=d, nper = size(shocks,3); end
 
 defaultopt = struct(...
     'eqsolver'        , 'lmmcp'                        ,...
@@ -119,6 +122,7 @@ if isfield(model,'funrand') % Check if a random shocks generator function is pro
 else % Use the discretisation to generate the shocks
   funrand = @(N) e(discrand(N,w),:); % could be implemented also with datasample
 end
+q        = size(funrand(1),2);
 
 fspace  = interp.fspace;
 if isfield(interp,'cX')
@@ -131,9 +135,6 @@ else
   m       = size(interp.cx,2);
 end
 
-[nrep,d] = size(s0);
-q        = size(funrand(1),2);
-
 %% Generate shocks
 output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
 ssim   = zeros(nrep,d,nper+1);
@@ -142,6 +143,8 @@ esim   = zeros(nrep,q,nper+1);
 if nargout>=4, fsim = zeros(nrep,m,nper+1); end
 if isempty(shocks)
   for t=2:nper+1, esim(:,:,t) = funrand(nrep); end
+elseif prod(size(shocks))==d
+  esim(:,:,2:end) = shocks(ones(nrep,1),:,ones(nper,1));
 else
   esim(:,:,2:end) = shocks;
 end
@@ -214,7 +217,10 @@ if (nargout==5 || statdisplay) && (nper > 40)
   X = cat(2,ssim,xsim);
   X = permute(X(:,:,20:end),[2 1 3]);
   X = reshape(X,d+m,[])';
-
+  
+  % Sample size
+  stat.n = size(X,2);
+  
   % Percent of time spent at the bounds
   [LB,UB] = func('b',X(:,1:d),[],[],[],[],[],params);
   pLB     = [zeros(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps,1)*100];
@@ -228,7 +234,8 @@ if (nargout==5 || statdisplay) && (nper > 40)
   disp('Statistics from simulated variables (excluding the first 20 observations):');
   disp(' Moments');
   disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
-  disp(stat.moments)
+  disp(stat.moments(1:d,:))
+  disp(stat.moments(d+1:end,:))
 
   stat.cor = corrcoef(X);
   disp(' Correlation');
@@ -248,7 +255,8 @@ if (nargout==5 || statdisplay) && (nper > 40)
   end
   disp(' Autocorrelation');
   disp('    1         2         3         4         5');
-  disp(stat.acor);
+  disp(stat.acor(1:d,:));
+  disp(stat.acor(d+1:end,:));
 end
 
 
