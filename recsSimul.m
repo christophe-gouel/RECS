@@ -78,7 +78,7 @@ end
 
 [nrep,d] = size(s0);
 
-if ~isempty(shocks) && prod(size(shocks))~=d, nper = size(shocks,3); end
+if ~isempty(shocks) && numel(shocks)~=d, nper = size(shocks,3); end
 
 defaultopt = struct(...
     'eqsolver'        , 'lmmcp'                        ,...
@@ -143,7 +143,7 @@ esim   = zeros(nrep,q,nper+1);
 if nargout>=4, fsim = zeros(nrep,m,nper+1); end
 if isempty(shocks)
   for t=2:nper+1, esim(:,:,t) = funrand(nrep); end
-elseif prod(size(shocks))==d
+elseif numel(shocks)==d
   esim(:,:,2:end) = shocks(ones(nrep,1),:,ones(nper,1));
 else
   esim(:,:,2:end) = shocks;
@@ -156,7 +156,7 @@ for t=1:nper+1
   else sinterp = max(min(s0,fspace.b(ones(nrep,1),:)),fspace.a(ones(nrep,1),:)); end
   [LB,UB]    = func('b',sinterp,[],[],[],[],[],params);
   Phi        = funbasx(fspace,sinterp);
-  if exist('cX')
+  if exist('cX','var')
     xx       = min(max(funeval(cX(:,:,min(t,T)),fspace,Phi),LB),UB);
     if nargout>=4, f = NaN(nrep,m); end
   else
@@ -198,7 +198,7 @@ for t=1:nper+1
   if nargout>=4, fsim(:,:,t) = f; end
 end
 
-if exist('cX') && t>T
+if exist('cX','var') && t>T
   warning('RECS:ExceedHorizon','Simulate beyond last period')
 end
 
