@@ -128,7 +128,7 @@ if nargin>=2 && ~isempty(shocks)
           fprintf(1,'Deterministic steady state (equal to first guess)\n')
         else
           fprintf(1,['Deterministic steady state (different from first guess, ' ...
-                     'delta=%g)\n'],deltass)
+                     'max(|delta|)=%g)\n'],deltass)
         end
         fprintf(1,' State variables:\n\t\t')
         fprintf(1,'%0.4g\t',sss)
