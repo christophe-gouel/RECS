@@ -1,4 +1,4 @@
-function [x,s,z,F] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,options)
+function [x,s,z,F,exitflag,N] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,options)
 % RECSSOLVEDETERMINISTICPB Solves a perfect foresight problem
 %
 % X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS) tries to find the perfect
@@ -28,7 +28,11 @@ function [x,s,z,F] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,options)
 % T-by-m matrix, containing the values of equilibrium equations over the time
 % horizon.
 %
-% See also RECSFIRSTGUESS, RECSSOLVEREE, RECSSS.
+% [X,S,Z,F,EXITFLAG] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)
+%
+% [X,S,Z,F,EXITFLAG,N] = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,...)
+%
+% See also RECSFIRSTGUESS, RECSSOLVEREE, RECSSS, SCP.
 
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -89,7 +93,7 @@ X = reshape(X,n,1);
 SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver,...
                                      eqsolveroptions,func,S0,xss,p,e,params,ix,nx);
 
-[X,F,exitflag] = SCP(X,s0,sss,SCPSubProblem,1);
+[X,F,exitflag,N] = SCP(X,s0,sss,SCPSubProblem,1);
 if exitflag~=1
   warning('RECS:FailureDeterministic',...
           'Failure to find the perfect foresight solution');

@@ -6,6 +6,7 @@ demo/*.log
 *.mex*
 *.html
 *.png
+*.zip
 /exe/*
 /html/helpsearch/*
 /html/*.txt

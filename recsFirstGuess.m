@@ -1,4 +1,4 @@
-function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
+function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 % RECSFIRSTGUESS finds a first guess using the perfect foresight solution
 %
 % RECSFIRSTGUESS tries to find a first-guess for the rational expectations model
@@ -36,6 +36,10 @@ function [interp,x,z] = recsFirstGuess(interp,model,s,sss,xss,T,options)
 %
 % [INTERP,X,Z] = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,...) returns Z, n-by-p matrix,
 % containing the value of the expectations variables in the first period.
+%
+% [INTERP,X,Z,EXITFLAG] = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,...)
+%
+% [INTERP,X,Z,EXITFLAG,OUTPUT] = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,...)
 %
 % See also RECSSOLVEDETERMINISTICPB, RECSSOLVEREE, RECSSS.
 
@@ -77,9 +81,13 @@ n = size(s,1);
 x = zeros(n,size(xss,2));
 z = zeros(n,size(zss,2));
 
+exitflag = zeros(n,1);
+N        = zeros(n,1);
+
 %% Solve the perfect foresight problem on each point of the grid
 parfor i=1:n
-  [X,~,Z] = recsSolveDeterministicPb(model,s(i,:),T,xss,zss,sss,options);
+  [X,~,Z,~,exitflag(i),N(i)] = recsSolveDeterministicPb(model,s(i,:),...
+                                                    T,xss,zss,sss,options);
   x(i,:) = X(1,:);
   z(i,:) = Z(1,:);
 end
@@ -124,3 +132,6 @@ if isfield(interp,'ch') || abs(norm(hs(:),Inf)+norm(hx(:),Inf)+norm(he(:),Inf))<
   interp.ch = funfitxy(interp.fspace,interp.Phi,h);
 end
 
+output = struct('exitflag',exitflag,...
+                'N'       ,N);
+exitflag = ~any(exitflag~=1);
