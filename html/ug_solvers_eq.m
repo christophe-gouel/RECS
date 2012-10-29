@@ -15,10 +15,12 @@
 % Three MCP solvers can be used with RECS of which two are available by
 % default. |lmmcp| is RECS default solver (for both MCP and traditional
 % problems). It is included in RECS files. |ncpsolve| comes with the CompEcon
-% toolbox, which has to be installed for RECS to run. Path has to be installed
+% toolbox, which has to be installed for RECS to run. please note that
+% |ncpsolve| does not output any exit flag, so some RECS functions that rely on
+% exit flag may not work properly with |ncpsolve|. Path has to be installed
 % separately. To install Path, see
-% <http://pages.cs.wisc.edu/~ferris/path.html>. To distinguish Path from the
-% MATLAB internal command, the name of the Path MATLAB file is |recspathmcp.m|.
+% <http://pages.cs.wisc.edu/~ferris/path.html>. Path is called by the MATLAB
+% file |recspathmcp.m|.
 
 %% Nonlinear equations solver
 % |fsolve| is the only nonlinear equations solver interfaced with RECS. You need
