@@ -55,24 +55,16 @@ model.func   = @sto5model;
 model.params = {delta,r,k,alpha,tau,rho,sigma};
 
 %% Define approximation space
-% Approximation order
-order         = [15; 15];
-n             = prod(order);
-%%
 % Minimum and maximum values of the state variable grid
-smin          = [min(model.e(:,1))*0.95; 0.4];
-smax          = [1.6; 2.05];
+smin          = [min(model.e(:,1))*0.95; 0.4 ];
+smax          = [1.6;                    2.05];
 %%
 % Interpolation structure
-interp.fspace = fundefn('spli',order,smin,smax);
-%%
-% State collocation nodes
-s             = gridmake(funnode(interp.fspace));
+[interp,s]    = recsinterpinit(15,smin,smax);
 
 %% Provide a first guess
+n             = size(s,1);
 xinit         = [zeros(n,1) max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau) zeros(n,2)];
-interp.cz     = funfitxy(interp.fspace,s,max(min(ones(n,1),s(:,2).^rho+tau),s(:,2).^rho-tau));
-interp.ch     = funfitxy(interp.fspace,s,max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau));
 
 %% Solve for rational expectations
 % Define options

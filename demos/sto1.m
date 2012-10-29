@@ -49,23 +49,6 @@ model.func   = @sto1model;
 % Model parameters
 model.params = {alpha,k,delta,r,mu};
 
-%% Define approximation space
-% Approximation order
-n             = 30;
-%%
-% Minimum and maximum values of the state variable grid
-smin          = 0.5;
-smax          = 2;
-%%
-% Interpolation structure
-interp.fspace = fundefn('spli',n,smin,smax);
-%%
-% State collocation nodes
-s             = gridmake(funnode(interp.fspace));
-
-%% Provide a first guess
-xinit     = [zeros(n,1) ones(n,1) s.^(1/alpha)];
-
 %% Find deterministic steady state
 [sss,xss,zss] = recsSS(model,1,[0 1 1])
 
@@ -75,6 +58,13 @@ xinit     = [zeros(n,1) ones(n,1) s.^(1/alpha)];
 % Since model derivatives have been calculated by hand, it is important to check
 % that there is no error.
 recsCheck(model,sss,xss,zss);
+
+%% Define approximation space
+[interp,s] = recsinterpinit(30,0.5*sss,2*sss);
+
+%% Provide a first guess
+n          = size(s,1);
+xinit      = [zeros(n,1) ones(n,1) s.^(1/alpha)];
 
 %% Solve for rational expectations
 % We will use successively different methods to find the solution.
