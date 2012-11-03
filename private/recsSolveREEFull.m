@@ -6,7 +6,7 @@ function [c,x,f,exitflag] = recsSolveREEFull(interp,model,s,x,c,options)
 %
 % See also RECSSOLVEEREE, RECSSOLVEEREEITER.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -27,31 +27,38 @@ Phi    = interp.Phi;
 [n,m]  = size(x);
 
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
-X        = [reshape(x',[n*m 1]); reshape(c',[],1)];
 [LB,UB]  = func('b',s,[],[],[],[],[],params);
-LB       = [reshape(LB',[n*m 1]); -inf(n*size(c,2),1)];
-UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
+if strcmp(funapprox,'resapprox-complete') && all(isinf(LB(:))) && all(isinf(UB(:)))
+  %% Reshape inputs
+  C        = reshape(c',n*m,1);
+  B        = inf(n*m,1);
 
-% $$$ [f,J] = FullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate);
-% $$$ Jnum = numjac(@(VAR) FullPb(VAR,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate),X);
-% $$$ spy(J)
-% $$$ figure
-% $$$ spy(Jnum)
-% $$$ norm(full(J)-Jnum)
-% $$$ norm(full(J(1:n*m,n*m+1:n*(m+size(c,2))))-Jnum(1:n*m,n*m+1:n*(m+size(c,2))))
-% $$$ norm(full(J(n*m+1:n*(m+size(c,2)),n*m+1:n*(m+size(c,2))))-Jnum(n*m+1:n*(m+size(c,2)),n*m+1:n*(m+size(c,2))))
-% $$$ z = [];
-% $$$ return
+  %% Solve for the rational expectations equilibrium
+  [C,F,exitflag] = runeqsolver(@FullCompactPb,C,-B,B,eqsolver,eqsolveroptions,...
+                               s,func,params,grid,e,w,fspace,funapprox,Phi,...
+                               m,functional,extrapolate);
 
-%% Solve for the rational expectations equilibrium
-[X,G,exitflag] = runeqsolver(@FullPb,X,LB,UB,eqsolver,eqsolveroptions,...
-                             s,func,params,grid,e,w,fspace,funapprox,Phi,...
-                             m,functional,extrapolate);
+  %% Reshape outputs
+  c     = reshape(C,m,n)';
+  x     = funeval(c,fspace,Phi);
+  f     = reshape(F,m,n)';
+else
+  %% Reshape inputs
+  X        = [reshape(x',[n*m 1]); reshape(c',[],1)];
+  LB       = [reshape(LB',[n*m 1]); -inf(n*size(c,2),1)];
+  UB       = [reshape(UB',[n*m 1]); +inf(n*size(c,2),1)];
 
-%% Reshape outputs
-x     = reshape(X(1:n*m),m,n)';
-c     = reshape(X(n*m+1:end),[],n)';
-f     = reshape(G(1:n*m),m,n)';
+  %% Solve for the rational expectations equilibrium
+  [X,G,exitflag] = runeqsolver(@FullPb,X,LB,UB,eqsolver,eqsolveroptions,...
+                               s,func,params,grid,e,w,fspace,funapprox,Phi,...
+                               m,functional,extrapolate);
+  
+  %% Reshape outputs
+  x     = reshape(X(1:n*m),m,n)';
+  c     = reshape(X(n*m+1:end),[],n)';
+  f     = reshape(G(1:n*m),m,n)';
+end
+
 
 function [G,J] = FullPb(X,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate)
 % FULLPB evaluates the equations and Jacobian of the complete rational expectations problem
@@ -69,7 +76,6 @@ if nargout==2
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),func,params,...
                               grid,c,e,w,fspace,funapprox,extrapolate);
   [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,funapprox,Phi);
-
   J = [Fx Fc;
        Rx Rc];
 else
@@ -81,3 +87,31 @@ end
 
 % Concatenate equilibrium equations and rational expectations residual
 G = [F; R];
+
+
+function [F,J] = FullCompactPb(C,s,func,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate)
+% FULLCOMPACTPB evaluates the equations and Jacobian of the complete rational expectations problem as a single set of equations (equilibrium and residual equation are confounded)
+
+%% Initialization
+n     = size(s,1);
+c     = reshape(C,m,n)';
+if functional, params{end} = c; end
+x     = funeval(c,fspace,Phi);
+
+%% Evaluate equations and Jacobian
+if nargout==2
+  %% With Jacobian
+  [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),func,params,...
+                              grid,c,e,w,fspace,funapprox,extrapolate);
+  [~,~,Rc]  = recsResidual(s,x,func,params,c,fspace,funapprox,Phi);
+  
+  Fc = sparse(Fc);
+  J  = Fx*Rc+Fc;
+
+else
+  %% Without Jacobian
+  F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),...
+                       func,params,grid,c,e,w,fspace,funapprox,extrapolate);
+end
+
+
