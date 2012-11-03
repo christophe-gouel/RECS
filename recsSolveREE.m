@@ -204,10 +204,10 @@ if exitflag~=1
 end
 
 %% Outputs calculations
-if functional, params{end} = c; end
 
 % Interpolation coefficients
 c = reshape(c,n,[]);
+if functional, params{end} = c; end
 switch funapprox
  case 'expapprox'
   interp.cz = c;
