@@ -6,9 +6,16 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,vara
   
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
-eqsolveroptions.Display  = 'off';
 
-Jacobian = eqsolveroptions.Jacobian;
+%% Initialization
+if strcmp(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
+
+if strcmp(eqsolveroptions.Jacobian,'off') && any(strcmp(eqsolver,{'lmmcp','ncpsolve','path'}))
+  eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,varargin);        
+else
+  eqtosolve = @(Y) func(Y,varargin{:});
+end
+
 
 %% Derivative Check
 if strcmp(eqsolveroptions.DerivativeCheck,'on')
@@ -17,14 +24,6 @@ if strcmp(eqsolveroptions.DerivativeCheck,'on')
   dJ    = norm(full(abs(J-Jnum)./max(1.0,abs(J))),Inf);
   fprintf(1,'Derivative Check: max relative diff = %g\n\n',dJ) %#ok<PRTCAL>
   eqsolveroptions.DerivativeCheck = 'off';
-end
-
-if strcmp(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
-
-if strcmp(Jacobian,'off') && any(strcmp(eqsolver,{'lmmcp','ncpsolve','path'}))
-  eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,varargin);        
-else
-  eqtosolve = @(Y) func(Y,varargin{:});
 end
 
 
