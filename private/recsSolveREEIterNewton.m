@@ -4,9 +4,12 @@ function [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
 % RECSSOLVEREEITERNEWTON is called by recsSolveREE. It is not meant to be called
 % directly by the user.
 %
+% This function is not yet adapted to MCP problems. For these problems, we have
+% to rely on numerical derivatives.
+%
 % See also RECSSOLVEREE, RECSSOLVEREEITER, RECSSOLVEREEFULL.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -14,10 +17,10 @@ extrapolate        = options.extrapolate;
 functional         = options.functional;
 funapprox          = lower(options.funapprox);
 reesolver          = lower(options.reesolver);
-reesolveroptions   = catstruct(struct('showiters' , options.display,...
-                                      'Display','iter',...
-                                      'Diagnostics','on',...
-                                      'DerivativeCheck','on'),...
+reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
+                                      'Display'        ,'iter',...
+                                      'DerivativeCheck','off' ,...
+                                      'Jacobian'       , 'on')         ,...
                                options.reesolveroptions);
 useapprox          = options.useapprox;
 

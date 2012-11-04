@@ -51,10 +51,7 @@ if nargin<3 || isempty(outputfile)
   outputfile = strrep(inputfile,'.yaml','model.m');
 end
 
-defaultopt = struct(                                      ...
-    'display'           , 1                              ,...
-    'eqsolver'          , 'lmmcp'                        ,...
-    'eqsolveroptions'   , struct('DerivativeCheck','off'));
+defaultopt = struct('display',1);
 if nargin<4
   options = defaultopt;
 else

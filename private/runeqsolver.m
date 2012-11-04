@@ -6,47 +6,61 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,vara
   
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
+eqsolveroptions.Display  = 'off';
+
+Jacobian = eqsolveroptions.Jacobian;
 
 %% Derivative Check
 if strcmp(eqsolveroptions.DerivativeCheck,'on')
   Jnum  = numjac(func,x,[],varargin{:});
   [~,J] = func(x,varargin{:});
   dJ    = norm(full(abs(J-Jnum)./max(1.0,abs(J))),Inf);
-  fprintf(1,'Derivative Check: max relative diff = %g\n\n',dJ)
+  fprintf(1,'Derivative Check: max relative diff = %g\n\n',dJ) %#ok<PRTCAL>
   eqsolveroptions.DerivativeCheck = 'off';
 end
 
+if strcmp(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
+
+if strcmp(Jacobian,'off') && any(strcmp(eqsolver,{'lmmcp','ncpsolve','path'}))
+  eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,varargin);        
+else
+  eqtosolve = @(Y) func(Y,varargin{:});
+end
+
+
 %% Solve equations
 switch eqsolver
+  case 'lmmcp'
+    [x,f,exitflag] = lmmcp(eqtosolve,...
+                           x,LB,UB,...
+                           eqsolveroptions);
+    
   case 'fsolve'
-    options = optimset('Display','off',...
-                       'Jacobian','on');
-    options = optimset(options,eqsolveroptions);
-    [x,f,exitflag] = fsolve(@(Y) func(Y,varargin{:}),...
+    options = optimset(optimset('Display','off'),eqsolveroptions);
+    [x,f,exitflag] = fsolve(eqtosolve,...
                             x,...
                             options);
- 
-  case 'lmmcp'
-    [x,f,exitflag] = lmmcp(@(Y) func(Y,varargin{:}),...
-                           x,...
-                           LB,...
-                           UB,...
-                           eqsolveroptions);
  
   case 'ncpsolve'
     exitflag = 1;  % ncpsolve does not output any exitflag on a failure
     [x,f]    = ncpsolve(@ncpsolvetransform,...
-                        LB,...
-                        UB,...
-                        x,...
-                        func,...
-                        varargin{:});
+                        LB,UB,x,...
+                        eqtosolve);
     f        = -f;
- 
+  
   case 'path'
-    global par %#ok<TLEV>
-    par        = [{func} varargin];
     [x,f,exitflag] = recspathmcp(x,LB,UB,'pathtransform');
-    clear global par
+    clear global eqtosolve
 
 end
+
+function [F,J] = PbWithNumJac(func,Y,eqsolver,otherarg)
+% PBWITHNUMJAC Calculates the numerical Jacobian of the problem func with respect to Y
+
+if nargout==2
+  J = numjac(func,Y,[],otherarg{:});
+  if strcmp(eqsolver,'path')
+    J = sparse(J);
+  end
+end
+F = func(Y,otherarg{:});

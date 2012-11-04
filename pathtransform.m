@@ -1,20 +1,21 @@
 function [F,J,domerr] = pathtransform(x,jacflag)
-% PATHTRANSFORM Allows to pass a model to the solver path
+% PATHTRANSFORM Allows to pass a model to the solver PATH
 %
-% Path does not accept anonymous function or supplementary arguments, so model
-% parameters have to be passed in a global variable
+% The MCP solver PATH does not accept anonymous function or supplementary
+% arguments, so the function PATHTRANSFORM is used as model argument for PATH
+% and the original model, along with its supplementary arguments, is passed as
+% an anonymous function in a global variable (eqtosolve).
 
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
-global par
-model = par{1};
+global eqtosolve
 
 if (jacflag)
-  [F,J]     = model(x,par{2:end});
+  [F,J]     = eqtosolve(x);
   isdomerrJ = any((~isfinite(J) | (imag(J)~=0) | isnan(J)),2);
 else
-  F         = model(x,par{2:end});
+  F         = eqtosolve(x);
   J         = [];
   isdomerrJ = zeros(size(F));
 end
@@ -22,6 +23,3 @@ end
 %%  Calculation of number of ex-post domain errors
 isdomerrF = ~isfinite(F) | (imag(F)~=0) | isnan(F);
 domerr    = sum(any([isdomerrF isdomerrJ],2));
-% if domerr>0
-%   fprintf(1,'domerr = %i \n',domerr);
-% end

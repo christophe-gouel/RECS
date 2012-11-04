@@ -48,13 +48,17 @@ if nargin<2 || isempty(s), s = model.func('ss'); end
 if nargin<3 || isempty(x), [~,x] = model.func('ss'); end
 
 defaultopt = struct(...
-    'eqsolver'        , 'lmmcp',...
-    'eqsolveroptions' , struct('DerivativeCheck','off'),...
+    'eqsolver'        , 'lmmcp'                         ,...
+    'eqsolveroptions' , struct('DerivativeCheck', 'off',...
+                               'Jacobian'       , 'on') ,...
     'functional'      , 0);
 if nargin<4
   options = defaultopt; 
 else
   warning('off','catstruct:DuplicatesFound')
+  if isfield(options,'eqsolveroptions')
+    options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
+  end
   options = catstruct(defaultopt,options);
 end
 
@@ -90,8 +94,8 @@ X = [s(:); x(:); w; v];
 LB = [-inf(size(s(:))); LBx(:)];
 UB = [+inf(size(s(:))); UBx(:)];
 
-[X,~,exitflag] = runeqsolver(@SSResidual,X,LB,UB,eqsolver,...
-                             eqsolveroptions,func,params,e,d,m,ix,nx);
+[X,~,exitflag] = runeqsolver(@SSResidual,X,LB,UB,eqsolver,eqsolveroptions,...
+                             func,params,e,d,m,ix,nx);
 
 if exitflag~=1
   warning('RECS:SSNotFound','Failure to find a deterministic steady state');

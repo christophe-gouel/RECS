@@ -39,13 +39,17 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,
 
 %% Initialization
 
-defaultopt = struct(                                     ...
-    'eqsolver'         , 'lmmcp'                        ,...
-    'eqsolveroptions'  , struct('DerivativeCheck','off'));
+defaultopt = struct(                                      ...
+    'eqsolver'        , 'lmmcp'                          ,...
+    'eqsolveroptions' , struct('DerivativeCheck', 'off' ,...
+                               'Jacobian'       , 'on'));
 if nargin <=6
   options = defaultopt; 
 else
   warning('off','catstruct:DuplicatesFound')
+  if isfield(options,'eqsolveroptions')
+    options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
+  end
   options = catstruct(defaultopt,options);
 end
 eqsolver         = lower(options.eqsolver);
