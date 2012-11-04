@@ -98,17 +98,6 @@ interp = recsSolveREE(interp,model,s,xinit,options);
 toc
 
 %%
-% * Response variables approximation (used both for next- and current-period response) - Newton iterations (slow because it uses numerical derivatives)
-if exist('fsolve','file')
-  options.reesolver = 'fsolve';
-  interp.cz     = ones(n,2);
-  interp.cx     = xinit;
-  tic
-    interp = recsSolveREE(interp,model,s,xinit,options);
-  toc
-end
-
-%%
 % * Response variables approximation (used both for next- and current-period response) - Newton-Krylov iterations
 if exist('kinsol','file')
   options.reesolver = 'kinsol';

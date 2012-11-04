@@ -57,12 +57,6 @@ switch reesolver
  case 'sa'
   [c,~,exitREE] = SA(@ResidualREE, c(:), reesolveroptions);
 
- case 'fsolve' % In test - Slow, because it uses numerical derivatives
-  if options.display==1
-    reesolveroptions = optimset('display','iter-detailed','Diagnostics','on');
-  end
-  [c,~,exitREE] = fsolve(@ResidualREE, c(:), reesolveroptions);
-
  case 'kinsol'
   neq = numel(c);
   KINoptions  = KINSetOptions('Verbose',       false,...
