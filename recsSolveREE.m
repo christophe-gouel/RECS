@@ -126,6 +126,12 @@ if (strcmp(reemethod,'1-step') || strcmp(reemethod,'iter-newton')) && ...
   reemethod         = 'iter';
 end
 
+% Generate x by interpolation if missing
+if nargin<=3 || isempty(x)
+  [LB,UB] = func('b',s,[],[],[],[],[],params);
+  x       = max(min(funeval(interp.cx,interp.fspace,s),LB),UB);
+end
+
 % Identify variables dimensions
 [n,m]  = size(x);
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
