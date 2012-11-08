@@ -1,10 +1,15 @@
 %% Definition of a stochastic rational expectations problem
 
 %% Rational expectation models
-% RECS adopts the framework proposed in Fackler (2005), and used also in
-% Winschel et Krätzig (2010). A model can be defined by the following three
-% equations, where next-period variables are indicated with the $+$ subscript,
-% while previous-period variables are indicated with the $-$ subscript.
+% There are several ways to define rational expectations models. RECS adopts a
+% controlled-process convention in which the values taken by control, or
+% response, variables are decided at each period based on the values of state
+% variables. The convention follows the framework proposed in Fackler (2005),
+% and used also in Winschel et Krätzig (2010). A model can be defined by the
+% following three equations, where time subscripts are implicit for
+% current-period variables, and, where next-period are indicated with the $+$
+% subscript, while previous-period variables are indicated with the $-$
+% subscript.
 %
 % $\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z)$, where
 % $f:R^{d+m+p}\rightarrow R^{m}$,
@@ -35,16 +40,16 @@
 
 %% Restrictions imposed by RECS convention
 %
-%
 % *Distinction between state variables and other variables*
 %
-% It happens often in models that the state transition equation
-% $s=g\left(s_{-},x_{-},e\right)$ can be simplified. For example to $s=e$ when
-% shocks are not serially correlated, or to $s=x_{-}$ when state is just a
-% previous period response variables. In this latter case, one may want to
-% reduce the number of variables in the model by introducing directly the lag
+% In many models, it is possible to simplify the state transition equation
+% $s=g\left(s_{-},x_{-},e\right)$. For example, it is possible to have $s=e$
+% when some shocks are not serially correlated, or $s=x_{-}$ when the state is
+% just a previous period response variables. In this latter case, one may want
+% to reduce the number of variables in the model by introducing directly the lag
 % response variable in the equilibrium equation. This should not be done. A
-% state variable corresponding to the lagged response variable has to be created.
+% state variable corresponding to the lagged response variable or to the
+% realized shock has to be created.
 %
 % One consequence is that lags can only appear in state transition equations and
 % in no other equations.
@@ -55,38 +60,83 @@
 % of more periods, additional variables have to be included to reduce the number
 % of periods.
 %
-% In addition, leads can only appear in the equations defining expectations
-% definition. So no leads or lags should ever appear in the equilibrium
-% equation.
+% In addition, leads can only appear in the equations defining expectations. So
+% no leads or lags should ever appear in the equilibrium equations.
 %
 % *Timing convention*
 %
 % In RECS, the timing of each variable reflects when that variable is
-% decided/determined. But RECS convention implies that state variables are
-% determined by a transition equation that includes shocks and so are always
-% contemporaneous to shocks, even when they are not defined by shocks. This
-% convention implies that the timing of each variable depends on the way the
-% model is written.
+% decided/determined. In particular, RECS convention implies that state
+% variables are determined by a transition equation that includes shocks and so
+% are always contemporaneous to shocks, evenwhen shocks do not actually play a
+% role in the transition equation. This convention implies that the timing of
+% each variable depends on the way the model is written.
 %
+% One illustration of the consequences of this convention is the timing of
+% planned production in the competitive storage presented in <sto1.html
+% STO1>. Planned production, $H_{t}$, will only lead to actual production in
+% $t+1$ and will be subject to shocks, $\epsilon_{t+1}$, so it is tempting to
+% use a $t+1$ indexing. However, since it is determined in $t$ based on
+% expectations of period $t+1$ price, it should be indexed $t$.
+
+%% An example
+% As an example, consider the competitive storage model presented in <sto1.html
+% STO1>. It is composed of four equations:
+%
+% $$S_t \ge 0 \quad \perp \quad \frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{t+1}\right)-P_{t}-k \le 0,$$
+%
+% $$\beta\mathrm{E}_{t}\left(P_{t+1} \epsilon_{t+1}\right)=\Psi'\left(H_{t}\right),$$
+%
+% $$A_{t} = D\left(P_{t}\right)+S_t,$$
+%
+% $$A_{t}=H_{t-1}\epsilon_{t}+\left(1-\delta\right) S_{t-1},$$
+%
+% where $S$, $H$, $P$ and $A$ represent storage, planned production, price and
+% availability, respectively.
+%
+% There are 3 response variables: $x_{t}=\left\{S_{t},H_{t},P_{t}\right\}$, to
+% which corresponds 3 equilibrium equations, the first 3 equations above. These
+% equations include two terms corresponding to expectations about period $t+1$:
+% $z_{t}=\left\{\mathrm{E}_{t}\left(P_{t+1}\right),\mathrm{E}_{t}\left(P_{t+1} \epsilon_{t+1}\right)\right\}.$
+%
+% There is one state variable, availability: $s_{t}=\left\{A_{t}\right\}$,
+% associated to the transition equation, the last one above. However, it would
+% have been perfectly legitimate to define the model with more state variables,
+% such as production and stocks, since availability is the sum of both. This
+% would not prevent the solver from finding the solution, but this is generally
+% a bad idea. As the solution methods implemented in RECS suffer from the curse
+% of dimensionality, it is important when possible to combine predetermined
+% variables to reduce the number of state variables.
+%
+% Corresponding to RECS convention, this model is defined by the following 3
+% blocks functions $\left\{f,h,g\right\}$:
+%
+% $$f=\left\{\begin{array}{l} P_{t}+k-z_{1,t}\left(1-\delta\right)/\left(1+r\right)\\ \beta z_{2,t}-\Psi'\left(H_{t}\right)\\ A_{t}-D\left(P_{t}\right)-S_{t} \end{array} \right\}$$
+%
+% $$h=\left\{\begin{array}{l} P_{t+1}\\ P_{t+1}\epsilon_{t+1} \end{array} \right\}$$
+%
+% $$g = \left\{ H_{t-1}\epsilon_{t}+\left(1-\delta\right)S_{t-1}\right\}$$
+
 
 %% Solving a rational expectations model
-% The problem created by rational expectations models is that the second
-% equation, defining the expectations, is not a traditional algebraic
+% What makes solving a rational expectations model complicated is that the
+% defining the expectations ($z = \mathrm{E}_{e_{+}}
+% \left[h(s,x,e_{+},s_{+},x_{+})\right]$), is not a traditional algebraic
 % equation. It is an equation that expresses the consistency between agents'
-% expectations, their information set and realized outcomes. Solving a rational
-% expectations model could be done by finding an approximation or an algebraic
-% representation of the expectations terms so that the model can be reduced to
-% something that we know ho to solve.
+% expectations, their information set and realized outcomes.
 %
-% For example, if it is possible to find an approximation of the relationship
+% One way to bring this problem back to traditional equations is by finding an
+% approximation or an algebraic representation of the expectations terms. For
+% example, if it is possible to find an approximation of the relationship
 % between expectations and current-period state variables (i.e., the
-% parameterized expectations approach of Marcet and Marimon, 1990), the
+% parameterized expectations approach of den Haan and Marcet, 1990), the
 % equilibrium equation can be simplified to
 %
-% $$\underline{x}(s) \le x \le \overline{x}(s) \perp f\left(s,x,\phi(s)\right),$$
+% $$\underline{x}(s) \le x \le \overline{x}(s) \perp f\left(s,x,\mathcal{Z}\left(s,c_z\right)\right),$$
 %
-% where $z \approx \phi(s)$. This equation can be solved for x with any
-% <ug_solvers_eq.html MCP solvers>.
+% where $\mathcal{Z}\left(s,c_{z}\right)$ approximates the expectations $z$
+% and $c_{z}$ are the coefficients characterizing this approximation. This
+% equation can be solved for $x$ with any <ug_solvers_eq.html MCP solvers>.
 %
 % The RECS solver implements various methods to solve rational expectations
 % models and find approximation of expectations terms. See <ug_methods.html

@@ -11,7 +11,7 @@
 % preprocessor, to convert the model described in a Yaml file to a file readable
 % by MATLAB and RECS programs. In the conversion, it calculates the analytic
 % representation of all partial derivatives.
-% 
+%
 % A simple call to |recsmodelinit| takes the following form:
 %
 %  model = recsmodelinit('file.yaml');
@@ -28,7 +28,7 @@
 
 %% Shocks with a Gaussian distribution
 % If your shocks follow a Gaussian distribution, you can also define their
-% structure when calling |recsmodelinit|. I requires to define a structure with
+% structure when calling |recsmodelinit|. It requires to define a structure with
 % 3 fields characterizing the distribution mean, variance/covariance, and order
 % of approximation, with the call
 %
@@ -38,7 +38,7 @@
 % Here |Mu| is a size-q vector of the distribution mean; |Sigma| is a q-by-q
 % positive definite variance/covariance matrix; and |order| is a scalar or a
 % size-q vector equal to the number of nodes for each shock variable.
-% 
+%
 % This function call creates at least 3 additional fields in the model
 % structure: |e| a matrix of the nodes for the shocks discretization; |w| the
 % vector of associated probabilities; and |funrand| an anonymous function that
@@ -64,7 +64,7 @@ model = recsmodelinit('gro1.yaml',...
 % variables the first number is for capital and the second is for the log of
 % productivity.
 
-%% 
+%%
 % The model structure has the following fields:
 disp(model)
 

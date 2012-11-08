@@ -38,10 +38,12 @@
 %
 % RECS Yaml files require three basic components, written successively:
 %
-% * |declarations| - The block declarations contains the declaration of all the
-% variables, shocks and parameters that are used in the model.
-% * |equations| - The block equations declares model's equations.
-% * |calibration| - The block calibration provides numerical values for
+% * |declarations| - The block |declarations| contains the declaration of all
+% the variables, shocks and parameters that are used in the model. Inside this
+% block, there are five sub-blocks: |states|, |controls|, |expectations|,
+% |shocks|, and |parameters| with the corresponding elements declaration.
+% * |equations| - The block |equations| declares model's equations.
+% * |calibration| - The block |calibration| provides numerical values for
 % parameters and a first-guess for the deterministic steady-state.
 %
 % *Yaml file structure*
@@ -50,47 +52,47 @@
 % standard stochastic growth model (see <gro1.html GRO1> for the complete example):
 %
 %  declarations:
-%  
+%
 %    states: [K, Z]
-%    
+%
 %    controls: [C]
-% 
+%
 %    expectations: [E]
-% 
+%
 %    shocks: [Epsilon]
-% 
+%
 %    parameters: [a, tau, delta, beta, rho, alpha]
-% 
-%   
+%
+%
 %  equations:
-% 
+%
 %    arbitrage:
-% 
+%
 %      - C^(-tau)-beta*E=0 | -inf <= C <= inf
-% 
+%
 %    transition:
-% 
+%
 %      - K = a*exp(Z(-1))*K(-1)^alpha+(1-delta)*K(-1)-C(-1)
 %      - Z = rho*Z(-1)+Epsilon
-% 
+%
 %    expectation:
-% 
+%
 %      - E = C(1)^(-tau)*(1-delta+a*alpha*exp(Z(1))*K(1)^(alpha-1))
-% 
-%     
+%
+%
 %  calibration:
-% 
+%
 %    parameters:
-% 
+%
 %      tau   : 2
 %      delta : 0.0196
 %      beta  : 0.95
 %      rho   : 0.9
 %      alpha : 0.33
 %      a     : (1/beta-1+delta)/alpha
-%     
+%
 %    steady_state:
-% 
+%
 %      Z : 0
 %      K : 1
 %      C : a-delta
@@ -106,7 +108,7 @@
 % conventions:
 %
 % * *Association equilibrium equations/control variables/bounds:* Each
-% equilibrium equation has to be associated to a control variable. I really
+% equilibrium equation has to be associated to a control variable. It really
 % matters for equations with complementarity constraints, if it is not the case,
 % the precise association does not matter. The equation and its associated
 % variable are separated by the symbol |. Control variables have to be
@@ -116,6 +118,9 @@
 % example, inside the |declarations| block, |states|, |controls|,
 % |expectations|, |shocks|, and |parameters| are indented at the same
 % level.
+% * Each equation starts with a dash and a space ("- "), not to be confounded
+% with a minus sign. To avoid confusion, it is possible to use instead two
+% points and a space (".. "), or two dashes and a space ("-- ").
 % * *Comments:* Comments are introduced by the character |#|.
 % * *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.
 % * *Timing convention:* Transition equations are written by defining the new

@@ -36,10 +36,8 @@ addpath(fullfile(recsdirectory,'demos'))
 publish('ug_model_struct.m',PublishOptions);
 publish('ug_interpolation.m',PublishOptions);
 publish('ss.m',PublishOptions);
-rmpath(fullfile(recsdirectory,'demos'))
 publish('first_guess.m',PublishOptions);
 publish('solve_REE.m',PublishOptions);
-addpath(fullfile(recsdirectory,'demos'))
 publish('simulate.m',PublishOptionsNoShow);
 rmpath(fullfile(recsdirectory,'demos'))
 publish('calibration.m',PublishOptions);

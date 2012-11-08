@@ -21,9 +21,9 @@
 	<tocitem target="ug_model_struct.html"> Defining the model structure </tocitem>
         <tocitem target="ug_interpolation.html"> Defining the interpolation structure </tocitem>
       </tocitem>
-      <tocitem target="ss.html"> Steady states </tocitem>
+      <tocitem target="ss.html"> Steady state </tocitem>
 
-      <tocitem target="first_guess.html"> First guess for the rational expectations problem </tocitem>
+      <tocitem target="first_guess.html"> First guess for the stochastic problem </tocitem>
       <tocitem target="solve_REE.html"> Solve the rational expectations problem </tocitem>
       <tocitem target="simulate.html"> Simulate the model </tocitem>
       <tocitem target="calibration.html"> Calibration </tocitem>
