@@ -1,0 +1,58 @@
+# STO2.yaml Model definition file for the competitive storage with floor-price backed by public storage
+# Copyright (C) 2011-2012 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
+declarations:
+
+  states: [A]
+
+  controls: [S, H, P, Sg]
+
+  expectations: [EP, EPe]
+
+  shocks: [e]
+
+  parameters: [k, delta, r, h, mu, elastD, elastS, PF, Sgbar]
+
+  
+equations:
+
+  arbitrage:
+
+    - P+k-EP*(1-delta)/(1+r) |    0 <= S  <= inf
+    - EPe/(1+r) = h*H^mu     | -inf <= H  <= inf
+    - A = P^elastD+S+Sg      | -inf <= P  <= inf
+    - P-PF                   |    0 <= Sg <= Sgbar
+
+  transition:
+
+    - A = (1-delta)*(S(-1)+Sg(-1))+H(-1)*e
+
+  expectation:
+
+    - EP  = P(1)
+    - EPe = P(1)*e
+
+    
+calibration:
+
+  parameters:
+
+    k      :  0.06
+    delta  :  0.02
+    r      :  0.03
+    elastS :  0.2
+    h      : 1/(1+r)
+    mu     : 1/elastS
+    elastD : -0.2
+    PF     :  1.02
+    Sgbar  :  0.4
+    
+  steady_state:
+
+    A  : 1
+    S  : 0
+    H  : 1
+    P  : 1
+    Sg : Sgbar
+    

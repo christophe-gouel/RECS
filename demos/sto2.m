@@ -33,74 +33,21 @@
 %% Writing the model
 % The model is defined in a Matlab file: <sto2model.html sto2model.m>.
 
-%% Enter model parameters
-k     = 0.02;
-delta = 0.02;
-r     = 0.05;
-mu    = 10;
-alpha = -0.4;
-PF    = 1.02;
-Sgbar = 0.4;
-
-%% Define shock distribution
+%% Pack model structure
 Mu                = 1;
 sigma             = 0.05;
-[model.e,model.w] = qnwnorm(5,Mu,sigma^2);
-model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 
-%% Pack model structure
-% Model functions
-model.func   = @sto2model;
 %%
-% Model parameters
-model.params = {k,delta,r,mu,alpha,PF,Sgbar};
+model = recsmodelinit('sto2.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
-% Approximation order
-order         = 50;
-%%
-% Minimum and maximum values of the state variable grid
-smin          = min(model.e)*0.95;
-smax          = 2;
-%%
-% Interpolation structure
-interp.fspace = fundefn('spli',order,smin,smax);
-%%
-% State collocation nodes
-s             = gridmake(funnode(interp.fspace));
+[interp,s] = recsinterpinit(50,model.sss*0.7,model.sss*1.6);
 
 %% Find a first guess through the perfect foresight solution
-[interp,xinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);
+interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 
 %% Solve for rational expectations
-% We will use successively different methods to find the solution.
-%
-% * Default options (successive approximations of response variables):
-tic
-recsSolveREE(interp,model,s,xinit);
-toc
-
-%%
-% * Response variables approximation applied to all response variables in expectations
-options.funapprox = 'resapprox-simple';
-tic
-recsSolveREE(interp,model,s,xinit,options);
-toc
-
-%%
-% * Expectations approximation
-options.funapprox = 'expapprox';
-tic
-recsSolveREE(interp,model,s,xinit,options);
-toc
-
-%%
-% * Solve equilibrium equations with |ncpsolve|
-options.eqsolver = 'ncpsolve';
-optset('ncpsolve','type','minmax'); % 'minmax' / 'smooth'
-tic
-[interp,x] = recsSolveREE(interp,model,s,xinit,options);
-toc
+[interp,x] = recsSolveREE(interp,model,s);
 
 %% Plot storage rules
 subplot(2,1,1)

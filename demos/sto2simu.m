@@ -1,26 +1,7 @@
 function sto2simu(situation)
 
-%% Enter model parameters
-k     = 0.02;
-delta = 0.02;
-r     = 0.05;
-mu    = 10;
-alpha = -0.4;
-PF    = 1.02;
-Sgbar = 0.4;
-
-%% Define shock distribution
-Mu                = 1;
-sigma             = 0.05;
-[model.e,model.w] = qnwnorm(5,Mu,sigma^2);
-model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
-
 %% Pack model structure
-% Model functions
-model.func   = @sto2model;
-%%
-% Model parameters
-model.params = {k,delta,r,mu,alpha,PF,Sgbar};
+model = recsmodelinit('sto2.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
 
 %% Define approximation space
 if situation==1
@@ -31,7 +12,7 @@ end
 [interp,s] = recsinterpinit(n,min(model.e)*0.95,2);
 
 %% Find a first guess through the perfect foresight solution
-[interp,xinit] = recsFirstGuess(interp,model,s,1,[0 1 1 0],5);
+[interp,xinit] = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 
 %% Solve for rational expectations
 [interp,x] = recsSolveREE(interp,model,s,xinit,struct('reemethod','1-step'));
