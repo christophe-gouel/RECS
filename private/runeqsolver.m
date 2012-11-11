@@ -28,29 +28,38 @@ end
 
 
 %% Solve equations
-switch eqsolver
-  case 'lmmcp'
-    [x,f,exitflag] = lmmcp(eqtosolve,...
-                           x,LB,UB,...
-                           eqsolveroptions);
-    
-  case 'fsolve'
-    options = optimset(optimset('Display','off'),eqsolveroptions);
-    [x,f,exitflag] = fsolve(eqtosolve,...
-                            x,...
-                            options);
- 
-  case 'ncpsolve'
-    exitflag = 1;  % ncpsolve does not output any exitflag on a failure
-    [x,f]    = ncpsolve(@ncpsolvetransform,...
-                        LB,UB,x,...
-                        eqtosolve);
-    f        = -f;
-  
-  case 'path'
-    [x,f,exitflag] = recspathmcp(x,LB,UB,'pathtransform');
-    clear global eqtosolve
-
+try
+  switch eqsolver
+    case 'lmmcp'
+      [x,f,exitflag] = lmmcp(eqtosolve,...
+                             x,LB,UB,...
+                             eqsolveroptions);
+      
+    case 'fsolve'
+      options = optimset(optimset('Display','off'),eqsolveroptions);
+      [x,f,exitflag] = fsolve(eqtosolve,...
+                              x,...
+                              options);
+      
+    case 'ncpsolve'
+      exitflag = 1;  % ncpsolve does not output any exitflag on a failure
+      [x,f]    = ncpsolve(@ncpsolvetransform,...
+                          LB,UB,x,...
+                          eqtosolve);
+      f        = -f;
+      if strcmp(lastwarn,'Failure to converge in ncpsolve')
+        exitflag = 0;
+        lastwarn('Warning reinitialization','RECS:WarningInit');
+      end
+      
+    case 'path'
+      [x,f,exitflag] = recspathmcp(x,LB,UB,'pathtransform');
+      clear global eqtosolve
+      
+  end
+catch
+  exitflag = 0;
+  f        = NaN(size(x));
 end
 
 function [F,J] = PbWithNumJac(func,Y,eqsolver,otherarg)
