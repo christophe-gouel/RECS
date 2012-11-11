@@ -129,7 +129,7 @@ end
 % Generate x by interpolation if missing
 if nargin<=3 || isempty(x)
   [LB,UB] = func('b',s,[],[],[],[],[],params);
-  x       = max(min(funeval(interp.cx,interp.fspace,s),LB),UB);
+  x       = min(max(funeval(interp.cx,interp.fspace,s),LB),UB);
 end
 
 % Identify variables dimensions
