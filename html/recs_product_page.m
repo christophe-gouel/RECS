@@ -1,9 +1,4 @@
 %% RECS toolbox
-% Copyright (C) 2011-2012 by <http://www.christophegouel.com Christophe
-% Gouel>. RECS is released under a free software license, please see the
-% <LICENSE.txt software license> for more information. Source code is available
-% at <https://github.com/christophe-gouel/recs>.
-%
 % RECS is a MATLAB solver for dynamic, stochastic, rational expectations
 % equilibrium models. RECS stands for Rational Expectations Complementarity
 % Solver, which emphasizes the fact that RECS is specifically developed to solve
@@ -12,7 +7,8 @@
 %
 % RECS is designed to solve small-scale nonlinear and complementarity models,
 % but not large-scale models. For solving large-scale problems, but without
-% complementarity equations, see <http://www.dynare.org/ Dynare>.
+% complementarity equations, see <http://www.dynare.org/ Dynare> or similar
+% toolboxes.
 %
 % <html>
 % <h2>Available documentation</h2>
@@ -28,16 +24,37 @@
 % * <demos.html RECS Toolbox Demos>
 %
 % <html>
+% <h2>License</h2>
+% </html>
+%
+% Unless stated otherwise, all files in the RECS toolbox are licensed using the
+% Expat license, a permissive free software license. Please see the <LICENSE.txt
+% software license> for more information.
+%
+% <html>
+% <h2>Source</h2>
+% </html>
+%
+% RECS source code and development version is available at
+% <https://github.com/christophe-gouel/recs>.
+%
+% If you find a bug, <https://github.com/christophe-gouel/RECS/issues please
+% report it>.
+%
+% <html>
 % <h2>Acknowledgments</h2>
 % </html>
 %
 % This solver started as a reimplementation of the solvers |remsolve| and
 % |resolve| from Miranda and Fackler (2002) and Fackler (2005). RECS would not
 % exist without these earlier contributions. RECS benefited also of many inputs
-% from Pablo Winant, especially with respect to models' parsing. This work was
-% generously supported by the AgFoodTrade project, funded under the Seventh
-% Framework Programme for Research and Development, DG-Research, European
-% Commission.
+% from Pablo Winant, especially with respect to models' parsing.
+%
+% This work was generously supported by 
+%
+% * the European Union's Seventh Framework Programme FP7/2007-2011 under Grant
+%   Agreements #212036 AgFoodTRAde;
+% * the AGRODEP Consortium.
 %
 % <html>
 % <h2>References</h2>
