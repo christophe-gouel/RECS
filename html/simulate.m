@@ -62,7 +62,7 @@
 %
 % $$x_t=\mathcal{X}\left(s_t,c_{x}\right)$$
 %
-% Draw a shock realization $e_{t+1} from its distribution and update the state
+% Draw a shock realization $e_{t+1}$ from its distribution and update the state
 % variable:
 %
 % $$s_{t+1}=g\left(s_t,x_t,e_{t+1}\right)$$

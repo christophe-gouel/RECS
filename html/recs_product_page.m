@@ -53,8 +53,8 @@
 % This work was generously supported by 
 %
 % * the European Union's Seventh Framework Programme FP7/2007-2011 under Grant
-%   Agreements #212036 AgFoodTRAde;
-% * the AGRODEP Consortium.
+%   Agreements #212036 AgFoodTRAde (for solver development);
+% * the AGRODEP Consortium (for documentation writing).
 %
 % <html>
 % <h2>References</h2>

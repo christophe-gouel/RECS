@@ -12,7 +12,6 @@
 % * <matlab:doc('recsdemos') |recsdemos|> - Run all RECS demonstration files
 % * <matlab:doc('recsFirstGuess') |recsFirstGuess|> - Find a first guess using the
 % perfect foresight solution
-% * <matlab:doc('recsInstall') |recsInstall|> - Finalize RECS installation
 % * <matlab:doc('recsinterpinit') |recsinterpinit|> - Prepare a RECS
 % interpolation structure
 % * <matlab:doc('recsmodelinit') |recsmodelinit|> - Prepare a RECS model structure

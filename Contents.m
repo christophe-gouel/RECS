@@ -1,18 +1,19 @@
 % RECS Toolbox
-% Version 0.4 09-Jan-2012
+% Version 0.5-beta 12-Nov-2012
 %
 % RECS functions
-%   recsAccuracy             - Evaluate accuracy of a RECS solution.
-%   recsCheck                - Check analytical derivatives against numerical ones.
-%   recsConvert              - Convert the interpolation structure of a model to another form.
-%   recsdemos                - Run all RECS demonstration files.
-%   recsFirstGuess           - Find a first guess using the perfect foresight solution.
-%   recsInstall              - Finalize RECS installation.
-%   recsmodelinit            - Prepare a RECS model structure
-%   recsSimul                - Simulate a model.
-%   recsSolveDeterministicPb - Solve a perfect foresight problem.
-%   recsSolveREE             - Find the rational expectations equilibrium (REE) of a model.
-%   recsSS                   - Solve for the deterministic steady state of a model.
+%   recsAccuracy              - Evaluate accuracy of a RECS solution.
+%   recsCheck                 - Check analytical derivatives against numerical ones.
+%   recsConvert               - Convert the interpolation structure of a model to another form.
+%   recsdemos                 - Run all RECS demonstration files.
+%   recsFirstGuess            - Find a first guess using the perfect foresight solution.
+%   recsinterpinit            - Prepare a RECS interpolation structure.
+%   recsmodelinit             - Prepare a RECS model structure.
+%   recsSimul                 - Simulate a model.
+%   recsSolveDeterministicPb  - Solve a perfect foresight problem.
+%   recsSolveREE              - Find the rational expectations equilibrium (REE) of a model.
+%   recsSolveREEFiniteHorizon - Solve a finite horizon rational expectations problem.
+%   recsSS                    - Solve for the deterministic steady state of a model.
 %
 % Nonlinear equations and MCP solvers
 %   fsolve      - Solve system of nonlinear equations.
