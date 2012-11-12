@@ -31,17 +31,15 @@
 % $$A_{t}: A_{t}=\left(1-\delta\right)\left(S^{\mathrm{S}}_{t-1}+S^{\mathrm{G}}_{t-1}\right)+H_{t-1}\epsilon_{t}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <sto2model.html sto2model.m>.
+% The model is defined in a Yaml file: <sto2.txt sto2.yaml>.
 
 %% Pack model structure
 Mu                = 1;
 sigma             = 0.05;
-
-%%
 model = recsmodelinit('sto2.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
-[interp,s] = recsinterpinit(50,model.sss*0.7,model.sss*1.6);
+[interp,s] = recsinterpinit(50,0.7,2);
 
 %% Find a first guess through the perfect foresight solution
 interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);

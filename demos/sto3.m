@@ -10,7 +10,10 @@ Mu                = 1;
 sigma             = 0.05;
 
 %%
+% *Competitive storage model:*
 model1 = recsmodelinit('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+%%
+% *Floor price model:*
 model2 = recsmodelinit('sto2.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
