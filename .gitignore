@@ -9,7 +9,6 @@
 startup.m
 
 demos/*model.m
-!demos/sto4model.m
 !demos/sto5model.m
 !demos/sto6model.m
 

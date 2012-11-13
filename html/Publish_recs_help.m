@@ -62,6 +62,7 @@ copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
 copyfile('gro2.yaml',fullfile(targetdirectory,'gro2.txt'));
 copyfile('sto1.yaml',fullfile(targetdirectory,'sto1.txt'));
 copyfile('sto2.yaml',fullfile(targetdirectory,'sto2.txt'));
+copyfile('sto4.yaml',fullfile(targetdirectory,'sto4.txt'));
 publish('cs1model.m',PublishOptionsNoExec);
 publish('gro1model.m',PublishOptionsNoExec);
 publish('gro2model.m',PublishOptionsNoExec);

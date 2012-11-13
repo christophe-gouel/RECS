@@ -1,0 +1,63 @@
+# STO4.yaml Model definition file for competitive storage with price-band backed by public storage
+# Copyright (C) 2011-2012 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
+declarations:
+
+  states: [A, Sg]
+
+  controls: [S, H, P, DSgp, DSgm]
+
+  expectations: [EP, EPe]
+
+  shocks: [e]
+
+  parameters: [k, r, h, mu, elastD, elastS, PF, Sgbar, PC]
+
+  
+equations:
+
+  arbitrage:
+
+    .. P+k-EP/(1+r)             |    0 <= S    <= inf
+    .. EPe/(1+r) = h*H^mu       | -inf <= H    <= inf
+    .. A+DSgm = P^elastD+S+DSgp | -inf <= P    <= inf
+    .. P-PF                     |    0 <= DSgp <= Sgbar-Sg
+    .. PC-P                     |    0 <= DSgm <= Sg
+     
+
+  transition:
+
+    .. A  = S(-1)+H(-1)*e
+    .. Sg = Sg(-1)+DSgp(-1)-DSgm(-1)
+
+  expectation:
+
+    .. EP  = P(1)
+    .. EPe = P(1)*e
+
+    
+calibration:
+
+  parameters:
+
+    k      :  0.06
+    r      :  0.03
+    elastS :  0.2
+    h      : 1/(1+r)
+    mu     : 1/elastS
+    elastD : -0.2
+    PF     :  0.9
+    Sgbar  :  0.4
+    PC     :  1.1
+    
+  steady_state:
+
+    A    : 1
+    S    : 0
+    H    : 1
+    P    : 1
+    Sg   : Sgbar
+    DSgp : 0
+    DSgm : 0
+    
