@@ -8,8 +8,7 @@
 *.zip
 startup.m
 
-demos/*model.m
-!demos/sto5model.m
+*model.m
 !demos/sto6model.m
 
 /exe/*

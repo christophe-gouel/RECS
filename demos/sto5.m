@@ -9,13 +9,13 @@
 %
 % *Shock* Production shocks ($\epsilon$) and Innovation on world price ($\nu$).
 %
-% *Parameters* Unit physical storage cost ($k$), Depreciation share ($\delta$),
-% Interest rate ($r$), Demand price elasticity ($\alpha$), World price
-% autocorrelation ($\rho$) and Trade cost ($\theta$).
+% *Parameters* Unit physical storage cost ($k$), Interest rate ($r$), Demand
+% price elasticity ($\alpha$), World price autocorrelation ($\rho$) and Trade
+% cost ($\theta$).
 %
 % *Equilibrium equations*
 %
-% $$S_{t}: S_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{1-\delta}{1+r}\mathrm{E}_{t}\left(P_{t+1}\right)\ge 0,$$
+% $$S_{t}: S_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{\mathrm{E}_{t}\left(P_{t+1}\right)}{1+r}\ge 0,$$
 %
 % $$P_{t}: A_{t}+M_t={P_{t}}^{\alpha}+S_{t}+X_t,$$
 %
@@ -25,81 +25,41 @@
 %
 % *Transition equation*
 %
-% $$A_{t}: A_{t}=\left(1-\delta\right)S_{t-1}+\epsilon_{t},$$
+% $$A_{t}: A_{t}=S_{t-1}+\epsilon_{t},$$
 %
 % $$P^w_{t}: \ln P^w_{t} = \rho\ln P^w_{t-1}+\nu_{t}.$$
 
 %% Writing the model
-% The model is defined in a Matlab file: <sto5model.html sto5model.m>.
-
-%% Enter model parameters
-delta = 0;
-r     = 0.05;
-k     = 0.02;
-alpha = -0.4;
-tau   = 0.2;
-rho   = 0.6;
-sigma = 0.16;
-
-%% Define shock distribution
-Mu                = [1 0];
-Sigma             = [0.05 0;0 sigma];
-[model.e,model.w] = qnwnorm([5 5],Mu,Sigma^2);
-model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,2)*Sigma;
+% The model is defined in a Yaml file: <sto5.txt sto5.yaml>.
 
 %% Pack model structure
-% Model functions
-model.func   = @sto5model;
-%%
-% Model parameters
-model.params = {delta,r,k,alpha,tau,rho,sigma};
+Mu                = [1 0];
+sigma             = [0.05 0;
+                     0    1];
+model = recsmodelinit('sto5.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
 % Minimum and maximum values of the state variable grid
 smin          = [min(model.e(:,1))*0.95; 0.4 ];
-smax          = [1.6;                    2.05];
+smax          = [1.6;                    2.12];
 %%
 % Interpolation structure
 [interp,s]    = recsinterpinit(15,smin,smax);
 
-%% Provide a first guess
-n             = size(s,1);
-xinit         = [zeros(n,1) max(min(s(:,1).^(1/alpha),s(:,2)+tau),s(:,2)-tau) zeros(n,2)];
+%% Find a first guess through the perfect foresight solution
+% We use the solver |ncpsolve| because |lmmcp| does not work in this case:
+options = struct('eqsolver','ncpsolve');
+%%
+interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5,options);
+
 
 %% Solve for rational expectations
 % Define options
-options = struct('funapprox','expfunapprox',...
-                 'simulmethod','solve',...
-                 'stat',1);
+options = struct('funapprox'  ,'expfunapprox',...
+                 'simulmethod','solve'       ,...
+                 'stat'       ,1);
 %%
-% If available, we will use successively different methods to find the solution.
-%
-% * Solve by Full Newton
-if exist('mcppath','file')
-  options.eqsolver  = 'path';
-  options.reemethod = '1-step';
-  tic
-  recsSolveREE(interp,model,s,xinit,options);
-  toc
-  options.eqsolver = 'lmmcp';
-  options.reemethod = 'iter';
-end
-
-%%
-% * Solve by Newton-Krylov
-if exist('KINSol','file')
-  options.reesolver = 'kinsol';
-  tic
-  recsSolveREE(interp,model,s,xinit,options);
-  toc
-  options.reesolver = 'SA';
-end
-
-%%
-% * Solve by successive approximation
-tic
-interp = recsSolveREE(interp,model,s,xinit,options);
-toc
+[interp,x] = recsSolveREE(interp,model,s,[],options);
 
 %% Simulate the model
 recsSimul(model,interp,repmat([1 1],10,1),200,[],options);

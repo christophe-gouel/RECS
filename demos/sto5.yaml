@@ -1,0 +1,57 @@
+# STO5.yaml Model definition file for a small country storage-trade model
+# Copyright (C) 2011-2012 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
+declarations:
+
+  states: [A, Pw]
+
+  controls: [S, P, M, X]
+
+  expectations: [EP]
+
+  shocks: [e, nu]
+
+  parameters: [k, r, theta, rho, sigma, elastD]
+
+  
+equations:
+
+  arbitrage:
+
+    .. P+k-EP/(1+r)       |    0 <= S <= inf
+    .. A+M = P^elastD+S+X | -inf <= P <= inf
+    .. Pw+theta-P         |    0 <= M <= inf
+    .. P+theta-Pw         |    0 <= X <= inf
+
+  transition:
+
+    .. A = S(-1)+e
+    .. Pw = Pw(-1)^rho*exp(nu*sigma)/exp(1/2)
+
+  expectation:
+
+    .. EP  = P(1)
+
+    
+calibration:
+
+  parameters:
+
+    k      :  0.06
+    r      :  0.03
+    elastD : -0.2
+    theta  :  0.2
+    sigma  :  0.16
+    rho    :  0.6
+    
+  steady_state:
+
+    A  : 1
+    Pw : 1
+    S  : 0
+    P  : 1
+    M  : 0
+    X  : 0
+    
+    
