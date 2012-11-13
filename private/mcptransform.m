@@ -47,10 +47,10 @@ switch flag
     if output.Jx
       m    = size(x,2);
       dfdw = zeros(m,nx(1));
-      if nx(1), dfdw(sub2ind(size(dfdw),find(ix(:,1)),1:nx(1))) = 1; end
+      if nx(1), dfdw(sub2ind(size(dfdw),int16(find(ix(:,1)))',1:nx(1))) = 1; end
       dfdw = permute(dfdw(:,:,ones(n,1)),[3 1 2]);
       dfdv = zeros(m,nx(2));
-      if nx(2), dfdv(sub2ind(size(dfdv),find(ix(:,2)),1:nx(2))) = 1; end
+      if nx(2), dfdv(sub2ind(size(dfdv),int16(find(ix(:,2)))',1:nx(2))) = 1; end
       dfdv = permute(dfdv(:,:,ones(n,1)),[3 1 2]);
       out3 = cat(2,...
                  cat(3,fx                    ,-dfdw               ,dfdv                ),...
