@@ -81,6 +81,9 @@ In this case, you are on your own. You have to install
 * [SymPy](http://sympy.org).
 * [SciPy](http://www.scipy.org/Download).
 
+One solution could be to install a scientific Python distribution such as
+[EPD](http://www.enthought.com/).
+
 Let me know if it works or not.
 
 Source

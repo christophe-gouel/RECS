@@ -62,5 +62,9 @@
 % * <http://sympy.org SymPy>.
 % * <http://www.scipy.org/Download> SciPy>.
 %
+% 
+% One solution could be to install a scientific Python distribution such as
+% <http://www.enthought.com/ EPD>.
+%
 % Let me know if it works or not.
 

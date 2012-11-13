@@ -73,7 +73,7 @@ License: BSD-2-clause
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Source: http://www.mathworks.com/matlabcentral/fileexchange/7842
 
-Files: dolo-recs, dolo-recs.exe
+Files: dolo, dolo-recs.exe
 Copyright: 2010-2012, Pablo Winant
 License: BSD-2-clause
  All rights reserved.
