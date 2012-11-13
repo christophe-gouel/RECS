@@ -6,6 +6,7 @@
 *.png
 *.tmp
 *.zip
+startup.m
 
 demos/*model.m
 !demos/sto4model.m
@@ -20,3 +21,4 @@ demos/*model.m
 
 Python/dolo/*
 
+recs-archive/*
