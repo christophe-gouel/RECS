@@ -9,7 +9,6 @@
 startup.m
 
 *model.m
-!demos/sto6model.m
 
 /exe/*
 

@@ -64,6 +64,7 @@ copyfile('sto1.yaml',fullfile(targetdirectory,'sto1.txt'));
 copyfile('sto2.yaml',fullfile(targetdirectory,'sto2.txt'));
 copyfile('sto4.yaml',fullfile(targetdirectory,'sto4.txt'));
 copyfile('sto5.yaml',fullfile(targetdirectory,'sto5.txt'));
+copyfile('sto6.yaml',fullfile(targetdirectory,'sto6.txt'));
 publish('clearpublish.m',PublishOptions);
 publish('cs1.m',PublishOptions);
 publish('clearpublish.m',PublishOptions);
