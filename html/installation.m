@@ -47,16 +47,20 @@
 %
 % *Install on Linux*
 %
-% On Debian/Ubuntu, type in a terminal:
+% Python 2.7.X is required. On Debian/Ubuntu, to install the necessary packages
+% type in a terminal:
 % 
-%  sudo apt-get install python-setuptools python-yaml python-scipy python-sympy python-matplotlib
+%  sudo apt-get install python-yaml python-sympy python-scipy
 %
 % *Install on Mac*
 %
-% In a terminal type:
+% In this case, you are on your own. You have to install 
 %
-%  sudo port install py27-setuptools
-%  sudo port install py27-yaml
-%  sudo port install py27-scipy
-%  sudo port install py27-sympy
-%  sudo port install py27-matplotlib
+% * <http://www.python.org/download/ Python 2.7.X>. Python is preinstalled on
+% Mac, but is usually too old to be useful.
+% * <http://pyyaml.org/wiki/PyYAML PyYaml>.
+% * <http://sympy.org SymPy>.
+% * <http://www.scipy.org/Download> SciPy>.
+%
+% Let me know if it works or not.
+
