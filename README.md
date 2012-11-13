@@ -83,6 +83,12 @@ In this case, you are on your own. You have to install
 
 Let me know if it works or not.
 
+Source
+=======
+
+RECS source can be found on the following git repository:
+<https://github.com/christophe-gouel/RECS.git>.
+
 License
 =======
 
