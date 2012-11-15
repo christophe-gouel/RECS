@@ -35,7 +35,7 @@
 % as output of |recsSimul|, then some statistics over the asymptotic
 % distribution are calculated. For this, the first 20 observations are
 % discarded. The statistics calculated are the mean, standard deviation,
-% skweness, kurtosis, minimum, maximum, percentage of time spent at the lower
+% skewness, kurtosis, minimum, maximum, percentage of time spent at the lower
 % and upper bounds, correlation matrix, and the 5 first-order autocorrelation
 % coefficients. In addition, histograms of the variables distribution are drawn.
 %
@@ -130,7 +130,7 @@ sto2simu(1)
 % nodes. So between two nodes at which the model should be at a bound, the
 % approximated decision rule can yield a result very close to the bound without
 % actually satisfy it. Below are the moments obtained from simulating the model
-% in <sto2.html STO2> with the both methods and with decision rules approximated
+% in <sto2.html STO2> with both methods and with decision rules approximated
 % on 30 nodes. The moments are quite similar, but the approximated decision
 % rules underestimate widely the time spent at the bounds:
 sto2simu(2)

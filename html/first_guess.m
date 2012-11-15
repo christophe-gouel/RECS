@@ -1,14 +1,20 @@
 %% First guess
 % The solution methods used in RECS to find the rational expectations
 % equilibrium of a problem rely all on nonlinear equation solvers, with which
-% convergence can achieved only if the starting point is not too far from the
+% convergence can be achieved only if the starting point is not too far from the
 % solution. Hence, the importance of providing a good first guess.
 %
 %% The perfect foresight problem as first guess
 % RECS can attempt to calculate for you a first guess that is good in most
 % situations. It does it by calculating the perfect foresight solution of the
 % deterministic problem in which the shocks in the stochastic problem have been
-% substituted by their expectations.
+% substituted by their expectations:
+%
+% $$\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z),$$
+%
+% $$z =  h(s,x,\mathrm{E}\left(e\right),s_{+},x_{+}),$$
+%
+% $$s = g(s_{-},x_{-},\mathrm{E}\left(e\right)).$$
 %
 % The solver for perfect foresight problems (see <deterministic.html
 % Deterministic problems>) assumes that the problem converges to its
@@ -34,12 +40,12 @@
 %
 % It depends on the model and the solution horizon. For most models, if the
 % state space has been properly defined (i.e., not too small or too large), this
-% first guess is good enough to allow the stochastic solver to the converge.
+% first guess is good enough to allow the stochastic solver to converge.
 %
-% The quality of the perfect foresight solution as a first guess depends on the
-% model nonlinearity. For models with behavior close to linear, the first guess
-% can be extremely good. For example, with <gro1.html the stochastic growth
-% model> the first guess leads to an initial deviation from rational
+% The quality of the perfect foresight solution as a first guess depends also on
+% the model nonlinearity. For models with behavior close to linear, the first
+% guess can be extremely good. For example, with <gro1.html the stochastic
+% growth model> the first guess leads to an initial deviation from rational
 % expectations of 1E-5. So after a few iterations, the solver converges to the
 % solution. However, with <gro2.html the stochastic growth model with
 % irreversible investment>, which is much more nonlinear, the residual when

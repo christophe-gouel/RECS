@@ -12,15 +12,15 @@
 % problems. An MCP is defined as follows (adapted from Munson, 2002):
 %
 % *Definition (Mixed Complementarity Problem)* Given a continuously
-% differentiable function $F: R^n\rightarrow R^n$, and lower and upper
+% differentiable function $F: \mathbf{R}^n\rightarrow \mathbf{R}^n$, and lower and upper
 % bounds
 %
-% $$l \in \{R \cup \{-\infty\}\}^n,$$
+% $$l \in \{\mathbf{R} \cup \{-\infty\}\}^n,$$
 %
-% $$u \in \{R \cup \{+\infty\}\}^n.$$
+% $$u \in \{\mathbf{R} \cup \{+\infty\}\}^n.$$
 %
 % The mixed complementarity problem $l \le x \le u \perp F(x)$ is to find a $x
-% \in R^n$ such that one of the following holds for each $i \in \{1,\ldots,n\}:$
+% \in \mathbf{R}^n$ such that one of the following holds for each $i \in \{1,\ldots,n\}:$
 %
 % $F_i(x)=0$ and $l_i\le x_i \le u_i$,
 %
@@ -46,7 +46,8 @@
 % u(C_t)/(1+\delta)^t$ has a stochastic income, $Y_t$ and has to choose each
 % period how much to consume and how much to save. He is prevented from
 % borrowing, but can save at the rate $r$. Without the borrowing constraint, his
-% problem consists in choosing $C_t$ such that it satisfies the standard Euler equation:
+% problem consists in choosing its consumption $C_t$ such that it satisfies the
+% standard Euler equation:
 %
 % $$u'\left(C_{t}\right)=\frac{1+r}{1+\delta}\mathrm{E}_{t}\left[u'\left(C_{t+1}\right)\right].$$
 %
@@ -63,7 +64,7 @@
 % $$u'\left(C_{t}\right) \ge \frac{1+r}{1+\delta}\mathrm{E}_{t}\left[u'\left(C_{t+1}\right)\right].$$
 %
 % Since the Euler equation holds when consumption is not constrained, this
-% behavior can be summarized be the following complementarity equation
+% behavior can be summarized by the following complementarity equation
 %
 % $$C_{t}\le X_{t} \quad \perp \quad \frac{1+r}{1+\delta}\mathrm{E}_{t}\left[u'\left(C_{t+1}\right)\right]\le u'\left(C_{t}\right).$$
 
@@ -124,7 +125,8 @@
 %    - -M(l)  |    a<=l<=inf
 %
 % As you can note, one needs to associate lower and upper bounds with every
-% variables. So if there are no finite bounds, one can associate infinite
+% variables, and the "perp" symbol ($\perp$) is substituted by the vertical bar
+% (|). So if there are no finite bounds, one has to associate infinite
 % bounds. The last equation was not respecting the convention that associates
 % lower bounds on variables with superior or equal inequality, so one should be
 % careful when writing it in the Yaml file to reverse the sign of the equation.

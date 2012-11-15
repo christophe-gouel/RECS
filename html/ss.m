@@ -10,7 +10,7 @@
 % * Checking model structure
 
 %% Steady state definition
-% The Deterministic steady state is the state reached in the absence of shocks
+% The deterministic steady state is the state reached in the absence of shocks
 % and ignoring future shocks. Following the convention adopted in RECS (see
 % <def_sre.html Definition of a stochastic rational expectations problem>), the
 % deterministic steady state is the set $\left\{s,x,z\right\}$ of state,
@@ -27,9 +27,9 @@
 % *Automatically when initializing model structure*
 %
 % When writing a model file (see <ug_model_files.html Writing RECS model files>,
-% it is possible to define at the end of file in the |calibration| block an
-% initial guess for finding the steady state. When the model structure is
-% created by |recsmodelinit|, if the definition of the shocks is provided to
+% it is possible to define at the end of the Yaml file in the |calibration|
+% block an initial guess for finding the steady state. When the model structure
+% is created by |recsmodelinit|, if the definition of the shocks is provided to
 % |recsmodelinit|, a Newton-type solver will attempt to find the steady state
 % starting from the initial guess provided in the model file. If a steady state
 % is found, it is then displayed in Matlab command window.

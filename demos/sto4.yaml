@@ -14,7 +14,7 @@ declarations:
 
   parameters: [k, r, h, mu, elastD, elastS, PF, Sgbar, PC]
 
-  
+
 equations:
 
   arbitrage:
@@ -24,7 +24,7 @@ equations:
     .. A+DSgm = P^elastD+S+DSgp | -inf <= P    <= inf
     .. P-PF                     |    0 <= DSgp <= Sgbar-Sg
     .. PC-P                     |    0 <= DSgm <= Sg
-     
+
 
   transition:
 
@@ -36,7 +36,7 @@ equations:
     .. EP  = P(1)
     .. EPe = P(1)*e
 
-    
+
 calibration:
 
   parameters:
@@ -50,7 +50,7 @@ calibration:
     PF     :  0.9
     Sgbar  :  0.4
     PC     :  1.1
-    
+
   steady_state:
 
     A    : 1
@@ -60,4 +60,4 @@ calibration:
     Sg   : Sgbar
     DSgp : 0
     DSgm : 0
-    
+

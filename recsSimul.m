@@ -221,14 +221,14 @@ if (nargout==5 || statdisplay) && (nper > 40)
   X = cat(2,ssim,xsim);
   X = permute(X(:,:,20:end),[2 1 3]);
   X = reshape(X,d+m,[])';
-  
+
   % Sample size
-  stat.n = size(X,2);
-  
+  stat.n = size(X,1);
+
   % Percent of time spent at the bounds
   [LB,UB] = func('b',X(:,1:d),[],[],[],[],[],params);
-  pLB     = [zeros(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps,1)*100];
-  pUB     = [zeros(1,d) mean(abs(UB-X(:,d+1:d+m))<eps,1)*100];
+  pLB     = [NaN(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps,1)*100];
+  pUB     = [NaN(1,d) mean(abs(UB-X(:,d+1:d+m))<eps,1)*100];
 
   mX   = mean(X,1);
   y    = bsxfun(@minus,X,mX);

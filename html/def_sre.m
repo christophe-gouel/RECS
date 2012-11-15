@@ -12,12 +12,12 @@
 % subscript.
 %
 % $\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z)$, where
-% $f:R^{d+m+p}\rightarrow R^{m}$,
+% $f:\mathbf{R}^{d+m+p}\rightarrow \mathbf{R}^{m}$,
 %
 % $z = \mathrm{E}_{e_{+}} \left[h(s,x,e_{+},s_{+},x_{+})\right]$, where
-% $h:R^{d+m+q+d+m}\rightarrow R^{p}$,
+% $h:\mathbf{R}^{d+m+q+d+m}\rightarrow \mathbf{R}^{p}$,
 %
-% $s = g(s_{-},x_{-},e)$, where $g:R^{d+m+q}\rightarrow R^{d}$.
+% $s = g(s_{-},x_{-},e)$, where $g:\mathbf{R}^{d+m+q}\rightarrow \mathbf{R}^{d}$.
 %
 % Variables have been partitioned into state variables, $s$, response variables,
 % $x$, and shocks, $e$. Response variables can have lower and upper bounds,
