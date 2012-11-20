@@ -31,8 +31,8 @@ Mu                = 0;
 sigma             = 0.007;
 
 %%
-% If your RECS installation is complete, you can generate the Matlab model file
-% and pack the model structure with the following command
+% You generate the Matlab model file and pack the model structure with the
+% following command
 model = recsmodelinit('gro1.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
@@ -42,8 +42,9 @@ model = recsmodelinit('gro1.yaml',...
 % <gro1.txt gro1.yaml>.
 
 %%
-% If your installation is not complete, you have to pack yourself the different
-% elements inside a structure
+% It is also possible, if you are ready to write all the model's equations and
+% jacobians in the file |gro1model.m|, to pack yourself the different elements
+% inside a structure
 [model.e,model.w] = qnwnorm(5,Mu,sigma^2);
 model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
 model.func        = @gro1model;

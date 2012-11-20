@@ -53,11 +53,7 @@ order         = [14 14];
 smin          = [0.47*model.sss(1)  min(model.e)*3.5];
 smax          = [1.72*model.sss(1)  max(model.e)*3.5];
 %%
-% Function space
-interp.fspace = fundefn('spli',order,smin,smax);
-%%
-% State collocation nodes
-s             = gridmake(funnode(interp.fspace));
+[interp,s] = recsinterpinit(order,smin,smax);
 
 %% Find a first guess through the perfect foresight solution
 [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);

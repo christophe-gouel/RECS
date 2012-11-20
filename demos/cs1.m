@@ -29,8 +29,8 @@ Mu                = 100;
 sigma             = 10;
 
 %%
-% If your RECS installation is complete, you can generate the Matlab model file
-% and pack the model structure with the following command
+% You generate the Matlab model file and pack the model structure with the
+% following command
 model = recsmodelinit('cs1.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 

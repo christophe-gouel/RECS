@@ -67,12 +67,10 @@ dolo = fullfile(recsdirectory,'Python','dolo','src');
 if ispc
   status = system([fullfile(dolo,'bin','dolo-recs.exe') ' ' which(inputfile) ...
                    ' ' fullfile(inputfiledirectory,outputfile)]);
-elseif isunix && ~ismac
+else
   dolorecs = fullfile(dolo,'bin','dolo-recs.py');
   status = system(['PYTHONPATH=' dolo ' python ' dolorecs ' ' which(inputfile) ...
                    ' '  fullfile(inputfiledirectory,outputfile)]);
-else
-  error('Not available on this platform')
 end
 
 if status~=0
