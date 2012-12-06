@@ -1,5 +1,8 @@
 %% User's guide
 % * <ug_setting_up.html Setting Up a Rational Expectations Problem>
-% * <ug_methods.html Solution methods>
+% * <ss.html Steady state>
+% * <first_guess.html First guess for the stochastic problem>
+% * <solve_REE.html Solve the rational expectations problem>
+% * <simulate.html Simulate the model>
 % * <ug_solvers_eq.html Solvers for equilibrium equations>
-% * <ug_solvers_ree.html Solvers for the rational expectations problem for two-step approaches>
+% * <ug_options.html Options>

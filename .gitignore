@@ -16,6 +16,8 @@ startup.m
 /html/*.yaml
 /html/helpsearch/*
 
+/www/*
+
 Python/dolo/*
 
 recs-archive/*

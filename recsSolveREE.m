@@ -44,7 +44,7 @@ function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 %    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
 %                       over each grid points
 %    reemethod        : 'iter' (default), 'iter-newton' or '1-step'
-%    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve' (in test)
+%    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve'
 %    reesolveroptions : options structure to be passed to reesolver
 %    useapprox        : (default: 1) behaviour dependent of the chosen function to
 %                       approximate. If 0 and funapprox is 'expapprox' then

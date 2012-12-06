@@ -94,34 +94,37 @@
 % where $S$, $H$, $P$ and $A$ represent storage, planned production, price and
 % availability, respectively.
 %
-% There are 3 response variables: $x_{t}=\left\{S_{t},H_{t},P_{t}\right\}$, to
-% which corresponds 3 equilibrium equations, the first 3 equations above. These
-% equations include two terms corresponding to expectations about period $t+1$:
-% $z_{t}=\left\{\mathrm{E}_{t}\left(P_{t+1}\right),\mathrm{E}_{t}\left(P_{t+1} \epsilon_{t+1}\right)\right\}.$
+% There are 3 response variables: $x_{t} \equiv
+% \left\{S_{t},H_{t},P_{t}\right\}$, to which corresponds 3 equilibrium
+% equations, the first 3 equations above. These equations include two terms
+% corresponding to expectations about period $t+1$: $z_{t} \equiv
+% \left\{\mathrm{E}_{t}\left(P_{t+1}\right),\mathrm{E}_{t}\left(P_{t+1}
+% \epsilon_{t+1}\right)\right\}.$
 %
-% There is one state variable, availability: $s_{t}=\left\{A_{t}\right\}$,
-% associated to the transition equation, the last one above. However, it would
-% have been perfectly legitimate to define the model with more state variables,
-% such as production and stocks, since availability is the sum of both. This
-% would not prevent the solver from finding the solution, but this is generally
-% a bad idea. As the solution methods implemented in RECS suffer from the curse
-% of dimensionality, it is important when possible to combine predetermined
-% variables to reduce the number of state variables.
+% There is one state variable, availability: $s_{t} \equiv
+% \left\{A_{t}\right\}$, associated to the transition equation, the last one
+% above. However, it would have been perfectly legitimate to define the model
+% with more state variables, such as production and stocks, since availability
+% is the sum of both. This would not prevent the solver from finding the
+% solution, but this is generally a bad idea. As the solution methods
+% implemented in RECS suffer from the curse of dimensionality, it is important
+% when possible to combine predetermined variables to reduce the number of state
+% variables.
 %
 % Corresponding to RECS convention, this model is defined by the following 3
 % blocks functions $\left\{f,h,g\right\}$:
 %
-% $$f=\left\{\begin{array}{l} P_{t}+k-z_{1,t}\left(1-\delta\right)/\left(1+r\right)\\ \beta z_{2,t}-\Psi'\left(H_{t}\right)\\ A_{t}-D\left(P_{t}\right)-S_{t} \end{array} \right\}$$
+% $$f \equiv \left\{\begin{array}{l} P_{t}+k-z_{1,t}\left(1-\delta\right)/\left(1+r\right)\\ \beta z_{2,t}-\Psi'\left(H_{t}\right)\\ A_{t}-D\left(P_{t}\right)-S_{t} \end{array} \right\}$$
 %
-% $$h=\left\{\begin{array}{l} P_{t+1}\\ P_{t+1}\epsilon_{t+1} \end{array} \right\}$$
+% $$h \equiv \left\{\begin{array}{l} P_{t+1}\\ P_{t+1}\epsilon_{t+1} \end{array} \right\}$$
 %
-% $$g = \left\{ H_{t-1}\epsilon_{t}+\left(1-\delta\right)S_{t-1}\right\}$$
+% $$g \equiv \left\{ H_{t-1}\epsilon_{t}+\left(1-\delta\right)S_{t-1}\right\}$$
 
 
 %% Solving a rational expectations model
 % What makes solving a rational expectations model complicated is that the
-% defining the expectations ($z = \mathrm{E}_{e_{+}}
-% \left[h(s,x,e_{+},s_{+},x_{+})\right]$), is not a traditional algebraic
+% defining the expectations, $z = \mathrm{E}_{e_{+}}
+% \left[h(s,x,e_{+},s_{+},x_{+})\right]$, is not a traditional algebraic
 % equation. It is an equation that expresses the consistency between agents'
 % expectations, their information set and realized outcomes.
 %

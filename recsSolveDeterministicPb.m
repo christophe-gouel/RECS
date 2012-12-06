@@ -11,7 +11,7 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,
 % variables at steady state. RECSSOLVEDETERMINISTICPB returns X, a T-by-m matrix,
 % the value of response variables over the time horizon.
 %
-% X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,OPTIONS) solves the problem with the 
+% X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS,OPTIONS) solves the problem with the
 % parameters defined by the structure OPTIONS. The fields of the structure are
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver (default:
@@ -40,11 +40,12 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,
 %% Initialization
 
 defaultopt = struct(                                      ...
+    'checkfinalstate' , 0                                ,...
     'eqsolver'        , 'lmmcp'                          ,...
     'eqsolveroptions' , struct('DerivativeCheck', 'off' ,...
                                'Jacobian'       , 'on'));
 if nargin <=6
-  options = defaultopt; 
+  options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   if isfield(options,'eqsolveroptions')
@@ -109,3 +110,13 @@ x = X(:,1:m);
 z = X(:,(M+1):(M+p));
 s = [s0; X(1:end-1,(M+p+1):(M+p+d))];
 if ~isempty(F), F = reshape(F,M+p+d,T)'; end
+
+%% Check is the final state is self-replicating (meaning that sT=sss and xT=xss)
+if options.checkfinalstate
+  deltafinal = max(abs([s(end,:)-sss x(end,:)-xss]));
+  if deltafinal>sqrt(eps)
+    warning('RECS:FinalState',...
+            'Final state is not self-replicating (max(|delta|)=%g)',...
+            deltafinal);
+  end
+end

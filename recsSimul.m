@@ -33,7 +33,8 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 %
 % SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER,SHOCKS,OPTIONS) simulates the model with
 % the parameters defined by the structure OPTIONS. The fields of the structure are
-%    eqsolver         : 'fsolve', 'lmmcp', 'ncpsolve' (default) or 'path'
+%    accuracy         : 1 to check accuracy on the asymptotic distribution (default: 0)
+%    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
 %    extrapolate      : 1 if extrapolation is allowed outside the
 %                       interpolation space or 0 to forbid it (default: 1)
@@ -81,9 +82,10 @@ end
 if ~isempty(shocks) && numel(shocks)~=d, nper = size(shocks,3); end
 
 defaultopt = struct(...
+    'accuracy'        , 0                                  ,...
     'eqsolver'        , 'lmmcp'                            ,...
-    'eqsolveroptions'   , struct('DerivativeCheck', 'off' ,...
-                                 'Jacobian'       , 'on')  ,...
+    'eqsolveroptions' , struct('DerivativeCheck', 'off'    ,...
+                               'Jacobian'       , 'on')    ,...
     'extrapolate'     , 1                                  ,...
     'funapprox'       , 'resapprox-complete'               ,...
     'functional'      , 0                                  ,...
@@ -238,7 +240,7 @@ if (nargout==5 || statdisplay) && (nper > 40)
   disp('Statistics from simulated variables (excluding the first 20 observations):');
   disp(' Moments');
   disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
-  disp(stat.moments(1:d,:))
+  disp(stat.moments(1:d,1:end-2))
   disp(stat.moments(d+1:end,:))
 
   stat.cor = corrcoef(X);
@@ -261,6 +263,11 @@ if (nargout==5 || statdisplay) && (nper > 40)
   disp('    1         2         3         4         5');
   disp(stat.acor(1:d,:));
   disp(stat.acor(d+1:end,:));
+end
+
+%% Check accuracy
+if options.accuracy
+  recsAccuracy(model,interp,ssim(:,:,20:end),options);
 end
 
 

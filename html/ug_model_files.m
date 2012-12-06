@@ -19,12 +19,15 @@
 % $$s = g(s_{-},x_{-},e).$$
 %
 % When defining your model, it is important to try to minimize the number of
-% state variables. Currently, RECS is designed to solve small-scale models,
-% which means that with more than 3 or 4 state variables you are in unknown
-% territory. One way of doing this is, when it is possible, to sum together the
+% state variables. Currently, RECS relies for interpolation on grids constructed
+% with tensor products, so the dimension of the problem increases exponentially
+% with the number of state variables. This implies that RECS should be used only
+% to solve small-scale models, which means that with more than 3 or 4 state
+% variables the problems may start to be too large to handle. One way of
+% reducing the problem size is, when it is possible, to sum together the
 % predetermined variables than can be summed. You can see in demonstrations
 % files (e.g., <cs1.html CS1> or <sto1.html STO1>) that states variables are
-% often defined as sums of other predetermined variables.
+% occasionaly defined as sums of other predetermined variables.
 
 %% Structure of RECS model files
 % A RECS model can be written in a way that is quite similar to the original

@@ -47,7 +47,7 @@ model = recsmodelinit('gro2.yaml',...
 
 %% Define approximation space
 % Degree of approximation
-order         = [14 14];
+order         = 24;
 %%
 % Limits of the state space
 smin          = [0.47*model.sss(1)  min(model.e)*3.5];

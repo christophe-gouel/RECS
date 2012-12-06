@@ -37,7 +37,7 @@ sigma             = 0.05;
 model = recsmodelinit('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
-[interp,s] = recsinterpinit(30,model.sss*0.7,model.sss*1.5);
+[interp,s] = recsinterpinit(40,model.sss*0.7,model.sss*1.5);
 
 %% Find a first guess through the perfect foresight solution
 interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);

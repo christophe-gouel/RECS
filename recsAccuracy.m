@@ -1,4 +1,4 @@
-function [se,lEE,Ef] = recsAccuracy(model,interp,s,options)
+function [se,lEE,lEf] = recsAccuracy(model,interp,s,options)
 % RECSACCURACY Evaluates approximation accuracy
 %
 % SE = RECSACCURACY(MODEL,INTERP,S) evaluates the accuracy of the approximation
@@ -13,14 +13,14 @@ function [se,lEE,Ef] = recsAccuracy(model,interp,s,options)
 %             (compulsory with the functional option) but other formats are
 %             acceptable. If it is problem with functional equations, please
 %             provide as the two last cell elements of params fspace and the
-%             interpolation matrix used: 
+%             interpolation matrix used:
 %             mode.params = [model.params interp.fspace interp.c]
 % INTERP is a structure, which includes the following fields:
 %    cx      : coefficient matrix of the interpolation of the response variables
 %    fspace  : a definition structure for the interpolation family (created by
 %              the function fundef)
 %
-% RECSACCURACY(MODEL,INTERP,S,OPTIONS) evaluates the accuracy with the
+% SE = RECSACCURACY(MODEL,INTERP,S,OPTIONS) evaluates the accuracy with the
 % parameters defined by the structure OPTIONS. The fields of the
 % structure are
 %    extrapolate      : 1 if extrapolation is allowed outside the
@@ -29,9 +29,10 @@ function [se,lEE,Ef] = recsAccuracy(model,interp,s,options)
 % [SE,LEE] = RECSACCURACY(MODEL,INTERP,S,...) returns the matrix LEE containing
 % the value of Euler equation error (in log10) evaluated on the grid points SE.
 %
-% [SE,LEE,EF] = RECSACCURACY(MODEL,INTERP,S,...) returns the nxy-by-m matrix EF
-% containing the value of equilibrium equation error evaluated on the grid
-% points SE.
+% [SE,LEE,lEF] = RECSACCURACY(MODEL,INTERP,S,...) returns the nxy-by-m matrix
+% lEF containing the value of equilibrium equation error (in log10) evaluated on
+% the grid points SE. For models with finite bounds, this error is assessed
+% using a minmax formulation: Ef = abs(min(max(-f,LB-x),UB-x)).
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
@@ -42,7 +43,7 @@ function [se,lEE,Ef] = recsAccuracy(model,interp,s,options)
 % Options
 defaultopt  = struct('extrapolate',1);
 if nargin <=4
-  options   = defaultopt; 
+  options   = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   options   = catstruct(defaultopt,options);
@@ -115,12 +116,12 @@ end
 %% Equilibrium equation error
 fe      = func('f',se,xe,ze,[],[],[],params,output);
 
-Ef      = min(max(-fe,LB-xe),UB-xe);
-Ef      = abs(Ef);
-Ef_res  = [max(Ef);
-           mean(Ef)];
+Ef      = abs(min(max(-fe,LB-xe),UB-xe));
+lEf     = log10(Ef);
+Ef_res  = [log10(max(Ef));
+           log10(sum(Ef)/size(Ef,1))];
 
-disp(' Equilibrium equation error (minmax formulation)');
+disp(' Equilibrium equation error (in log10 units)');
 disp('    Max       Mean');
 disp(Ef_res');
 

@@ -1,25 +1,40 @@
-function Publish_recs_help
+function Publish_recs_help(website)
 % PUBLISH_RECS_HELP publishes help pages to html
 
 % Copyright (C) 2011-2012 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
+%% Initialization
+if nargin < 1, website = 0; end
+
 recsdirectory   = fileparts(which('recsSimul'));
-targetdirectory = fullfile(recsdirectory,'html');
+if website
+  targetdirectory = fullfile(recsdirectory,'www');
+else
+  targetdirectory = fullfile(recsdirectory,'html');
+end
 PublishOptions = struct('outputDir',targetdirectory);
 if exist('html.xsl','file')
   PublishOptions = catstruct(PublishOptions,struct('stylesheet','html.xsl'));
+  if website
+    PublishOptions = catstruct(PublishOptions,struct('stylesheet','htmlwithmenu.xsl'));
+  end
 end
 PublishOptionsNoExec = catstruct(PublishOptions,struct('evalCode',false));
 PublishOptionsNoShow = catstruct(PublishOptions,struct('showCode',false));
 
-delete(fullfile(recsdirectory,'html','*.png'));
-delete(fullfile(recsdirectory,'html','*.txt'));
-delete(fullfile(recsdirectory,'html','*.yaml'));
-delete(fullfile(recsdirectory,'html','*.html'));
+%% Clear the target directory
+delete(fullfile(targetdirectory,'*.png'));
+delete(fullfile(targetdirectory,'*.txt'));
+delete(fullfile(targetdirectory,'*.yaml'));
+delete(fullfile(targetdirectory,'*.html'));
 
 %% Documentation
 publish('recs_product_page.m',PublishOptions);
+if website
+  copyfile(fullfile(targetdirectory,'recs_product_page.html'),...
+           fullfile(targetdirectory,'index.html'));
+end
 
 % Getting started
 publish('getting_started.m',PublishOptions);
@@ -46,6 +61,7 @@ publish('finite_horizon.m',PublishOptions);
 publish('deterministic.m',PublishOptions);
 publish('ug_solvers_eq.m',PublishOptions);
 publish('ug_methods.m',PublishOptions);
+publish('ug_options.m',PublishOptions);
 
 % Others
 publish('recs_functions.m',PublishOptions);
@@ -93,7 +109,8 @@ publish('sto2model.m',PublishOptionsNoExec);
 publish('sto4model.m',PublishOptionsNoExec);
 publish('sto5model.m',PublishOptionsNoExec);
 publish('sto6model.m',PublishOptionsNoExec);
-delete(fullfile(recsdirectory,'html','clearpublish.html'));
+delete(fullfile(targetdirectory,'clearpublish.html'));
 cd(currentfolder)
 
-builddocsearchdb(fullfile(recsdirectory,'html'));
+%% Build search database
+if ~website, builddocsearchdb(targetdirectory); end

@@ -69,16 +69,17 @@ smax          = [1.15*sss(1) max(model.e)*4];
 [interp,x] = recsFirstGuess(interp,model,s,sss,xss,50);
 
 %% Define options
-% With Chebyshev polynomials, extrapolation outside the state space should not
-% be allowed.
+% With high order Chebyshev polynomials, extrapolation outside the state space
+% should not be allowed to prevent explosive values.
 options = struct('reesolver','mixed',...
-                 'extrapolate',0);
+                 'extrapolate',0    ,...
+                 'accuracy'   ,1);
 
 %% Solve for rational expectations
 interp = recsSolveREE(interp,model,s,x,options);
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200);
+[~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200,[],options);
 subplot(2,2,1)
 xlabel('Capital stock')
 ylabel('Frequency')

@@ -44,7 +44,7 @@ smin          = [min(model.e(:,1))*0.95; 0.4 ];
 smax          = [1.6;                    2.12];
 %%
 % Interpolation structure
-[interp,s]    = recsinterpinit(15,smin,smax);
+[interp,s]    = recsinterpinit(25,smin,smax);
 
 %% Find a first guess through the perfect foresight solution
 % We use the solver |ncpsolve| because |lmmcp| does not work in this case:
