@@ -34,6 +34,7 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 % SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER,SHOCKS,OPTIONS) simulates the model with
 % the parameters defined by the structure OPTIONS. The fields of the structure are
 %    accuracy         : 1 to check accuracy on the asymptotic distribution (default: 0)
+%    display          : 1 (default) to display outputs
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
 %    extrapolate      : 1 if extrapolation is allowed outside the
@@ -83,6 +84,7 @@ if ~isempty(shocks) && numel(shocks)~=d, nper = size(shocks,3); end
 
 defaultopt = struct(...
     'accuracy'        , 0                                  ,...
+    'display'         , 1                                  ,...
     'eqsolver'        , 'lmmcp'                            ,...
     'eqsolveroptions' , struct('DerivativeCheck', 'off'    ,...
                                'Jacobian'       , 'on')    ,...
@@ -102,6 +104,7 @@ else
   options = catstruct(defaultopt,options);
 end
 
+display         = options.display;
 extrapolate     = options.extrapolate;
 functional      = options.functional;
 funapprox       = lower(options.funapprox);
@@ -237,20 +240,24 @@ if (nargout==5 || statdisplay) && (nper > 40)
   varX = mean(y.*y,1);
   stat.moments = [mX' sqrt(varX)' (mean(y.^3,1)./varX.^1.5)' ...
                   (mean(y.^4,1)./(varX.*varX))' min(X)' max(X)' pLB' pUB'];
-  disp('Statistics from simulated variables (excluding the first 20 observations):');
-  disp(' Moments');
-  disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
-  disp(stat.moments(1:d,1:end-2))
-  disp(stat.moments(d+1:end,:))
+  if display==1
+    disp('Statistics from simulated variables (excluding the first 20 observations):');
+    disp(' Moments');
+    disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
+    disp(stat.moments(1:d,1:end-2))
+    disp(stat.moments(d+1:end,:))
+  end
 
   stat.cor = corrcoef(X);
-  disp(' Correlation');
-  disp(stat.cor);
+  if display==1
+    disp(' Correlation');
+    disp(stat.cor);
 
-  figure
-  for i=1:d+m
-    subplot(ceil((d+m)/ceil(sqrt(d+m))),ceil(sqrt(d+m)),i)
-    hist(X(:,i),log2(size(X,1))+1)
+    figure
+    for i=1:d+m
+      subplot(ceil((d+m)/ceil(sqrt(d+m))),ceil(sqrt(d+m)),i)
+      hist(X(:,i),log2(size(X,1))+1)
+    end
   end
 
   X = cat(2,ssim,xsim);
@@ -259,10 +266,12 @@ if (nargout==5 || statdisplay) && (nper > 40)
   for n=1:nrep
     stat.acor = stat.acor+autocor(X(:,:,n))/nrep;
   end
-  disp(' Autocorrelation');
-  disp('    1         2         3         4         5');
-  disp(stat.acor(1:d,:));
-  disp(stat.acor(d+1:end,:));
+  if display==1
+    disp(' Autocorrelation');
+    disp('    1         2         3         4         5');
+    disp(stat.acor(1:d,:));
+    disp(stat.acor(d+1:end,:));
+  end
 end
 
 %% Check accuracy

@@ -41,13 +41,15 @@ function [se,lEE,lEf] = recsAccuracy(model,interp,s,options)
 
 %% Initialization
 % Options
-defaultopt  = struct('extrapolate',1);
-if nargin <=4
+defaultopt  = struct('display'    , 1,...
+                     'extrapolate',1);
+if nargin <4
   options   = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   options   = catstruct(defaultopt,options);
 end
+display     = options.display;
 extrapolate = options.extrapolate;
 
 e      = model.e;
@@ -99,7 +101,7 @@ end
 p         = size(h,2);
 ze        = reshape(w'*reshape(h,k,n*t*p),n*t,p);
 
-disp('Accuracy of the solution');
+if display==1, disp('Accuracy of the solution'); end
 
 %% Euler equation error
 EE      = func('e',se,xe,ze,[],[],[],params);
@@ -107,7 +109,7 @@ lEE     = log10(abs(EE));
 lEE_res = [log10(max(abs(EE)));
            log10(sum(abs(EE))/size(EE,1))];
 
-if ~isnan(lEE_res)
+if display==1 & ~isnan(lEE_res)
   disp(' Euler equation error (in log10)');
   disp('    Max       Mean');
   disp(lEE_res');
@@ -121,8 +123,9 @@ lEf     = log10(Ef);
 Ef_res  = [log10(max(Ef));
            log10(sum(Ef)/size(Ef,1))];
 
-disp(' Equilibrium equation error (in log10 units)');
-disp('    Max       Mean');
-disp(Ef_res');
-
+if display==1
+  disp(' Equilibrium equation error (in log10 units)');
+  disp('    Max       Mean');
+  disp(Ef_res');
+end
 
