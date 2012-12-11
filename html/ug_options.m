@@ -1,4 +1,6 @@
 %% Options
+%
+%% Options structure
 % Most RECS functions can have their behavior changed by adjusting
 % options. Options take the form of a structure whose possible fields are
 % described in the following table. You can set values of these fields using
@@ -44,7 +46,13 @@
 %     </tr>
 %     <tr>
 %       <td> <tt>funapprox</tt> </td>
-%       <td> Functional approximated to find the rational expectations solution: '<tt>expapprox</tt>', '<tt>expfunapprox</tt>', '<tt>resapprox-simple</tt>' or '<tt>resapprox-complete</tt>' (default). </td>
+%       <td> Functional approximated to find the rational expectations solution:
+%         <ul>
+%           <li> '<tt>expapprox</tt>': expectations (variables <tt>z</tt>), similar to the parameterized expectations approach of den Haan and Marcet (1990).</li>
+%           <li> '<tt>expfunapprox</tt>': expectations function (function <tt>h</tt>).</li>
+%           <li> '<tt>resapprox-simple</tt>' or '<tt>resapprox-complete</tt>' (default): response variables (variables <tt>x</tt>).</li>
+%         </ul>
+%       </td>
 %       <td> <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
 %     </tr>
 %     <tr>
@@ -100,3 +108,8 @@
 %     </tr>
 %   </table>
 % </html>
+%
+%% References
+% <http://www.jstor.org/stable/1391746 den Haan, W. J. and Marcet, A.
+% (1990). Solving the Stochastic Growth Model by Parameterizing
+% Expectations. _Journal of Business & Economic Statistics_, 8(1), 31-34.>
