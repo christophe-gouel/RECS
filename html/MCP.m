@@ -1,13 +1,13 @@
 %% Introduction to mixed complementarity problems
 % To be able to reliably solve models with occasionally binding constraints, all
-% equilibrium equations are represented in RECS as mixed complementarity
-% problems (MCP), so we present here a short introduction to this kind of
+% equilibrium equations should be represented in RECS as mixed complementarity
+% problems (MCP). Here, we present a short introduction to this kind of
 % problems. For more information, see Rutherford (1995), and Ferris and Pang
 % (1997).
 
 %% Definition of a mixed complementarity problem
-% Complementarity problem can be seen as an extension of square system of
-% nonlinear equations that incorporates a mixture of equations and
+% Complementarity problems can be seen as extensions of square systems of
+% nonlinear equations that incorporate a mixture of equations and
 % inequalities. Many economic problems can be expressed as complementarity
 % problems. An MCP is defined as follows (adapted from Munson, 2002):
 %
@@ -28,10 +28,10 @@
 %
 % $F_i(x)<0$ and $x_i=u_i$.
 %
-% To sum up, an MCP problem associates each variable, $x_i$, to a lower bound,
-% $l_i$, an upper bound, $u_i$, and an equation, $F_i(x)$. The solution is such
-% that if $x_i$ is between its bounds then $F_i(x)=0$. If $x_i$ is equal to its
-% lower (upper) bound then $F_i(x)$ is positive (negative).
+% To summarize, an MCP problem associates each variable, $x_i$, to a lower
+% bound, $l_i$, an upper bound, $u_i$, and an equation, $F_i(x)$. The solution
+% is such that if $x_i$ is between its bounds then $F_i(x)=0$. If $x_i$ is equal
+% to its lower (upper) bound then $F_i(x)$ is positive (negative).
 %
 % This format encompasses several cases. In particular, it is easy to see that
 % with infinite lower and upper bounds, solving an MCP problem is equivalent to
@@ -41,12 +41,12 @@
 
 %% A simple example of mixed complementarity
 % We consider here the traditional consumption/saving problem with borrowing
-% constraint (Deaton, 1991). This problem is solved as demonstration, see
+% constraint (Deaton, 1991). This problem is solved as a demonstration, see
 % <cs1.html CS1>. A consumer with utility $\sum_{t=0}^{\infty}
 % u(C_t)/(1+\delta)^t$ has a stochastic income, $Y_t$ and has to choose each
 % period how much to consume and how much to save. He is prevented from
 % borrowing, but can save at the rate $r$. Without the borrowing constraint, his
-% problem consists in choosing its consumption $C_t$ such that it satisfies the
+% problem consists of choosing its consumption $C_t$ such that it satisfies the
 % standard Euler equation:
 %
 % $$u'\left(C_{t}\right)=\frac{1+r}{1+\delta}\mathrm{E}_{t}\left[u'\left(C_{t+1}\right)\right].$$
@@ -56,10 +56,10 @@
 %
 % $$X_{t}=\left(1+r\right)\left(X_{t-1}-C_{t-1}\right)+Y_{t}.$$
 %
-% When the constraint is binding (i.e., $C_t=X_t$), the Euler equation does no
-% longer hold. The consumer would like to borrow but cannot, so its marginal
-% utility of immediate consumption is higher than its discounted marginal utility
-% over future consumption:
+% When the constraint is binding (i.e., $C_t=X_t$), the Euler equation no longer
+% holds. The consumer would like to borrow but cannot, so its marginal utility
+% of immediate consumption is higher than its discounted marginal utility over
+% future consumption:
 %
 % $$u'\left(C_{t}\right) \ge \frac{1+r}{1+\delta}\mathrm{E}_{t}\left[u'\left(C_{t+1}\right)\right].$$
 %
@@ -69,9 +69,9 @@
 % $$C_{t}\le X_{t} \quad \perp \quad \frac{1+r}{1+\delta}\mathrm{E}_{t}\left[u'\left(C_{t+1}\right)\right]\le u'\left(C_{t}\right).$$
 
 %% When do complementarity problems arise?
-% In addition to encompass nonlinear systems of equations, complementarity
-% problems appear naturally in economics. Without pretending to be exhaustive,
-% here are a few situations that lead to complementarity problems:
+% In addition to encompassing nonlinear systems of equations, complementarity
+% problems appear naturally in economics. Although not exhaustive, we provide
+% here a few situations that lead to complementarity problems:
 %
 % * *Karush-Kuhn-Tucker conditions* of a constrained nonlinear program. The
 % first-order conditions of the following nonlinear programming problem
@@ -79,15 +79,15 @@
 % a system of complementarity equations: $l\le x\le u \perp f'(x)-\lambda
 % g'(x)$ and $\lambda\ge 0 \perp -g(x)\ge 0$, where $\lambda$ is the Lagrange
 % multiplier on the first inequality constraint.
-% * Natural representation of *regime-switching behaviors*. Let's consider two
+% * Natural representation of *regime-switching behaviors*. Let us consider two
 % examples. First, a variable $y$ that is determined as a function of another
 % variable $x$ as long as $y$ is superior to a lower bound $a$. Put simply:
 % $y=\max\left[a,\lambda\left(x\right)\right]$. In MCP, we would write this as
 % $y\ge a \perp y\ge \lambda\left(x\right)$. Second, a system of intervention
-% price in which a public stock is accumulated when prices decrease below an
+% prices in which a public stock is accumulated when prices decrease below the
 % intervention price and sold when they exceed the intervention price (see also
 % <sto2.html STO2>) can be represented as $S\ge 0 \perp P-P^I\ge 0$, where $S$,
-% $P$ and $P^I$ are, respectively, the public storage, the price and the
+% $P$ and $P^I$, respectively, are the public storage, the price and the
 % intervention price.
 % * *A Walrasian equilibrium* can be formulated as a complementarity problem
 % (Mathiesen, 1987) by associating three sets of variables to three sets of
@@ -96,12 +96,12 @@
 % levels are associated to income balance.
 
 %% Conventions of notations adopted for representing and solving complementarity problems
-% For solving complementarity problems, RECS uses several solvers listed in
+% To solve complementarity problems, RECS uses several solvers listed in
 % <ug_solvers_eq.html MCP solvers>. The convention adopted in most MCP
-% solvers and used by RECS is the one used above in MCP definition: superior
+% solvers and used by RECS is the one used above in the MCP definition: superior
 % or equal inequalities are associated with the lower bounds and inferior or
 % equal inequalities are associated with the upper bounds. So, when defining
-% your model, be careful to respect this convention.
+% your model, take care to respect this convention.
 %
 % In addition, in Yaml files inequalities should not be written
 % explicitly. As an example, let's consider these 5 equations:
@@ -124,12 +124,12 @@
 %    - J(k)   |    a<=k<=b
 %    - -M(l)  |    a<=l<=inf
 %
-% As you can note, one needs to associate lower and upper bounds with every
+% Note that it is necessary to associate lower and upper bounds with every
 % variables, and the "perp" symbol ($\perp$) is substituted by the vertical bar
 % (|). So if there are no finite bounds, one has to associate infinite
-% bounds. The last equation was not respecting the convention that associates
-% lower bounds on variables with superior or equal inequality, so one should be
-% careful when writing it in the Yaml file to reverse the sign of the equation.
+% bounds. The last equation does not respect the convention that associates
+% lower bounds on variables with superior or equal inequality, so, when writing
+% it in the Yaml file, the sign of the equation needs to be reversed.
 
 %% References
 % <http://www.jstor.org/stable/2938366 Deaton, A. (1991). Saving and liquidity

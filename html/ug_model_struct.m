@@ -1,10 +1,10 @@
 %% Define the model structure
 % Now the model should be written in a Yaml file, however Matlab does not know
-% anything about the Yaml file and even if it did, such a file is easy to read
-% and write for human, but does not mean anything for Matlab. So we have to tell
-% Matlab to use the Yaml file and to convert it to a format suitable for
-% Matlab. We have also to provide additional information about the structure of
-% shocks.
+% anything about the Yaml file and, even if it did, although the file is easy
+% for humans to read and write, it means nothing to Matlab. So we
+% have to tell Matlab to use the Yaml file and to convert it to a format
+% suitable for Matlab. Also, we have to provide additional information about the
+% structure of shocks.
 
 %% Convert the Yaml file and create the model structure
 % This task is done by the function |recsmodelinit| that calls a Python
@@ -28,40 +28,40 @@
 
 %% Shocks with a Gaussian distribution
 % If your shocks follow a Gaussian distribution, you can also define their
-% structure when calling |recsmodelinit|. It requires to define a structure with
-% 3 fields characterizing the distribution mean, variance/covariance, and order
-% of approximation, with the call
+% structure when calling |recsmodelinit|. It requires defining a structure with
+% three fields characterizing the distribution mean, variance/covariance, and
+% order of approximation, with the call
 %
 %  model = recsmodelinit('file.yaml',...
 %                        struct('Mu',Mu,'Sigma',Sigma,'order',order));
 %
-% Here |Mu| is a size-q vector of the distribution mean; |Sigma| is a q-by-q
-% positive definite variance/covariance matrix; and |order| is a scalar or a
+% Here |Mu| is a size-q vector of the distribution mean, |Sigma| is a q-by-q
+% positive definite variance/covariance matrix, and |order| is a scalar or a
 % size-q vector equal to the number of nodes for each shock variable.
 %
-% This function call creates at least 3 additional fields in the model
+% This function call creates at least three additional fields in the model
 % structure: |e| a matrix of the nodes for the shocks discretization; |w| the
 % vector of associated probabilities; and |funrand| an anonymous function that
 % can generate random numbers corresponding to the underlying distribution.
 %
 % If a first-guess for the deterministic steady state has been provided,
 % |recsmodelinit| attempts also to find the deterministic steady state of the
-% problem. If it finds it, it is displayed on screen and output as 3 fields in
-% the model structure: |sss|, |xss|, and |zss| for, respectively, the
+% problem. If it finds it, it is displayed on screen and output as three fields
+% in the model structure: |sss|, |xss|, and |zss| for, respectively, the
 % steady-state values of state, response and expectations variables.
 
 %% An example
-% Let's consider the example of the stochastic growth model. The complete
+% Let us consider the example of the stochastic growth model. The complete
 % function call in <gro1.html gro1.m> is:
 model = recsmodelinit('gro1.yaml',...
                       struct('Mu',0,'Sigma',0.007^2,'order',5));
 %%
 % It is *important to notice* that variables names are not displayed here and
-% they won't be in later steps. Variables names are only used in the symbolic
-% model definition in the Yaml file. Once the Yaml file has been processed,
-% variables are just ordered based on their original order in the Yaml file. In
-% this case, it means that, in the steady-state results above, for state
-% variables the first number is for capital and the second is for the log of
+% will not be displayed in subsequent steps. Variable names are used only in the
+% symbolic model definition in the Yaml file. Once the Yaml file has been
+% processed, variables are merely ordered based on their original order in the
+% Yaml file. In this case, it means that, in the steady-state results above, for
+% the state variables the first number is capital and the second is the log of
 % productivity.
 
 %%

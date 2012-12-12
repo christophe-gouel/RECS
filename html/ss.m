@@ -1,7 +1,7 @@
 %% Steady state
-% Contrary to pertubation approaches, the deterministic steady state does not
-% play an important role for finding the rational expectations equilibrium with
-% collocation methods, and so with RECS. However, finding the deterministic
+% In contrast to pertubation approaches, the deterministic steady state does not
+% play an important role in finding the rational expectations equilibrium with
+% collocation methods, and thus with RECS. However, finding the deterministic
 % steady state proved very useful in the overall model building for
 %
 % * Calibration
@@ -27,12 +27,12 @@
 % *Automatically when initializing model structure*
 %
 % When writing a model file (see <ug_model_files.html Writing RECS model files>,
-% it is possible to define at the end of the Yaml file in the |calibration|
-% block an initial guess for finding the steady state. When the model structure
+% it is possible, at the end of the Yaml file in the |calibration| block, to
+% define an initial guess for finding the steady state. When the model structure
 % is created by |recsmodelinit|, if the definition of the shocks is provided to
 % |recsmodelinit|, a Newton-type solver will attempt to find the steady state
 % starting from the initial guess provided in the model file. If a steady state
-% is found, it is then displayed in Matlab command window.
+% is found, it is displayed in Matlab command window.
 %
 % *Manually*
 %
@@ -47,13 +47,13 @@
 %
 % *Calibration*
 %
-% The deterministic steady state is, comparatively to the stochastic rational
-% expectations problem, easy to find. It does not even require the definition of
-% an interpolation structure to be found. Since it is in practice often close to
-% the long-run average values of the stochastic problem, the steady state is
-% useful for calibrating the model so that it can reproduce on the asymptotic
-% distribution the desired long-run average. See <calibration.html Calibration>
-% for more information.
+% Compared to the stochastic rational expectations problem, the deterministic
+% steady state is easy to find. It does not even require the definition of an
+% interpolation structure. Since in practice it is often close to the long-run
+% average values of the stochastic problem, the steady state is useful for
+% calibrating the model so that, on the asymptotic distribution, the model can
+% reproduce the desired long-run average. See <calibration.html Calibration> for
+% more information.
 %
 % *Define the approximation space*
 %
@@ -65,14 +65,13 @@
 % *First guess calculation for the stochastic problem*
 %
 % The rational expectations solver requires a good first guess to ensure
-% convergence to the solution. RECS proposes to provide this first-guess for you
-% by calculating the perfect foresight problem corresponding to the stochastic
+% convergence to the solution. RECS proposes to provide a first guess by
+% calculating the perfect foresight problem corresponding to the stochastic
 % problem. The perfect foresight problem assumes that the model converges in the
 % long-run to its deterministic steady state. See <first_guess.html> for more.
 %
 % *Checking model structure*
 %
-% Before solving the stochastic problem, even if you have no use of the steady
-% state for the above motives, it is still a good practice to find it in order
-% to ensure that the model written in the Yaml file behaves as expected in this
-% simple case.
+% Before solving the stochastic problem, even if there are no motives for using
+% the steady state, it is good practice to find it in order to ensure that the
+% model written in the Yaml file behaves as expected in this simple case.

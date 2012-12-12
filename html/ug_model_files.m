@@ -2,9 +2,9 @@
 
 %% Structure of a rational expectation models
 % Before starting to write the model file, you need to organize your equations
-% in the way described in <def_sre.html Definition of a stochastic rational
-% expectations problem>. This means that you need to identify and separate in
-% your model the three following group of equations:
+% as described in <def_sre.html Definition of a stochastic rational expectations
+% problem>. This means that you need to identify and separate in your model the
+% following three group of equations:
 %
 % *Equilibrium equations*
 %
@@ -22,21 +22,21 @@
 % state variables. Currently, RECS relies for interpolation on grids constructed
 % with tensor products, so the dimension of the problem increases exponentially
 % with the number of state variables. This implies that RECS should be used only
-% to solve small-scale models, which means that with more than 3 or 4 state
-% variables the problems may start to be too large to handle. One way of
-% reducing the problem size is, when it is possible, to sum together the
-% predetermined variables than can be summed. You can see in demonstrations
-% files (e.g., <cs1.html CS1> or <sto1.html STO1>) that states variables are
-% occasionaly defined as sums of other predetermined variables.
+% to solve small-scale models: with more than three or four state variables may
+% make the problems too large to handle. One way of reducing the problem size
+% is, whenever possible, to sum together the predetermined variables that can be
+% summed. You can see in the demonstrations files (e.g., <cs1.html CS1> or
+% <sto1.html STO1>) that states variables are occasionaly defined as sums of
+% other predetermined variables.
 
 %% Structure of RECS model files
-% A RECS model can be written in a way that is quite similar to the original
+% An RECS model can be written in a way that is quite similar to the original
 % mathematical notations (as is proposed in most algebraic modeling
-% languages). The model file that has to be created is called a Yaml file
-% (because it is written in <http://yaml.org YAML> and ends with the |.yaml|
-% extension). A Yaml file is easily readable by human, but not by Matlab. So the
-% file needs to be processed for Matlab to be able read it. This is done by the
-% function <matlab:doc('recsmodelinit') |recsmodelinit|>, which calls a Python
+% languages). The model file that must be created is called a Yaml file (because
+% it is written in <http://yaml.org YAML> and has the |.yaml| extension). A Yaml
+% file is easily readable by human, but not by Matlab. So the file needs to be
+% processed for Matlab to be able read it. This is done by the function
+% <matlab:doc('recsmodelinit') |recsmodelinit|>, which uses a Python
 % preprocessor, |dolo-recs|, to do the job.
 %
 % RECS Yaml files require three basic components, written successively:
@@ -44,15 +44,16 @@
 % * |declarations| - The block |declarations| contains the declaration of all
 % the variables, shocks and parameters that are used in the model. Inside this
 % block, there are five sub-blocks: |states|, |controls|, |expectations|,
-% |shocks|, and |parameters| with the corresponding elements declaration.
+% |shocks|, and |parameters| with corresponding elements declarations.
 % * |equations| - The block |equations| declares model's equations.
 % * |calibration| - The block |calibration| provides numerical values for
 % parameters and a first-guess for the deterministic steady-state.
 %
 % *Yaml file structure*
 %
-% To illustrate a complete Yaml file lets consider how one would write in Yaml a
-% standard stochastic growth model (see <gro1.html GRO1> for the complete example):
+% To illustrate a complete Yaml file let us consider how to write a standard
+% stochastic growth model in Yaml (see <gro1.html GRO1> for the complete
+% example):
 %
 %  declarations:
 %
@@ -111,18 +112,18 @@
 % conventions:
 %
 % * *Association equilibrium equations/control variables/bounds:* Each
-% equilibrium equation has to be associated to a control variable. It really
-% matters for equations with complementarity constraints, if it is not the case,
-% the precise association does not matter. The equation and its associated
-% variable are separated by the symbol |. Control variables have to be
+% equilibrium equation must be associated with a control variable. This matters
+% absolutely for equations with complementarity constraints, if it is not the
+% case, the precise association does not matter. The equation and its associated
+% variable are separated by the symbol |. Control variables must be
 % associated with bounds, which can be infinite.
-% * *Indentation:* Inside each block the elements of same scope have to be
+% * *Indentation:* Inside each block elements of the same scope have to be
 % indented using the same number of spaces (do not use tabs). For the above
 % example, inside the |declarations| block, |states|, |controls|,
-% |expectations|, |shocks|, and |parameters| are indented at the same
+% |expectations|, |shocks|, and |parameters| are indented to the same
 % level.
-% * Each equation starts with a dash and a space ("- "), not to be confounded
-% with a minus sign. To avoid confusion, it is possible to use instead two
+% * Each equation starts with a dash and a space ("- "), not to be confused
+% with a minus sign. To avoid confusion, it is possible instead to use two
 % points and a space (".. "), or two dashes and a space ("-- ").
 % * *Comments:* Comments are introduced by the character |#|.
 % * *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.
@@ -130,6 +131,6 @@
 % state variable at current time as a function of lagged response and state
 % variables: $s_t = g(s_{t-1},x_{t-1},e_t).$
 % * Do not use |lambda| as a variable/parameter name, this is a restricted word.
-% * Write equations in the same order than the order of variables declaration.
+% * Write equations in the same order as the order of variables declaration.
 % * Yaml files are case sensitive.
 %

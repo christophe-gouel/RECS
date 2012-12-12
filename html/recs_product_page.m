@@ -1,8 +1,8 @@
 %% RECS toolbox
 % RECS is a MATLAB solver for dynamic, stochastic, rational expectations
-% equilibrium models. RECS stands for Rational Expectations Complementarity
-% Solver, which emphasizes the fact that RECS is specifically developed to solve
-% models that include complementarity equations, also known as models with
+% equilibrium models. RECS stands for "Rational Expectations Complementarity
+% Solver". This name emphasizes that RECS has been developed specifically to
+% solve models that include complementarity equations, also known as models with
 % occasionally binding constraints.
 %
 % RECS is designed to solve small-scale nonlinear and complementarity models,
@@ -38,8 +38,7 @@
 % RECS source code and development version is available at
 % <https://github.com/christophe-gouel/recs>.
 %
-% If you find a bug, <https://github.com/christophe-gouel/RECS/issues please
-% report it>.
+% Bugs should be reported at <https://github.com/christophe-gouel/RECS/issues>.
 %
 % <html>
 % <h2>Acknowledgments</h2>
@@ -50,7 +49,7 @@
 % exist without these earlier contributions. RECS benefited also of many inputs
 % from Pablo Winant, especially with respect to models' parsing.
 %
-% This work was generously supported by 
+% This work was generously supported by
 %
 % * the European Union's Seventh Framework Programme FP7/2007-2011 under Grant
 %   Agreements #212036 AgFoodTRAde (for solver development);

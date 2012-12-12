@@ -1,27 +1,27 @@
 %% Define the interpolation structure
-% Following the two previous steps (<ug_model_files.html Writing RECS model
+% Following the previous two steps (<ug_model_files.html Writing RECS model
 % files> and <ug_model_struct.html Defining the model structure>) to completely
-% define the problem, it remains to define the domain over which it will be
+% define the problem, it remains only to define the domain over which it will be
 % approximated and the precision of the approximation.
 
 %% Create the interpolation structure
-% This task is done by the function |recsinterpinit|, which requires at least 3
-% inputs: the number of points on the grid of approximation, the lower bounds and
-% the upper bounds of the grid.
+% This task is done by the function |recsinterpinit|, which requires at least
+% three inputs: the number of points on the grid of approximation, the lower
+% bounds and the upper bounds of the grid.
 %
 % The structure of the call to |recsinterpinit| is then
 %
 %  [interp,s] = recsinterpinit(n,smin,smax,method);
 %
-% The inputs are the following ones: |n| designates the order of approximation
-% (if it is a scalar, the same order is applied for all dimensions), |smin| and
-% |smax| are size-d vectors of left and right endpoints of the state space,
-% and the (optional) string |method| defines the interpolation method, either
-% spline (|'spli'|, default), or Chebyshev polynomials (|'cheb'|).
+% The inputs are as follows: |n| designates the order of approximation (if it is
+% a scalar, the same order is applied for all dimensions), |smin| and |smax| are
+% size-d vectors of left and right endpoints of the state space, and the
+% (optional) string |method| defines the interpolation method, either spline
+% (|'spli'|, default), or Chebyshev polynomials (|'cheb'|).
 %
-% This function call returns 2 variables: the structure |interp|, which defines
-% the interpolation structure, and the matrix |s|, which represents the state
-% variables on the grid.
+% This function call returns two variables: the structure |interp|, which
+% defines the interpolation structure, and the matrix |s|, which represents the
+% state variables on the grid.
 
 %% An example
 % We now define the interpolation structure for the stochastic growth model
