@@ -27,22 +27,22 @@
 %     <tr>
 %       <td> <tt>display</tt> </td>
 %       <td> <tt>1</tt> (default) to display output (solver iterations or results), <tt>0</tt> to prevent display. </td>
-%       <td> <a href="matlab:doc('recsAccuracy')"> <tt>recsAccuracy</tt> </a>, <a href="matlab:doc('recsmodelinit')"> <tt>recsmodelinit</tt> </a>, <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsAccuracy')"><tt>recsAccuracy</tt></a>, <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>eqsolver</tt> </td>
 %       <td> Solver for equilibrium equations: '<tt>fsolve</tt>', '<tt>lmmcp</tt>' (default), '<tt>ncpsolve</tt>' or '<tt>path</tt>', see <a href="ug_solvers_eq.html"> Solvers for equilibrium equations</a>. </td>
-%       <td>  <a href="matlab:doc('recsFirstGuess')"> <tt>recsFirstGuess</tt> </a>, <a href="matlab:doc('recsmodelinit')"> <tt>recsmodelinit</tt> </a>,<a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a>, <a href="matlab:doc('recsSS')"> <tt>recsSS</tt> </a> </td>
+%       <td>  <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a>, <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a>, <a href="matlab:doc('recsSS')"><tt>recsSS</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>eqsolveroptions</tt> </td>
 %       <td> Options structure to be passed to eqsolver. </td>
-%       <td> <a href="matlab:doc('recsFirstGuess')"> <tt>recsFirstGuess</tt> </a>, <a href="matlab:doc('recsmodelinit')"> <tt>recsmodelinit</tt> </a>,<a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a>, <a href="matlab:doc('recsSS')"> <tt>recsSS</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a>, <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a>, <a href="matlab:doc('recsSS')"><tt>recsSS</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>extrapolate</tt> </td>
 %       <td> <tt>1</tt> (default) if extrapolation is allowed outside the interpolation space or <tt>0</tt> to forbid it. </td>
-%       <td> <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>funapprox</tt> </td>
@@ -53,48 +53,48 @@
 %           <li> '<tt>resapprox-simple</tt>' or '<tt>resapprox-complete</tt>' (default): response variables (variables <tt>x</tt>).</li>
 %         </ul>
 %       </td>
-%       <td> <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>functional</tt> </td>
 %       <td> <tt>1</tt> if the equilibrium equations are a functional equation problem (default: <tt>0</tt>), used to solve optimal discretionary policy. </td>
-%       <td> <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>loop_over_s</tt> </td>
 %       <td> <tt>0</tt> (default) to solve all grid points at once or <tt>1</tt> to loop over each grid points. </td>
-%       <td> <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>reemethod</tt> </td>
 %       <td> '<tt>iter</tt>' (default), '<tt>iter-newton</tt>' or '<tt>1-step</tt>'. </td>
-%       <td> <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>reesolver</tt> </td>
 %       <td> Solver for the rational expectations equilibrium, expected values depend on <tt>reemethod</tt>:
 %            <ul>
 %              <li> if <tt>iter</tt>: '<tt>kinsol</tt>', '<tt>krylov</tt>', '<tt>mixed</tt>', or '<tt>SA</tt>' (default).</li>
-%              <li> if <tt>iter-newton</tt>: '<tt>fsolve</tt>', '<tt>lmmcp</tt>', '<tt>ncpsolve</tt>' or '<tt>path</tt>', see <a href="ug_solvers_eq.html"> Solvers for equilibrium equations</a>.</li>
+%              <li> if <tt>iter-newton</tt>: '<tt>fsolve</tt>', '<tt>lmmcp</tt>', '<tt>ncpsolve</tt>' or '<tt>path</tt>', see <a href="ug_solvers_eq.html">Solvers for equilibrium equations</a>.</li>
 %              <li> if <tt>1-step</tt>: irrelevant, the solver is determined by <tt>eqsolver</tt>.</li>
 %            </ul>
 %       </td>
-%       <td> <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>reesolveroptions</tt> </td>
 %       <td> Options structure to be passed to reesolver. </td>
-%       <td> <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>simulmethod</tt> </td>
-%       <td> Method of simulation: '<tt>interpolation</tt>' (default) or '<tt>solve</tt>', see <a href="simulate.html"> Simulate the model</a>. </td>
-%       <td>  <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a> </td>
+%       <td> Method of simulation: '<tt>interpolation</tt>' (default) or '<tt>solve</tt>', see <a href="simulate.html">Simulate the model</a>. </td>
+%       <td>  <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>stat</tt> </td>
-%       <td> <tt>1</tt> to ouput summary statistics from the simulation (default: <tt>0</tt>), see <a href="simulate.html"> Simulate the model</a>. </td>
-%       <td> <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a> </td>
+%       <td> <tt>1</tt> to ouput summary statistics from the simulation (default: <tt>0</tt>), see <a href="simulate.html">Simulate the model</a>. </td>
+%       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>useapprox</tt> </td>
@@ -104,7 +104,7 @@
 %             interpolated. If <tt>1</tt> and funapprox is '<tt>resapprox</tt>', the guess of
 %             response variables is found with the new approximation structure.
 %       </td>
-%       <td> <a href="matlab:doc('recsSimul')"> <tt>recsSimul</tt> </a>, <a href="matlab:doc('recsSolveREE')"> <tt>recsSolveREE</tt> </a> </td>
+%       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %   </table>
 % </html>
