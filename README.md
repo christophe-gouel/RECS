@@ -11,8 +11,7 @@ occasionally binding constraints.
 Download
 ========
 
-RECS Toolbox zip archives are available at
-<https://github.com/christophe-gouel/RECS/downloads>.
+RECS Toolbox zip archives are available at <http://code.google.com/p/recs/>.
 
 Why is this archive 12 MB? Much of this size is due to an executable for
 Windows. The executable file includes a complete Python distribution necessary
@@ -31,7 +30,7 @@ Dependencies
 Optional dependencies
 ---------------------
 
-* [Path solver for Matlab](http://pages.cs.wisc.edu/~ferris/path.html). This is
+* [Path solver for Matlab](http://pages.cs.wisc.edu/~ferris/path.html). Path is
   the reference solver for mixed complementarity problems. Its installation is
   highly recommended if difficult complementarity problems need to be solved.
 * MATLAB Optimization Toolbox. The solver fsolve can be used to solve both the
@@ -45,9 +44,8 @@ Optional dependencies
 Installation instructions
 =========================
 
-1. [Download the latest RECS
-   archive](https://github.com/christophe-gouel/RECS/downloads) and unzip it
-   into a folder, called here `recsfolder` (avoid folder names that include
+1. [Download the latest RECS archive](http://code.google.com/p/recs/) and unzip
+   it into a folder, called here `recsfolder` (avoid folder names that include
    spaces, even for parent folders).
 2. Install the CompEcon toolbox:
    1. [Download the CompEcon toolbox archive](http://www4.ncsu.edu/~pfackler/compecon/);

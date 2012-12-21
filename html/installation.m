@@ -1,11 +1,10 @@
 %% Installation
 
 %% Download
-% RECS Toolbox zip archives are available at
-% <https://github.com/christophe-gouel/RECS/downloads>.
+% RECS Toolbox zip archives are available at <http://code.google.com/p/recs/>.
 %
 % Why is this archive 12 MB? Much of this size is due to an executable for
-% Windows. Thz executable file includes a complete Python distribution
+% Windows. The executable file includes a complete Python distribution
 % necessary to parse RECS model files.
 
 %% Dependencies
@@ -17,7 +16,7 @@
 %   reasonable time.
 
 %% Optional dependencies
-% * <http://pages.cs.wisc.edu/~ferris/path.html Path solver for Matlab>. This is
+% * <http://pages.cs.wisc.edu/~ferris/path.html Path solver for Matlab>. Path is
 %   the reference solver for <MCP.html mixed complementarity problems>. Its
 %   installation is highly recommended if difficult complementarity problems
 %   need to be solved.
@@ -30,9 +29,9 @@
 %   other distributions than the normal.
 
 %% Installation instructions
-% # <https://github.com/christophe-gouel/RECS/downloads Download the latest RECS
-% archive> and unzip it into a folder, called here |recsfolder| (avoid folder
-% names that include with spaces, even for parent folders).
+% # <http://code.google.com/p/recs/ Download the latest RECS archive> and unzip
+% it into a folder, called here |recsfolder| (avoid folder names that include
+% with spaces, even for parent folders).
 % # Install the CompEcon toolbox: (i) <http://www4.ncsu.edu/~pfackler/compecon/
 % Download the CompEcon toolbox archive>; (ii) Unzip the archive into a folder,
 % called here |compeconfolder|; (iii) Add CompEcon to the Matlab path:
@@ -60,7 +59,7 @@
 % Mac, but is usually too old to be useful.
 % * <http://pyyaml.org/wiki/PyYAML PyYaml>.
 % * <http://sympy.org SymPy>.
-% * <http://www.scipy.org/Download> SciPy>.
+% * <http://www.scipy.org/Download SciPy>.
 %
 %
 % One solution might be to install a scientific Python distribution such as
