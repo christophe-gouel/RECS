@@ -67,8 +67,8 @@ interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 [interp,x] = recsSolveREE(interp,model,s);
 
 %% Simulate the model
-
-recsSimul(model,interp,repmat([1 0],1E3,1),200);
+options.stat = 1;
+recsSimul(model,interp,repmat([1 0],1E3,1),200,[],options);
 subplot(3,3,1)
 xlabel('Availability')
 ylabel('Frequency')
