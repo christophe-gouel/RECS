@@ -10,8 +10,8 @@
 % *Shock* Production shocks ($\epsilon$) and Innovation on world price ($\nu$).
 %
 % *Parameters* Unit physical storage cost ($k$), Interest rate ($r$), Demand
-% price elasticity ($\alpha$), World price autocorrelation ($\rho$) and Trade
-% cost ($\theta$).
+% price elasticity ($\alpha$), World price autocorrelation ($\rho$), Trade cost
+% ($\theta$) and Standard deviation of innovation on world price ($\sigma$).
 %
 % *Equilibrium equations*
 %
@@ -27,7 +27,7 @@
 %
 % $$A_{t}: A_{t}=S_{t-1}+\epsilon_{t},$$
 %
-% $$P^w_{t}: \ln P^w_{t} = \rho\ln P^w_{t-1}+\nu_{t}.$$
+% $$P^w_{t}: P^w_{t} = {P^w_{t-1}}^{\rho} e^{\sigma\nu_{t}}.$$
 
 %% Writing the model
 % The model is defined in a Yaml file: <sto5.txt sto5.yaml>.

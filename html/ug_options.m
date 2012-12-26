@@ -66,6 +66,11 @@
 %       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
+%       <td> <tt>Python</tt> </td>
+%       <td> 1 to call Python directly instead of the executable file (default: 0, only for Windows and for developement).</td>
+%       <td> <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a> </td>
+%     </tr>
+%     <tr>
 %       <td> <tt>reemethod</tt> </td>
 %       <td> '<tt>iter</tt>' (default), '<tt>iter-newton</tt>' or '<tt>1-step</tt>'. </td>
 %       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>

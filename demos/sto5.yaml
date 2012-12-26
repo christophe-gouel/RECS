@@ -27,7 +27,7 @@ equations:
   transition:
 
     .. A = S(-1)+e
-    .. Pw = Pw(-1)^rho*exp(nu*sigma)/exp(1/2)
+    .. Pw = Pw(-1)^rho*exp(nu*sigma)
 
   expectation:
 
