@@ -33,6 +33,8 @@ function [model,statequant] = recsmodelinit(inputfile,shocks,outputfile,options)
 %    eqsolver         : solver used to find the steady state 'fsolve', 'lmmcp'
 %                       (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
+%    Python           : 1 to call Python directly instead of the executable file
+%                       (default: 0, only for Windows and for developement)
 %
 % [MODEL,STATEQUANT] = RECSMODELINIT(INPUTFILE,SHOCKS,...) returns the
 % 6-by-d matrix STATEQUANT that contains the quantiles (0%, 0.1%, 1%,
@@ -51,7 +53,8 @@ if nargin<3 || isempty(outputfile)
   outputfile = strrep(inputfile,'.yaml','model.m');
 end
 
-defaultopt = struct('display',1);
+defaultopt = struct('display',1,...
+                    'Python' ,0);
 if nargin<4
   options = defaultopt;
 else
@@ -62,15 +65,21 @@ end
 %% Run dolo-recs on the Yaml file
 recsdirectory = fileparts(which('recsSimul'));
 inputfiledirectory = fileparts(which(inputfile));
-dolo = fullfile(recsdirectory,'Python','dolo','src');
+dolo = fullfile(recsdirectory,'Python','dolo');
 
-if ispc
+if ispc & ~options.Python
   status = system([fullfile(dolo,'bin','dolo-recs.exe') ' ' which(inputfile) ...
                    ' ' fullfile(inputfiledirectory,outputfile)]);
 else
   dolorecs = fullfile(dolo,'bin','dolo-recs.py');
-  status = system(['PYTHONPATH=' dolo ' python ' dolorecs ' ' which(inputfile) ...
-                   ' '  fullfile(inputfiledirectory,outputfile)]);
+  if ispc
+    setenv('PYTHONPATH',dolo)
+    status = system(['python ' dolorecs ' ' which(inputfile) ...
+                     ' '  fullfile(inputfiledirectory,outputfile)]);
+  else
+    status = system(['PYTHONPATH=' dolo ' python ' dolorecs ' ' which(inputfile) ...
+                     ' '  fullfile(inputfiledirectory,outputfile)]);
+  end
 end
 
 if status~=0
