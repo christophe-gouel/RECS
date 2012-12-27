@@ -12,7 +12,7 @@
 %
 % *Expectations definition*
 %
-% $$z = \mathrm{E}_{e_{+}} \left[h(s,x,e_{+},s_{+},x_{+})\right].$$
+% $$z = \mathrm{E} \left[h(s,x,e_{+},s_{+},x_{+})\right].$$
 %
 % *Transition equations*
 %
