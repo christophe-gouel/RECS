@@ -1,4 +1,5 @@
 *#
+*.exe
 *.html
 *.log
 *.mat
@@ -16,8 +17,9 @@ startup.m
 /html/*.yaml
 /html/helpsearch/*
 
-/www/*
-
-Python/dolo/*
+Python/*
 
 recs-archive/*
+
+/www/*
+

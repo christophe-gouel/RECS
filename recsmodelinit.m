@@ -71,15 +71,10 @@ if ispc & ~options.Python
   status = system([fullfile(dolo,'bin','dolo-recs.exe') ' ' which(inputfile) ...
                    ' ' fullfile(inputfiledirectory,outputfile)]);
 else
-  dolorecs = fullfile(dolo,'bin','dolo-recs.py');
-  if ispc
-    setenv('PYTHONPATH',dolo)
-    status = system(['python ' dolorecs ' ' which(inputfile) ...
-                     ' '  fullfile(inputfiledirectory,outputfile)]);
-  else
-    status = system(['PYTHONPATH=' dolo ' python ' dolorecs ' ' which(inputfile) ...
-                     ' '  fullfile(inputfiledirectory,outputfile)]);
-  end
+  dolorecs = fullfile(dolo,'bin','dolo-recs');
+  setenv('PYTHONPATH',dolo)
+  status = system(['python ' dolorecs ' ' which(inputfile) ...
+                   ' '  fullfile(inputfiledirectory,outputfile)]);
 end
 
 if status~=0

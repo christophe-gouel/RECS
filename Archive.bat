@@ -1,7 +1,7 @@
 del *.zip
 
 :: Create dolo-recs executable for Windows
-pyinstaller.py --onefile --out=pyinstaller --paths=.\Python\dolo .\Python\dolo\bin\dolo-recs.py
+pyinstaller.py --onefile --out=pyinstaller --paths=.\Python\dolo .\Python\dolo\bin\dolo-recs
 copy /Y pyinstaller\dist\dolo-recs.exe Python\dolo\bin
 rmdir /S /Q pyinstaller
 del *.log
