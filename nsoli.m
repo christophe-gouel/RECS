@@ -92,7 +92,7 @@ defaultopt = struct(...
     'showiters'     ,0);
 
 if nargin < 3
-  options = defaultopt; 
+  options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
@@ -160,7 +160,11 @@ while(fnrm > stop_tol && itc < maxit)
 
 %% Change CG
 if debug == 1
+  if itc==1
+    fprintf(1,'%8i\t%5.1E\t%5i\t%15.1E\t%9i      (Input point)\n',outstat(itc,:));
+  else
     fprintf(1,'%8i\t%5.1E\t%5i\t%15.1E\t%9i\n',outstat(itc,:));
+  end
 end
 %%
 %
