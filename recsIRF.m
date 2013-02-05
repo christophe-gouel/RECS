@@ -1,16 +1,17 @@
 function [si,xi] = recsIRF(model,interp,shock,nrep,nper,options)
 % RECSIRF Computes Impulse Response Functions (IRF)
 %
-% RECSIRF computes IRF based on the approach of Koop et al. [1].
+% RECSIRF computes IRF based on the approach of Koop et al. (1996).
 %
-% SI = RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER) computes the IRF for the model defined
-% in the structure MODEL, by using the interpolation structure defined in the
-% structure INTERP. The IRF are calculated on NREP scenarios of NPER periods
-% each. The impulse is given by the 1-by-q vector SHOCK which is applied at the
-% initial period while the model is on its risky steady state (for a definition,
-% see Coeurdacier et al. [2]). RECSIRF produces plots of the IRF and returns the
-% NPER-by-d matrix SI, containing the difference between the reference simulation
-% and the shock simulation (e.g., the IRF) for the state variables.
+% SI = RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER) computes the IRF for the model
+% defined in the structure MODEL, by using the interpolation structure defined
+% in the structure INTERP. The IRF are calculated on NREP scenarios of NPER
+% periods each. The impulse is given by the 1-by-q vector SHOCK which is applied
+% at the initial period while the model is on its risky steady state (for a
+% definition, see Coeurdacier et al., 2011). RECSIRF produces plots of the IRF
+% and returns the NPER-by-d matrix SI, containing the difference between the
+% reference simulation and the shock simulation (e.g., the IRF) for the state
+% variables.
 %
 % RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER,OPTIONS) computes the IRF with the
 % parameters defined by the structure OPTIONS. The fields of the structure are
@@ -20,16 +21,16 @@ function [si,xi] = recsIRF(model,interp,shock,nrep,nper,options)
 % XI, containing the IRF for the response variables.
 %
 % References
-% [1] Koop, G., Pesaran, M. H. and Potter, S. M. (1996), Impulse response
-% analysis in nonlinear multivariate models, Journal of Econometrics, 74(1), 119-147.
+% Koop, G., Pesaran, M. H. and Potter, S. M. (1996), Impulse response analysis
+% in nonlinear multivariate models, Journal of Econometrics, 74(1), 119-147.
 % DOI: <a href="http://dx.doi.org/10.1016/0304-4076(95)01753-4">10.1016/0304-4076(95)01753-4</a>
-% [2] Coeurdacier, N., Rey, H. and Winant, P. (2011), The Risky Steady State,
+% Coeurdacier, N., Rey, H. and Winant, P. (2011), The Risky Steady State,
 % American Economic Review - Papers and Proceedings, 101(3), 398-401.
 % DOI: <a href="http://dx.doi.org/10.1257/aer.101.3.398">10.1257/aer.101.3.398</a>
 %
 % See also RECSSIMUL.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -52,7 +53,11 @@ w       = model.w;
 
 fspace = interp.fspace;
 
-s0    = (fspace.a+fspace.b)/2;
+if isfield(model,'sss')
+  s0  = model.sss;
+else
+  s0  = (fspace.a+fspace.b)/2;
+end
 snorm = 1;
 it    = 0;
 
