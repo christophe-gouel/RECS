@@ -27,7 +27,7 @@ function [x,fval,exitflag] = SA(f,x,options,varargin)
 %       1 : SA converged to a root
 %       0 : Too many iterations
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -38,7 +38,7 @@ defaultopt = struct(...
     'showiters',0,...
     'lambda',1);
 if nargin < 3
-  options = defaultopt; 
+  options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
@@ -51,31 +51,42 @@ showiters = options.showiters;
 lambda    = options.lambda;
 
 fval     = feval(f,x,varargin{:});
-fnrm     = norm(fval);
+fnrm     = norm(fval,inf);
 stop_tol = atol + rtol*fnrm;
-it       = 0;
+it       = -1;
+if showiters
+  fprintf(1,'Successive approximation\n');
+  fprintf(1,'  Iteration\tResidual\n');
+  fprintf(1,'%8i\t%5.1E (Input point)\n',0,fnrm);
+end
 
 %% Iterations
 while(fnrm > stop_tol && it < maxit)
-  x_old = x;
-  it    = it+1;
-  if it==1
-    x   = x+lambda*fval;
-  else
-    x   = x+lambda*feval(f,x,varargin{:});
+  it     = it+1;
+  if it~=0
+    fval = feval(f,x,varargin{:});
   end
-  fnrm  = norm(x-x_old);
-  if showiters
-    if it==1
-      fprintf(1,'Successive approximation\n');
-      fprintf(1,'  Iteration\tResidual\n');
-    end
+  x      = x+lambda*fval;
+  fnrm   = norm(fval,inf);
+  if showiters && it > 0
     fprintf(1,'%8i\t%5.1E\n',it,fnrm);
   end
 end
 
+%% Output treatment
 if it==maxit
   exitflag = 0;
+  if showiters
+    fprintf(1,'Too many iterations\n');
+  end
 else
   exitflag = 1;
+  if showiters
+    fprintf(1,'Solution found');
+    if fnrm < atol
+      fprintf(1,' - Residual lower than absolute tolerance\n');
+    else
+      fprintf(1,' - Residual lower than relative tolerance\n');
+    end
+  end
 end

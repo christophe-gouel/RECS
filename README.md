@@ -94,6 +94,6 @@ License
 
 Unless stated otherwise, all files in the RECS toolbox are licensed using the
 Expat license, a permissive free software license. Please see the [software
-license](https://github.com/christophe-gouel/RECS/blob/master/LICENSE.txt) for
+license](https://raw.github.com/christophe-gouel/RECS/master/LICENSE.txt) for
 more information.
 
