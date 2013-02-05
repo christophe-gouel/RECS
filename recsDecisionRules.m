@@ -1,4 +1,8 @@
 function recsDecisionRules(model,interp,states,space,s0)
+% RECSDECISIONRULES
+
+% Copyright (C) 2011-2013 Christophe Gouel
+% Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
 if nargin<3 || isempty(states), states = 1:interp.fspace.d; end

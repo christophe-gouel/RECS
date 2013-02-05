@@ -2,7 +2,7 @@ Format: http://dep.debian.net/deps/dep5/
 Upstream-Contact: Christophe Gouel <christophe.gouel@grignon.inra.fr>
 
 Files: *
-Copyright: 2011-2012, Christophe Gouel
+Copyright: 2011-2013, Christophe Gouel
 License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy of
  this software and associated documentation files (the "Software"), to deal in the
@@ -34,7 +34,7 @@ License: BSD-2-clause
   * Redistributions in binary form must reproduce the above copyright notice, this
     list of conditions and the following disclaimer in the documentation and/or
     other materials provided with the distribution
- .     
+ .
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -60,7 +60,7 @@ License: BSD-2-clause
   * Redistributions in binary form must reproduce the above copyright notice, this
     list of conditions and the following disclaimer in the documentation and/or
     other materials provided with the distribution
- .     
+ .
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -74,7 +74,7 @@ License: BSD-2-clause
 Source: http://www.mathworks.com/matlabcentral/fileexchange/7842
 
 Files: dolo, dolo-recs.exe
-Copyright: 2010-2012, Pablo Winant
+Copyright: 2010-2013, Pablo Winant
 License: BSD-2-clause
  All rights reserved.
  .
@@ -86,7 +86,7 @@ License: BSD-2-clause
   * Redistributions in binary form must reproduce the above copyright notice, this
     list of conditions and the following disclaimer in the documentation and/or
     other materials provided with the distribution
- .     
+ .
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -102,7 +102,7 @@ Source: https://github.com/albop/dolo
 Files: lmmcp.m
 Copyright: 2005, Christian Kanzow and Stefania Petra
 Comment: This is a modification by Christophe Gouel of the original files.
-Source: http://www.mathematik.uni-wuerzburg.de/~kanzow/software/LMMCP.zip  
+Source: http://www.mathematik.uni-wuerzburg.de/~kanzow/software/LMMCP.zip
 
 Files: nsoli.m
 Copyright: 2001-2003, C. T. Kelley
@@ -112,7 +112,7 @@ Comment: This is a modification by Christophe Gouel of the original file. The
 Source: http://www4.ncsu.edu/~ctk/newtony.html
 
 Files: recspathmcp.m
-Copyright: Michael C. Ferris and Todd S. Munson. 
+Copyright: Michael C. Ferris and Todd S. Munson.
 Comment: This is a modification by Christophe Gouel of the original pathmcp.m
 file.
 Source: http://pages.cs.wisc.edu/~ferris/path.html
