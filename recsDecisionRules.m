@@ -1,5 +1,24 @@
-function recsDecisionRules(model,interp,states,space,s0)
-% RECSDECISIONRULES
+function result = recsDecisionRules(model,interp,states,space,s0,options)
+% RECSDECISIONRULES Plots a model decision rules
+%
+% RESULT = RECSDECISIONRULES(MODEL,INTERP) plots a model decision rules
+% successively with respect to each state variables, while holding others fixed
+% at their steady-state values. The state space of interpolation is used to
+% determine the range of variation and 100 points are used in each
+% dimension. RECSDECISIONRULES produces a figure by state variable, with as many
+% suplots as there are control variables. RESULT is a 1xd structure array with
+% fields s and x, respectively the state variables values used to draw the
+% decision rules and the control variables values.
+%
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES)
+%
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE)
+%
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE,S0)
+%
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE,S0,OPTIONS)
+%
+% See also RECSSIMUL.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -14,6 +33,13 @@ else
   n     = space(3,:);
 end
 if nargin<5 || isempty(s0), s0 = model.sss; end
+defaultopt = struct('stat',0);
+if nargin<6
+  options = defaultopt;
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(options,defaultopt);
+end
 
 d = size(s0,2);
 
@@ -24,14 +50,20 @@ for i=1:length(states)
                           1,...
                           size(s0,1));
 
-  [~,x] = recsSimul(model,interp,s,0,[]);
+  [~,x] = recsSimul(model,interp,s,0,[],options);
 
   m = size(x,2);
   x = reshape(x,n(i),[],m);
   x = permute(x,[1 3 2]);
+  
+  s = reshape(s,n(i),[],d);
+  s = permute(s,[1 3 2]);
   figure
   for j=1:m
     subplot(ceil((m)/ceil(sqrt(m))),ceil(sqrt(m)),j)
-    plot(s(1:n(i),states(i)),squeeze(x(:,j,:)))
+    plot(s(:,states(i),1),squeeze(x(:,j,:)))
   end
+  
+  result(i).s = s;
+  result(i).x = x;
 end
