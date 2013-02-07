@@ -1,6 +1,6 @@
 %% First guess
 % The solution methods used in RECS to find the rational expectations
-% equilibrium of a problem rely all on nonlinear equation solvers that allow
+% equilibrium of a problem all rely on nonlinear equation solvers that allow
 % convergence only if the starting point is not too far from the
 % solution. Hence, the importance of a good first guess.
 %
@@ -22,7 +22,7 @@
 % foresight problem is solved for each grid point and the resultant behavior is
 % used as a first guess for the stochastic problem. This is done by the
 % following call:
-% 
+%
 %  [interp,x] = recsFirstGuess(interp,model,s,sss,xss);
 %
 % This function updates the interpolation structure, |interp|, with the solution
@@ -30,7 +30,7 @@
 % variables on the grid, |x|.
 %
 % *Solving time*
-% 
+%
 % As the perfect foresight problem is solved for each point of the grid and for
 % T periods, this step can take some time. In many cases, it should be expected
 % that it may take more time to find a first guess through the perfect foresight
@@ -51,7 +51,7 @@
 % irreversible investment>, which is much more nonlinear, the residual when
 % starting the stochastic solver from the first guess is 1E-2. This is
 % sufficient to achieve convergence, but it is still far from the true solution.
-% 
+%
 %% User-provided first guess
 % It is not necessary to use the deterministic problem as a first guess. A first
 % guess can be provided directly by the user. In this case there is no need to

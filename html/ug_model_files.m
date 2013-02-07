@@ -129,7 +129,12 @@
 % * *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.
 % * *Timing convention:* Transition equations are written by defining the new
 % state variable at current time as a function of lagged response and state
-% variables: $s_t = g(s_{t-1},x_{t-1},e_t).$
+% variables: $s_t = g(s_{t-1},x_{t-1},e_t)$. Even if expectations are defined by
+% $z_{t} = \mathrm{E}_{t}\left[h(s_{t},x_{t},e_{t+1},s_{t+1},x_{t+1})\right]$,
+% when writing them in a Yaml file the shocks are not indicated with a
+% lead. This can be seen in the competitive storage model example (<sto1.html
+% STO1>) where the expectations $P_{t+1}\epsilon_{t+1}$ is written as |EPe =
+% P(1)*e|.
 % * Do not use |lambda| as a variable/parameter name, this is a restricted word.
 % * Write equations in the same order as the order of variables declaration.
 % * Yaml files are case sensitive.

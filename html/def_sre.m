@@ -29,10 +29,10 @@
 % The first equation is the equilibrium equation. It characterizes the behavior
 % of the response variables given state variables and expectations about the
 % next period. For generality, it is expressed as a mixed complementarity
-% problem (MCP, if you ignore what MCP means, see <MCP.html Introduction to
-% mixed complementarity problems>). In cases where response variables have no
-% lower and upper bounds, or have infinte ones, it simplifies to a traditional
-% equation:
+% problem (MCP, if you aren't familiar with the definition of MCP, see <MCP.html
+% Introduction to mixed complementarity problems>). In cases where response
+% variables have no lower and upper bounds, or have infinte ones, it simplifies
+% to a traditional equation:
 %
 % $0=f(s,x,z)$.
 %

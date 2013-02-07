@@ -59,7 +59,7 @@ title('Price')
 
 %% Simulate the model
 reset(RandStream.getDefaultStream);
-[ssim,~,~,~,stat] = recsSimul(model,interp,ones(1000,1),200);
+[ssim,~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1000,1),:),200);
 subplot(2,2,1)
 xlabel('Availability')
 ylabel('Frequency')
