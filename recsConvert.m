@@ -28,7 +28,7 @@ function [interp1,s,x] =  recsConvert(interp0,model,order,smin,smax,options)
 %
 % See also RECSSIMUL.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -44,6 +44,7 @@ if isempty(smax),  smax  = interp0.fspace.b'; end
 if isempty(smin),  smin  = interp0.fspace.a'; end
 
 defaultopt = struct(...
+    'accuracy'    , 0,...
     'simulmethod' , 'solve',...
     'stat'        , 0);
 if nargin < 6
@@ -53,8 +54,12 @@ else
   options = catstruct(options,defaultopt);
 end
 
+if isscalar(order) && interp0.fspace.d>1
+  order = order*ones(interp0.fspace.d,1); 
+end
+
 %% Define new interpolation structure
-interp1.fspace = fundefn('spli',order,smin,smax);
+interp1.fspace = fundefn('spli',order(:),smin(:),smax(:));
 s              = gridmake(funnode(interp1.fspace));
 interp1.Phi    = funbasx(interp1.fspace);
 
