@@ -33,7 +33,9 @@ else
   n     = space(3,:);
 end
 if nargin<5 || isempty(s0), s0 = model.sss; end
-defaultopt = struct('stat',0);
+defaultopt = struct(...
+    'accuracy', 0,...
+    'stat'    , 0);
 if nargin<6
   options = defaultopt;
 else

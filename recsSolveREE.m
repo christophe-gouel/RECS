@@ -73,7 +73,7 @@ function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 %
 % See also RECSCHECK, RECSSIMUL, RECSSS.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -116,8 +116,8 @@ elseif ~isa(model.func,'function_handle')
 end
 func = model.func;
 
-if (strcmp(reemethod,'1-step') || strcmp(reemethod,'iter-newton')) && ...
-      (strcmp(funapprox,'expapprox') || strcmp(funapprox,'resapprox-simple'))
+if any(strcmp(reemethod,{'1-step','iter-newton'})) && ...
+      any(strcmp(funapprox,{'expapprox','resapprox-simple'}))
   warning('RECS:Switching2Iterative',...
           ['Solving the rational expectations problem is not implemented when ' ...
            'approximating this function. Switching to the default options.'])

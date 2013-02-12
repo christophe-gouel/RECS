@@ -1,3 +1,8 @@
+% TESTSJACOBIANS Tests the jacobian calculation in the variaous methods implemented in RECS
+
+% Copyright (C) 2011-2013 Christophe Gouel
+% Licensed under the Expat license, see LICENSE.txt
+
 warning('off')
 
 reemethodlist = {'iter' 'iter-newton' '1-step'};
@@ -31,6 +36,7 @@ end
 disp('Check full Newton approach')
 options.reemethod = '1-step';
 for funapprox=funapproxlist
+  if any(strcmp(funapprox,{'resapprox-simple','expapprox'})), continue; end
   fprintf(1,' Functional approximation - %s\n',funapprox{1});
   options.funapprox = funapprox{1};
   recsSolveREE(interp,model,s,x,options);
@@ -44,6 +50,7 @@ options.reesolveroptions.DerivativeCheck = 'on';
 options.reesolveroptions.MaxIter         = 0;
 options.reesolveroptions.Display         = 'off';
 for funapprox=funapproxlist
+  if any(strcmp(funapprox,{'resapprox-simple','expapprox'})), continue; end
   fprintf(1,' Functional approximation - %s\n',funapprox{1});
   options.funapprox = funapprox{1};
   recsSolveREE(interp,model,s,x,options);
