@@ -28,7 +28,7 @@ function [si,xi] = recsIRF(model,interp,shock,nrep,nper,options)
 % American Economic Review - Papers and Proceedings, 101(3), 398-401.
 % DOI: <a href="http://dx.doi.org/10.1257/aer.101.3.398">10.1257/aer.101.3.398</a>
 %
-% See also RECSSIMUL.
+% See also RECSDECISIONRULES, RECSSIMUL.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -38,13 +38,14 @@ if nargin < 5
   error('Nor enough input arguments');
 end
 
-defaultopt = struct(...
-    'stat'        , 0);
+overridingopt = struct(...
+    'accuracy', 0,...
+    'stat'    , 0);
 if nargin < 6
-  options = defaultopt;
+  options = overridingopt;
 else
   warning('off','catstruct:DuplicatesFound')
-  options = catstruct(options,defaultopt);
+  options = catstruct(options,overridingopt);
 end
 
 e       = model.e;

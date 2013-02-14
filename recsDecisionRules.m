@@ -33,14 +33,14 @@ else
   n     = space(3,:);
 end
 if nargin<5 || isempty(s0), s0 = model.sss; end
-defaultopt = struct(...
+overridingopt = struct(...
     'accuracy', 0,...
     'stat'    , 0);
 if nargin<6
-  options = defaultopt;
+  options = overridingopt;
 else
   warning('off','catstruct:DuplicatesFound')
-  options = catstruct(options,defaultopt);
+  options = catstruct(options,overridingopt);
 end
 
 d = size(s0,2);
