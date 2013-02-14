@@ -65,9 +65,9 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 % (STAT.COR), and the autocorrelation (STAT.ACOR). Asking RECSSIMUL to return
 % STAT forces the OPTIONS.STAT to 1.
 %
-% See also RECSACCURACY.
+% See also RECSACCURACY, RECSDECISIONRULES, RECSIRF.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -80,7 +80,9 @@ end
 
 [nrep,d] = size(s0);
 
-if ~isempty(shocks) && numel(shocks)~=d, nper = size(shocks,3); end
+if ~isempty(shocks) && (numel(shocks)~=d || isempty(nper))
+  nper = size(shocks,3); 
+end
 
 defaultopt = struct(...
     'accuracy'        , 0                                  ,...
