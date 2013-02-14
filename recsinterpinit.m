@@ -15,9 +15,11 @@ function [interp,s] = recsinterpinit(n,smin,smax,method,options)
 % define the interpolation method, either spline ('spli', default), or Chebyshev
 % polynomials ('cheb').
 %
-% [INTERP,S] = RECSINTERPINIT(N,SMIN,SMAX,METHOD,OPTIONS)
+% [INTERP,S] = RECSINTERPINIT(N,SMIN,SMAX,METHOD,OPTIONS) uses the structure
+% OPTIONS to create the interpolation structure. The fields of the structure are
+%   order : for a spline interpolation, it is the order of the spline (default: 3) 
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization

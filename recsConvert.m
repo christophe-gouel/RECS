@@ -1,4 +1,4 @@
-function [interp1,s,x] =  recsConvert(interp0,model,order,smin,smax,options)
+function [interp1,s,x] =  recsConvert(interp0,model,n,smin,smax,method,options)
 % RECSCONVERT Converts the interpolation structure of a model to another form
 %
 % INTERP1 = RECSCONVERT(INTERP0,MODEL) convert the interpolation structure INTERP0
@@ -6,19 +6,22 @@ function [interp1,s,x] =  recsConvert(interp0,model,order,smin,smax,options)
 % interpolation structure INTERP1. Without any more arguments this command does not
 % change the interpolation structure. See below for entering new parameters.
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER) changes the order of the
-% interpolation structure using ORDER as the new order.
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,N) changes the number of interpolation
+% points along each dimension using N as the new number of grid points in each
+% dimension. If N is a scalar, the same dimension is applied to every dimension.
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMIN) changes the minimum values of
-% the interpolation grid using SMIN as the new minimum. The input ORDER can be
-% left empty (ORDER=[]) is you want to change only the minimum.
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,N,SMIN) changes the minimum values of
+% the interpolation grid using SMIN as the new minimum. The input N can be
+% left empty (N=[]) is you want to change only the minimum values.
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMIN,SMAX) changes the maximum values
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,N,SMIN,SMAX) changes the maximum values
 % of the interpolation grid using SMAX as the new maximum.
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL,ORDER,SMIN,SMAX,OPTIONS) converts the
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,N,SMIN,SMAX,OPTIONS) converts the
 % interpolation structure with the parameters defined by the structure OPTIONS.
-% The fields of the structure are those used in recsSimul.
+% Most of the fields of the structure are those used in recsSimul, but it is
+% also possible to define the following field:
+%   order : for a spline interpolation, it is the order of the spline (default: 3) 
 %
 % [INTERP1,S] = RECSCONVERT(INTERP0,MODEL,...) returns the matrix S containing
 % the new grid of state variables.
@@ -26,40 +29,37 @@ function [interp1,s,x] =  recsConvert(interp0,model,order,smin,smax,options)
 % [INTERP1,S,X] = RECSCONVERT(INTERP0,MODEL,...) returns the matrix X containing
 % the value of response variables on the new grid.
 %
-% See also RECSSIMUL.
+% See also RECSINTERPINIT, RECSSIMUL.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin < 5
-  smax = [];
-  if nargin < 4
-    smin = [];
-  end
-end
+if nargin<3 || isempty(n), n = interp0.fspace.n'; end
+if nargin<4 || isempty(smin), smin = interp0.fspace.a'; end
+if nargin<5 || isempty(smax), smax = interp0.fspace.b'; end
+if nargin<6 || isempty(method), method = unique(interp0.fspace.bastype); end
 
-if isempty(order), order = interp0.fspace.n'; end
-if isempty(smax),  smax  = interp0.fspace.b'; end
-if isempty(smin),  smin  = interp0.fspace.a'; end
-
-defaultopt = struct(...
-    'accuracy'    , 0,...
-    'simulmethod' , 'solve',...
+defaultopt = struct(        ...
+    'order'       , 3      ,...
+    'simulmethod' , 'solve');
+overridingopt = struct(...
+    'accuracy'    , 0 ,...
     'stat'        , 0);
-if nargin < 6
+warning('off','catstruct:DuplicatesFound')
+if nargin < 7
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
-  options = catstruct(options,defaultopt);
+  options = catstruct(defaultopt,options);
 end
+options = catstruct(options,overridingopt);
 
-if isscalar(order) && interp0.fspace.d>1
-  order = order*ones(interp0.fspace.d,1); 
+if isscalar(n) && interp0.fspace.d>1
+  n = n*ones(interp0.fspace.d,1); 
 end
 
 %% Define new interpolation structure
-interp1.fspace = fundefn('spli',order(:),smin(:),smax(:));
+interp1.fspace = fundefn(method{1},n(:),smin(:),smax(:),options.order);
 s              = gridmake(funnode(interp1.fspace));
 interp1.Phi    = funbasx(interp1.fspace);
 
