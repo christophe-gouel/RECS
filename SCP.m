@@ -17,8 +17,8 @@ function [x,F,exitflag,N] = SCP(x,z1,z0,problem,N)
 %
 % X = SCP(X,Z1,Z0,PROBLEM,N) starts by slicing the problem in N slices.
 %
-% [X,F] = SCP(X,Z1,Z0,PROBLEM,...) returns F, the value return by PROBLEM at the
-% solution point.
+% [X,F] = SCP(X,Z1,Z0,PROBLEM,...) returns F, the value returned by PROBLEM at
+% the solution point.
 %
 % [X,F,EXITFLAG] = SCP(X,Z1,Z0,PROBLEM,...) returns EXITFLAG that describes the exit
 % conditions. Possible values are
@@ -28,7 +28,7 @@ function [x,F,exitflag,N] = SCP(x,z1,z0,problem,N)
 % [X,F,EXITFLAG,N] = SCP(X,Z1,Z0,PROBLEM,...) returns N the number of slices in
 % which the problem was sliced to achieve convergence.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
   
 if nargin<=4, N = 1; end

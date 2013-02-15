@@ -28,6 +28,9 @@ delete(fullfile(targetdirectory,'*.png'));
 delete(fullfile(targetdirectory,'*.txt'));
 delete(fullfile(targetdirectory,'*.yaml'));
 delete(fullfile(targetdirectory,'*.html'));
+if website
+  delete(fullfile(targetdirectory,'*.m'));
+end
 
 %% Documentation
 publish('recs_product_page.m',PublishOptions);
@@ -70,10 +73,19 @@ publish('pathnotinstalled.m',PublishOptions);
 
 %% Functions
 if website
+  txt = fileread(fullfile(targetdirectory,'recs_functions.html'));
+  % Replace matlab:doc
+  pattern = '"matlab:doc\(''(\w*)''\)"';
+  txt = regexprep(txt,pattern,'"$1.html"');
+  fid = fopen(fullfile(targetdirectory,'recs_functions.html'),'w');
+  fprintf(fid,'%s',txt);
+  fclose(fid);
+  
   FunctionList = {'recsAccuracy',...
                   'recsAuxiliary',...
                   'recsCheck',...
                   'recsConvert',...
+                  'recsdemos',...
                   'recsFirstGuess',...
                   'recsinterpinit',...
                   'recsmodelinit',...
@@ -81,10 +93,31 @@ if website
                   'recsSolveDeterministicPb',...
                   'recsSolveREE',...
                   'recsSolveREEFiniteHorizon',...
-                  'recsSS'};
+                  'recsSS',...
+                  'lmmcp',...
+                  'nsoli',...,
+                  'recspathmcp',...
+                  'SA'};
   for fn = FunctionList
+    copyfile(fullfile(recsdirectory,[fn{1} '.m']),fullfile(targetdirectory,[fn{1} '.m']));
+    txt = help2html([fn{1} '.m']);
+    % Replace see also
+    pattern = '"matlab:helpwin (\w*)"';
+    txt = regexprep(txt,pattern,'"$1.html"');
+    % Replace view code
+    pattern = '"matlab:edit (\w*).m"';
+    txt = regexprep(txt,pattern,'"$1.m"');
+    % Replace css file
+    pattern = '"file.*\.css"';
+    txt = regexprep(txt,pattern,'"layoutfunctionhelp.css"');
+    % Replace Matlab File help
+    pattern = 'MATLAB File Help';
+    txt = regexprep(txt,pattern,'Function Help');
+    % Replace Default Topics
+    pattern = '"matlab:helpwin">Default Topics';
+    txt = regexprep(txt,pattern,'"recs_functions.html">Function Reference');
     fid = fopen(fullfile(targetdirectory,[fn{1} '.html']),'w');
-    fprintf(fid,'%s',help2html([fn{1} '.m']));
+    fprintf(fid,'%s',txt);
     fclose(fid);
   end
 end
@@ -94,42 +127,17 @@ copyfile(fullfile(recsdirectory,'LICENSE.txt'),fullfile(targetdirectory,'LICENSE
 
 %% Demonstration
 currentfolder = cd(fullfile(recsdirectory,'demos'));
-copyfile('cs1.yaml',fullfile(targetdirectory,'cs1.txt'));
-copyfile('gro1.yaml',fullfile(targetdirectory,'gro1.txt'));
-copyfile('gro2.yaml',fullfile(targetdirectory,'gro2.txt'));
-copyfile('sto1.yaml',fullfile(targetdirectory,'sto1.txt'));
-copyfile('sto2.yaml',fullfile(targetdirectory,'sto2.txt'));
-copyfile('sto4.yaml',fullfile(targetdirectory,'sto4.txt'));
-copyfile('sto5.yaml',fullfile(targetdirectory,'sto5.txt'));
-copyfile('sto6.yaml',fullfile(targetdirectory,'sto6.txt'));
-publish('clearpublish.m',PublishOptions);
-publish('cs1.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('cs2.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('gro1.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('gro2.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('sto1.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('sto2.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('sto3.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('sto4.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('sto5.m',PublishOptions);
-publish('clearpublish.m',PublishOptions);
-publish('sto6.m',PublishOptions);
-publish('cs1model.m',PublishOptionsNoExec);
-publish('gro1model.m',PublishOptionsNoExec);
-publish('gro2model.m',PublishOptionsNoExec);
-publish('sto1model.m',PublishOptionsNoExec);
-publish('sto2model.m',PublishOptionsNoExec);
-publish('sto4model.m',PublishOptionsNoExec);
-publish('sto5model.m',PublishOptionsNoExec);
-publish('sto6model.m',PublishOptionsNoExec);
+DemoFileList = {'cs1','cs2','gro1','gro2','sto1','sto2','sto3','sto4', ...
+                'sto5','sto6'};
+for demo=DemoFileList
+  publish('clearpublish.m',PublishOptions);
+  publish([demo{1} '.m'],PublishOptions);
+end
+YamlFileList = {'cs1','gro1','gro2','sto1','sto2','sto4','sto5','sto6'};
+for yaml=YamlFileList
+  copyfile([yaml{1} '.yaml'],fullfile(targetdirectory,[yaml{1} '.txt']));
+  publish([yaml{1} 'model.m'],PublishOptionsNoExec);
+end
 delete(fullfile(targetdirectory,'clearpublish.html'));
 cd(currentfolder)
 
