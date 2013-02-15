@@ -112,7 +112,7 @@ functional      = options.functional;
 funapprox       = lower(options.funapprox);
 simulmethod     = lower(options.simulmethod);
 statdisplay     = options.stat;
-if ~strcmp(simulmethod,'interpolation') && ~strcmp(simulmethod,'solve')
+if ~any(strcmp(simulmethod,{'interpolation','solve'}))
   warning('RECS:OptionError',['The simulmethod field can take only the values ' ...
                       '''interpolation'' or ''solve''. Simulations will '        ...
                       'be carried out using the default option, ''interpolation''.'])
@@ -197,17 +197,17 @@ for t=1:nper+1
                                           func,...
                                           params,...
                                           interp.ch,e,w,fspace,options);
-        end
+        end % switch funapprox
       otherwise
         if nargout>=4
           f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params,output);
         end
-    end
-  end
+    end % switch simulmethod
+  end % Finite or infinite horizon problem
   ssim(:,:,t) = s0;
   xsim(:,:,t) = xx;
   if nargout>=4, fsim(:,:,t) = f; end
-end
+end % for t
 
 if exist('cX','var') && t>T
   warning('RECS:ExceedHorizon','Simulate beyond last period')
@@ -274,7 +274,7 @@ if (nargout==5 || statdisplay) && (nper > 40)
     disp(stat.acor(1:d,:));
     disp(stat.acor(d+1:end,:));
   end
-end
+end % stat
 
 %% Check accuracy
 if options.accuracy
