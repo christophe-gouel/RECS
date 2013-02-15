@@ -1,7 +1,7 @@
 function Publish_recs_help(website)
 % PUBLISH_RECS_HELP publishes help pages to html
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -67,6 +67,27 @@ publish('ug_options.m',PublishOptions);
 publish('recs_functions.m',PublishOptions);
 publish('demos.m',PublishOptions);
 publish('pathnotinstalled.m',PublishOptions);
+
+%% Functions
+if website
+  FunctionList = {'recsAccuracy',...
+                  'recsAuxiliary',...
+                  'recsCheck',...
+                  'recsConvert',...
+                  'recsFirstGuess',...
+                  'recsinterpinit',...
+                  'recsmodelinit',...
+                  'recsSimul',...
+                  'recsSolveDeterministicPb',...
+                  'recsSolveREE',...
+                  'recsSolveREEFiniteHorizon',...
+                  'recsSS'};
+  for fn = FunctionList
+    fid = fopen(fullfile(targetdirectory,[fn{1} '.html']),'w');
+    fprintf(fid,'%s',help2html([fn{1} '.m']));
+    fclose(fid);
+  end
+end
 
 %% License
 copyfile(fullfile(recsdirectory,'LICENSE.txt'),fullfile(targetdirectory,'LICENSE.txt'));
