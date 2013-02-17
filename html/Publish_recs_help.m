@@ -39,47 +39,54 @@ if website
            fullfile(targetdirectory,'index.html'));
 end
 
-% Getting started
-publish('getting_started.m',PublishOptions);
-publish('installation.m',PublishOptions);
-publish('tutorial.m',PublishOptions);
-publish('def_sre.m',PublishOptions);
-publish('MCP.m',PublishOptions);
-
-% User guide
-publish('user_guide.m',PublishOptions);
-publish('ug_setting_up.m',PublishOptions);
-publish('ug_model_files.m',PublishOptions);
+HelpFileList = {'getting_started.m',...
+                'installation.m',...
+                'tutorial.m',...
+                'def_sre.m',...
+                'MCP.m',...
+                'user_guide.m',...
+                'ug_setting_up.m',...
+                'ug_model_files.m',...
+                'ug_model_struct.m',...
+                'ug_interpolation.m',...
+                'ss.m',...
+                'first_guess.m',...
+                'solve_REE.m',...
+                'simulate.m',...
+                'calibration.m',...
+                'accuracy.m',...
+                'finite_horizon.m',...
+                'deterministic.m',...
+                'ug_solvers_eq.m',...
+                'ug_methods.m',...
+                'ug_options.m',...
+                'recs_functions.m',...
+                'demos.m',...
+                'pathnotinstalled.m'};
 addpath(fullfile(recsdirectory,'demos'))
-publish('ug_model_struct.m',PublishOptions);
-publish('ug_interpolation.m',PublishOptions);
-publish('ss.m',PublishOptions);
-publish('first_guess.m',PublishOptions);
-publish('solve_REE.m',PublishOptions);
-publish('simulate.m',PublishOptionsNoShow);
+for helpfile=HelpFileList
+  publish(helpfile{1},PublishOptions);
+end
 rmpath(fullfile(recsdirectory,'demos'))
-publish('calibration.m',PublishOptions);
-publish('accuracy.m',PublishOptions);
-publish('finite_horizon.m',PublishOptions);
-publish('deterministic.m',PublishOptions);
-publish('ug_solvers_eq.m',PublishOptions);
-publish('ug_methods.m',PublishOptions);
-publish('ug_options.m',PublishOptions);
-
-% Others
-publish('recs_functions.m',PublishOptions);
-publish('demos.m',PublishOptions);
-publish('pathnotinstalled.m',PublishOptions);
 
 %% Functions
 if website
-  txt = fileread(fullfile(targetdirectory,'recs_functions.html'));
-  % Replace matlab:doc
-  pattern = '"matlab:doc\(''(\w*)''\)"';
-  txt = regexprep(txt,pattern,'"$1.html"');
-  fid = fopen(fullfile(targetdirectory,'recs_functions.html'),'w');
-  fprintf(fid,'%s',txt);
-  fclose(fid);
+  htmlfilelist = ls(fullfile(targetdirectory,'*.html'));
+  for i=1:size(htmlfilelist,1)
+    txt = fileread(fullfile(targetdirectory,htmlfilelist(i,:)));
+    % Replace matlab:doc
+    pattern = '<a href="matlab:isfilepresent\(''fsolve.*tt.fsolve..tt...a>';
+    txt = regexprep(txt,pattern,'<tt>fsolve</tt>');
+    pattern = '<a href="matlab:doc\(''ncpsolve''\)"..tt.ncpsolve..tt...a>';
+    txt = regexprep(txt,pattern,'<tt>ncpsolve</tt>');
+    pattern = '<a href="matlab:doc\(''ncpsolve''\)"..tt.ncpsolve..tt...a>';
+    txt = regexprep(txt,pattern,'<tt>ncpsolve</tt>');
+    pattern = '"matlab:doc\(''(\w*)''\)"';
+    txt = regexprep(txt,pattern,'"$1.html"');
+    fid = fopen(fullfile(targetdirectory,htmlfilelist(i,:)),'w');
+    fprintf(fid,'%s',txt);
+    fclose(fid);
+  end
   
   FunctionList = {'recsAccuracy',...
                   'recsAuxiliary',...
