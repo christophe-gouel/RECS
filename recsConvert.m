@@ -17,11 +17,17 @@ function [interp1,s,x] =  recsConvert(interp0,model,n,smin,smax,method,options)
 % INTERP1 = RECSCONVERT(INTERP0,MODEL,N,SMIN,SMAX) changes the maximum values
 % of the interpolation grid using SMAX as the new maximum.
 %
-% INTERP1 = RECSCONVERT(INTERP0,MODEL,N,SMIN,SMAX,OPTIONS) converts the
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,N,SMIN,SMAX,METHOD) changes the
+% interpolation method, using the string METHOD.
+%
+% INTERP1 = RECSCONVERT(INTERP0,MODEL,N,SMIN,SMAX,METHOD,OPTIONS) converts the
 % interpolation structure with the parameters defined by the structure OPTIONS.
 % Most of the fields of the structure are those used in recsSimul, but it is
 % also possible to define the following field:
-%   order : for a spline interpolation, it is the order of the spline (default: 3) 
+%   order       : for a spline interpolation, it is the order of the spline
+%                 (default: 3)
+%   simulmethod : simulation method used to conert decision rules to the new
+%                 interpolation structure, 'interpolation' or 'solve' (default)
 %
 % [INTERP1,S] = RECSCONVERT(INTERP0,MODEL,...) returns the matrix S containing
 % the new grid of state variables.
