@@ -1,8 +1,12 @@
 function [x,fval,exitflag] = SA(f,x,options,varargin)
 % SA Solves a system of equations by successive approximation
 %
-% SA solves a system of equations by iterating on the evaluations of
-% the equations: x[i+1] = x[i]+lambda*f(x[i]) until x has converged.
+% SA solves a system of equations by iterating on the evaluations of the
+% equations: x[i+1] = x[i]+dx[i] until norm(f(x)) has converged to 0, where
+% dx = lambda*f(x).
+%
+% To enhance convergence SA uses a backtracking line search that divides dx by 2
+% until norm(f(x+dx)) decreases with respect to norm(f(x)).
 %
 % X = SA(F,X0) tries to solve the system of equations F(X)=0 and
 % start at the vector X0. F accepts a vector X and return a vector
@@ -12,6 +16,7 @@ function [x,fval,exitflag] = SA(f,x,options,varargin)
 % X = SA(F,X0,OPTIONS) solves the problem using the options defined
 % in the structure OPTIONS. Fields can be
 %      maxit     : maximum number of iterations (default: 1000)
+%      maxsteps  : maximum number of backstepping iterations (default: 3)
 %      atol      : absolute convergence tolerance (default: sqrt(eps))
 %      rtol      : relative convergence tolerance (default: sqrt(eps))
 %      showiters : 1 to display results of each iteration, 0 (default) if not
@@ -25,19 +30,21 @@ function [x,fval,exitflag] = SA(f,x,options,varargin)
 % [X,FVAL,EXITFLAG] = SA(F,X0,...) returns EXITFLAG that describes
 % the exit conditions. Possible values listed below.
 %       1 : SA converged to a root
-%       0 : Too many iterations
+%       0 : Failure to converge because of too many iterations or equations not
+%           defined at starting point
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-defaultopt = struct(...
-    'maxit',1000,...
-    'atol',sqrt(eps),...
-    'rtol',sqrt(eps),...
-    'showiters',0,...
-    'lambda',1);
-if nargin < 3
+defaultopt = struct(      ...
+    'atol'     ,sqrt(eps),...
+    'lambda'   ,1        ,...
+    'maxit'    ,1000     ,...
+    'maxsteps' ,3        ,...
+    'rtol'     ,sqrt(eps),...
+    'showiters',0);
+if nargin < 3 || isempty(options)
   options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
@@ -49,29 +56,56 @@ atol      = options.atol;
 rtol      = options.rtol;
 showiters = options.showiters;
 lambda    = options.lambda;
+maxsteps  = max(1,options.maxsteps);
 
-fval     = feval(f,x,varargin{:});
-fnrm     = norm(fval,inf);
-stop_tol = atol + rtol*fnrm;
-it       = -1;
+fval        = feval(f,x,varargin{:});
+isnotdomerr = all(all(isfinite(fval) | (imag(fval)==0) | ~isnan(fval)));
+if ~isnotdomerr
+  exitflag = 0;
+  if showiters
+    fprintf(1,'Equations not defined at starting point\n');
+  end
+  return
+end
+fnrm        = norm(fval(:));
+stop_tol    = atol + rtol*fnrm;
+it          = 0;
 if showiters
   fprintf(1,'Successive approximation\n');
-  fprintf(1,'  Iteration\tResidual\n');
-  fprintf(1,'%8i\t%5.1E (Input point)\n',0,fnrm);
+  fprintf(1,'  Major\t Minor\tResidual\n');
+  fprintf(1,'%7i\t%6i\t%8.1E (Input point)\n',0,0,fnrm);
 end
 
 %% Iterations
 while(fnrm > stop_tol && it < maxit)
-  it     = it+1;
-  if it~=0
-    fval = feval(f,x,varargin{:});
-  end
-  x      = x+lambda*fval;
-  fnrm   = norm(fval,inf);
-  if showiters && it > 0
-    fprintf(1,'%8i\t%5.1E\n',it,fnrm);
-  end
-end
+  it      = it+1;
+  dx      = lambda*fval;
+  %% Backstepping
+  for itback=1:maxsteps 
+    fvalnew     = feval(f,x+dx,varargin{:});
+    fnrmnew     = norm(fvalnew(:));
+    isnotdomerr = all(all(isfinite(fvalnew) | (imag(fvalnew)==0) | ~isnan(fvalnew)));
+    if (fnrmnew<fnrm && isnotdomerr) || itback==maxsteps
+      %% End of backstepping because of success or maximum iteration
+      fval  = fvalnew;
+      fnrm  = fnrmnew;
+      x     = x+dx;
+      if showiters, fprintf(1,'%7i\t%6i\t%8.1E\n',it,itback,fnrm); end
+      break
+    end
+    if itback>1 && fnrmold<fnrmnew
+      %% End of backstepping because it does not improve residual
+      fval = fvalold;
+      fnrm = fnrmold;
+      x    = x+dx*2;
+      if showiters, fprintf(1,'%7i\t%6i\t%8.1E\n',it,itback-1,fnrm); end
+      break
+    end
+    fvalold = fvalnew;
+    fnrmold = fnrmnew;
+    dx      = dx/2;
+  end % itback
+end %it
 
 %% Output treatment
 if it==maxit
