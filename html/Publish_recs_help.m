@@ -71,6 +71,8 @@ rmpath(fullfile(recsdirectory,'demos'))
 
 %% Functions
 if website
+  copyfile(fullfile(recsdirectory,'html','layoutfunctionhelp.css'),...
+           fullfile(targetdirectory,'layoutfunctionhelp.css'));
   htmlfilelist = ls(fullfile(targetdirectory,'*.html'));
   for i=1:size(htmlfilelist,1)
     txt = fileread(fullfile(targetdirectory,htmlfilelist(i,:)));

@@ -1,0 +1,191 @@
+body {
+  font-family: "Times New Roman", Serif;
+  background-color: white;
+  margin:10px;
+  font-size:        90%;
+  border-style:     solid;
+  border-width:     1px;
+  padding:          30px;
+  width:            800px;
+  margin-left:      auto;
+  margin-right:     auto;
+  
+  -moz-box-shadow    : 0px 0px 10px 7px #777777;
+  -webkit-box-shadow : 0px 0px 10px 7px #777777;
+  box-shadow         : 0px 0px 10px 7px #777777;
+
+}
+
+#header {
+    
+    padding: 0px;
+}
+
+#header h1 {
+    margin:      0px 0px 15px 0px;
+    padding:     0px;
+    font-size:   28px;
+    line-height: 28px;
+    font-weight: 900;
+    /* color:#ccc; */
+    color:rgb(25,25,75)
+    
+}
+
+#menu {
+  background:#E0E0F8;
+  padding:    5px 0px 5px 5px;
+  border-radius: 6px;
+  -moz-border-radius: 6px; /* Old Firefox */
+}
+
+#navlist {
+  padding:0;
+  margin:0;
+  list-style-type: none;
+  
+}
+
+#navlist li {
+  display: inline;
+  list-style-type: none;
+  padding-left: 4px;
+  padding-right: 9px;
+ 
+}
+
+#navlist li a {
+  color:rgb(25,25,75);
+  
+  font-size:        18px;
+  font-weight:bold;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+h1 {
+  color: #3104B4;
+  
+  font-size: x-large;
+}
+
+h2 {
+  color: #2E9AFE;
+  
+  font-size: medium;
+}
+
+table {
+  text-align: left;
+  border-collapse: collapse;
+}
+
+caption {
+  text-align: left;
+  font-size: x-large;
+}
+
+td {
+  padding:          2px 5px 2px 5px;
+  background-color: #F2F2F2;
+}
+
+th {
+  padding:          2px 5px 2px 5px;
+  background-color: #B2B2B2;
+}
+
+p,h1,h2,div.content div {
+  
+  
+  margin-left: 0px;
+  margin-right: 0px;
+  
+  
+  
+  
+  clear: both;
+}
+
+pre {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+}
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  margin-left: 20px;
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+#footer {
+  font-size: 85%
+}
+
+/* From Matlab function help */
+.headertitle {
+    font-weight:bold;
+    padding: 3px 5px 3px 5px;
+}
+
+.subheader {
+    background-color: #E7EBF7;
+    width: 100%;
+}
+
+.subheader-left {
+    padding: 3px 5px 3px 5px;
+}
+
+.subheader-right {
+    text-align: right;
+    padding: 3px 5px 3px 5px;
+}
+
+.title {
+  color: #3104B4;
+  
+  font-size: x-large;
+  font-size:24px;
+  padding:2px 0px 2px 0px;
+  margin:10px 0px 0px 5px;
+  vertical-align: middle;
+}
+
+.helptext {
+    margin-left: 5px;
+    font-family: monospace; 
+    white-space: pre;
+    font-size: 13px;
+}
+
+.footerlinktitle {
+  color: #2E9AFE;
+  
+  font-size: medium;
+    margin: 15px 0px 0px 5px;
+    /* color:#990000; */
+    font-size: 16px;
+}
+
+.footerlink {
+    padding: 3px 5px 3px 15px;
+}
