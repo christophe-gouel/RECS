@@ -1,5 +1,5 @@
 % RECS Toolbox
-% Version 0.5-RC2 26-Dec-2012
+% Version 0.5-RC2 (R2011b) 26-Dec-2012
 %
 % RECS functions
 %   recsAccuracy              - Evaluate accuracy of a RECS solution.
@@ -15,7 +15,7 @@
 %   recsSolveREEFiniteHorizon - Solve a finite horizon rational expectations problem.
 %   recsSS                    - Solve for the deterministic steady state of a model.
 %
-% Nonlinear equations and MCP solvers
+% Nonlinear equations and MCP solvers that can used with RECS
 %   fsolve      - Solve system of nonlinear equations.
 %   lmmcp       - Solve mixed complementarity problems.
 %   ncpsolve    - Solve mixed complementarity problems.
@@ -23,5 +23,5 @@
 %   recspathmcp - Solve mixed complementarity problems.
 %   SA          - Solve a system of equations by successive approximation.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

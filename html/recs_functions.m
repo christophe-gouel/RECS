@@ -26,10 +26,12 @@
 % steady state of a model
 
 %% Nonlinear equations and MCP solvers
-% * <matlab:isfilepresent('fsolve') |fsolve|> - Solve system of nonlinear equations
+% * <matlab:isfilepresent('fsolve') |fsolve|> - Solve system of nonlinear
+%   equations (from MATLAB Optimization Toolbox)
 % * <matlab:doc('lmmcp') |lmmcp|> - Solve mixed complementarity problems
 % * <matlab:doc('ncpsolve') |ncpsolve|> - Solve mixed complementarity problems
+%   (from CompEcon)
 % * <matlab:doc('nsoli') |nsoli|> - Solve system of nonlinear
-% equations by a Jacobian-free Newton-Krylov solver
+%   equations by a Jacobian-free Newton-Krylov solver
 % * <matlab:doc('recspathmcp') |recspathmcp|> - Solve mixed complementarity problems
 % * <matlab:doc('SA') |SA|> - Solve a system of equations by successive approximation

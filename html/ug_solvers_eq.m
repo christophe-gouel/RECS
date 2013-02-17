@@ -41,6 +41,6 @@
 % to have MATLAB Optimization Toolbox to use this solver.
 
 %% See also
-% <matlab:doc('fsolve') |fsolve|>, <matlab:doc('lmmcp') |lmmcp|>,
+% <matlab:isfilepresent('fsolve') |fsolve|>, <matlab:doc('lmmcp') |lmmcp|>,
 % <matlab:doc('ncpsolve') |ncpsolve|>, <matlab:doc('recspathmcp')
 % |recspathmcp|>.
