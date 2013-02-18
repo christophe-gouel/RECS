@@ -25,7 +25,7 @@
 % * <matlab:doc('recsSS') |recsSS|> - Solve for the deterministic
 % steady state of a model
 
-%% Nonlinear equations and MCP solvers that can used with RECS
+%% Nonlinear equations and MCP solvers that can be used with RECS
 % * <matlab:isfilepresent('fsolve') |fsolve|> - Solve system of nonlinear
 %   equations (from MATLAB Optimization Toolbox)
 % * <matlab:doc('lmmcp') |lmmcp|> - Solve mixed complementarity problems

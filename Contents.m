@@ -15,7 +15,7 @@
 %   recsSolveREEFiniteHorizon - Solve a finite horizon rational expectations problem.
 %   recsSS                    - Solve for the deterministic steady state of a model.
 %
-% Nonlinear equations and MCP solvers that can used with RECS
+% Nonlinear equations and MCP solvers that can be used with RECS
 %   fsolve      - Solve system of nonlinear equations.
 %   lmmcp       - Solve mixed complementarity problems.
 %   ncpsolve    - Solve mixed complementarity problems.

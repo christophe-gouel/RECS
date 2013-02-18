@@ -73,6 +73,8 @@ rmpath(fullfile(recsdirectory,'demos'))
 if website
   copyfile(fullfile(recsdirectory,'html','layoutfunctionhelp.css'),...
            fullfile(targetdirectory,'layoutfunctionhelp.css'));
+  copyfile(fullfile(recsdirectory,'html','bullet-recs.gif'),...
+           fullfile(targetdirectory,'bullet-recs.gif'));
   htmlfilelist = ls(fullfile(targetdirectory,'*.html'));
   for i=1:size(htmlfilelist,1)
     txt = fileread(fullfile(targetdirectory,htmlfilelist(i,:)));
@@ -89,7 +91,7 @@ if website
     fprintf(fid,'%s',txt);
     fclose(fid);
   end
-  
+
   FunctionList = {'recsAccuracy',...
                   'recsAuxiliary',...
                   'recsCheck',...
