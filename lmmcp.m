@@ -67,7 +67,7 @@ function [x,FVAL,EXITFLAG,OUTPUT,JACOB] = lmmcp(FUN,x,lb,ub,options,varargin)
 % A user's guide is also available:
 %
 % Christian Kanzow and Stefania Petra (2005).
-% LMMCP --- A Levenberg-Marquardt-type Matlab Solver for Mixed Complementarity Problems.
+% LMMCP --- A Levenberg-Marquardt-type MATLAB Solver for Mixed Complementarity Problems.
 % University of Wuerzburg.
 % http://www.mathematik.uni-wuerzburg.de/~kanzow/software/UserGuide.pdf
 %

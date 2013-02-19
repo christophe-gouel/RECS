@@ -92,6 +92,6 @@ xlabel('Decrease in public stock level')
 ylabel('Frequency')
 
 %% References
-%
-% Miranda, M. J. and Helmberger, P. G. (1988). The effects of commodity price
-% stabilization programs. _The American Economic Review_, 78(1), 46-58.
+% <http://www.jstor.org/stable/1814697 Miranda, M. J. and Helmberger,
+% P. G. (1988). The effects of commodity price stabilization programs. _The
+% American Economic Review_, 78(1), 46-58.>

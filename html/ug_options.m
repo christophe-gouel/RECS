@@ -72,7 +72,13 @@
 %     </tr>
 %     <tr>
 %       <td> <tt>reemethod</tt> </td>
-%       <td> '<tt>iter</tt>' (default), '<tt>iter-newton</tt>' or '<tt>1-step</tt>'. </td>
+%       <td> Define the method to solve for rational expextations:
+%            <ul>
+%              <li> '<tt>iter</tt>' (default): time iteration.</li>
+%              <li> '<tt>iter-newton</tt>': time iteration with Newton step.</li>
+%              <li> '<tt>1-step</tt>': rational expectations and equilibrium equations are solved in one step (as suggested in Judd, 1992).</li>
+%            </ul>
+%       </td>
 %       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
@@ -118,3 +124,7 @@
 % <http://www.jstor.org/stable/1391746 den Haan, W. J. and Marcet, A.
 % (1990). Solving the Stochastic Growth Model by Parameterizing
 % Expectations. _Journal of Business & Economic Statistics_, 8(1), 31-34.>
+%
+% <http://dx.doi.org/10.1016/0022-0531(92)90061-L Judd, K. (1992). Projection
+% Methods for Solving Aggregate Growth Models. _Journal of Economic Theory_,
+% 58(2), 410-452.>

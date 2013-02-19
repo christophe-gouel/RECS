@@ -16,7 +16,7 @@ function [z,f,exitflag,J,mu] = recspathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
 % Solver options can be defined through an option file present in the working
 % directory and named 'path.opt'. Many options are described in the following file:
 % http://www.cs.wisc.edu/~ferris/path/options.pdf
-% RECSPATHMCP returns also a log file named 'logfile.tmp'. From Matlab, it can be
+% RECSPATHMCP returns also a log file named 'logfile.tmp'. From MATLAB, it can be
 % displayed by 'type logfile.tmp'.
 %
 % Z = RECSPATHMCP(Z,L,U,CPFJ,NNZJ) uses NNZJ the number of non-zero elements in the
@@ -47,7 +47,7 @@ function [z,f,exitflag,J,mu] = recspathmcp(z,l,u,cpfj,nnzJ,A,b,t,mu)
 % [Z,F,EXITFLAG,J,MU] = RECSPATHMCP(Z,L,U,CPFJ,NNZJ,A,B,T,MU) returns MU the
 % multipliers on the constraints at the solution.
 %
-% For more information, see the following references 
+% For more information, see the following references
 % Dirkse, S. P. and Ferris, M. C. (1995), The PATH solver: A non-monotone
 %   stabilization scheme for mixed complementarity problems, Optimization Methods
 %   and Software 5, 123-156. DOI: <a href="http://dx.doi.org/10.1080/10556789508805606">10.1080/10556789508805606</a>
@@ -83,7 +83,7 @@ if (nargin < 3 || isempty(u))
   u = Big*ones(n,1);
 end
 
-l = full(l(:)); 
+l = full(l(:));
 u = full(u(:));
 if (length(l) ~= n || length(u) ~= n)
   error('Input arguments are of incompatible sizes');
@@ -112,7 +112,7 @@ if (nargin > 5)
   if (nargin < 7)
     error('Polyhedral constraints require A and b');
   end
-  
+
   if (~issparse(A))
     A = sparse(A);
   end

@@ -3,12 +3,12 @@
 %% RECS functions
 % * <matlab:doc('recsAccuracy') |recsAccuracy|> - Evaluate accuracy
 % of a RECS solution
-% * <matlab:doc('recsAuxiliary') |recsAuxiliary|> - Calculate auxiliary
-% variables not included in the core model
 % * <matlab:doc('recsCheck') |recsCheck|> - Check analytical derivatives against
 % numerical ones
 % * <matlab:doc('recsConvert') |recsConvert|> - Convert the
 % interpolation structure of a model to another form
+% * <matlab:doc('recsDecisionRules') |recsDecisionRules|> - Plot a model
+% decision rules
 % * <matlab:doc('recsdemos') |recsdemos|> - Run all RECS demonstration files
 % * <matlab:doc('recsFirstGuess') |recsFirstGuess|> - Find a first guess using the
 % perfect foresight solution
@@ -35,3 +35,5 @@
 %   equations by a Jacobian-free Newton-Krylov solver
 % * <matlab:doc('recspathmcp') |recspathmcp|> - Solve mixed complementarity problems
 % * <matlab:doc('SA') |SA|> - Solve a system of equations by successive approximation
+% * <matlab:doc('SCP') |SCP|> - Solve a problem through simple continuation
+%   method (homotopy)

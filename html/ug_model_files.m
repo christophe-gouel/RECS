@@ -22,9 +22,9 @@
 % state variables. Currently, RECS relies for interpolation on grids constructed
 % with tensor products, so the dimension of the problem increases exponentially
 % with the number of state variables. This implies that RECS should be used only
-% to solve small-scale models: with more than three or four state variables may
-% make the problems too large to handle. One way of reducing the problem size
-% is, whenever possible, to sum together the predetermined variables that can be
+% to solve small-scale models: more than three or four state variables may make
+% the problems too large to handle. One way of reducing the problem size is,
+% whenever possible, to sum together the predetermined variables that can be
 % summed. You can see in the demonstrations files (e.g., <cs1.html CS1> or
 % <sto1.html STO1>) that states variables are occasionaly defined as sums of
 % other predetermined variables.
@@ -34,8 +34,8 @@
 % mathematical notations (as is proposed in most algebraic modeling
 % languages). The model file that must be created is called a Yaml file (because
 % it is written in <http://yaml.org YAML> and has the |.yaml| extension). A Yaml
-% file is easily readable by human, but not by Matlab. So the file needs to be
-% processed for Matlab to be able read it. This is done by the function
+% file is easily readable by human, but not by MATLAB. So the file needs to be
+% processed for MATLAB to be able to read it. This is done by the function
 % <matlab:doc('recsmodelinit') |recsmodelinit|>, which uses a Python
 % preprocessor, |dolo-recs|, to do the job.
 %
@@ -104,7 +104,7 @@
 %
 % See <demos.html Demos> for other examples of complete yaml files.
 %
-% Yaml files can be written with any text editor, including Matlab editor.
+% Yaml files can be written with any text editor, including MATLAB editor.
 %
 % *Yaml syntax conventions*
 %
@@ -113,29 +113,26 @@
 %
 % * *Association equilibrium equations/control variables/bounds:* Each
 % equilibrium equation must be associated with a control variable. This matters
-% absolutely for equations with complementarity constraints, if it is not the
-% case, the precise association does not matter. The equation and its associated
-% variable are separated by the symbol |. Control variables must be
-% associated with bounds, which can be infinite.
-% * *Indentation:* Inside each block elements of the same scope have to be
-% indented using the same number of spaces (do not use tabs). For the above
-% example, inside the |declarations| block, |states|, |controls|,
-% |expectations|, |shocks|, and |parameters| are indented to the same
-% level.
-% * Each equation starts with a dash and a space ("- "), not to be confused
-% with a minus sign. To avoid confusion, it is possible instead to use two
-% points and a space (".. "), or two dashes and a space ("-- ").
-% * *Comments:* Comments are introduced by the character |#|.
-% * *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.
-% * *Timing convention:* Transition equations are written by defining the new
+% absolutely for equations with complementarity constraints. For traditional
+% equations, the precise association does not matter. The equation and its
+% associated variable are separated by the symbol |. Control variables must be
+% associated with bounds, which can be infinite.  * *Indentation:* Inside each
+% block, elements of the same scope have to be indented using the same number of
+% spaces (do not use tabs). For the above example, inside the |declarations|
+% block, |states|, |controls|, |expectations|, |shocks|, and |parameters| are
+% indented to the same level.  * Each equation starts with a dash and a space
+% ("- "), not to be confused with a minus sign. To avoid confusion, it is
+% possible instead to use two points and a space (".. "), or two dashes and a
+% space ("-- ").  * *Comments:* Comments are introduced by the character |#|.  *
+% *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.  *
+% *Timing convention:* Transition equations are written by defining the new
 % state variable at current time as a function of lagged response and state
 % variables: $s_t = g(s_{t-1},x_{t-1},e_t)$. Even if expectations are defined by
 % $z_{t} = \mathrm{E}_{t}\left[h(s_{t},x_{t},e_{t+1},s_{t+1},x_{t+1})\right]$,
 % when writing them in a Yaml file the shocks are not indicated with a
 % lead. This can be seen in the competitive storage model example (<sto1.html
 % STO1>) where the expectations $P_{t+1}\epsilon_{t+1}$ is written as |EPe =
-% P(1)*e|.
-% * Do not use |lambda| as a variable/parameter name, this is a restricted word.
-% * Write equations in the same order as the order of variables declaration.
-% * Yaml files are case sensitive.
+% P(1)*e|.  * Do not use |lambda| as a variable/parameter name, this is a
+% restricted word.  * Write equations in the same order as the order of
+% variables declaration.  * Yaml files are case sensitive.
 %

@@ -14,7 +14,7 @@
 % $\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z)$, where
 % $f:\mathbf{R}^{d+m+p}\rightarrow \mathbf{R}^{m}$,
 %
-% $z = \mathrm{E}_{e_{+}} \left[h(s,x,e_{+},s_{+},x_{+})\right]$, where
+% $z = \mathrm{E} \left[h(s,x,e_{+},s_{+},x_{+})\right]$, where
 % $h:\mathbf{R}^{d+m+q+d+m}\rightarrow \mathbf{R}^{p}$,
 %
 % $s = g(s_{-},x_{-},e)$, where $g:\mathbf{R}^{d+m+q}\rightarrow \mathbf{R}^{d}$.
@@ -24,7 +24,8 @@
 % $\underline{x}$ and $\overline{x}$, which themselves can be functions of the
 % state variables. Expectations variables, denoted by $z$, are also defined,
 % because they are necessary for solving the model considering the implemented
-% algorithms.
+% algorithms. $\mathrm{E}$ is the expectations operator conditional on
+% information available at the current period.
 %
 % The first equation is the equilibrium equation. It characterizes the behavior
 % of the response variables given state variables and expectations about the
@@ -47,10 +48,10 @@
 % In many models, it is possible to simplify the state transition equation
 % $s=g\left(s_{-},x_{-},e\right)$. For example, it is possible to have $s=e$
 % when some shocks are not serially correlated, or $s=x_{-}$ when the state is
-% just a previous period response variables. In the latter case, one might be
-% tempted to reduce the number of variables in the model by introducing the lag
-% response variable directly in the equilibrium equation. This should not be
-% done. A state variable corresponding to the lagged response variable or to the
+% just a lagged response variables. In the latter case, one might be tempted to
+% reduce the number of variables in the model by introducing the lagged response
+% variable directly in the equilibrium equation. This should not be done. A
+% state variable corresponding to the lagged response variable or to the
 % realized shock has to be created.
 %
 % One consequence is that lags can only appear in state transition equations and
@@ -70,7 +71,7 @@
 % In RECS, the timing of each variable reflects when that variable is
 % decided/determined. In particular, the RECS convention implies that state
 % variables are determined by a transition equation that includes shocks and so
-% are always contemporaneous to shocks, evenwhen shocks do not actually play a
+% are always contemporaneous to shocks, even when shocks do not actually play a
 % role in the transition equation. This convention implies that the timing of
 % each variable depends on the way the model is written.
 %
@@ -125,7 +126,7 @@
 
 %% Solving a rational expectations model
 % What makes solving a rational expectations model complicated is that the
-% defining the expectations, $z = \mathrm{E}_{e_{+}}
+% equation defining the expectations, $z = \mathrm{E}_{e_{+}}
 % \left[h(s,x,e_{+},s_{+},x_{+})\right]$, is not a traditional algebraic
 % equation. It is an equation that expresses the consistency between agents'
 % expectations, their information set, and realized outcomes.

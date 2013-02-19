@@ -77,6 +77,6 @@ ylabel('Frequency')
 recsAccuracy(model,interp,ssim);
 
 %% References
-%
-% Wright, B. D. and Williams, J. C. (1982). The economic role of commodity
-% storage. _The Economic Journal_, 92(367), 596-614.
+% <http://www.jstor.org/stable/2232552 Wright, B. D. and Williams,
+% J. C. (1982). The economic role of commodity storage. _The Economic Journal_,
+% 92(367), 596-614.>

@@ -61,6 +61,6 @@ xlabel('Availability')
 ylabel('Price')
 
 %% References
-%
-% Wright, B. D. and Williams, J. C. (1988). The incidence of market-stabilising
-% price support schemes. _The Economic Journal_, 98(393), 1183-1198.
+% <http://www.jstor.org/stable/2233726 Wright, B. D. and Williams,
+% J. C. (1988). The incidence of market-stabilising price support schemes. _The
+% Economic Journal_, 98(393), 1183-1198.>

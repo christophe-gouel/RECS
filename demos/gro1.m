@@ -31,13 +31,13 @@ Mu                = 0;
 sigma             = 0.007;
 
 %%
-% You generate the Matlab model file and pack the model structure with the
+% You generate the MATLAB model file and pack the model structure with the
 % following command
 model = recsmodelinit('gro1.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
 %%
-% This command creates a Matlab file, <gro1model.html gro1model.m>, containing
+% This command creates a MATLAB file, <gro1model.html gro1model.m>, containing
 % the definition the model and all its Jacobians from the human readable file
 % <gro1.txt gro1.yaml>.
 

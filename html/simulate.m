@@ -2,7 +2,8 @@
 
 %% Running a simulation
 % Once the rational expectations equilibrium has been found, it is possible to
-% simulate the model using the function |recsSimul| with the following call:
+% simulate the model using the function <matlab:doc('recsSimul') |recsSimul|>
+% with the following call:
 %
 %  [ssim,xsim] = recsSimul(model,interp,s0,nper);
 %
@@ -15,7 +16,7 @@
 % run for |nper| periods. Even starting from a unique state, using this feature
 % will speed up the simulations.
 %
-% *Shocks* 
+% *Shocks*
 %
 % The shocks used in the simulation can be provided as the fifth input to the function:
 %
@@ -27,7 +28,7 @@
 % from the shock discretization, using the associated probabilities.
 %
 % To reproduce previously run results, it is necessarily to reset the random
-% number generator using the Matlab function |reset|.
+% number generator using the MATLAB function |reset|.
 %
 % *Asymptotic statistics*
 %
@@ -44,7 +45,7 @@
 % |recsSimul|:
 %
 %  [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper);
-% 
+%
 % Since RECS does not retain the variable names, when displaying the statistics,
 % the variables are organized as follows: first state variables, followed by
 % response variables, both of which follow the order of their definition in the
@@ -73,7 +74,7 @@
 %
 % *Solve equilibrium equations using approximated expectations*
 %
-% The second main method uses the function being approximated (decisions rules,
+% The second method uses the function being approximated (decisions rules,
 % conditional expectations, or expectations function as shown in
 % <ug_methods.html Solution methods>) to approximate next-period expectations
 % and solve the equilibrium equations to find the current decisions (in a

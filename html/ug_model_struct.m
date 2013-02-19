@@ -1,9 +1,9 @@
 %% Define the model structure
-% Now the model should be written in a Yaml file, however Matlab does not know
+% Now the model should be written in a Yaml file, however MATLAB does not know
 % anything about the Yaml file and, even if it did, although the file is easy
-% for humans to read and write, it means nothing to Matlab. So we
-% have to tell Matlab to use the Yaml file and to convert it to a format
-% suitable for Matlab. Also, we have to provide additional information about the
+% for humans to read and write, it means nothing to MATLAB. So we
+% have to tell MATLAB to use the Yaml file and to convert it to a format
+% suitable for MATLAB. Also, we have to provide additional information about the
 % structure of shocks.
 
 %% Convert the Yaml file and create the model structure
@@ -19,10 +19,10 @@
 % This call does two things:
 %
 % * It converts |file.yaml| to |filemodel.m|, which contains the model
-% definition in a Matlab readable form but also all the derivatives of the
+% definition in a MATLAB readable form but also all the derivatives of the
 % equations, plus some additional information such as the parameters values for
 % calibration or a first guess for the steady state.
-% * It creates in Matlab workspace the structure |model| with two fields: the
+% * It creates in MATLAB workspace the structure |model| with two fields: the
 % function name, |func| equal to |@filemodel|, and the parameters values,
 % |params|, if these latter have been provided in the Yaml file.
 
@@ -70,5 +70,5 @@ disp(model)
 
 %% Notes on functions used
 % The shock discretization is done with the function |qnwnorm| from the CompEcon
-% toolbox. The random number generation is simply done with the Matlab |randn|
+% toolbox. The random number generation is simply done with the MATLAB |randn|
 % function.

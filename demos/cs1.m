@@ -29,13 +29,13 @@ Mu                = 100;
 sigma             = 10;
 
 %%
-% You generate the Matlab model file and pack the model structure with the
+% You generate the MATLAB model file and pack the model structure with the
 % following command
 model = recsmodelinit('cs1.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
 %%
-% This command creates a Matlab file, <cs1model.html cs1model.m>, containing the
+% This command creates a MATLAB file, <cs1model.html cs1model.m>, containing the
 % definition the model and all its Jacobians from the human readable file
 % <cs1.txt cs1.yaml>.
 

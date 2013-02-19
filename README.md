@@ -1,6 +1,6 @@
 **RECS toolbox Version 0.5-RC2**
 
-A Matlab solver for nonlinear, dynamic, stochastic, rational expectations
+A MATLAB solver for nonlinear, dynamic, stochastic, rational expectations
 equilibrium models. RECS stands for "Rational Expectations Complementarity
 Solver". This name emphasizes that RECS has been developed specifically to solve
 models that include complementarity equations, also known as models with
@@ -20,7 +20,7 @@ to parse RECS model files.
 Dependencies
 ============
 
-* Matlab R2009b or later.
+* MATLAB R2009b or later.
 * [CompEcon toolbox](http://www4.ncsu.edu/~pfackler/compecon/). RECS depends on
   the CompEcon toolbox for many programs (especially with respect to
   interpolation). Please follow CompEcon installation instructions and do not
@@ -30,7 +30,7 @@ Dependencies
 Optional dependencies
 ---------------------
 
-* [Path solver for Matlab](http://pages.cs.wisc.edu/~ferris/path.html). Path is
+* [Path solver for MATLAB](http://pages.cs.wisc.edu/~ferris/path.html). Path is
   the reference solver for mixed complementarity problems. Its installation is
   highly recommended if difficult complementarity problems need to be solved.
 * MATLAB Optimization Toolbox. The solver fsolve can be used to solve both the
@@ -38,7 +38,7 @@ Optional dependencies
 * [Sundials Toolbox](https://computation.llnl.gov/casc/sundials/main.html),
   which provides a compiled Newton-Krylov solver for solving the rational
   expectations equilibrium.
-* Matlab Statistics Toolbox. Useful to simulate models in which shocks follow
+* MATLAB Statistics Toolbox. Useful to simulate models in which shocks follow
   other distributions than the normal.
 
 Installation instructions
@@ -50,14 +50,14 @@ Installation instructions
 2. Install the CompEcon toolbox:
    1. [Download the CompEcon toolbox archive](http://www4.ncsu.edu/~pfackler/compecon/);
    2. Unzip the archive into a folder, called here `compeconfolder`;
-   3. Add CompEcon to the Matlab path: `addpath('compeconfolder/CEtools','compeconfolder/CEdemos')`;
-   4. Type `mexall` in Matlab prompt to create all CompEcon mex files.
+   3. Add CompEcon to the MATLAB path: `addpath('compeconfolder/CEtools','compeconfolder/CEdemos')`;
+   4. Type `mexall` in MATLAB prompt to create all CompEcon mex files.
 3. (optional) Install other dependencies.
-4. Add the RECS folder to the Matlab path: `addpath('recsfolder')`.
+4. Add the RECS folder to the MATLAB path: `addpath('recsfolder')`.
 5. On Windows, you are all set. On other architectures, you will have to install
    some Python packages. see instructions below.
 6. You can test your installation by running RECS demonstration files by typing
-   `recsdemos`. You can also access RECS documentation in Matlab by typing `doc`.
+   `recsdemos`. You can also access RECS documentation in MATLAB by typing `doc`.
 
 Install on Linux
 ----------------

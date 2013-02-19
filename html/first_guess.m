@@ -61,8 +61,7 @@
 % the one created by |recsFirstGuess| (see the next step <solve_REE.html Solve
 % the rational expectations problem> for more information).
 %
-% For example of this, see in demos <cs1.html CS1>, <sto1.html STO1>, <sto4.html
-% STO4>, <sto5.html STO5>, and <sto6.html STO6>.
+% For example of this, see in demos <cs1.html CS1>.
 
 
 

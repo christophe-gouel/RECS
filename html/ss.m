@@ -26,18 +26,19 @@
 %% Finding the steady state with RECS
 % *Automatically when initializing model structure*
 %
-% When writing a model file (see <ug_model_files.html Writing RECS model files>,
+% When writing a model file (see <ug_model_files.html Writing RECS model files>),
 % it is possible, at the end of the Yaml file in the |calibration| block, to
 % define an initial guess for finding the steady state. When the model structure
 % is created by |recsmodelinit|, if the definition of the shocks is provided to
 % |recsmodelinit|, a Newton-type solver will attempt to find the steady state
 % starting from the initial guess provided in the model file. If a steady state
-% is found, it is displayed in Matlab command window.
+% is found, it is displayed in MATLAB command window.
 %
 % *Manually*
 %
 % Otherwise, the steady state can be found manually by feeding the function
-% |recsSS| with the model and an initial guess for the steady state.
+% <matlab:doc('recsSS') |recsSS|> with the model and an initial guess for the
+% steady state.
 %
 % Both approaches rely on a Newton-type solver to find the steady state. See
 % <ug_solvers_eq.html Solvers for systems of nonlinear equations and for mixed
@@ -52,8 +53,7 @@
 % interpolation structure. Since in practice it is often close to the long-run
 % average values of the stochastic problem, the steady state is useful for
 % calibrating the model so that, on the asymptotic distribution, the model can
-% reproduce the desired long-run average. See <calibration.html Calibration> for
-% more information.
+% reproduce the desired long-run average.
 %
 % *Define the approximation space*
 %

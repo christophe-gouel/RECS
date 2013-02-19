@@ -14,9 +14,8 @@
 % <h2>Available documentation</h2>
 % </html>
 %
-% RECS documentation is still not complete in particular with respect to
-% advanced features, but it is sufficient to build standard models (many
-% examples are provided in Demos).
+% RECS documentation is not complete, but is sufficient to build standard
+% models (many examples are provided in <demos.html Demos>):
 %
 % * <getting_started.html Getting started>
 % * <user_guide.html User's Guide>
@@ -47,7 +46,8 @@
 % This solver started as a reimplementation of the solvers |remsolve| and
 % |resolve| from Miranda and Fackler (2002) and Fackler (2005). RECS would not
 % exist without these earlier contributions. RECS benefited also of many inputs
-% from Pablo Winant, especially with respect to models' parsing.
+% from <http://www.mosphere.fr/ Pablo Winant>, especially with respect to
+% models' parsing.
 %
 % This work was generously supported by
 %

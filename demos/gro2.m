@@ -41,7 +41,7 @@ model = recsmodelinit('gro2.yaml',...
                       struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %%
-% This command creates a Matlab file, <gro2model.html gro2model.m>, containing
+% This command creates a MATLAB file, <gro2model.html gro2model.m>, containing
 % the definition the model and all its Jacobians from the human readable file
 % <gro2.txt gro2.yaml>.
 
@@ -83,7 +83,6 @@ xlabel('Lagrange multiplier')
 ylabel('Frequency')
 
 %% References
-%
-% Christiano, L.J. and Fisher, J.D.M. (2000). Algorithms for solving dynamic
-% models with occasionally binding constraints. _Journal of Economic Dynamics
-% and Control_, 24(8), 1179-1232.
+% <http://dx.doi.org/10.1016/S0165-1889(99)00016-0 Christiano, L.J. and Fisher,
+% J.D.M. (2000). Algorithms for solving dynamic models with occasionally binding
+% constraints. _Journal of Economic Dynamics and Control_, 24(8), 1179-1232.>

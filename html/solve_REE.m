@@ -4,7 +4,8 @@
 % Once <ug_model_struct.html the model>, <ug_interpolation.html the
 % interpolation> structure and <first_guess.html a first guess solution> have
 % been defined, it is possible to attempt to find the rational expectations
-% equilibrium of the model. This is achieved by the function |recsSolveREE|.
+% equilibrium of the model. This is achieved by the function
+% <matlab:doc('recsSolveREE') |recsSolveREE|>.
 %
 % This is done by the following call
 %
@@ -16,7 +17,7 @@
 % expectations variables interpolation coefficients, respectively. These
 % coefficients are sufficient to <simulate.html simulate the model>. The second
 % output is the matrix |x| of response variables on the grid.
-% 
+%
 % The |options| structure defines <ug_methods.html the methods used to find the
 % rational expectations equilibrium>, as well as other aspects of the solution
 % process (see <ug_options.html Options> for details on available options).
@@ -46,7 +47,7 @@ interp = recsSolveREE(interp,model,s);
 % from the previous solve:
 interp = rmfield(interp,{'cx','cz'});
 
-%% 
+%%
 % Then we take a very simple first guess: consumption is equal to one-fifth of
 % capital stock:
 x      = s(:,1)/5;
