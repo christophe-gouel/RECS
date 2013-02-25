@@ -8,12 +8,13 @@ occasionally binding constraints.
 
 [Christophe Gouel](http://www.christophegouel.com) (<christophe.gouel@grignon.inra.fr>)
 
-**Main page is at**: <http://www.recs-solver.org>.
+**Main page is at**: [www.recs-solver.org](http://www.recs-solver.org).
 
 Download
 ========
 
-RECS Toolbox zip archives are available at <http://code.google.com/p/recs/>.
+RECS Toolbox zip archives are available at
+[code.google.com/p/recs/](http://code.google.com/p/recs/).
 
 Why is this archive 12 MB? Much of this size is due to an executable for
 Windows. The executable file includes a complete Python distribution necessary

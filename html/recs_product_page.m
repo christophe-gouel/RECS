@@ -52,7 +52,8 @@
 % This work was generously supported by
 %
 % * the European Union's Seventh Framework Programme FP7/2007-2011 under Grant
-%   Agreements #212036 AgFoodTRAde (for solver development);
+%   Agreements #212036 AgFoodTRAde and #290693 FOODSECURE (for solver development);
+% * the Knowledge for Change (KCP) Trust Fund;
 % * the AGRODEP Consortium (for documentation writing).
 %
 % <html>
