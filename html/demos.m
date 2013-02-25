@@ -1,7 +1,7 @@
 %% RECS Toolbox DEMOS
 %
 % All MATLAB files for RECS demos can be found in the |demos| folder inside RECS
-% folder. And below are the links to each demos:
+% folder. And below are the links to each demo:
 %
 % *Variants of the consumption/saving model*
 %

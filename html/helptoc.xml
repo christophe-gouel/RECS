@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 
-<toc version="0.5-RC2">
+<toc version="0.5">
 
   <tocitem target="recs_product_page.html">RECS
 
@@ -35,7 +35,7 @@
       <tocitem target="ug_options.html"> Options </tocitem>
       <!-- <tocitem target="ug_solvers_ree.html"> Solvers for the rational -->
       <!-- expectations problem for two-step approaches </tocitem> -->
-      <!-- Auxiliary variabels -->
+      <!-- Auxiliary variables -->
 
     </tocitem>
 

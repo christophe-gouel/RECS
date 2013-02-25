@@ -116,23 +116,24 @@
 % absolutely for equations with complementarity constraints. For traditional
 % equations, the precise association does not matter. The equation and its
 % associated variable are separated by the symbol |. Control variables must be
-% associated with bounds, which can be infinite.  * *Indentation:* Inside each
-% block, elements of the same scope have to be indented using the same number of
-% spaces (do not use tabs). For the above example, inside the |declarations|
-% block, |states|, |controls|, |expectations|, |shocks|, and |parameters| are
-% indented to the same level.  * Each equation starts with a dash and a space
-% ("- "), not to be confused with a minus sign. To avoid confusion, it is
-% possible instead to use two points and a space (".. "), or two dashes and a
-% space ("-- ").  * *Comments:* Comments are introduced by the character |#|.  *
-% *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.  *
-% *Timing convention:* Transition equations are written by defining the new
+% associated with bounds, which can be infinite.
+% * *Indentation:* Inside each block, elements of the same scope have to be
+% indented using the same number of spaces (do not use tabs). For the above
+% example, inside the |declarations| block, |states|, |controls|,
+% |expectations|, |shocks|, and |parameters| are indented to the same level.
+% * Each equation starts with a dash and a space ("- "), not to be confused with
+% a minus sign. To avoid confusion, it is possible instead to use two points and
+% a space (".. "), or two dashes and a space ("-- ").
+% * *Comments:* Comments are introduced by the character |#|.
+% * *Lead/Lag:* Lead variables are indicated |X(1)| and lag variables |X(-1)|.
+% * *Timing convention:* Transition equations are written by defining the new
 % state variable at current time as a function of lagged response and state
 % variables: $s_t = g(s_{t-1},x_{t-1},e_t)$. Even if expectations are defined by
 % $z_{t} = \mathrm{E}_{t}\left[h(s_{t},x_{t},e_{t+1},s_{t+1},x_{t+1})\right]$,
 % when writing them in a Yaml file the shocks are not indicated with a
 % lead. This can be seen in the competitive storage model example (<sto1.html
 % STO1>) where the expectations $P_{t+1}\epsilon_{t+1}$ is written as |EPe =
-% P(1)*e|.  * Do not use |lambda| as a variable/parameter name, this is a
-% restricted word.  * Write equations in the same order as the order of
-% variables declaration.  * Yaml files are case sensitive.
-%
+% P(1)*e|.
+% * Do not use |lambda| as a variable/parameter name, this is a restricted word.
+% * Write equations in the same order as the order of variables declaration.
+% * Yaml files are case sensitive.
