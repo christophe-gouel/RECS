@@ -7,6 +7,8 @@ function Publish_recs_help(website)
 %% Initialization
 if nargin < 1, website = 0; end
 
+warning('off','backtrace')
+
 recsdirectory   = fileparts(which('recsSimul'));
 if website
   targetdirectory = fullfile(recsdirectory,'www');
@@ -143,11 +145,15 @@ end
 copyfile(fullfile(recsdirectory,'LICENSE.txt'),fullfile(targetdirectory,'LICENSE.txt'));
 
 %% Demonstration
+stream = RandStream('mt19937ar');
+RandStream.setGlobalStream(stream);
+
 currentfolder = cd(fullfile(recsdirectory,'demos'));
 DemoFileList = {'cs1','cs2','gro1','gro2','sto1','sto2','sto3','sto4', ...
                 'sto5','sto6'};
 for demo=DemoFileList
   publish('clearpublish.m',PublishOptions);
+  reset(stream);
   publish([demo{1} '.m'],PublishOptions);
 end
 YamlFileList = {'cs1','gro1','gro2','sto1','sto2','sto4','sto5','sto6'};

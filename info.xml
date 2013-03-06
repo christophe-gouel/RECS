@@ -2,11 +2,11 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:noNamespaceSchemaLocation="optional">
   <?xml-stylesheet type="text/xsl" href="optional"?>
-  
-  <matlabrelease>2011b</matlabrelease>
+
+  <matlabrelease>2012b</matlabrelease>
   <name>RECS</name>
   <type>toolbox</type>
   <icon></icon>
   <help_location>html</help_location>
-  
+
 </productinfo>

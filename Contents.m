@@ -1,5 +1,5 @@
 % RECS Toolbox
-% Version 0.5 (R2011b) 25-Feb-2013
+% Version 0.5 (R2012b) 6-Mar-2013
 %
 % RECS functions
 %   recsAccuracy              - Evaluate accuracy of a RECS solution.
