@@ -56,7 +56,7 @@ interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 [interp,x] = recsSolveREE(interp,model,s);
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1E4,1),:),100);
+[~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1E4,1),:),100);
 
 %% References
 %

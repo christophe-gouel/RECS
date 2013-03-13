@@ -32,7 +32,7 @@
 %
 % *Asymptotic statistics*
 %
-% If in the options the field |stat| is set to 1, or if five arguments are
+% If in the options the field |stat| is set to 1, or if four arguments are
 % required as the output of |recsSimul|, then some statistics over the
 % asymptotic distribution are calculated. The first 20 observations are
 % discarded. The statistics calculated are the mean, standard deviation,
@@ -41,10 +41,10 @@
 % coefficients. In addition, |recsSimul| draws the histograms of the variables
 % distribution.
 %
-% These statistics are available as a structure in the fifth output of
+% These statistics are available as a structure in the fourth output of
 % |recsSimul|:
 %
-%  [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper);
+%  [ssim,xsim,esim,stat] = recsSimul(model,interp,s0,nper);
 %
 % Since RECS does not retain the variable names, when displaying the statistics,
 % the variables are organized as follows: first state variables, followed by

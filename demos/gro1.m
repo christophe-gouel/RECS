@@ -79,7 +79,7 @@ options = struct('reesolver','krylov',...
 interp = recsSolveREE(interp,model,s,x,options);
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200,[],options);
+[~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200,[],options);
 subplot(2,2,1)
 xlabel('Capital stock')
 ylabel('Frequency')

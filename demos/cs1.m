@@ -62,7 +62,7 @@ xlabel('Cash on hand')
 ylabel('Consumption')
 
 %% Simulate the model
-[~,~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1000,1),:),200);
+[~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1000,1),:),200);
 subplot(1,2,1)
 xlabel('Cash on hand')
 ylabel('Frequency')

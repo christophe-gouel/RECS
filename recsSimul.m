@@ -1,11 +1,11 @@
-function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,options)
+function [ssim,xsim,esim,stat,fsim] = recsSimul(model,interp,s0,nper,shocks,options)
 % RECSSIMUL Simulates a model from starting values given in s0 and for nper period
 %
 % SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER) simulates the model defined in the
 % structure MODEL, by using the interpolation structure defined in the structure
 % INTERP. The simulation starts from the initial state S0 and lasts NPER (scalar)
 % periods. S0 is a nrep-by-d matrix with nrep the number of scenarios to simulate,
-% and d the number of state variables. RECSSIMUL returns the nrep-by-d-by-nper+1
+% and d the number of state variables. RECSSIMUL returns the nrep-by-d-by-nper
 % array SSIM that contains the simulated state variables.
 % MODEL is a structure, which includes the following fields:
 %    [e,w]   : discrete distribution with finite support with e the values and w
@@ -27,7 +27,7 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 %    fspace  : a definition structure for the interpolation family (created by
 %              the function fundef)
 %
-% SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER,SHOCKS) uses the nrep-by-q-by-nper array
+% SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER,SHOCKS) uses the nrep-by-q-by-(nper-1) array
 % SHOCKS to simulate the model instead of drawing random numbers. In this case
 % size(SHOCKS,3) supersedes NPER.
 %
@@ -41,29 +41,30 @@ function [ssim,xsim,esim,fsim,stat] = recsSimul(model,interp,s0,nper,shocks,opti
 %                       interpolation space or 0 to forbid it (default: 1)
 %    functional       : 1 if the equilibrium equations are a functional equation
 %                       problem (default: 0)
-%    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
-%                       over each grid points
+%    loop_over_s      : 0 (default) to solve all grid points at once, 1 to loop
+%                       over each grid points, or n to loop over n blocks of 
+%                       grid points 
 %    funapprox        : 'expapprox', 'expfunapprox', 'resapprox-simple'
 %                       or 'resapprox-complete' (default)
 %    simulmethod      : 'interpolation' (default) or 'solve'
 %    stat             : 1 to ouput summary statistics from the simulation
 %                       (default: 0)
 %
-% [SSIM,XSIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the nrep-by-m-by-nper+1
+% [SSIM,XSIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the nrep-by-m-by-nper
 % array XSIM that contains the simulated response variables.
 %
 % [SSIM,XSIM,ESIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the
-% nrep-by-q-by-nper+1 array ESIM that contains the shocks.
+% nrep-by-q-by-nper array ESIM that contains the shocks.
 %
-% [SSIM,XSIM,ESIM,FSIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the
-% nrep-by-m-by-nper+1 array FSIM that contains the value of the equilibrium
+% [SSIM,XSIM,ESIM,STAT] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns summary
+% statistics as a structure that contains the number of observations (STAT.N),
+% the moments (STAT.MOMENTS), the correlation between variables (STAT.COR), and
+% the autocorrelation (STAT.ACOR). Asking RECSSIMUL to return STAT forces the
+% OPTIONS.STAT to 1.
+%
+% [SSIM,XSIM,ESIM,STAT,FSIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...)  returns the
+% nrep-by-m-by-nper array FSIM that contains the value of the equilibrium
 % equations on the simulation.
-%
-% [SSIM,XSIM,ESIM,FSIM,STAT] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns
-% summary statistics as a structure that contains the number of observations
-% (STAT.N), the moments (STAT.MOMENTS), the correlation between variables
-% (STAT.COR), and the autocorrelation (STAT.ACOR). Asking RECSSIMUL to return
-% STAT forces the OPTIONS.STAT to 1.
 %
 % See also RECSACCURACY, RECSDECISIONRULES, RECSIRF.
 
@@ -81,7 +82,7 @@ end
 [nrep,d] = size(s0);
 
 if ~isempty(shocks) && (numel(shocks)~=d || isempty(nper))
-  nper = size(shocks,3); 
+  nper = size(shocks,3)-1; 
 end
 
 defaultopt = struct(...
@@ -148,12 +149,12 @@ end
 
 %% Generate shocks
 output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-ssim   = zeros(nrep,d,nper+1);
-xsim   = zeros(nrep,m,nper+1);
-esim   = zeros(nrep,q,nper+1);
-if nargout>=4, fsim = zeros(nrep,m,nper+1); end
+ssim   = zeros(nrep,d,nper);
+xsim   = zeros(nrep,m,nper);
+esim   =   NaN(nrep,q,nper);
+if nargout==5, fsim = zeros(nrep,m,nper); end
 if isempty(shocks)
-  for t=2:nper+1, esim(:,:,t) = funrand(nrep); end
+  for t=2:nper, esim(:,:,t) = funrand(nrep); end
 elseif numel(shocks)==d
   esim(:,:,2:end) = shocks(ones(nrep,1),:,ones(nper,1));
 else
@@ -161,7 +162,7 @@ else
 end
 
 %% Simulate the model
-for t=1:nper+1
+for t=1:nper
   if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params,output); end
   if extrapolate, sinterp = s0;
   else sinterp = max(min(s0,fspace.b(ones(nrep,1),:)),fspace.a(ones(nrep,1),:)); end
@@ -169,7 +170,7 @@ for t=1:nper+1
   Phi        = funbasx(fspace,sinterp);
   if exist('cX','var')
     xx       = min(max(funeval(cX(:,:,min(t,T)),fspace,Phi),LB),UB);
-    if nargout>=4, f = NaN(nrep,m); end
+    if nargout==5, f = NaN(nrep,m); end
   else
     xx       = min(max(funeval(cx,fspace,Phi),LB),UB);
     switch simulmethod
@@ -199,14 +200,14 @@ for t=1:nper+1
                                           interp.ch,e,w,fspace,options);
         end % switch funapprox
       otherwise
-        if nargout>=4
+        if nargout==5
           f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params,output);
         end
     end % switch simulmethod
   end % Finite or infinite horizon problem
   ssim(:,:,t) = s0;
   xsim(:,:,t) = xx;
-  if nargout>=4, fsim(:,:,t) = f; end
+  if nargout==5, fsim(:,:,t) = f; end
 end % for t
 
 if exist('cX','var') && t>T
@@ -224,9 +225,9 @@ if any(snmax>fspace.b)
 end
 
 %% Compute some descriptive statistics
-if (nargout==5 || statdisplay) && (nper > 40)
+if (nargout>=4 || statdisplay) && (nper >= 40)
   X = cat(2,ssim,xsim);
-  X = permute(X(:,:,20:end),[2 1 3]);
+  X = permute(X(:,:,21:end),[2 1 3]);
   X = reshape(X,d+m,[])';
 
   % Sample size
@@ -263,11 +264,12 @@ if (nargout==5 || statdisplay) && (nper > 40)
   end
 
   X = cat(2,ssim,xsim);
-  X = permute(X(:,:,20:end),[3 2 1]);
-  stat.acor = zeros(d+m,5);
-  for n=1:nrep
-    stat.acor = stat.acor+autocor(X(:,:,n))/nrep;
+  X = permute(X(:,:,21:end),[3 2 1]);
+  acor = zeros(d+m,5);
+  parfor n=1:nrep
+    acor = acor+autocor(X(:,:,n))/nrep;
   end
+  stat.acor = acor;
   if display==1
     disp(' Autocorrelation');
     disp('    1         2         3         4         5');
@@ -278,7 +280,7 @@ end % stat
 
 %% Check accuracy
 if options.accuracy
-  recsAccuracy(model,interp,ssim(:,:,20:end),options);
+  recsAccuracy(model,interp,ssim(:,:,21:end),options);
 end
 
 

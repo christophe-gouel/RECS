@@ -42,11 +42,11 @@ else
   disp('Long-run statistics from equilibrium equations solve')
   disp('')
   stream0.reset
-  [~,~,~,~,stat]  = recsSimul(model,interp,ones(1E3,1),118,[],...
-                              struct('simulmethod','solve'));
+  [~,~,~,stat]  = recsSimul(model,interp,ones(1E3,1),120,[],...
+                            struct('simulmethod','solve'));
   disp('Long-run statistics if simulated with approximated decision rules')
   disp('')
   stream0.reset
-  [~,~,~,~,stat2] = recsSimul(model,interp,ones(1E3,1),118);
+  [~,~,~,stat2] = recsSimul(model,interp,ones(1E3,1),118);
   close all
 end
