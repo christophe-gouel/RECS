@@ -41,8 +41,9 @@ function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 %                       or 'resapprox-complete' (default)
 %    functional       : 1 if the equilibrium equations are a functional equation
 %                       problem (default: 0)
-%    loop_over_s      : 0 (default) to solve all grid points at once or 1 to loop
-%                       over each grid points
+%    loop_over_s      : 0 (default) to solve all grid points at once, 1 to loop
+%                       over each grid points, or n to loop over n blocks of 
+%                       grid points 
 %    reemethod        : 'iter' (default), 'iter-newton' or '1-step'
 %    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve'
 %    reesolveroptions : options structure to be passed to reesolver

@@ -62,7 +62,7 @@
 %     </tr>
 %     <tr>
 %       <td> <tt>loop_over_s</tt> </td>
-%       <td> <tt>0</tt> (default) to solve all grid points at once or <tt>1</tt> to loop over each grid points. </td>
+%       <td> <tt>0</tt> (default) to solve all grid points at once, <tt>1</tt> to loop over each grid points, or <tt>n</tt> to loop over <tt>n</tt> blocks of grid points. </td>
 %       <td> <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
