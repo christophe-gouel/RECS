@@ -71,7 +71,7 @@ interp1.Phi    = funbasx(interp1.fspace);
 
 %% Simulate the model on the new grid
 warning('off','RECS:Extrapolation');
-[~,x] = recsSimul(model,interp0,s,0,[],options);
+[~,x] = recsSimul(model,interp0,s,1,[],options);
 warning('on','RECS:Extrapolation');
 
 %% Calculate the new interpolation coefficients

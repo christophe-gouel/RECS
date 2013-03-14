@@ -75,7 +75,10 @@ function [ssim,xsim,esim,stat,fsim] = recsSimul(model,interp,s0,nper,shocks,opti
 if nargin<5;
   shocks = [];
   if nargin<4
-    error('Nor enough input arguments');
+    nper = [];
+    if nargin<3
+      error('Not enough input arguments');
+    end
   end
 end
 
@@ -84,6 +87,8 @@ end
 if ~isempty(shocks) && (numel(shocks)~=d || isempty(nper))
   nper = size(shocks,3)-1; 
 end
+
+if isempty(nper) || nper==0, nper = 1; end
 
 defaultopt = struct(...
     'accuracy'        , 0                                  ,...
@@ -293,6 +298,11 @@ acov   = zeros(maxlag+1,d);
 for n=0:maxlag
   acov(n+1,:) = mean(x(1+n:N,:).*x(1:N-n,:),1)-mean(x(1+n:N,:),1).*mean(x(1:N-n,:),1);
 end
-acor   = (acov(2:maxlag+1,:)./acov(ones(maxlag,1),:))';
+
+acor                  = (acov(2:maxlag+1,:)./acov(ones(maxlag,1),:))';
+
+% If variance is smaller than precision, correlation is equal to 1
+testprecision         = eps(mean(x))>acov(1,:);
+acor(testprecision,:) = 1;
 
 return

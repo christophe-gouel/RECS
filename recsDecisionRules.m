@@ -52,7 +52,7 @@ for i=1:length(states)
                           1,...
                           size(s0,1));
 
-  [~,x] = recsSimul(model,interp,s,0,[],options);
+  [~,x] = recsSimul(model,interp,s,1,[],options);
 
   m = size(x,2);
   x = reshape(x,n(i),[],m);

@@ -23,7 +23,7 @@ for i=1:size(snodes,2)
   snodesnew    = snodes;
   snodesnew{i} = snodei;
   s            = gridmake(snodesnew);
-  [~,x] = recsSimul(model,interp,s,0,[],options);
+  [~,x] = recsSimul(model,interp,s,1,[],options);
   Phi   = funbasx(interp.fspace,s);
   R = recsResidual(s,x,model.func,model.params,interp.cx,interp.fspace,...
                    'resapprox-complete',Phi);

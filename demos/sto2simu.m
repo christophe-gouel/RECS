@@ -22,8 +22,8 @@ if situation==1
   %% Plot storage rules
   figure
   st = (interp.fspace.a:0.01:2)';
-  [~,xt] = recsSimul(model,interp,st,0,[],struct('simulmethod','solve'));
-  [~,xs] = recsSimul(model,interp,st,0);
+  [~,xt] = recsSimul(model,interp,st,1,[],struct('simulmethod','solve'));
+  [~,xs] = recsSimul(model,interp,st);
   plot(st,[xt(:,[1 4]) xs(:,[1 4])])
   ylim([0 0.55])
   leg = legend('Private stock (From equilibrium equations solve)',...
@@ -47,6 +47,6 @@ else
   disp('Long-run statistics if simulated with approximated decision rules')
   disp('')
   stream0.reset
-  [~,~,~,stat2] = recsSimul(model,interp,ones(1E3,1),118);
+  [~,~,~,stat2] = recsSimul(model,interp,ones(1E3,1),120);
   close all
 end
