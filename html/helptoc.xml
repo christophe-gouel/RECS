@@ -32,6 +32,7 @@
       <!-- <tocitem target="deterministic.html"> Deterministic problems </tocitem> -->
       <tocitem target="ug_solvers_eq.html"> Solvers for nonlinear equations and for mixed complementarity problems </tocitem>
       <!-- <tocitem target="ug_methods.html"> Solution methods </tocitem> -->
+      <!-- <tocitem target="parallel.html"> Parallel computing </tocitem> -->
       <tocitem target="ug_options.html"> Options </tocitem>
       <!-- <tocitem target="ug_solvers_ree.html"> Solvers for the rational -->
       <!-- expectations problem for two-step approaches </tocitem> -->

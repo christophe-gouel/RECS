@@ -142,18 +142,22 @@ if nargin>=2 && ~isempty(shocks)
 
   %% Simulate state variables dynamics with response at steady-state
   % Provide a first guess of the relevant state space
-  if nargout==2 && exitflag==1
-    nrep        = 10000;
-    nper        = 200;
-    d           = size(sss,2);
-    ssim        = zeros(nrep,d,nper+1);
-    ssim(:,:,1) = sss(ones(nrep,1),:);
-    output      = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-    for t=1:nper
-      ssim(:,:,t+1) = model.func('g',ssim(:,:,t),xss(ones(nrep,1),:),[],...
-                                 model.funrand(nrep),[],[],model.params,output);
+  if nargout==2
+    if exitflag==1
+      nrep        = 10000;
+      nper        = 200;
+      d           = size(sss,2);
+      ssim        = zeros(nrep,d,nper+1);
+      ssim(:,:,1) = sss(ones(nrep,1),:);
+      output      = struct('F',1,'Js',0,'Jx',0,'Jz',0);
+      for t=1:nper
+        ssim(:,:,t+1) = model.func('g',ssim(:,:,t),xss(ones(nrep,1),:),[],...
+                                   model.funrand(nrep),[],[],model.params,output);
+      end
+      statequant = quantile(reshape(permute(ssim(:,:,2:end),[1 3 2]),nrep*nper,d),...
+                            [0 0.001 0.01 0.99 0.999 1]);
+    else
+      statequant = [];
     end
-    statequant = quantile(reshape(permute(ssim(:,:,2:end),[1 3 2]),nrep*nper,d),...
-                          [0 0.001 0.01 0.99 0.999 1]);
   end
 end

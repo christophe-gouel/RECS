@@ -38,6 +38,8 @@ Optional dependencies
   highly recommended if difficult complementarity problems need to be solved.
 * MATLAB Optimization Toolbox. The solver fsolve can be used to solve both the
   equilibrium equations and the rational expectations equilibrium.
+* MATLAB Parallel Computing Toolbox. This toolbox allows many RECS programs to
+  be run in parallel to speed-up computation.
 * [Sundials Toolbox](https://computation.llnl.gov/casc/sundials/main.html),
   which provides a compiled Newton-Krylov solver for solving the rational
   expectations equilibrium.
