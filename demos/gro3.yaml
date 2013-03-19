@@ -1,0 +1,70 @@
+# GRO3.yaml Model definition file for the stochastic growth model with recursive preferences and stochastic volatility
+# Copyright (C) 2011-2013 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
+declarations:
+
+  states: [K, Z, Sigma]
+
+  controls: [C, L, Uc, U, Y, V, Vt]
+
+  expectations: [EC, EVt]
+
+  shocks: [Epsilon, Omega]
+
+  parameters: [tau, delta, beta, rhoZ, alpha, theta, rhoSig, SigmaBar, eta, nu, Psi]
+
+
+equations:
+
+  arbitrage:
+
+    - Uc = beta*EVt^(1/nu-1)*EC                        | -inf <= C  <= inf
+    - (1-theta)*C = theta*(1-alpha)*Y*(1/L-1)          | -inf <= L  <= inf
+    - Uc = (theta*(1-tau)/nu)*U^(1/nu)/C               | -inf <= Uc <= inf
+    - U = (C^theta*(1-L)^(1-theta))^(1-tau)            | -inf <= U  <= inf
+    - Y = exp(Z)*K^alpha*L^(1-alpha)                   | -inf <= Y  <= inf
+    - Vt^(1/nu) = (1-beta)*U^(1/nu) + beta*EVt^(1/nu)  | -inf <= V  <= inf
+    - Vt = V^(1-tau)                                   | -inf <= Vt <= inf
+
+  transition:
+
+    - K = Y(-1)+(1-delta)*K(-1)-C(-1)
+    - Z = rhoZ*Z(-1)+exp((1-rhoSig)*SigmaBar+rhoSig*Sigma(-1)+eta*Omega)*Epsilon
+    - Sigma = (1-rhoSig)*SigmaBar+rhoSig*Sigma(-1)+eta*Omega
+
+  expectation:
+
+    - EC =  Vt(1)^((nu-1)/nu)*Uc(1)*(1-delta+alpha*Y(1)/K(1))
+    - EVt = Vt(1)
+
+
+calibration:
+
+  parameters:
+
+    tau      : 0.5
+    delta    : 0.0196
+    beta     : 0.991
+    rhoZ     : 0.95
+    alpha    : 0.3
+    theta    : 0.357
+    rhoSig   : 0.9
+    SigmaBar : log(0.007)
+    eta      : 0.06
+    nu       : (1-tau)/(1-1/Psi)
+    Psi      : 1/tau
+
+
+  steady_state:
+
+    Z     : 0
+    K     : 9
+    Sigma : SigmaBar
+    C     : 0.7
+    L     : 0.3
+    U     : (C^theta*(1-L)^(1-theta))^(1-tau)
+    Uc    : (theta*(1-tau)/nu)*U^(1/nu)/C
+    Y     : exp(Z)*K^alpha*L^(1-alpha)
+    V     : (1-beta)*U
+    Vt    : V^(1-tau)

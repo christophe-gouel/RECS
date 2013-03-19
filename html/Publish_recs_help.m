@@ -149,14 +149,14 @@ stream = RandStream('mt19937ar');
 RandStream.setGlobalStream(stream);
 
 currentfolder = cd(fullfile(recsdirectory,'demos'));
-DemoFileList = {'cs1','cs2','gro1','gro2','sto1','sto2','sto3','sto4', ...
-                'sto5','sto6'};
+DemoFileList = {'cs1','cs2','gro1','gro2','gro3',...
+                'sto1','sto2','sto3','sto4','sto5','sto6'};
 for demo=DemoFileList
   publish('clearpublish.m',PublishOptions);
   reset(stream);
   publish([demo{1} '.m'],PublishOptions);
 end
-YamlFileList = {'cs1','gro1','gro2','sto1','sto2','sto4','sto5','sto6'};
+YamlFileList = {'cs1','gro1','gro2','gro3','sto1','sto2','sto4','sto5','sto6'};
 for yaml=YamlFileList
   copyfile([yaml{1} '.yaml'],fullfile(targetdirectory,[yaml{1} '.txt']));
   publish([yaml{1} 'model.m'],PublishOptionsNoExec);

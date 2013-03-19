@@ -52,6 +52,7 @@
       <tocitem target="demos.html"> Variants of the stochastic growth model
         <tocitem target="gro1.html"> Stochastic growth model </tocitem>
         <tocitem target="gro2.html"> Stochastic growth model with irreversible investment </tocitem>
+        <tocitem target="gro3.html"> Stochastic growth model with recursive preferences and stochastic volatility </tocitem>
       </tocitem>
 
       <tocitem target="demos.html"> Variants of the storage model

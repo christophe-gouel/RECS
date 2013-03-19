@@ -15,6 +15,8 @@
 %
 % * <gro2.html Stochastic growth model with irreversible investment>
 %
+% * <gro3.html Stochastic growth model with recursive preferences and stochastic volatility>
+%
 % *Variants of the storage model*
 %
 % * <sto1.html Competitive storage model>
