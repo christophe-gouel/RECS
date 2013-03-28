@@ -99,7 +99,7 @@ defaultopt = struct(...
     'lambda1',    0.1,...
     'm',          10,...
     'MaxIter',    500,...
-    'null',       1e-8,...
+    'null',       1e-10,...
     'preprocess', 1,...
     'presteps',   20,...
     'sigma',      1e-4,...
@@ -226,7 +226,7 @@ if verbosity > 1
   fprintf('   k               Psi(x)                || DPsi(x) ||    stepsize\n');
   disp('====================================================================')
   disp('********************* Output at starting point *********************')
-  fprintf('%4.0f %24.12f %24.10f\n',k,Psix,normDPsix);
+  fprintf('%4.0f %24.5e %24.5e\n',k,Psix,normDPsix);
 end
 
 %
@@ -241,7 +241,6 @@ if preprocess==1
 
    normpLM=1;
    while (k < presteps) && (Psix > eps2) && (normpLM>null)
-
       k=k+1;
 
       % choice of Levenberg-Marquardt parameter, note that we do not use
@@ -297,7 +296,7 @@ if preprocess==1
       % output at each iteration
       t=1;
       if verbosity > 1
-        fprintf('%4.0f %24.12f %24.10f %11.7f\n',k,Psix,normDPsix,t);
+        fprintf('%4.0f %24.5e %24.5e %11.7g\n',k,Psix,normDPsix,t);
       end
    end
 end
@@ -323,7 +322,7 @@ elseif preprocess==1 && Psix>=eps2
   DPsix=DPsix0;
   if verbosity > 1
     disp('******************** Restart with initial point ********************')
-    fprintf('%4.0f %24.12f %24.10f\n',k_main,Psix0,normDPsix0);
+    fprintf('%4.0f %24.5e %24.5e\n',k_main,Psix0,normDPsix0);
    end
 end
 
@@ -422,7 +421,7 @@ while (k < kmax) && (Psix > eps2)
 
    if verbosity > 1
      % output at each iteration
-     fprintf('%4.0f %24.12f %24.10f %11.7f\n',k,Psix,normDPsix,t);
+     fprintf('%4.0f %24.5e %24.5e %11.7g\n',k,Psix,normDPsix,t);
    end
 end;
 
