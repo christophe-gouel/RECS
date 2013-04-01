@@ -1,17 +1,48 @@
 function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,varargin)
-% RUNEQSOLVER Runs equations solvers (including MCP)
+% RUNEQSOLVER Runs equations solvers (including MCP solvers)
 %
-% RUNEQSOLVER is called by recsSolveDeterministicPb, recsSolveEquilibrium,
-% recsSolveREEFull, recsSS. It is not meant to be called directly by the user.
-  
-% Copyright (C) 2011-2012 Christophe Gouel
+% RUNEQSOLVER provides an unified interface to various equations and MCP
+% solvers.
+%
+% X = RUNEQSOLVER(FUNC,X,LB,UB,EQSOLVER,EQSOLVEROPTIONS) tries to solve, using X
+% as a starting point, the mixed complementarity problem of the form:
+% LB =X     => FUNC(X)>0,
+% LB<=X<=UB => FUNC(X)=0,
+%     X =UB => FUNC(X)<0.
+% LB and UB are the lower and upper bounds on X (not used if the chosen solver
+% is not an MCP solver). RUNEQSOLVER returns X the solution. FUNC is an
+% anonymous function that evaluates the equations, and possible the Jacobian at
+% X.
+% EQSOLVER designates the solver to use. Possible choices are 'lmmcp', 'fsolve',
+% 'ncpsolve', and 'path'.
+% EQSOLVEROPTIONS is a structure containing the options for the solver. See each
+% solver's documentation for the available options. Common options are:
+%    Jacobian        : 'off' to use numerical differentiation and 'on' if FUNC
+%                      returns the Jacobian as second output.
+%    DerivativeCheck : 'on' to check user-provided Jacobian against the one
+%                      calculated by two-sided finite difference. 'off' to pass
+%                      Jacobian check.
+%
+% X = RUNEQSOLVER(FUNC,X,LB,UB,EQSOLVER,EQSOLVEROPTIONS,VARARGIN) provides
+% additional arguments for FUNC, which, in this case, takes the following form:
+% FUNC(X,VARARGIN).
+%
+% [X,F] = RUNEQSOLVER(FUNC,X,LB,UB,EQSOLVER,EQSOLVEROPTIONS,...) returns F the
+% value of the equations at solution.
+%
+% [X,F,EXITFLAG] = RUNEQSOLVER(FUNC,X,LB,UB,EQSOLVER,EQSOLVEROPTIONS,...)
+% returns EXITFLAG, which describes the exit conditions. Possible values depend
+% on the active solver, but a general rule is that 0 means failure to converge 1
+% means convergence to a solution.
+
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
 if strcmp(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
 
 if strcmp(eqsolveroptions.Jacobian,'off') && any(strcmp(eqsolver,{'lmmcp','ncpsolve','path'}))
-  eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,0,varargin);        
+  eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,0,varargin);
 else
   eqtosolve = @(Y) func(Y,varargin{:});
 end
@@ -34,13 +65,13 @@ try
       [x,f,exitflag] = lmmcp(eqtosolve,...
                              x,LB,UB,...
                              eqsolveroptions);
-      
+
     case 'fsolve'
       options = optimset(optimset('Display','off'),eqsolveroptions);
       [x,f,exitflag] = fsolve(eqtosolve,...
                               x,...
                               options);
-      
+
     case 'ncpsolve'
       exitflag = 1;  % ncpsolve does not output any exitflag on a failure
       [x,f]    = ncpsolve(@ncpsolvetransform,...
@@ -51,11 +82,11 @@ try
         exitflag = 0;
         lastwarn('Warning reinitialization','RECS:WarningInit');
       end
-      
+
     case 'path'
       [x,f,exitflag] = recspathmcp(x,LB,UB,'pathtransform');
       clear global eqtosolve
-      
+
   end
 catch
   exitflag = 0;
