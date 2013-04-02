@@ -6,14 +6,14 @@ function [F,J,domerr] = pathtransform(x,jacflag)
 % and the original model, along with its supplementary arguments, is passed as
 % an anonymous function in a global variable (eqtosolve).
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 global eqtosolve
 
 if (jacflag)
   [F,J]     = eqtosolve(x);
-  isdomerrJ = any((~isfinite(J) | (imag(J)~=0) | isnan(J)),2);
+  isdomerrJ = any((isinf(J) | (imag(J)~=0) | isnan(J)),2);
 else
   F         = eqtosolve(x);
   J         = [];
@@ -21,5 +21,5 @@ else
 end
 
 %%  Calculation of number of ex-post domain errors
-isdomerrF = ~isfinite(F) | (imag(F)~=0) | isnan(F);
+isdomerrF = isinf(F) | (imag(F)~=0) | isnan(F);
 domerr    = sum(any([isdomerrF isdomerrJ],2));

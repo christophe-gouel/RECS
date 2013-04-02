@@ -58,9 +58,9 @@ showiters = options.showiters;
 lambda    = options.lambda;
 maxsteps  = max(1,options.maxsteps);
 
-fval        = feval(f,x,varargin{:});
-isnotdomerr = all(all(isfinite(fval) | (imag(fval)==0) | ~isnan(fval)));
-if ~isnotdomerr
+fval      = feval(f,x,varargin{:});
+isdomerr  = any(reshape(isinf(fval) | (imag(fval)~=0) | isnan(fval),[],1));
+if isdomerr
   exitflag = 0;
   if showiters
     fprintf(1,'Equations not defined at starting point\n');
@@ -84,7 +84,8 @@ while(fnrm > stop_tol && it < maxit)
   for itback=1:maxsteps 
     fvalnew     = feval(f,x+dx,varargin{:});
     fnrmnew     = norm(fvalnew(:));
-    isnotdomerr = all(all(isfinite(fvalnew) | (imag(fvalnew)==0) | ~isnan(fvalnew)));
+    isnotdomerr = ~any(reshape(isinf(fvalnew) | (imag(fvalnew)~=0) | isnan(fvalnew),...
+                               [],1));
     if (fnrmnew<fnrm && isnotdomerr) || itback==maxsteps
       %% End of backstepping because of success or maximum iteration
       fval  = fvalnew;
