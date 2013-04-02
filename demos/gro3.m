@@ -69,7 +69,7 @@ options = struct('reemethod','1-step',...
 
 %% Use simple continuation method to solve for higher values of risk aversion
 % The procedure to solve for different parameters values has to be packed in a
-% function. This is done in <gro3problem.m>.
+% function. This is done in gro3problem.m.
 type('gro3problem.m')
 %%
 % This function requires as input the cell array X:
