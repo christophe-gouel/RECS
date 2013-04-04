@@ -1,0 +1,3 @@
+[submodule "Python/dolo"]
+	path = Python/dolo
+	url = git://github.com/christophe-gouel/dolo.git
