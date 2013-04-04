@@ -6,7 +6,7 @@ function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,funap
 %
 % See also RECSSOLVEREEFULL, RECSSOLVEEQUILIBRIUM.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -42,7 +42,10 @@ switch funapprox
       else
           snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
       end
-      Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
+      Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)],'expanded'); 
+      % It seems to be faster with 'expanded', but may use more memory. To confirm
+      % later.
+%       Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
 
       switch funapprox
         case 'expfunapprox'
