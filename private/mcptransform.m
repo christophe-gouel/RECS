@@ -1,7 +1,7 @@
 function [out1,out2,out3,out4,out5] = mcptransform(func,flag,s,x,z,e,snext,xnext,params,output,ix,nx,w,v)
 % MCPTRANSFORM Transform a MCP problem in which bounds are endogenous into a problem with exogenous bounds
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 voidcell                   = cell(1,5);
@@ -32,14 +32,15 @@ switch flag
     
     % dF/ds
     if output.Js
-      dLBxds = zeros(n,nx(1),d);
-      dUBxds = zeros(n,nx(2),d);
       if sum(nx)
-        for i=1:n
-          if nx(1), dLBxds(i,:,:) = numjac(@(S) Bounds(func,S,params,1,ix),s(i,:)); end
-          if nx(2), dUBxds(i,:,:) = numjac(@(S) Bounds(func,S,params,2,ix),s(i,:)); end
-        end
+        [~,~,dLBxds,dUBxds] = func('b',s,[],[],[],[],[],params);
+        dLBxds = dLBxds(:,ix(:,1),:);
+        dUBxds = dUBxds(:,ix(:,2),:); 
+      else
+        dLBxds = zeros(n,0,d);
+        dUBxds = zeros(n,0,d);
       end
+
       out2 = cat(2,fs,-dLBxds,dUBxds);
     end
     

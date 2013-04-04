@@ -34,7 +34,7 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,
 %
 % See also RECSFIRSTGUESS, RECSSOLVEREE, RECSSS, SCP.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -71,8 +71,10 @@ else
 end
 params = model.params;
 
-ix = [sum(numjac(@(S) Bounds(func,S,params,1,true(m,2)),sss)~=0,2,'native') ...
-      sum(numjac(@(S) Bounds(func,S,params,2,true(m,2)),sss)~=0,2,'native')];
+[~,~,dLBxds,dUBxds] = func('b',sss,[],[],[],[],[],params);
+dLBxds = permute(dLBxds,[3 2 1]);
+dUBxds = permute(dUBxds,[3 2 1]);
+ix = [sum(dLBxds~=0,1,'native')' sum(dUBxds~=0,1,'native')'];
 nx = int16(sum(ix,1));
 M  = m+sum(nx);
 

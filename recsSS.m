@@ -40,7 +40,7 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 %    1 : RECSSS converges to the deterministic steady state
 %    0 : Failure to converge
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -83,10 +83,11 @@ end
 
 %% Solve for the deterministic steady state
 
-ix = [sum(numjac(@(S) Bounds(func,S,params,1,true(m,2)),s)~=0,2,'native') ...
-      sum(numjac(@(S) Bounds(func,S,params,2,true(m,2)),s)~=0,2,'native')];
+[~,~,dLBxds,dUBxds] = func('b',s,[],[],[],[],[],params);
+dLBxds = permute(dLBxds,[3 2 1]);
+dUBxds = permute(dUBxds,[3 2 1]);
+ix = [sum(dLBxds~=0,1,'native')' sum(dUBxds~=0,1,'native')'];
 nx = int16(sum(ix,1));
-
 w = zeros(nx(1),1);
 v = zeros(nx(2),1);
 X = [s(:); x(:); w; v];
