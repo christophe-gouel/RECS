@@ -16,9 +16,11 @@ function [interp,xa,za] = recsAuxiliary(model,interp,s,x,z,xa,options)
 % INTERP = RECSAUXILIARY(MODEL,INTERP,S,X,Z,XA,OPTIONS) solves for auxiliary
 % variables with the parameters defined by the structure OPTIONS. The fields of
 % the structure are
+%    eqsolver         : 'fsolve', 'krylov' (default), 'lmmcp', 'ncpsolve',
+%                       'path' or 'sa'
 %    extrapolate      : 1 or 2 if extrapolation is allowed outside the
 %                       interpolation space, 0 or -1 to forbid it (default: 1).
-%    saoptions        : options structure to be passed to solve SA
+%    eqsolveroptions  : options structure to be passed to eqsolver
 %
 % [INTERP,XA] = RECSAUXILIARY(MODEL,INTERP,S,X,Z,...) returns the value of the
 % auxiliary variables on the grid.
@@ -28,19 +30,26 @@ function [interp,xa,za] = recsAuxiliary(model,interp,s,x,z,xa,options)
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-defaultopt = struct(         ...
-    'extrapolate', 1        ,...
-    'saoptions'  ,struct([]));
+defaultopt = struct(                                      ...
+    'eqsolver'       , 'krylov'                          ,...
+    'eqsolveroptions', struct('DerivativeCheck', 'off' ,...
+                              'Jacobian'       , 'off')  ,...
+    'extrapolate'    , 1);
 if nargin <=6
   options = defaultopt; 
 else
   warning('off','catstruct:DuplicatesFound')
+  if isfield(options,'eqsolveroptions')
+    options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
+  end
   options = catstruct(defaultopt,options);
 end
+eqsolver        = lower(options.eqsolver);
+eqsolveroptions = options.eqsolveroptions;
 
 e      = model.e;
 func   = model.func;
@@ -66,22 +75,35 @@ if options.extrapolate>=1
 else
   snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
 end
-Phinext       = funbasx(fspace,snextinterp);
+Phinext       = funbas(fspace,snextinterp);
+% Phinext       = funbasx(fspace,snextinterp);
 
 %% xnext
-xnext = funeval(cx,fspace,Phinext);
+xnext = Phinext*cx;
+% xnext = funeval(cx,fspace,Phinext);
 
-%% pa (dimension of auxiliary expectations)
-za  = func('ha',s(1,:),x(1,:),[],e(1,:),snext(1,:),xnext(1,:),params);
-pa  = size(za,2);
+%%
+[ma,pa] = model.dima{:};
+fa      = model.fa;
+za      = zeros(n,pa);
 
 %%
 if pa>0
   %% With auxiliary expectations function
-  if nargin<=5 || isempty(xa)
-    xa  = func('xa',s,x,[z zeros(n,pa)],[],[],[],params);
+  if nargin<=5 || isempty(xa), xa  = fa(s,x,z,za,params); end
+  switch eqsolver
+    case 'sa'
+      [xa,~,exitflag] = SA(@(X) ResidualVFI(X,true), xa, eqsolveroptions);
+    case 'krylov'
+      [xa,~,exitflag] = nsoli(@(X) ResidualVFI(X,false), xa(:), eqsolveroptions);
+      xa              = reshape(xa,n,ma);
+      if exitflag==0, exitflag = 1; else exitflag = 0; end
+    case {'lmmcp','fsolve','ncpsolve','path'}
+      [xa,~,exitflag] = runeqsolver(@(X) ResidualVFI(X,false),xa(:),...
+                                    -inf(numel(xa),1),inf(numel(xa),1),...
+                                    eqsolver,eqsolveroptions);
+      xa              = reshape(xa,n,ma);
   end
-  [xa,~,exitflag] = SA(@ResidualVFI, xa, options.saoptions);
 
   if exitflag~=1
     warning('RECS:FailureVFI','Failure to converge for auxiliary variables');
@@ -90,25 +112,28 @@ if pa>0
   interp.cza = funfitxy(fspace,Phi,za);
 else
   %% Without auxiliary expectations function
-  xa  = func('xa',s,x,[z zeros(n,pa)],[],[],[],params);
+  xa  = fa(s,x,z,za,params);
   cxa = funfitxy(fspace,Phi,xa);
-  za  = zeros(n,0);
 end
 
 %%
 interp.cxa = cxa;
 
 %% Nested function
-function R = ResidualVFI(xa_old)
+function R = ResidualVFI(xa_old,serial)
 % RESIDUALVFI
 
+  if ~serial, xa_old = reshape(xa_old,n,ma); end
+  
   cxa    = funfitxy(fspace,Phi,xa_old);
-  xanext = funeval(cxa,fspace,Phinext);
-  ha     = func('ha',ss,[xx xa_old(ind,:)],[],ee,snext,[xnext xanext],params);
+  xanext = Phinext*cxa;
+%   xanext = funeval(cxa,fspace,Phinext);
+  ha     = model.ha(ss,xx,xa_old(ind,:),ee,snext,xnext,xanext,params);
   za     = reshape(w'*reshape(ha,k,n*pa),n,pa);
-  xa     = func('xa',s,x,[z za],[],[],[],params);
-  R      = xa-xa_old;
-
+  xa     = fa(s,x,z,za,params);
+  R      = xa-xa_old;  
+  if ~serial, R = R(:); end
+  
 end
 
 end
