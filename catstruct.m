@@ -46,6 +46,8 @@ function A = catstruct(varargin)
 % (c) Jos van der Geest
 % email: jos@jasen.nl
 
+% (C) 2013 Christophe Gouel
+
 % History
 % Created in 2005
 % Revisions
@@ -121,7 +123,11 @@ else
     VAL = cat(1,VAL{:}) ;    
     FN = squeeze(FN) ;
     VAL = squeeze(VAL) ;
-    [UFN,ind] = unique(FN) ;
+    if verLessThan('matlab','8.1')
+      [UFN,ind] = unique(FN) ;          
+    else
+      [UFN,ind] = unique(FN,'legacy') ;
+    end
     
     if numel(UFN) ~= numel(FN),
         warning('catstruct:DuplicatesFound','Fieldnames are not unique between structures.') ;

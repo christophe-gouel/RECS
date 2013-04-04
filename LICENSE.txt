@@ -48,7 +48,8 @@ License: BSD-2-clause
 Source: http://www.mathworks.com/matlabcentral/fileexchange/10603-block-tri-diagonal-matrices
 
 Files: catstruct.m
-Copyright: 2009, Jos van der Geest
+Copyright: 2009-2013, Jos van der Geest
+           2013, Christophe Gouel
 License: BSD-2-clause
  All rights reserved.
  .
