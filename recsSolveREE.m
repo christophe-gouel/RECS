@@ -127,6 +127,9 @@ if any(strcmp(reemethod,{'1-step','iter-newton'})) && ...
   reemethod         = 'iter';
 end
 
+% Get s from interp structure
+if nargin<=2 || isempty(s), s = interp.s; end
+
 % Generate x by interpolation if missing
 if nargin<=3 || isempty(x)
   [LB,UB] = func('b',s,[],[],[],[],[],params);
