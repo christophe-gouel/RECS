@@ -42,7 +42,7 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,vara
 if strcmp(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
 
 if strcmp(eqsolveroptions.Jacobian,'off') && any(strcmp(eqsolver,{'lmmcp','ncpsolve','path'}))
-  eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,0,varargin);
+  eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,varargin);
 else
   eqtosolve = @(Y) func(Y,varargin{:});
 end
