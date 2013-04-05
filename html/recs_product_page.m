@@ -22,6 +22,8 @@
 % * <recs_functions.html Functions>
 % * <demos.html RECS Toolbox Demos>
 %
+% Release notes are available at <https://github.com/christophe-gouel/RECS/wiki/Release-Notes>.
+%
 % <html>
 % <h2>License</h2>
 % </html>

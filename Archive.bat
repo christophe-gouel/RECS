@@ -30,13 +30,12 @@ robocopy Python recs-archive\Python /E
 
 :: Clean the files and compress
 cd recs-archive
-del .gitignore
-del .gitattributes
+del /S .git*
 del /S logfile.tmp 
+del /S *.mex*
 del Archive.bat
 rename README.md README.txt
 del recsInstall.m
-del Python\dolo\.gitignore
 rmdir /S /Q Python\dolo\.git
 7z a ..\recs-%1.zip .
 cd ..
