@@ -4,7 +4,7 @@ function [F,J] = ncpsolvetransform(x,model,varargin)
 % With ncpsolve, equations are of opposite sign with respect to complementary
 % variables
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %%

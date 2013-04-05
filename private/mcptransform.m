@@ -21,28 +21,29 @@ switch flag
     
   case 'f'
     [n,d]     = size(s);
-    [LBx,UBx] = func('b',s,[],[],[],[],[],params);
 
     % F
     [f,fs,fx,fz] = func('f',s,x,z,[],[],[],params,output);
 
-    f(:,ix(:,1)) = f(:,ix(:,1))-w;
-    f(:,ix(:,2)) = f(:,ix(:,2))+v;
-    out1 = [f x(:,ix(:,1))-LBx(:,ix(:,1)) UBx(:,ix(:,2))-x(:,ix(:,2))];
-    
     % dF/ds
     if output.Js
       if sum(nx)
-        [~,~,dLBxds,dUBxds] = func('b',s,[],[],[],[],[],params);
+        [LBx,UBx,dLBxds,dUBxds] = func('b',s,[],[],[],[],[],params);
         dLBxds = dLBxds(:,ix(:,1),:);
         dUBxds = dUBxds(:,ix(:,2),:); 
       else
+        [LBx,UBx] = func('b',s,[],[],[],[],[],params);
         dLBxds = zeros(n,0,d);
         dUBxds = zeros(n,0,d);
       end
-
       out2 = cat(2,fs,-dLBxds,dUBxds);
+    else
+      [LBx,UBx] = func('b',s,[],[],[],[],[],params);
     end
+
+    f(:,ix(:,1)) = f(:,ix(:,1))-w;
+    f(:,ix(:,2)) = f(:,ix(:,2))+v;
+    out1 = [f x(:,ix(:,1))-LBx(:,ix(:,1)) UBx(:,ix(:,2))-x(:,ix(:,2))];
     
     % dF/dX
     if output.Jx
