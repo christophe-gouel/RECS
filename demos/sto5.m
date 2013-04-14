@@ -17,7 +17,7 @@
 %
 % $$S_{t}: S_{t}\ge 0 \quad \perp \quad P_{t}+k-\frac{\mathrm{E}_{t}\left(P_{t+1}\right)}{1+r}\ge 0,$$
 %
-% $$P_{t}: A_{t}+M_t={P_{t}}^{\alpha}+S_{t}+X_t,$$
+% $$P_{t}: P_{t}\ge 0 \quad \perp \quad A_{t}+M_t-{P_{t}}^{\alpha}-S_{t}-X_t\ge 0,$$
 %
 % $$M_{t}: M_{t}\ge 0 \quad \perp \quad P^w_{t}+\theta\ge P_{t},$$
 %
@@ -47,11 +47,7 @@ smax          = [1.6;                    2.12];
 [interp,s]    = recsinterpinit(25,smin,smax);
 
 %% Find a first guess through the perfect foresight solution
-% We use the solver |ncpsolve| because |lmmcp| does not work in this case:
-options = struct('eqsolver','ncpsolve');
-%%
-interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5,options);
-
+interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 
 %% Solve for rational expectations
 % Define options

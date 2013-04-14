@@ -46,16 +46,16 @@ interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 [interp,x] = recsSolveREE(interp,model,s);
 
 %% Plot the decision rules
-figure
-subplot(1,3,1)
-plot(s,x(:,1))
-title('Storage')
-subplot(1,3,2)
-plot(s,x(:,2))
-title('Planned production')
-subplot(1,3,3)
-plot(s,x(:,3))
-title('Price')
+recsDecisionRules(model,interp,[],[],[],struct('simulmethod','solve'));
+subplot(2,2,1)
+xlabel('Availability')
+ylabel('Storage')
+subplot(2,2,2)
+xlabel('Availability')
+ylabel('Planned production')
+subplot(2,2,3)
+xlabel('Availability')
+ylabel('Price')
 
 %% Simulate the model
 [ssim,~,~,stat] = recsSimul(model,interp,model.sss(ones(1000,1),:),200);

@@ -1,5 +1,5 @@
 # STO5.yaml Model definition file for a small country storage-trade model
-# Copyright (C) 2011-2012 Christophe Gouel
+# Copyright (C) 2011-2013 Christophe Gouel
 # Licensed under the Expat license, see LICENSE.txt
 
 declarations:
@@ -20,7 +20,7 @@ equations:
   arbitrage:
 
     .. P+k-EP/(1+r)       |    0 <= S <= inf
-    .. A+M = P^elastD+S+X | -inf <= P <= inf
+    .. A+M - P^elastD-S-X |    0 <= P <= inf
     .. Pw+theta-P         |    0 <= M <= inf
     .. P+theta-Pw         |    0 <= X <= inf
 

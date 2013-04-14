@@ -54,7 +54,7 @@ interp.ch = [];
 
 %% Plot the decision rule
 figure
-plot(s,x,s,s)
+plot(s,[x s])
 legend('Policy rule','45 degree line')
 legend('Location','NorthWest')
 legend('boxoff')
