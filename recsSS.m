@@ -26,6 +26,7 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 %
 % S = RECSSS(MODEL,S,X,OPTIONS) solves the problem with the parameters
 % defined by the structure OPTIONS. The fields of the structure are
+%    display          : 1 to display the steady state if found (default: 1)
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver
 %
@@ -48,12 +49,13 @@ if nargin<2 || isempty(s), s = model.func('ss'); end
 if nargin<3 || isempty(x), [~,x] = model.func('ss'); end
 
 defaultopt = struct(...
+    'display'         , 1                               ,...
     'eqsolver'        , 'lmmcp'                         ,...
     'eqsolveroptions' , struct('DerivativeCheck', 'off',...
                                'Jacobian'       , 'on') ,...
     'functional'      , 0);
 if nargin<4
-  options = defaultopt; 
+  options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   if isfield(options,'eqsolveroptions')
@@ -103,6 +105,8 @@ if exitflag~=1
 end
 
 %% Prepare outputs
+s0     = s;
+x0     = x;
 s      = X(1:d)';
 x      = X(d+1:d+m)';
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
@@ -111,6 +115,24 @@ if nargout(func)<6
 else
   [h,~,~,~,~,hmult] = func('h',s,x,[],e,s,x,params,output);
   z = h.*hmult;
+end
+
+%% Display steady state
+if exitflag==1 && options.display==1
+  deltass = max(abs([s x]-[s0 x0]));
+  if deltass<sqrt(eps)
+    fprintf(1,'Deterministic steady state (equal to first guess)\n')
+  else
+    fprintf(1,['Deterministic steady state (different from first guess, ' ...
+               'max(|delta|)=%g)\n'],deltass)
+  end
+  fprintf(1,' State variables:\n\t\t')
+  fprintf(1,'%0.4g\t',s)
+  fprintf(1,'\n\n Response variables:\n\t\t')
+  fprintf(1,'%0.4g\t',x)
+  fprintf(1,'\n\n Expectations variables:\n\t\t')
+  fprintf(1,'%0.4g\t',z)
+  fprintf(1,'\n\n')
 end
 
 
@@ -124,7 +146,7 @@ vv     = X(d+m+nx(1)+1:d+m+nx(1)+nx(2))';
 
 M = m+nx(1)+nx(2);
 
-if nargout==2 
+if nargout==2
   %% With Jacobian calculation
   output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1);
   [zz,hs,hx,hsnext,hxnext] = mcptransform(func,'h',ss,xx,[],e ,ss,xx,params,output,ix,nx,[],[]);
@@ -141,7 +163,7 @@ if nargout==2
   J(d+1:d+M ,d+1:d+M) =  permute(fx,[2 3 1])+fz*permute(hx+hxnext,[2 3 1]);
   % Aggregation into a sparse matrix
   J = sparse(J);
-  
+
 else
   %% Without Jacobian calculation
   output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0);

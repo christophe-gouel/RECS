@@ -53,9 +53,9 @@ Sgbar = model.params(end-1);
 % $\bar{S}^{\mathrm{G}}$ is a steady state. Actually, the steady-state response
 % variables are unique, only the public stock level is indeterminate as we can
 % see in the examples below:
-[sss1,xss1] = recsSS(model,[1 0],model.xss)
+[sss1,xss1] = recsSS(model,[1 0],model.xss);
 %%
-[sss2,xss2] = recsSS(model,[1 0.2],model.xss)
+[sss2,xss2] = recsSS(model,[1 0.2],model.xss);
 
 %% Define approximation space
 [interp,s] = recsinterpinit(20,[0.74 0],[1.4 Sgbar]);

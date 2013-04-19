@@ -45,7 +45,7 @@ function [model,statequant] = recsmodelinit(inputfile,shocks,outputfile,options)
 %
 % See also RECSINTERPINIT.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -53,8 +53,7 @@ if nargin<3 || isempty(outputfile)
   outputfile = strrep(inputfile,'.yaml','model.m');
 end
 
-defaultopt = struct('display',1,...
-                    'Python' ,0);
+defaultopt = struct('Python' ,0);
 if nargin<4
   options = defaultopt;
 else
@@ -117,26 +116,10 @@ if nargin>=2 && ~isempty(shocks)
   [sss0,xss0] = model.func('ss');
   if ~isempty(sss0) && ~isempty(xss0)
     [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0,options);
-    if exitflag==1 
+    if exitflag==1
       model.sss = sss;
       model.xss = xss;
       model.zss = zss;
-      if options.display==1
-        deltass = max(abs([sss xss]-[sss0 xss0]));
-        if deltass<sqrt(eps)
-          fprintf(1,'Deterministic steady state (equal to first guess)\n')
-        else
-          fprintf(1,['Deterministic steady state (different from first guess, ' ...
-                     'max(|delta|)=%g)\n'],deltass)
-        end
-        fprintf(1,' State variables:\n\t\t')
-        fprintf(1,'%0.4g\t',sss)
-        fprintf(1,'\n\n Response variables:\n\t\t')
-        fprintf(1,'%0.4g\t',xss)
-        fprintf(1,'\n\n Expectations variables:\n\t\t')
-        fprintf(1,'%0.4g\t',zss)
-        fprintf(1,'\n\n')
-      end
     end
   end
 
