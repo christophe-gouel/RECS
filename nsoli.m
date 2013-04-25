@@ -199,13 +199,18 @@ end
         ffc = nft*nft;
         iarm = iarm+1;
         if iarm > maxarm
+          %% Change CG
+          if debug==1
             disp(' Armijo failure, too many reductions ');
-            ierr = 2;
-            disp(outstat)
-            it_hist = it_histx(1:itc+1,:);
-        if nargout == 4, x_hist = [x_hist,x]; end
-            sol = xold;
-            return;
+%             fprintf(1,'%8i\t%5.1E\t%5i\t%15.1E\t%9i\n',outstat');
+%             disp(outstat)
+          end
+          ierr = 2;
+          %%
+          it_hist = it_histx(1:itc+1,:);
+          if nargout == 4, x_hist = [x_hist,x]; end
+          sol = xold;
+          return;
         end
     end
     x = xt;
