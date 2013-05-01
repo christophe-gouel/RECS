@@ -79,8 +79,9 @@ Phinext       = funbas(fspace,snextinterp);
 % Phinext       = funbasx(fspace,snextinterp);
 
 %% xnext
-xnext = Phinext*cx;
-% xnext = funeval(cx,fspace,Phinext);
+[LBnext,UBnext] = func('b',snext,[],[],[],[],[],params);
+xnext = min(max(Phinext*cx,LBnext),UBnext);
+% xnext = min(max(funeval(cx,fspace,Phinext),LBnext),UBnext);
 
 %%
 [ma,pa] = model.dima{:};
