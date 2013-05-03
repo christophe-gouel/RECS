@@ -23,10 +23,12 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,T,
 %    params : model's parameters, it is preferable to pass them as a cell array
 %             but other formats are acceptable
 %
-% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T) uses T (integer) for time horizon.
+% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T) uses T (integer) for time
+% horizon.
 %
-% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T,OPTIONS) solves the problem with the
-% parameters defined by the structure OPTIONS. The fields of the structure are
+% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T,OPTIONS) solves the problem
+% with the parameters defined by the structure OPTIONS. The fields of the
+% structure are
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver (default:
 %                       empty structure)

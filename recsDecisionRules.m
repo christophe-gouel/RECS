@@ -10,13 +10,26 @@ function result = recsDecisionRules(model,interp,states,space,s0,options)
 % fields s and x, respectively the state variables values used to draw the
 % decision rules and the control variables values.
 %
-% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES)
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES) plots the decision rules with
+% respect to the state variables indexed by the vector STATES.
 %
-% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE)
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE) plots the decision rules
+% on the intervals and for a number of points defined in SPACE. SPACE is a
+% matrix in which the first row contains the lower bounds of the intervals, the
+% second row contains the upper bound, and the third row the number of points to
+% use in each dimension. The columns correspond to the state variables indexed
+% in STATES.
 %
-% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE,S0)
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE,S0) plots the decision
+% rules with respect to the state variables defined in STATES while holding the
+% other state variables fixed at the values defined in S0. S0 is an n-by-d
+% matrix, n indexing the different combinations of state variables on which the
+% decision rules are plotted. If n>1, the different decision rules are plotted
+% on the same figures.
 %
-% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE,S0,OPTIONS)
+% RESULT = RECSDECISIONRULES(MODEL,INTERP,STATES,SPACE,S0,OPTIONS) plots the
+% decision rules with the parameters defined by the structure OPTIONS. The
+% fields of the structure are those used in recsSimul.
 %
 % See also RECSSIMUL.
 
@@ -29,7 +42,7 @@ if nargin<4 || isempty(space)
   range = [interp.fspace.a(states)' interp.fspace.b(states)'];
   n     = 100*ones(1,length(states));
 else
-  range = space(1:2,:);
+  range = space(1:2,:)';
   n     = space(3,:);
 end
 if nargin<5 || isempty(s0), s0 = model.sss; end
@@ -57,7 +70,7 @@ for i=1:length(states)
   m = size(x,2);
   x = reshape(x,n(i),[],m);
   x = permute(x,[1 3 2]);
-  
+
   s = reshape(s,n(i),[],d);
   s = permute(s,[1 3 2]);
   figure
@@ -65,7 +78,7 @@ for i=1:length(states)
     subplot(ceil((m)/ceil(sqrt(m))),ceil(sqrt(m)),j)
     plot(s(:,states(i),1),squeeze(x(:,j,:)))
   end
-  
+
   result(i).s = s;
   result(i).x = x;
 end
