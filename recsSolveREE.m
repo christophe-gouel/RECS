@@ -108,15 +108,12 @@ functional         = options.functional;
 reemethod          = lower(options.reemethod);
 
 % Extract fields of model
+b      = model.b;
 e      = model.e;
+g      = model.g;
+h      = model.h;
 params = model.params;
 w      = model.w;
-if isa(model.func,'char')
-  model.func = str2func(model.func);
-elseif ~isa(model.func,'function_handle')
-  error('model.func must be either a string or a function handle')
-end
-func = model.func;
 
 if any(strcmp(reemethod,{'1-step','iter-newton'})) && ...
       any(strcmp(funapprox,{'expapprox','resapprox-simple'}))
@@ -133,7 +130,7 @@ if nargin<=2 || isempty(s), s = interp.s; end
 
 % Generate x by interpolation if missing
 if nargin<=3 || isempty(x)
-  [LB,UB] = func('b',s,[],[],[],[],[],params);
+  [LB,UB] = b(s,params);
   x       = min(max(funeval(interp.cx,interp.fspace,s),LB),UB);
 end
 
@@ -143,7 +140,7 @@ output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
 k      = length(w);               % number of shock values
 z      = zeros(n,0);
 if ~functional
-  p    = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
+  p    = size(h(s(1,:),x(1,:),e(1,:),s(1,:),x(1,:),params,output),2);
 end
 
 % Extract fields of interp
@@ -165,20 +162,20 @@ switch funapprox
       ss     = s(ind,:);
       xx     = x(ind,:);
       output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
+      snext  = g(ss,xx,e(repmat(1:k,1,n),:),params,output);
       if extrapolate>=1, snextinterp = snext;
       else
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
       end
-      [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
-      xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LB),UB);
-      if nargout(func)<6
-        h                 = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
+      [LBnext,UBnext] = b(snext,params);
+      xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LBnext),UBnext);
+      if nargout(h)<6
+        hv                 = h(ss,xx,e(repmat(1:k,1,n),:),snext,xnext,params,output);
       else
-        [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
-        h                 = h.*hmult;
+        [hv,~,~,~,~,hmult] = h(ss,xx,e(repmat(1:k,1,n),:),snext,xnext,params,output);
+        hv                 = hv.*hmult;
       end
-      z         = reshape(w'*reshape(h,k,n*p),n,p);
+      z         = reshape(w'*reshape(hv,k,n*p),n,p);
       c = funfitxy(fspace,Phi,z);
     end
   case 'expfunapprox'
@@ -189,7 +186,7 @@ switch funapprox
              'the approximation coefficients.'])
     else
       output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-      c      = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output));
+      c      = funfitxy(fspace,Phi,h([],[],[],s,x,params,output));
     end
   otherwise
     if isfield(interp,'cx') && ~isempty(interp.cx)
@@ -201,7 +198,7 @@ end
 if functional
   model.params = [model.params fspace c];
   params       = model.params;
-  p            = size(func('h',s(1,:),x(1,:),[],e(1,:),s(1,:),x(1,:),params,output),2);
+  p            = size(h(s(1,:),x(1,:),e(1,:),s(1,:),x(1,:),params,output),2);
 end
 
 %% Solve for the rational expectations equilibrium
@@ -232,7 +229,7 @@ switch funapprox
   interp.cx = funfitxy(fspace,Phi,x);
   if isfield(interp,'ch')
     output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-    interp.ch = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output));
+    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,output));
   end
  case 'expfunapprox'
   interp.ch = c;
@@ -242,7 +239,7 @@ switch funapprox
   if ~isempty(z), interp.cz = funfitxy(fspace,Phi,z); end
   if isfield(interp,'ch')
     output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-    interp.ch = funfitxy(fspace,Phi,func('h',[],[],[],[],s,x,params,output));
+    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,output));
   end
 end
 
@@ -251,8 +248,9 @@ ind    = (1:n);
 ind    = ind(ones(1,k),:);
 ss     = s(ind,:);
 xx     = x(ind,:);
+ee     = e(repmat(1:k,1,n),:);
 output = struct('F',1,'Js',0,'Jx',0);
-snext  = func('g',ss,xx,[],e(repmat(1:k,1,n),:),[],[],params,output);
+snext  = g(ss,xx,ee,params,output);
 output = struct('snextmin',min(snext),...
                 'snextmax',max(snext));
 if extrapolate==2 || extrapolate==-1
@@ -273,27 +271,27 @@ if isempty(z)
 
   switch funapprox
    case 'expfunapprox'
-    h   = funeval(c,fspace,snextinterp);
-    if nargout(func)==6
+    hv   = funeval(c,fspace,snextinterp);
+    if nargout(h)==6
       output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = func('h',[],[],[],e(repmat(1:k,1,n),:),snext,...
-                               zeros(size(snext,1),m),params,output);
-      h                 = h.*hmult;
+      [~,~,~,~,~,hmult] = h([],[],ee,snext,...
+                            zeros(size(snext,1),m),params,output);
+      hv                = hv.*hmult;
     end
 
    case 'resapprox-complete'
-    [LB,UB] = func('b',snextinterp,[],[],[],[],[],params);
-    xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
+    [LBnext,UBnext] = b(snext,params);
+    xnext   = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
     output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-    if nargout(func)<6
-       h                = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
+    if nargout(h)<6
+       hv                = h(ss,xx,ee,snext,xnext,params,output);
     else
-      [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n),:),snext,xnext,params,output);
-      h               = h.*hmult;
+      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
+      hv                 = hv.*hmult;
     end
 
   end
-  z         = reshape(w'*reshape(h,k,n*p),n,p);
+  z         = reshape(w'*reshape(hv,k,n*p),n,p);
   interp.cz = funfitxy(fspace,Phi,z);
 end
 

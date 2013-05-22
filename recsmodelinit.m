@@ -84,6 +84,12 @@ end
 model.func        = eval(['@' strrep(outputfile,'.m','')]);
 model.params      = model.func('params');
 
+model.b = @(s,p)                  model.func('b',s,[],[],[],[],[],p);
+model.f = @(s,x,z,p,output)       model.func('f',s,x ,z ,[],[],[],p,output);
+model.g = @(s,x,e,p,output)       model.func('g',s,x ,[],e ,[],[],p,output);
+model.h = @(s,x,e,sn,xn,p,output) model.func('h',s,x ,[],e ,sn,xn,p,output);
+model.e = @(s,x,z,p)              model.func('e',s,x ,z ,[],[],[],p);
+
 %% Prepare shocks information & find steady state
 if nargin>=2 && ~isempty(shocks)
   % Unpack shocks
@@ -134,8 +140,8 @@ if nargin>=2 && ~isempty(shocks)
       ssim(:,:,1) = sss(ones(nrep,1),:);
       output      = struct('F',1,'Js',0,'Jx',0,'Jz',0);
       for t=1:nper
-        ssim(:,:,t+1) = model.func('g',ssim(:,:,t),xss(ones(nrep,1),:),[],...
-                                   model.funrand(nrep),[],[],model.params,output);
+        ssim(:,:,t+1) = model.g(ssim(:,:,t),xss(ones(nrep,1),:),...
+                                model.funrand(nrep),model.params,output);
       end
       statequant = quantile(reshape(permute(ssim(:,:,2:end),[1 3 2]),nrep*nper,d),...
                             [0 0.001 0.01 0.99 0.999 1]);

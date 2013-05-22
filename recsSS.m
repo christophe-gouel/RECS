@@ -85,7 +85,7 @@ end
 
 %% Solve for the deterministic steady state
 
-[~,~,dLBxds,dUBxds] = func('b',s,[],[],[],[],[],params);
+[~,~,dLBxds,dUBxds] = model.b(s,params);
 dLBxds = permute(dLBxds,[3 2 1]);
 dUBxds = permute(dUBxds,[3 2 1]);
 ix = [sum(dLBxds~=0,1,'native')' sum(dUBxds~=0,1,'native')'];
@@ -111,9 +111,9 @@ s      = X(1:d)';
 x      = X(d+1:d+m)';
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
 if nargout(func)<6
-  z = func('h',s,x,[],e,s,x,params,output);
+  z = model.h(s,x,e,s,x,params,output);
 else
-  [h,~,~,~,~,hmult] = func('h',s,x,[],e,s,x,params,output);
+  [h,~,~,~,~,hmult] = model.h(s,x,e,s,x,params,output);
   z = h.*hmult;
 end
 
