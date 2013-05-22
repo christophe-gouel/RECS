@@ -1,0 +1,48 @@
+# STO1FX.yaml Model definition file for the competitive storage model with inelastic supply and with explicit formulation
+# Copyright (C) 2011-2013 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
+declarations:
+
+  states: [A]
+
+  controls: [S, P]
+
+  expectations: [EP]
+
+  shocks: [e]
+
+  parameters: [k, delta, r, elastD]
+
+
+equations:
+
+  arbitrage:
+
+    - A-(EP*(1-delta)/(1+r)-k)^elastD  |            0 <= S <= inf
+    - EP*(1-delta)/(1+r)-k             | A^(1/elastD) <= P <= inf
+
+  transition:
+
+    - A = (1-delta)*S(-1)+e
+
+  expectation:
+
+    - EP  = P(1)
+
+
+calibration:
+
+  parameters:
+
+    k      :  0.06
+    delta  :  0.02
+    r      :  0.03
+    elastD : -0.2
+    
+  steady_state:
+
+    A : 1
+    S : 0
+    P : 1
+
