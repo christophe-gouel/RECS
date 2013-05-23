@@ -85,7 +85,7 @@ end
 [nrep,d] = size(s0);
 
 if ~isempty(shocks) && (numel(shocks)~=d || isempty(nper))
-  nper = size(shocks,3)-1; 
+  nper = size(shocks,3)+1; 
 end
 
 if isempty(nper) || nper==0, nper = 1; end
