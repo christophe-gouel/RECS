@@ -1,7 +1,7 @@
 function [interp,X,exitflag] = recsSolveREEFiniteHorizon(interp,model,s,x,xT,T,options)
 % RECSSOLVEREEFINITEHORIZON finds the finite-horizon rational expectations equilibrium of a model
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -58,7 +58,7 @@ if any(isnan(xT(:)))
   xinit = x;
   xinit(~isnan(xT)) = xT(~isnan(xT));
   optionsT = catstruct(options,struct('funapprox','expapprox'));
-  X(:,:,T) = recsSolveEquilibriumFH(s,xinit,z,func,params,c,e,w,fspace,LB,UB,optionsT);
+  X(:,:,T) = recsSolveEquilibrium(s,xinit,z,func,params,c,e,w,fspace,optionsT,LB,UB);
 else
   X(:,:,T) = xT;
 end

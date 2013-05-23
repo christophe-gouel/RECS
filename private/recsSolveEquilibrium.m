@@ -1,8 +1,9 @@
-function [x,f,exitflag] = recsSolveEquilibrium(s,x,z,func,params,c,e,w,fspace,options)
+function [x,f,exitflag] = recsSolveEquilibrium(s,x,z,func,params,c,e,w,fspace,options,LB,UB)
 % RECSSOLVEEQUILIBRIUM Solves the system of equilibrium equations using x as starting values
 %
-% RECSSOLVEEQUILIBRIUM is called by recsSimul, recsSolveREEIter and
-% recsSolveREEIterNewton. It is not meant to be called directly by the user.
+% RECSSOLVEEQUILIBRIUM is called by recsSimul, recsSolveREEFiniteHorizon,
+% recsSolveREEIter and recsSolveREEIterNewton. It is not meant to be called
+% directly by the user.
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
@@ -17,7 +18,7 @@ funapprox        = lower(options.funapprox);
 loop_over_s      = options.loop_over_s;
 
 [n,m]            = size(x);
-[LB,UB]          = func('b',s,[],[],[],[],[],params);
+if nargin<=10, [LB,UB] = func('b',s,[],[],[],[],[],params); end
 
 %% Solve equilibrium equations on grid points
 if loop_over_s
