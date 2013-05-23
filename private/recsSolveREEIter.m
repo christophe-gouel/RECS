@@ -24,9 +24,9 @@ useapprox          = options.useapprox;
 
 b      = model.b;
 e      = model.e;
+f      = model.f;
 g      = model.g;
 h      = model.h;
-func   = model.func;
 params = model.params;
 w      = model.w;
 
@@ -104,7 +104,7 @@ function [R,FLAG] = ResidualREE(cc)
         z     = funeval(cc,fspace,Phi);
 
         % Calculation of x
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
+        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
 
         % Calculation of snext
         xx      = x(ind,:);
@@ -123,7 +123,7 @@ function [R,FLAG] = ResidualREE(cc)
           xnext = recsSolveEquilibrium(snext,...
                                        xnext,...
                                        funeval(cc,fspace,snextinterp),...
-                                       func,params,cc,e,w,fspace,options);
+                                       b,f,g,h,params,cc,e,w,fspace,options);
         end
 
         % Calculation of z
@@ -143,7 +143,7 @@ function [R,FLAG] = ResidualREE(cc)
         cc    = reshape(cc,n,p);
         if functional, params{end} = cc; end
 
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w, fspace,options);
+        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
         output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
         R      = funfitxy(fspace,Phi,h([],[],[],s,x,params,output))-cc;
 
@@ -181,7 +181,7 @@ function [R,FLAG] = ResidualREE(cc)
           z     = reshape(w'*reshape(hv,k,n*p),n,p);
         end % if strcmp(funapprox,'resapprox-simple')
 
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
+        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
         R            = funfitxy(fspace,Phi,x)-cc;
     end % switch funapprox
   else

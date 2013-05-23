@@ -1,4 +1,4 @@
-function [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,funapprox,Phi)
+function [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi)
 % RECSRESIDUAL evaluates the residual of rational expectations and its Jacobians
 %
 % RECSRESIDUAL is called by recsSolveREEFull and recsSolveREEIterNewton. It is not
@@ -6,7 +6,7 @@ function [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,funapprox,Phi)
 %
 % See also RECSSOLVEREEFULL, RECSSOLVEREEITERNEWTON.
 
-% Copyright (C) 2011 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %%
@@ -17,7 +17,7 @@ switch funapprox
   p  = size(c,2);
   if nargout==1
     output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-    R = funeval(c,fspace,Phi)-func('h',[],[],[],[],s,x,params,output);
+    R = funeval(c,fspace,Phi)-h([],[],[],s,x,params,output);
     R = reshape(R',n*p,1);
   end
 
@@ -34,8 +34,8 @@ if nargout>=2
   switch funapprox
    case 'expfunapprox'
     output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',1,'hmult',0);
-    [h,~,~,~,hxnext] = func('h',[],[],[],[],s,x,params,output);
-    R  = funeval(c,fspace,Phi)-h;
+    [hv,~,~,~,hxnext] = h([],[],[],s,x,params,output);
+    R  = funeval(c,fspace,Phi)-hv;
     R  = reshape(R',n*p,1);
     Rx = -spblkdiag(permute(hxnext,[2 3 1]));
 

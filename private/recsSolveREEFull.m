@@ -6,7 +6,7 @@ function [c,x,f,exitflag] = recsSolveREEFull(interp,model,s,x,c,options)
 %
 % See also RECSSOLVEEREE, RECSSOLVEEREEITER.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -17,6 +17,7 @@ funapprox        = lower(options.funapprox);
 functional       = options.functional;
 
 e      = model.e;
+h      = model.h;
 func   = model.func;
 params = model.params;
 w      = model.w;
@@ -27,7 +28,7 @@ Phi    = interp.Phi;
 [n,m]  = size(x);
 
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
-[LB,UB]  = func('b',s,[],[],[],[],[],params);
+[LB,UB]  = model.b(s,params);
 if strcmp(funapprox,'resapprox-complete') && all(isinf(LB(:))) && all(isinf(UB(:)))
   %% Reshape inputs
   C        = reshape(c',n*m,1);
@@ -75,14 +76,14 @@ if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),func,params,...
                               grid,c,e,w,fspace,funapprox,extrapolate);
-  [R,Rx,Rc] = recsResidual(s,x,func,params,c,fspace,funapprox,Phi);
+  [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi);
   J = [Fx Fc;
        Rx Rc];
 else
   %% Without Jacobian
   F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),...
                        func,params,grid,c,e,w,fspace,funapprox,extrapolate);
-  R = recsResidual(s,x,func,params,c,fspace,funapprox,Phi);
+  R = recsResidual(s,x,h,params,c,fspace,funapprox,Phi);
 end
 
 % Concatenate equilibrium equations and rational expectations residual
@@ -103,7 +104,7 @@ if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),func,params,...
                               grid,c,e,w,fspace,funapprox,extrapolate);
-  [~,~,Rc]  = recsResidual(s,x,func,params,c,fspace,funapprox,Phi);
+  [~,~,Rc]  = recsResidual(s,x,h,params,c,fspace,funapprox,Phi);
   
   Fc = sparse(Fc);
   J  = Fx*Rc+Fc;

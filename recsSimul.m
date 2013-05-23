@@ -124,16 +124,13 @@ if ~any(strcmp(simulmethod,{'interpolation','solve'}))
                       'be carried out using the default option, ''interpolation''.'])
 end
 
-e       = model.e;
+b      = model.b;
+e      = model.e;
+f      = model.f;
+g      = model.g;
+h      = model.h;
 params  = model.params;
 w       = model.w;
-if isa(model.func,'char')
-  func = str2func(model.func);
-elseif isa(model.func,'function_handle')
-  func   = model.func;
-else
-  error('model.func must be either a string or a function handle')
-end
 if isfield(model,'funrand') % Check if a random shocks generator function is provided
   funrand = model.funrand;
 else % Use the discretisation to generate the shocks
@@ -168,51 +165,51 @@ end
 
 %% Simulate the model
 for t=1:nper
-  if t>1, s0 = func('g',s0,xx,[],esim(:,:,t),[],[],params,output); end
+  if t>1, s0 = g(s0,xx,esim(:,:,t),params,output); end
   if extrapolate, sinterp = s0;
   else sinterp = max(min(s0,fspace.b(ones(nrep,1),:)),fspace.a(ones(nrep,1),:)); end
-  [LB,UB]    = func('b',sinterp,[],[],[],[],[],params);
+  [LB,UB]    = b(s0,params);
   Phi        = funbasx(fspace,sinterp);
   if exist('cX','var')
     xx       = min(max(funeval(cX(:,:,min(t,T)),fspace,Phi),LB),UB);
-    if nargout==5, f = NaN(nrep,m); end
+    if nargout==5, fval = NaN(nrep,m); end
   else
     xx       = min(max(funeval(cx,fspace,Phi),LB),UB);
     switch simulmethod
       case 'solve'
         switch funapprox
           case {'expapprox','resapprox-simple'}
-            [xx,f] = recsSolveEquilibrium(s0,...
-                                          xx,...
-                                          funeval(cz,fspace,Phi),...
-                                          func,...
-                                          params,...
-                                          [],[],[],[],options);
+            [xx,fval] = recsSolveEquilibrium(s0,...
+                                             xx,...
+                                             funeval(cz,fspace,Phi),...
+                                             b,f,g,h,...
+                                             params,...
+                                             [],[],[],[],options);
           case 'resapprox-complete'
-            [xx,f] = recsSolveEquilibrium(s0,...
-                                          xx,...
-                                          zeros(nrep,0),...
-                                          func,...
-                                          params,...
-                                          cx,e,w,fspace,options);
+            [xx,fval] = recsSolveEquilibrium(s0,...
+                                             xx,...
+                                             zeros(nrep,0),...
+                                             b,f,g,h,...
+                                             params,...
+                                             cx,e,w,fspace,options);
           case 'expfunapprox'
             if functional, params{end} = interp.ch; end
-            [xx,f] = recsSolveEquilibrium(s0,...
-                                          xx,...
-                                          zeros(nrep,0),...
-                                          func,...
-                                          params,...
-                                          interp.ch,e,w,fspace,options);
+            [xx,fval] = recsSolveEquilibrium(s0,...
+                                             xx,...
+                                             zeros(nrep,0),...
+                                             b,f,g,h,...
+                                             params,...
+                                             interp.ch,e,w,fspace,options);
         end % switch funapprox
       otherwise
         if nargout==5
-          f = func('f',s0,xx,funeval(cz,fspace,Phi),[],[],[],params,output);
+          fval = f(s0,xx,funeval(cz,fspace,Phi),params,output);
         end
     end % switch simulmethod
   end % Finite or infinite horizon problem
   ssim(:,:,t) = s0;
   xsim(:,:,t) = xx;
-  if nargout==5, fsim(:,:,t) = f; end
+  if nargout==5, fsim(:,:,t) = fval; end
 end % for t
 
 if exist('cX','var') && t>T
@@ -239,7 +236,7 @@ if (nargout>=4 || statdisplay) && (nper >= 40)
   stat.n = size(X,1);
 
   % Percent of time spent at the bounds
-  [LB,UB] = func('b',X(:,1:d),[],[],[],[],[],params);
+  [LB,UB] = b(X(:,1:d),params);
   pLB     = [NaN(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps,1)*100];
   pUB     = [NaN(1,d) mean(abs(UB-X(:,d+1:d+m))<eps,1)*100];
 

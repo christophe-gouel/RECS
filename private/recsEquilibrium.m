@@ -1,4 +1,4 @@
-function [F,Jx,Jc] = recsEquilibrium(x,s,z,func,params,gridJx,c,e,w,fspace,funapprox,extrapolate)
+function [F,Jx,Jc] = recsEquilibrium(x,s,z,b,f,g,h,params,gridJx,c,e,w,fspace,funapprox,extrapolate)
 % RECSEQUILIBRIUM evaluates the equilibrium equations and Jacobian
 %
 % RECSEQUILIBRIUM is called by recsSolveREEFull and recsSolveEquilibrium. It is not
@@ -20,11 +20,11 @@ switch funapprox
     if nargout==2
       %% With Jacobian
       output  = struct('F',1,'Js',0,'Jx',1,'Jz',0);
-      [F,~,Jx] = func('f',s,x,z,[],[],[],params,output);
+      [F,~,Jx] = f(s,x,z,params,output);
     else
       %% Without Jacobian
       output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-      F      = func('f',s,x,z,[],[],[],params,output);
+      F      = f(s,x,z,params,output);
     end
   case {'expfunapprox','resapprox-complete'}
     k     = size(e,1);
@@ -37,7 +37,7 @@ switch funapprox
     if nargout>=2
       %% With Jacobians
       output              = struct('F',1,'Js',0,'Jx',1);
-      [snext,~,gx]        = func('g',ss,xx,[],ee,[],[],params,output);
+      [snext,~,gx]        = g(ss,xx,ee,params,output);
       if extrapolate>=1, snextinterp = snext;
       else
           snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
@@ -50,37 +50,37 @@ switch funapprox
       switch funapprox
         case 'expfunapprox'
           H                 = funeval(c,fspace,Bsnext,[zeros(1,d); eye(d)]);
-          if nargout(func)==6
+          if nargout(h)==6
             output = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-            [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,...
-                                     zeros(size(snext,1),m),params,output);
-            H               = H.*hmult(:,:,ones(1+d,1));
+            [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),...
+                                  params,output);
+            H                 = H.*hmult(:,:,ones(1+d,1));
           end
-          h  = H(:,:,1);
+          hv = H(:,:,1);
           hs = H(:,:,2:end);
         case 'resapprox-complete'
-          [LB,UB]              = func('b',snext,[],[],[],[],[],params);
+          [LBnext,UBnext]      = b(snext,params);
           Xnext                = funeval(c,fspace,Bsnext,[zeros(1,d); eye(d)]);
-          xnext                = min(max(Xnext(:,:,1),LB),UB);
+          xnext                = min(max(Xnext(:,:,1),LBnext),UBnext);
           xnextds              = Xnext(:,:,2:end);
 
           output = struct('F',1,'Js',0,'Jx',1,'Jsn',1,'Jxn',1,'hmult',1);
-          if nargout(func)<6
-            [h,~,hx,hsnext,hxnext]       = func('h',ss,xx,[],ee,snext,xnext,...
-                                                params,output);
+          if nargout(h)<6
+            [hv,~,hx,hsnext,hxnext]       = h(ss,xx,ee,snext,xnext,...
+                                              params,output);
           else
-            [h,~,hx,hsnext,hxnext,hmult] = func('h',ss,xx,[],ee,snext,xnext,...
-                                                params,output);
-            h      = h.*hmult;
+            [hv,~,hx,hsnext,hxnext,hmult] = h(ss,xx,ee,snext,xnext,...
+                                              params,output);
+            hv     = hv.*hmult;
             hx     = hx.*hmult(:,:,ones(m,1));
             hsnext = hsnext.*hmult(:,:,ones(d,1));
             hxnext = hxnext.*hmult(:,:,ones(m,1));
           end
       end
-      p           = size(h,2);
-      z           = reshape(w'*reshape(h,k,n*p),n,p);
+      p           = size(hv,2);
+      z           = reshape(w'*reshape(hv,k,n*p),n,p);
       output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
-      [F,~,fx,fz] = func('f',s,x,z,[],[],[],params,output);
+      [F,~,fx,fz] = f(s,x,z,params,output);
 
       switch funapprox
         case 'expfunapprox'
@@ -123,7 +123,7 @@ switch funapprox
     else
       %% Without Jacobian
       output  = struct('F',1,'Js',0,'Jx',0);
-      snext   = func('g',ss,xx,[],ee,[],[],params,output);
+      snext   = g(ss,xx,ee,params,output);
 
       switch funapprox
         case 'expfunapprox'
@@ -132,34 +132,34 @@ switch funapprox
             snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
                               fspace.a(ones(n*k,1),:));
           end
-          h                   = funeval(c,fspace,snextinterp);
-          if nargout(func)==6
+          hv                  = funeval(c,fspace,snextinterp);
+          if nargout(h)==6
             output  = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-            [~,~,~,~,~,hmult] = func('h',[],[],[],ee,snext,zeros(size(snext,1),m),...
-                                     params,output);
-            h                 = h.*hmult;
+            [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),...
+                                  params,output);
+            hv                = hv.*hmult;
           end
 
         case 'resapprox-complete'
-          [LB,UB] = func('b',snext,[],[],[],[],[],params);
+          [LBnext,UBnext] = b(snext,params);
           if extrapolate>=1, snextinterp = snext;
           else
             snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
                               fspace.a(ones(n*k,1),:));
           end
-          xnext   = min(max(funeval(c,fspace,snextinterp),LB),UB);
+          xnext   = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
           output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-          if nargout(func)<6
-            h                 = func('h',ss,xx,[],ee,snext,xnext,params,output);
+          if nargout(h)<6
+            hv                 = h(ss,xx,ee,snext,xnext,params,output);
           else
-            [h,~,~,~,~,hmult] = func('h',ss,xx,[],ee,snext,xnext,params,output);
-            h                 = h.*hmult;
+            [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
+            hv                 = hv.*hmult;
           end
       end
-      p       = size(h,2);
-      z       = reshape(w'*reshape(h,k,n*p),n,p);
+      p       = size(hv,2);
+      z       = reshape(w'*reshape(hv,k,n*p),n,p);
       output  = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-      F       = func('f',s,x,z,[],[],[],params,output);
+      F       = f(s,x,z,params,output);
     end
 end
 

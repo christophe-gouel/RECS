@@ -9,7 +9,7 @@ function [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
 %
 % See also RECSSOLVEREE, RECSSOLVEREEITER, RECSSOLVEREEFULL.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -24,7 +24,9 @@ reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
                                options.reesolveroptions);
 useapprox          = options.useapprox;
 
+b      = model.b;
 e      = model.e;
+h      = model.h;
 func   = model.func;
 params = model.params;
 w      = model.w;
@@ -37,10 +39,9 @@ z        = zeros(n,0);
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 
 %% Solve for the rational expectations equilibrium
-LB = -inf(numel(c),1);
-UB = +inf(numel(c),1);
-
-[c,~,exitflag] = runeqsolver(@ResidualFunction,c(:),LB,UB,reesolver,...
+[c,~,exitflag] = runeqsolver(@ResidualFunction,c(:),...
+                             -inf(numel(c),1),inf(numel(c),1),...
+                             reesolver,...
                              reesolveroptions);
 
 
@@ -52,17 +53,17 @@ function [R,dRdc] = ResidualFunction(cc)
   if functional, params{end} = cc; end
 
   if useapprox && strcmp(funapprox,'resapprox-complete') % x calculated by interpolation
-    [LB,UB] = func('b',s,[],[],[],[],[],params);
+    [LB,UB] = b(s,params);
     x       = min(max(funeval(cc,fspace,Phi),LB),UB);
   end % if not previous x is used
 
   [x,f]  = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
   if nargout==1
     %% Without Jacobian
-    R = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
+    R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
   else
     %% With Jacobian
-    [R,Rx,Rc] = recsResidual(s,x,func,params,cc,fspace,funapprox,Phi);
+    [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
     [~,Fx,Fc] = recsEquilibrium(x,s,z,func,params,grid,cc,e,w,fspace,...
                                 funapprox,extrapolate);
     Fc        = sparse(Fc);
