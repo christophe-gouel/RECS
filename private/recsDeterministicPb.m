@@ -1,4 +1,4 @@
-function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params,ix,nx)
+function [F,J] = recsDeterministicPb(X,fp,gp,hp,s0,xss,p,e,params,nx)
 % RECSDETERMINISTICPB Evaluates the equations and Jacobian of the deterministic problem.
 %
 % RECSDETERMINISTICPB is called by recsSolveDeterministicPb. It is not meant to be
@@ -6,7 +6,7 @@ function [F,J] = recsDeterministicPb(X,func,s0,xss,p,e,params,ix,nx)
 %
 % See also RECSSOLVEDETERMINISTICPB.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -33,9 +33,9 @@ s     = [s0; snext(1:end-1,:)];
 if nargout==2  
   %% With Jacobian
   output                  = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1);
-  [f,fs,fx,fz]            = mcptransform(func,'f',s,x,z,[],[],[],params,output,ix,nx,w,v);
-  [h,hs,hx,hsnext,hxnext] = mcptransform(func,'h',s,x,[],e ,snext,xnext,params,output,ix,nx,[],[]);
-  [g,gs,gx]               = mcptransform(func,'g',s,x,[],e ,[],[],params,output,ix,nx,[],[]);
+  [f,fs,fx,fz]            = fp(s,x,w,v,z,params,output);
+  [h,hs,hx,hsnext,hxnext] = hp(s,x,e,snext,xnext,params,output);
+  [g,gs,gx]               = gp(s,x,e,params,output);
 
   identityz = eye(p);
   identityz = permute(identityz(:,:,ones(1,T)),[3 1 2]);
@@ -57,9 +57,9 @@ if nargout==2
 else
   %% Without Jacobian
   output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0);
-  h = mcptransform(func,'h',s,x,[],e ,snext,xnext,params,output,ix,nx,[],[]);
-  f  = mcptransform(func,'f',s,x,z,[],[],[],params,output,ix,nx,w,v);
-  g  = mcptransform(func,'g',s,x,[],e ,[],[],params,output,ix,nx,[],[]);
+  h = hp(s,x,e,snext,xnext,params,output);
+  f = fp(s,x,w,v,z,params,output);
+  g = gp(s,x,e,params,output);
 
 end
 F = [f z-h snext-g]';

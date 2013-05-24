@@ -1,7 +1,7 @@
 function res = recsAdaptativeAccuracy(interp,model,snodes,options)
 % RECSADAPTATIVEACCURACY 
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -25,7 +25,7 @@ for i=1:size(snodes,2)
   s            = gridmake(snodesnew);
   [~,x] = recsSimul(model,interp,s,1,[],options);
   Phi   = funbasx(interp.fspace,s);
-  R = recsResidual(s,x,model.func,model.params,interp.cx,interp.fspace,...
+  R = recsResidual(s,x,model.h,model.params,interp.cx,interp.fspace,...
                    'resapprox-complete',Phi);
   res(i) = norm(R,Inf);
 end

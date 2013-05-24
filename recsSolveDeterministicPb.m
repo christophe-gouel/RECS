@@ -62,16 +62,9 @@ d = size(sss,2);
 n = T*(m+p+d);
 
 e = model.w'*model.e;
-if isa(model.func,'char')
-  func = str2func(model.func);
-elseif isa(model.func,'function_handle')
-  func = model.func;
-else
-  error('model.func must be either a string or a function handle')
-end
 params = model.params;
 
-[~,~,dLBxds,dUBxds] = func('b',sss,[],[],[],[],[],params);
+[~,~,dLBxds,dUBxds] = model.b(sss,params);
 dLBxds = permute(dLBxds,[3 2 1]);
 dUBxds = permute(dUBxds,[3 2 1]);
 ix = [sum(dLBxds~=0,1,'native')' sum(dUBxds~=0,1,'native')'];
@@ -83,7 +76,12 @@ n = n+T*sum(nx);
 w = zeros(1,nx(1));
 v = zeros(1,nx(2));
 
-[LBx,UBx] = mcptransform(func,'b',sss,[],[],[],[],[],params,[],ix,nx);
+model = mcptransform(model,ix,nx);
+fp    = model.fp;
+gp    = model.gp;
+hp    = model.hp;
+
+[LBx,UBx] = model.bp(sss,params);
 LB = [LBx -inf(1,p+d)];
 UB = [UBx +inf(1,p+d)];
 
@@ -98,7 +96,7 @@ X = reshape(X,n,1);
 % Simple continuation problem applied on a Newton solve
 
 SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver,...
-                                     eqsolveroptions,func,S0,xss,p,e,params,ix,nx);
+                                     eqsolveroptions,fp,gp,hp,S0,xss,p,e,params,nx);
 
 [X,F,exitflag,N] = SCP(X,s0,sss,SCPSubProblem,1);
 if exitflag~=1

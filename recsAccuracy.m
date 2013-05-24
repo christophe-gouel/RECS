@@ -36,7 +36,7 @@ function [se,lEE,lEf] = recsAccuracy(model,interp,s,options)
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -52,14 +52,11 @@ end
 display     = options.display;
 extrapolate = options.extrapolate;
 
+b      = model.b;
 e      = model.e;
-if isa(model.func,'char')
-  func = str2func(model.func);
-elseif isa(model.func,'function_handle')
-  func = model.func;
-else
-  error('model.func must be either a string or a function handle')
-end
+f      = model.f;
+g      = model.g;
+h      = model.h;
 params = model.params;
 w      = model.w;
 
@@ -72,7 +69,7 @@ k       = size(e,1);
 se      = permute(s,[1 3 2]);
 se      = reshape(se,n*t,d);
 
-[LB,UB]    = func('b',se,[],[],[],[],[],params);
+[LB,UB]    = b(se,params);
 if extrapolate, seinterp = se;
 else
   seinterp = max(min(se,fspace.b(ones(n*t,1),:)),fspace.a(ones(n*t,1),:));
@@ -84,39 +81,40 @@ ind       = (1:n*t);
 ind       = ind(ones(1,k),:);
 ss        = se(ind,:);
 xx        = xe(ind,:);
+ee        = e(repmat(1:k,1,n*t),:);
 output    = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
-sen       = func('g',ss,xx,[],e(repmat(1:k,1,n*t),:),[],[],params,output);
-[LBn,UBn] = func('b',sen,[],[],[],[],[],params);
+sen       = g(ss,xx,ee,params,output);
+[LBn,UBn] = b(sen,params);
 if extrapolate, seninterp = sen;
 else
   seninterp = max(min(sen,fspace.b(ones(n*t*k,1),:)),fspace.a(ones(n*t*k,1),:));
 end
 xen       = min(max(funeval(cx,fspace,seninterp),LBn),UBn);
-if nargout(func)<6
-  h                 = func('h',ss,xx,[],e(repmat(1:k,1,n*t),:),sen,xen,params,output);
+if nargout(h)<6
+  hv                 = h(ss,xx,ee,sen,xen,params,output);
 else
-  [h,~,~,~,~,hmult] = func('h',ss,xx,[],e(repmat(1:k,1,n*t),:),sen,xen,params,output);
-  h                 = h.*hmult;
+  [hv,~,~,~,~,hmult] = h(ss,xx,ee,sen,xen,params,output);
+  hv                 = hv.*hmult;
 end
-p         = size(h,2);
-ze        = reshape(w'*reshape(h,k,n*t*p),n*t,p);
+p         = size(hv,2);
+ze        = reshape(w'*reshape(hv,k,n*t*p),n*t,p);
 
 if display==1, disp('Accuracy of the solution'); end
 
 %% Euler equation error
-EE      = func('e',se,xe,ze,[],[],[],params);
+EE      = model.ee(se,xe,ze,params);
 lEE     = log10(abs(EE));
 lEE_res = [log10(max(abs(EE)));
            log10(sum(abs(EE))/size(EE,1))];
 
-if display==1 & ~isnan(lEE_res)
+if display==1 && all(~isnan(lEE_res))
   disp(' Euler equation error (in log10)');
   disp('    Max       Mean');
   disp(lEE_res');
 end
 
 %% Equilibrium equation error
-fe      = func('f',se,xe,ze,[],[],[],params,output);
+fe      = f(se,xe,ze,params,output);
 
 Ef      = abs(min(max(-fe,LB-xe),UB-xe));
 lEf     = log10(Ef);

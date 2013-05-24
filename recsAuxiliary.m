@@ -51,8 +51,9 @@ end
 eqsolver        = lower(options.eqsolver);
 eqsolveroptions = options.eqsolveroptions;
 
+b      = model.b;
 e      = model.e;
-func   = model.func;
+g      = model.g;
 params = model.params;
 w      = model.w;
 
@@ -69,7 +70,7 @@ ind           = ind(ones(1,k),:);
 ss            = s(ind,:);
 xx            = x(ind,:);
 ee            = e(repmat(1:k,1,n),:);
-snext         = func('g',ss,xx,[],ee,[],[],params,struct('F',1,'Js',0,'Jx',0));
+snext         = g(ss,xx,ee,params,struct('F',1,'Js',0,'Jx',0));
 if options.extrapolate>=1
   snextinterp = snext;
 else
@@ -79,8 +80,8 @@ Phinext       = funbas(fspace,snextinterp);
 % Phinext       = funbasx(fspace,snextinterp);
 
 %% xnext
-[LBnext,UBnext] = func('b',snext,[],[],[],[],[],params);
-xnext = min(max(Phinext*cx,LBnext),UBnext);
+[LBnext,UBnext] = b(snext,params);
+xnext           = min(max(Phinext*cx,LBnext),UBnext);
 % xnext = min(max(funeval(cx,fspace,Phinext),LBnext),UBnext);
 
 %%

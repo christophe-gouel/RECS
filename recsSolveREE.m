@@ -1,4 +1,4 @@
-function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
+function [interp,x,z,fval,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 % RECSSOLVEREE finds the rational expectations equilibrium (REE) of a model
 %
 % RECSSOLVEREE implementes various approximation schemes, and equation solvers to
@@ -60,15 +60,15 @@ function [interp,x,z,f,exitflag,output] = recsSolveREE(interp,model,s,x,options)
 % [INTERP,X,Z] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns the value of the
 % expectations variables on the grid.
 %
-% [INTERP,X,Z,F] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns the value of the
+% [INTERP,X,Z,FVAL] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns the value of the
 % equilibrium equations on the grid.
 %
-% [INTERP,X,Z,F,EXITFLAG] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns EXITFLAG,
+% [INTERP,X,Z,FVAL,EXITFLAG] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns EXITFLAG,
 % which describes the exit conditions. Possible values are
 %    1 : RECSSOLVEREE converges to the REE
 %    0 : Failure to converge
 %
-% [INTERP,X,Z,F,EXITFLAG,OUTPUT] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns
+% [INTERP,X,Z,FVAL,EXITFLAG,OUTPUT] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns
 % OUTPUT, a structure containing the fields snextmin and snextmax, minimum and
 % maximum of next-period state variables.
 %
@@ -143,6 +143,12 @@ if ~functional
   p    = size(h(s(1,:),x(1,:),e(1,:),s(1,:),x(1,:),params,output),2);
 end
 
+% Precalculations
+ind    = (1:n);
+ind    = ind(ones(1,k),:);
+ss     = s(ind,:);
+ee     = e(repmat(1:k,1,n),:);
+
 % Extract fields of interp
 fspace     = interp.fspace;
 if ~isfield(interp,'Phi'), interp.Phi = funbasx(fspace); end
@@ -157,12 +163,9 @@ switch funapprox
       error(['With functional problems, a first guess has to be provided for ' ...
              'the approximation coefficients.'])
     else
-      ind    = (1:n);
-      ind    = ind(ones(1,k),:);
-      ss     = s(ind,:);
       xx     = x(ind,:);
       output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      snext  = g(ss,xx,e(repmat(1:k,1,n),:),params,output);
+      snext  = g(ss,xx,ee,params,output);
       if extrapolate>=1, snextinterp = snext;
       else
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
@@ -170,9 +173,9 @@ switch funapprox
       [LBnext,UBnext] = b(snext,params);
       xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LBnext),UBnext);
       if nargout(h)<6
-        hv                 = h(ss,xx,e(repmat(1:k,1,n),:),snext,xnext,params,output);
+        hv                 = h(ss,xx,ee,snext,xnext,params,output);
       else
-        [hv,~,~,~,~,hmult] = h(ss,xx,e(repmat(1:k,1,n),:),snext,xnext,params,output);
+        [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
         hv                 = hv.*hmult;
       end
       z         = reshape(w'*reshape(hv,k,n*p),n,p);
@@ -204,11 +207,11 @@ end
 %% Solve for the rational expectations equilibrium
 switch reemethod
   case 'iter'
-    [c,x,z,f,exitflag] = recsSolveREEIter(interp,model,s,x,c,options);
+    [c,x,z,fval,exitflag] = recsSolveREEIter(interp,model,s,x,c,options);
   case 'iter-newton'
-    [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);
+    [c,x,fval,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);
   case '1-step'
-    [c,x,f,exitflag] = recsSolveREEFull(interp,model,s,x,c,options);
+    [c,x,fval,exitflag] = recsSolveREEFull(interp,model,s,x,c,options);
   otherwise
     error(['%s is not a valid value for reemethod. Valid values are ''iter'' ' ...
            '(default), ''iter-newton'' and ''1-step''.'],reemethod)
@@ -244,11 +247,7 @@ switch funapprox
 end
 
 % Check if state satisfies bounds
-ind    = (1:n);
-ind    = ind(ones(1,k),:);
-ss     = s(ind,:);
 xx     = x(ind,:);
-ee     = e(repmat(1:k,1,n),:);
 output = struct('F',1,'Js',0,'Jx',0);
 snext  = g(ss,xx,ee,params,output);
 output = struct('snextmin',min(snext),...
@@ -274,15 +273,14 @@ if isempty(z)
     hv   = funeval(c,fspace,snextinterp);
     if nargout(h)==6
       output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = h([],[],ee,snext,...
-                            zeros(size(snext,1),m),params,output);
+      [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),params,output);
       hv                = hv.*hmult;
     end
 
    case 'resapprox-complete'
     [LBnext,UBnext] = b(snext,params);
-    xnext   = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
-    output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+    xnext           = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
+    output          = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
     if nargout(h)<6
        hv                = h(ss,xx,ee,snext,xnext,params,output);
     else

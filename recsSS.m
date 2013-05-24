@@ -75,13 +75,6 @@ params = model.params;
 e      = model.w'*model.e;
 d      = length(s);
 m      = length(x);
-if isa(model.func,'char')
-  func = str2func(model.func);
-elseif isa(model.func,'function_handle')
-  func   = model.func;
-else
-  error('model.func must be either a string or a function handle')
-end
 
 %% Solve for the deterministic steady state
 
@@ -93,12 +86,18 @@ nx = int16(sum(ix,1));
 w = zeros(nx(1),1);
 v = zeros(nx(2),1);
 X = [s(:); x(:); w; v];
-[LBx,UBx] = mcptransform(func,'b',s,[],[],[],[],[],params,[],ix,nx);
+
+model = mcptransform(model,ix,nx);
+fp    = model.fp;
+gp    = model.gp;
+hp    = model.hp;
+
+[LBx,UBx] = model.bp(s,params);
 LB = [-inf(size(s(:))); LBx(:)];
 UB = [+inf(size(s(:))); UBx(:)];
 
 [X,~,exitflag] = runeqsolver(@SSResidual,X,LB,UB,eqsolver,eqsolveroptions,...
-                             func,params,e,d,m,ix,nx);
+                             fp,gp,hp,params,e,d,m,nx);
 
 if exitflag~=1
   warning('RECS:SSNotFound','Failure to find a deterministic steady state');
@@ -110,7 +109,7 @@ x0     = x;
 s      = X(1:d)';
 x      = X(d+1:d+m)';
 output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-if nargout(func)<6
+if nargout(model.h)<6
   z = model.h(s,x,e,s,x,params,output);
 else
   [h,~,~,~,~,hmult] = model.h(s,x,e,s,x,params,output);
@@ -136,7 +135,7 @@ if exitflag==1 && options.display==1
 end
 
 
-function [F,J] = SSResidual(X,func,params,e,d,m,ix,nx)
+function [F,J] = SSResidual(X,fp,gp,hp,params,e,d,m,nx)
 %% SSRESIDUAL evaluates the equations and Jacobians of the steady-state finding problem
 
 ss     = X(1:d)';
@@ -149,9 +148,9 @@ M = m+nx(1)+nx(2);
 if nargout==2
   %% With Jacobian calculation
   output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1);
-  [zz,hs,hx,hsnext,hxnext] = mcptransform(func,'h',ss,xx,[],e ,ss,xx,params,output,ix,nx,[],[]);
-  [f,fs,fx,fz]             = mcptransform(func,'f',ss,xx,zz,[],[],[],params,output,ix,nx,ww,vv);
-  [g,gs,gx]                = mcptransform(func,'g',ss,xx,[],e ,[],[],params,output,ix,nx,[],[]);
+  [zz,hs,hx,hsnext,hxnext] = hp(ss,xx,e,ss,xx,params,output);
+  [f,fs,fx,fz]             = fp(ss,xx,ww,vv,zz,params,output);
+  [g,gs,gx]                = gp(ss,xx,e,params,output);
   fz                       = permute(fz,[2 3 1]);
 
   J               = zeros(d+M,d+M);
@@ -167,9 +166,9 @@ if nargout==2
 else
   %% Without Jacobian calculation
   output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0);
-  zz = mcptransform(func,'h',ss,xx,[],e ,ss,xx,params,output,ix,nx,[],[]);
-  f  = mcptransform(func,'f',ss,xx,zz,[],[],[],params,output,ix,nx,ww,vv);
-  g  = mcptransform(func,'g',ss,xx,[],e ,[],[],params,output,ix,nx,[],[]);
+  zz = hp(ss,xx,e,ss,xx,params,output);
+  f  = fp(ss,xx,ww,vv,zz,params,output);
+  g  = gp(ss,xx,e,params,output);
 end
 
 F = [ss-g f]';

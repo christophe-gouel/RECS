@@ -1,4 +1,4 @@
-function [c,x,f,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
+function [c,x,fval,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
 % RECSSOLVEREEITERNEWTON finds the REE of a model by doing a Newton iteration for the rational expectations step
 %
 % RECSSOLVEREEITERNEWTON is called by recsSolveREE. It is not meant to be called
@@ -26,8 +26,9 @@ useapprox          = options.useapprox;
 
 b      = model.b;
 e      = model.e;
+f      = model.f;
+g      = model.g;
 h      = model.h;
-func   = model.func;
 params = model.params;
 w      = model.w;
 
@@ -57,14 +58,14 @@ function [R,dRdc] = ResidualFunction(cc)
     x       = min(max(funeval(cc,fspace,Phi),LB),UB);
   end % if not previous x is used
 
-  [x,f]  = recsSolveEquilibrium(s,x,z,func,params,cc,e,w,fspace,options);
+  [x,fval]  = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
   if nargout==1
     %% Without Jacobian
     R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
   else
     %% With Jacobian
     [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
-    [~,Fx,Fc] = recsEquilibrium(x,s,z,func,params,grid,cc,e,w,fspace,...
+    [~,Fx,Fc] = recsEquilibrium(x,s,z,b,f,g,h,params,grid,cc,e,w,fspace,...
                                 funapprox,extrapolate);
     Fc        = sparse(Fc);
     dRdc      = -Rx*(Fx\Fc)+Rc;

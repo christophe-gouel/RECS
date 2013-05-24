@@ -84,11 +84,11 @@ end
 model.func        = eval(['@' strrep(outputfile,'.m','')]);
 model.params      = model.func('params');
 
-model.b = @(s,p)                  model.func('b',s,[],[],[],[],[],p);
-model.f = @(s,x,z,p,output)       model.func('f',s,x ,z ,[],[],[],p,output);
-model.g = @(s,x,e,p,output)       model.func('g',s,x ,[],e ,[],[],p,output);
-model.h = @(s,x,e,sn,xn,p,output) model.func('h',s,x ,[],e ,sn,xn,p,output);
-model.e = @(s,x,z,p)              model.func('e',s,x ,z ,[],[],[],p);
+model.b  = @(s,p)                  model.func('b',s,[],[],[],[],[],p);
+model.f  = @(s,x,z,p,output)       model.func('f',s,x ,z ,[],[],[],p,output);
+model.g  = @(s,x,e,p,output)       model.func('g',s,x ,[],e ,[],[],p,output);
+model.h  = @(s,x,e,sn,xn,p,output) model.func('h',s,x ,[],e ,sn,xn,p,output);
+model.ee = @(s,x,z,p)              model.func('e',s,x ,z ,[],[],[],p);
 
 %% Prepare shocks information & find steady state
 if nargin>=2 && ~isempty(shocks)
