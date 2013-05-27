@@ -40,11 +40,11 @@
 %% Writing the model
 % The model is defined in a Yaml file: <sto6.txt sto6.yaml>.
 
-%% Pack model structure
+%% Create the model object
 Mu                = [1 1];
 sigma             = [0.05 0;
                      0    0.05];
-model = recsmodelinit('sto6.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+model = recsmodel('sto6.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
 [interp,s] = recsinterpinit(15,0.73*model.sss,2*model.sss);

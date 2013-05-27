@@ -135,15 +135,12 @@ if nargin<=3 || isempty(x)
 end
 
 % Identify variables dimensions
-[n,m]  = size(x);
-output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+n      = size(x,1);
+[m,p]  = model.dim{2:3};
 k      = length(w);               % number of shock values
-z      = zeros(n,0);
-if ~functional
-  p    = size(h(s(1,:),x(1,:),e(1,:),s(1,:),x(1,:),params,output),2);
-end
 
 % Precalculations
+z      = zeros(n,0);
 ind    = (1:n);
 ind    = ind(ones(1,k),:);
 ss     = s(ind,:);
@@ -151,7 +148,6 @@ ee     = e(repmat(1:k,1,n),:);
 
 % Extract fields of interp
 fspace     = interp.fspace;
-if ~isfield(interp,'Phi'), interp.Phi = funbasx(fspace); end
 Phi        = interp.Phi;
 % If the coefficients of approximation are not present in interp, they are
 % calculated from the first guess on x
@@ -201,7 +197,6 @@ end
 if functional
   model.params = [model.params fspace c];
   params       = model.params;
-  p            = size(h(s(1,:),x(1,:),e(1,:),s(1,:),x(1,:),params,output),2);
 end
 
 %% Solve for the rational expectations equilibrium

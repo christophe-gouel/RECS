@@ -31,14 +31,14 @@
 %% Writing the model
 % The model is defined in a Yaml file: <gro2.txt gro2.yaml>.
 
-%% Pack model structure
+%% Create the model object
 % Mean and standard deviation of the shocks
 Mu                = 0;
 sigma             = 0.04;
 
 %%
-model = recsmodelinit('gro2.yaml',...
-                      struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+model = recsmodel('gro2.yaml',...
+                  struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %%
 % This command creates a MATLAB file, <gro2model.html gro2model.m>, containing

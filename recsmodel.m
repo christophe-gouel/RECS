@@ -18,11 +18,15 @@ classdef recsmodel
     xss     % Response variables at steady state
     zss     % Expectations variables at steady state
   end % properties
+  properties (SetAccess=immutable)
+    dim     % Problem's dimensions {d,m,p}
+  end % Immutable properties
   properties (Hidden=true)
     bp
     fp
     gp
     hp
+    J
   end % Hidden properties
   
   methods
@@ -102,6 +106,9 @@ classdef recsmodel
       model.g  = @(s,x,e,p,output)       model.func('g',s,x ,[],e ,[],[],p,output);
       model.h  = @(s,x,e,sn,xn,p,output) model.func('h',s,x ,[],e ,sn,xn,p,output);
       model.ee = @(s,x,z,p)              model.func('e',s,x ,z ,[],[],[],p);
+     
+      model.J  = model.func('J');
+      model.dim = {size(model.J.fs,2) size(model.J.fs,1) size(model.J.fz,2)};
       
       %% Prepare shocks information & find steady state
       if nargin>=2 && ~isempty(shocks)
@@ -144,4 +151,5 @@ classdef recsmodel
       end % shocks and steady state
     end % recsmodel
   end % methods
+  
 end % classdef

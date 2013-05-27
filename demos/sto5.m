@@ -32,11 +32,11 @@
 %% Writing the model
 % The model is defined in a Yaml file: <sto5.txt sto5.yaml>.
 
-%% Pack model structure
+%% Create the model object
 Mu                = [1 0];
 sigma             = [0.05 0;
                      0    1];
-model = recsmodelinit('sto5.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+model = recsmodel('sto5.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
 % Minimum and maximum values of the state variable grid

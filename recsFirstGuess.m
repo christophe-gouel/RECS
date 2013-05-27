@@ -66,8 +66,6 @@ end
 if nargin <=5 || isempty(T), T = 50; end
 if nargin <=6, options = struct([]); end
 
-if ~isfield(interp,'Phi'), interp.Phi = funbasx(interp.fspace); end
-
 g      = model.g;
 h      = model.h;
 params = model.params;

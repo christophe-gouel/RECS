@@ -38,7 +38,6 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-
 defaultopt = struct(                                      ...
     'checkfinalstate' , 0                                ,...
     'eqsolver'        , 'lmmcp'                          ,...
@@ -56,10 +55,8 @@ end
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 
-m = size(xss,2);
-p = size(zss,2);
-d = size(sss,2);
-n = T*(m+p+d);
+[d,m,p] = model.dim{:};
+n       = T*(m+p+d);
 
 e = model.w'*model.e;
 params = model.params;

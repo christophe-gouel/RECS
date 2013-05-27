@@ -82,7 +82,8 @@ if nargin<5;
   end
 end
 
-[nrep,d] = size(s0);
+nrep  = size(s0,1);
+[d,m] = model.dim{1:2};
 
 if ~isempty(shocks) && (numel(shocks)~=d || isempty(nper))
   nper = size(shocks,3)+1; 
@@ -141,12 +142,11 @@ q        = size(funrand(1),2);
 fspace  = interp.fspace;
 if isfield(interp,'cX')
   cX = interp.cX;
-  [~,m,T]  = size(interp.cX);
+  T  = size(interp.cX,3);
 else
   cz      = interp.cz;
   cx      = interp.cx;
   if functional, params = [params fspace cx]; end
-  m       = size(interp.cx,2);
 end
 
 %% Generate shocks

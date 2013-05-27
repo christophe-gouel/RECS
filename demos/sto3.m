@@ -5,16 +5,16 @@
 % not a unique situation, but a state-contingent policy function. This is a
 % transition from problem <sto1.html STO1> to <sto2.html STO2>.
 
-%% Pack model structure
+%% Create the model objects
 Mu                = 1;
 sigma             = 0.05;
 
 %%
 % *Competitive storage model:*
-model1 = recsmodelinit('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+model1 = recsmodel('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 %%
 % *Floor price model:*
-model2 = recsmodelinit('sto2.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+model2 = recsmodel('sto2.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
 [interp,s] = recsinterpinit(50,min(model1.e)*0.95,2);

@@ -23,7 +23,7 @@
 %% Writing the model
 % The model is defined in a Yaml file: <cs1.txt cs1.yaml>.
 
-%% Pack model structure
+%% Create the model object
 % Mean and standard deviation of the shocks
 Mu                = 100;
 sigma             = 10;
@@ -31,8 +31,8 @@ sigma             = 10;
 %%
 % You generate the MATLAB model file and pack the model structure with the
 % following command
-model = recsmodelinit('cs1.yaml',...
-                      struct('Mu',Mu,'Sigma',sigma^2,'order',5));
+model = recsmodel('cs1.yaml',...
+                  struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
 %%
 % This command creates a MATLAB file, <cs1model.html cs1model.m>, containing the

@@ -39,10 +39,10 @@
 %% Writing the model
 % The model is defined in a Yaml file: <sto4.txt sto4.yaml>.
 
-%% Pack model structure
+%% Create the model object
 Mu                = 1;
 sigma             = 0.05;
-model = recsmodelinit('sto4.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+model = recsmodel('sto4.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 %%
 Sgbar = model.params(end-1);
 

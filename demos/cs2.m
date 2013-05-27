@@ -1,9 +1,9 @@
 %% CS2 Finite horizon consumption/saving model with borrowing constraint
 % This is the same problem as <cs1.html CS1>, except that it has a finite horizon.
 
-%% Pack model structure
-model = recsmodelinit('cs1.yaml',...
-                      struct('Mu',100,'Sigma',10^2,'order',5));
+%% Create the model object
+model = recsmodel('cs1.yaml',...
+                  struct('Mu',100,'Sigma',10^2,'order',5));
 
 %% Define approximation space
 [interp,s] = recsinterpinit(20,model.sss/2,model.sss*2);

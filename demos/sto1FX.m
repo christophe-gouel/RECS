@@ -1,7 +1,7 @@
 Mu                = 1;
 sigma             = 0.05;
 
-model = recsmodelinit('sto1FX.yaml');
+model = recsmodel('sto1FX.yaml');
 [model.e,model.w] = qnwnorm(7,Mu,sigma^2);
 model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,1)*sigma;
 

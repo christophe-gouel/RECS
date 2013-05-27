@@ -46,8 +46,8 @@
 %% Writing the model
 % The model is defined in a Yaml file: <gro3.txt gro3.yaml>.
 
-%% Pack model structure
-model = recsmodelinit('gro3.yaml',struct('Mu',[0 0],'Sigma',eye(2),'order',5));
+%% Create the model object
+model = recsmodel('gro3.yaml',struct('Mu',[0 0],'Sigma',eye(2),'order',5));
 
 
 %% Define approximation space using Chebyshev polynomials

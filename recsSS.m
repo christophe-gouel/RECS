@@ -73,8 +73,7 @@ eqsolveroptions = options.eqsolveroptions;
 
 params = model.params;
 e      = model.w'*model.e;
-d      = length(s);
-m      = length(x);
+[d,m]  = model.dim{1:2};
 
 %% Solve for the deterministic steady state
 

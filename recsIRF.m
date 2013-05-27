@@ -74,9 +74,8 @@ srss = s0;
 
 %% Calculate IRF
 % Calculate reference and shocked simulations
-d       = size(s0,2);
+[d,m]   = model.dim{1:2};
 q       = size(funrand(1),2);
-m       = size(interp.cx,2);
 shocks0 = zeros(nrep,q,nper+1);
 shocks1 = zeros(nrep,q,nper+1);
 for t=1:nper+1

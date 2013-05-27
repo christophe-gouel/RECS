@@ -33,10 +33,9 @@ params = model.params;
 w      = model.w;
 
 % Identify variables dimensions
-[n,m]  = size(x);
-output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+n      = size(x,1);
 z      = zeros(n,0);
-p      = size(h(s(1,:),x(1,:),e(1,:),s(1,:),x(1,:),params,output),2);
+[m,p]  = model.dim{2:3};
 
 X      = zeros(n,m,T);
 cX     = zeros(n,m,T);

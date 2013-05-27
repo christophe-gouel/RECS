@@ -65,6 +65,7 @@ fspace = interp.fspace;
 
 [n,d,t] = size(s);
 k       = size(e,1);
+p       = model.dim{3};
 
 se      = permute(s,[1 3 2]);
 se      = reshape(se,n*t,d);
@@ -96,7 +97,6 @@ else
   [hv,~,~,~,~,hmult] = h(ss,xx,ee,sen,xen,params,output);
   hv                 = hv.*hmult;
 end
-p         = size(hv,2);
 ze        = reshape(w'*reshape(hv,k,n*t*p),n*t,p);
 
 if display==1, disp('Accuracy of the solution'); end

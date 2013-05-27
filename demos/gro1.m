@@ -25,7 +25,7 @@
 %% Writing the model
 % The model is defined in a Yaml file: <gro1.txt gro1.yaml>.
 
-%% Pack model structure
+%% Create the model object
 % Mean and standard deviation of the shocks
 Mu                = 0;
 sigma             = 0.007;
@@ -33,40 +33,26 @@ sigma             = 0.007;
 %%
 % You generate the MATLAB model file and pack the model structure with the
 % following command
-model = recsmodelinit('gro1.yaml',...
-                      struct('Mu',Mu,'Sigma',sigma^2,'order',5));
+model = recsmodel('gro1.yaml',...
+                  struct('Mu',Mu,'Sigma',sigma^2,'order',5));
 
 %%
 % This command creates a MATLAB file, <gro1model.html gro1model.m>, containing
 % the definition the model and all its Jacobians from the human readable file
 % <gro1.txt gro1.yaml>.
 
-%%
-% It is also possible, if you are ready to write all the model's equations and
-% jacobians in the file |gro1model.m|, to pack yourself the different elements
-% inside a structure
-[model.e,model.w] = qnwnorm(5,Mu,sigma^2);
-model.funrand     = @(nrep) Mu+sigma*randn(nrep,1);
-model.func        = @gro1model;
-model.params      = gro1model('params');
-
-%% Find deterministic steady-state
-a             = model.params(1);
-delta         = model.params(3);
-[sss,xss,zss] = recsSS(model,[1 0],a-delta);
-
 %% Define approximation space using Chebyshev polynomials
 % Degree of approximation
 order         = [10 10];
 %%
 % Limits of the state space
-smin          = [0.85*sss(1) min(model.e)*4];
-smax          = [1.15*sss(1) max(model.e)*4];
+smin          = [0.85*model.sss(1) min(model.e)*4];
+smax          = [1.15*model.sss(1) max(model.e)*4];
 %%
 [interp,s] = recsinterpinit(order,smin,smax,'cheb');
 
 %% Find a first guess through the perfect foresight solution
-[interp,x] = recsFirstGuess(interp,model,s,sss,xss,50);
+[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);
 
 %% Define options
 % With high order Chebyshev polynomials, extrapolation outside the state space
@@ -79,7 +65,7 @@ options = struct('reesolver','krylov',...
 interp = recsSolveREE(interp,model,s,x,options);
 
 %% Simulate the model
-[~,~,~,stat] = recsSimul(model,interp,sss(ones(1000,1),:),200,[],options);
+[~,~,~,stat] = recsSimul(model,interp,model.sss(ones(1000,1),:),200,[],options);
 subplot(2,2,1)
 xlabel('Capital stock')
 ylabel('Frequency')
