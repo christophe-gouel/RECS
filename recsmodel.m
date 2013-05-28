@@ -1,6 +1,6 @@
 classdef recsmodel
 % RECSMODEL
-  
+
   properties
     func    % Anonymous function that defines the model's equations
     params  % Model's parameters
@@ -14,7 +14,8 @@ classdef recsmodel
     % FUNRAND - Random shocks generator function. Function handle that accepts an
     % integer n as input and returns a n-by-q matrix of shocks.
     funrand
-    sss     % State variables at steady state 
+    LinearSolution % Linear approximation of the rational expectations solution
+    sss     % State variables at steady state
     xss     % Response variables at steady state
     zss     % Expectations variables at steady state
   end % properties
@@ -28,7 +29,7 @@ classdef recsmodel
     hp
     IncidenceMatrices
   end % Hidden properties
-  
+
   methods
     function model = recsmodel(inputfile,shocks,outputfile,options)
     % RECSMODEL Prepares a RECS model structure
@@ -70,7 +71,7 @@ classdef recsmodel
       if nargin<3 || isempty(outputfile)
         outputfile = strrep(inputfile,'.yaml','model.m');
       end
-      
+
       defaultopt = struct('Python' ,0);
       if nargin<4
         options = defaultopt;
@@ -83,7 +84,7 @@ classdef recsmodel
       recsdirectory = fileparts(which('recsSimul'));
       inputfiledirectory = fileparts(which(inputfile));
       dolo = fullfile(recsdirectory,'Python','dolo');
-      
+
       if ispc && ~options.Python
         status = system([fullfile(dolo,'bin','dolo-recs.exe') ' ' which(inputfile) ...
                          ' ' fullfile(inputfiledirectory,outputfile)]);
@@ -93,11 +94,11 @@ classdef recsmodel
         status = system(['python ' dolorecs ' ' which(inputfile) ...
                          ' '  fullfile(inputfiledirectory,outputfile)]);
       end
-      
+
       if status~=0
         error('Failure to create the model file')
       end
-      
+
       model.func        = eval(['@' strrep(outputfile,'.m','')]);
       model.params      = model.func('params');
 
@@ -106,12 +107,12 @@ classdef recsmodel
       model.g  = @(s,x,e,p,output)       model.func('g',s,x ,[],e ,[],[],p,output);
       model.h  = @(s,x,e,sn,xn,p,output) model.func('h',s,x ,[],e ,sn,xn,p,output);
       model.ee = @(s,x,z,p)              model.func('e',s,x ,z ,[],[],[],p);
-     
+
       model.IncidenceMatrices  = model.func('J');
       model.dim = {size(model.IncidenceMatrices.fs,2) ...
                    size(model.IncidenceMatrices.fs,1) ...
                    size(model.IncidenceMatrices.fz,2)};
-      
+
       %% Prepare shocks information & find steady state
       if nargin>=2 && ~isempty(shocks)
       % Unpack shocks
@@ -121,7 +122,7 @@ classdef recsmodel
         if isscalar(order) && q>1, order = order*ones(1,q); end
         Sigma = shocks.Sigma;
         if length(Sigma)==length(Sigma(:)), Sigma = diag(Sigma); end
-        
+
         % Check if Sigma is positive-semidefinite and symmetric
         if ~isequal(Sigma,Sigma') || ...
               ~all(diag(Sigma)>=0) || ...
@@ -134,7 +135,7 @@ classdef recsmodel
         else
           R = chol(Sigma);
         end
-        
+
         % Gaussian quadrature
         [model.e,model.w] = qnwnorm(order,Mu,Sigma);
         % Random number generator
@@ -153,5 +154,5 @@ classdef recsmodel
       end % shocks and steady state
     end % recsmodel
   end % methods
-  
+
 end % classdef

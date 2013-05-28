@@ -1,4 +1,4 @@
-function [Xs,Ss,Se,Zs] = recsSolveLocal(model)
+function model = recsSolveLocal(model)
 % RECSSOLVELOCAL Calculates the first-order perturbation solution of a rational expectations model
 
 % Copyright (C) 2011-2013 Christophe Gouel
@@ -52,9 +52,23 @@ AA11 = AA(1:d,1:d);
 BB11 = BB(1:d,1:d);
 Ss   = real(Z11*(AA11\BB11)/Z11);
 %}
-% Using RECS specific transition rule:
+% It is simpler using RECS specific transition rule:
 Ss = gs+gx*Xs;
 Se = ge;
 
 % Expectations
 Zs = hs+hx*Xs+(hsn+hxn*Xs)*Ss;
+
+%% Export to model object
+% Matrices
+model.LinearSolution   = struct('Xs',Xs,'Ss',Ss,'Se',Se,'Zs',Zs);
+
+% Functions
+model.LinearSolution.X = @(s) xss(ones(size(s,1),1),:)+...
+                              (Xs*(s-sss(ones(size(s,1),1),:))')';
+model.LinearSolution.S = @(s,E) sss(ones(size(s,1),1),:)+...
+                                (Ss*(s-sss(ones(size(s,1),1),:))'+...
+                                 Se*(E-e(ones(size(s,1),1),:))')';
+model.LinearSolution.Z = @(s) zss(ones(size(s,1),1),:)+...
+                              (Zs*(s-sss(ones(size(s,1),1),:))')';
+
