@@ -55,11 +55,12 @@ smax          = [1.72*model.sss(1)  max(model.e)*3.5];
 %%
 [interp,s] = recsinterpinit(order,smin,smax);
 
-%% Find a first guess through the perfect foresight solution
-[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);
-
 %% Define options
-options = struct('reesolver','krylov');
+options = struct('fgmethod','perturbation',...
+                 'reesolver','mixed');
+
+%% Find a first guess through the perfect foresight solution
+[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50,options);
 
 %% Solve for rational expectations
 interp = recsSolveREE(interp,model,s,x,options);

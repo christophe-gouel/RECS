@@ -141,7 +141,7 @@ classdef recsmodel
         % Random number generator
         model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,q)*R;
 
-        %% Check steady state
+        %% Find steady state
         [sss0,xss0] = model.func('ss');
         if ~isempty(sss0) && ~isempty(xss0)
           [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0,options);

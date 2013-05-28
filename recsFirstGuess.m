@@ -64,7 +64,17 @@ if nargin <=4 || isempty(xss)
   end
 end
 if nargin <=5 || isempty(T), T = 50; end
-if nargin <=6, options = struct([]); end
+defaultopt = struct('fgmethod','auto');
+if nargin <=6
+  options = defaultopt;
+else
+  warning('off','catstruct:DuplicatesFound')
+  options = catstruct(defaultopt,options);
+end
+
+fgmethod = options.fgmethod;
+
+n = size(s,1);
 
 g      = model.g;
 h      = model.h;
@@ -73,19 +83,31 @@ params = model.params;
 %% Solve for the deterministic steady state
 [sss,xss,zss] = recsSS(model,sss,xss,catstruct(options,struct('display',0)));
 
-n = size(s,1);
-x = zeros(n,size(xss,2));
-z = zeros(n,size(zss,2));
+%% Find first-guess
+[LB,UB]    = model.b(s,params);
+if (strcmp(fgmethod,'auto') && all(isinf([LB(:); UB(:)]))) || strcmp(fgmethod,'perturbation')
+  %% First-order perturbation
+  model    = recsSolveLocal(model);
+  x        = min(max(model.LinearSolution.X(s),LB),UB);
+  z        = model.LinearSolution.Z(s);
+  exitflag = 1;
+  output   = [];
+else
+  %% Solve the perfect foresight problem on each point of the grid
+  x        = zeros(n,size(xss,2));
+  z        = zeros(n,size(zss,2));
+  exitflag = zeros(n,1);
+  N        = zeros(n,1);
 
-exitflag = zeros(n,1);
-N        = zeros(n,1);
-
-%% Solve the perfect foresight problem on each point of the grid
-parfor i=1:n
-  [X,~,Z,~,exitflag(i),N(i)] = recsSolveDeterministicPb(model,s(i,:),...
-                                                    T,xss,zss,sss,options);
-  x(i,:) = X(1,:);
-  z(i,:) = Z(1,:);
+  parfor i=1:n
+    [X,~,Z,~,exitflag(i),N(i)] = recsSolveDeterministicPb(model,s(i,:),...
+                                                      T,xss,zss,sss,options);
+    x(i,:) = X(1,:);
+    z(i,:) = Z(1,:);
+  end
+  output = struct('exitflag',exitflag,...
+                  'N'       ,N);
+  exitflag = ~any(exitflag~=1);
 end
 
 %% Prepare output
@@ -102,30 +124,27 @@ if ~isfield(interp,'ch')
   xx     = x(ind,:);
   ee     = e(repmat(1:K,1,n),:);
 
-  output = struct('F',1,'Js',0,'Jx',0);
-  snext = g(ss,xx,ee,params,output);
-  xnext = funeval(interp.cx,interp.fspace,snext);
+  outputFJ = struct('F',1,'Js',0,'Jx',0);
+  snext    = g(ss,xx,ee,params,outputFJ);
+  xnext    = funeval(interp.cx,interp.fspace,snext);
 
-  output    = struct('F',0,'Js',1,'Jx',1,'Jsn',0,'Jxn',0,'hmult',0);
-  [~,hs,hx] = h(ss,xx,ee,snext,xnext,params,output);
+  outputFJ  = struct('F',0,'Js',1,'Jx',1,'Jsn',0,'Jxn',0,'hmult',0);
+  [~,hs,hx] = h(ss,xx,ee,snext,xnext,params,outputFJ);
 
-  output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+  outputFJ = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
   if size(ss,1)>100;
     i = unique(randi(size(ss,1),100,1));
   else
     i = 1:size(ss,1);
   end
   he     = numjac(@(E) reshape(h(ss(i,:),xx(i,:),E,snext(i,:),xnext(i,:),...
-                                 params,output),[],1),ee(i,:));
+                                 params,outputFJ),[],1),ee(i,:));
 end
 
 % Calculate the approximation of the expectations function (if possible)
 if isfield(interp,'ch') || abs(norm(hs(:),Inf)+norm(hx(:),Inf)+norm(he(:),Inf))<eps
-  output    = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-  hv        = h([],[],[],s,x,params,output);
+  outputFJ  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+  hv        = h([],[],[],s,x,params,outputFJ);
   interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
 end
 
-output = struct('exitflag',exitflag,...
-                'N'       ,N);
-exitflag = ~any(exitflag~=1);
