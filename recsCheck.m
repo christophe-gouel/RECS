@@ -33,7 +33,7 @@ function [err,discrepancy] = recsCheck(model,s,x,z,e,snext,xnext,precision)
 % indicates the equations, the second column the variables and the third the
 % discrepancy.
 %
-% See also RECSMODELINIT.
+% See also RECSMODEL.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

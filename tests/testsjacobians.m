@@ -12,12 +12,12 @@ funapproxlist = {'resapprox-complete' 'resapprox-simple' 'expfunapprox' 'expappr
 recsdirectory   = fileparts(which('recsSimul'));
 addpath(fullfile(recsdirectory,'demos'))
 % CS1
-% model      = recsmodelinit('cs1.yaml',struct('Mu',100,'Sigma',100,'order',5));
+% model      = recsmodel('cs1.yaml',struct('Mu',100,'Sigma',100,'order',5));
 % [interp,s] = recsinterpinit(20,model.sss/2,model.sss*2);
 % x          = s;
 
 % GRO1
-model = recsmodelinit('gro1.yaml',struct('Mu',0,'Sigma',0.007^2,'order',5));
+model = recsmodel('gro1.yaml',struct('Mu',0,'Sigma',0.007^2,'order',5));
 [interp,s] = recsinterpinit(10,[0.85*model.sss(1) min(model.e)*4],...
                             [1.15*model.sss(1) max(model.e)*4],'cheb');
 [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);

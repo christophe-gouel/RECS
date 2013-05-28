@@ -9,9 +9,10 @@
 %   recsdemos                 - Run all RECS demonstration files.
 %   recsFirstGuess            - Find a first guess using the perfect foresight solution.
 %   recsinterpinit            - Prepare a RECS interpolation structure.
-%   recsmodelinit             - Prepare a RECS model structure.
+%   recsmodel                 - Prepare a RECS model object.
 %   recsSimul                 - Simulate a model.
 %   recsSolveDeterministicPb  - Solve a perfect foresight problem.
+%   recsSolveLocal            - Calculate the first-order perturbation solution
 %   recsSolveREE              - Find the rational expectations equilibrium (REE) of a model.
 %   recsSolveREEFiniteHorizon - Solve a finite horizon rational expectations problem.
 %   recsSS                    - Solve for the deterministic steady state of a model.

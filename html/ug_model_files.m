@@ -36,7 +36,7 @@
 % it is written in <http://yaml.org YAML> and has the |.yaml| extension). A Yaml
 % file is easily readable by human, but not by MATLAB. So the file needs to be
 % processed for MATLAB to be able to read it. This is done by the function
-% <matlab:doc('recsmodelinit') |recsmodelinit|>, which uses a Python
+% <matlab:doc('recsmodel') |recsmodel|>, which uses a Python
 % preprocessor, |dolo-recs|, to do the job.
 %
 % RECS Yaml files require three basic components, written successively:

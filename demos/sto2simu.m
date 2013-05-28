@@ -1,8 +1,8 @@
 function sto2simu(situation)
 
 %% Pack model structure
-model = recsmodelinit('sto2.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7),...
-                      [],struct('display',0));
+model = recsmodel('sto2.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7),...
+                  [],struct('display',0));
 
 %% Define approximation space
 if situation==1

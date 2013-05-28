@@ -26,13 +26,13 @@
 %% Finding the steady state with RECS
 % *Automatically when initializing model structure*
 %
-% When writing a model file (see <ug_model_files.html Writing RECS model files>),
-% it is possible, at the end of the Yaml file in the |calibration| block, to
-% define an initial guess for finding the steady state. When the model structure
-% is created by |recsmodelinit|, if the definition of the shocks is provided to
-% |recsmodelinit|, a Newton-type solver will attempt to find the steady state
-% starting from the initial guess provided in the model file. If a steady state
-% is found, it is displayed in MATLAB command window.
+% When writing a model file (see <ug_model_files.html Writing RECS model
+% files>), it is possible, at the end of the Yaml file in the |calibration|
+% block, to define an initial guess for finding the steady state. When the model
+% structure is created by |recsmodel|, if the definition of the shocks is
+% provided to |recsmodel|, a Newton-type solver will attempt to find the steady
+% state starting from the initial guess provided in the model file. If a steady
+% state is found, it is displayed in MATLAB command window.
 %
 % *Manually*
 %

@@ -27,17 +27,17 @@
 %     <tr>
 %       <td> <tt>display</tt> </td>
 %       <td> <tt>1</tt> (default) to display output (solver iterations or results), <tt>0</tt> to prevent display. </td>
-%       <td> <a href="matlab:doc('recsAccuracy')"><tt>recsAccuracy</tt></a>, <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
+%       <td> <a href="matlab:doc('recsAccuracy')"><tt>recsAccuracy</tt></a>, <a href="matlab:doc('recsmodel')"><tt>recsmodel</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>eqsolver</tt> </td>
 %       <td> Solver for equilibrium equations: '<tt>fsolve</tt>', '<tt>lmmcp</tt>' (default), '<tt>ncpsolve</tt>' or '<tt>path</tt>', see <a href="ug_solvers_eq.html"> Solvers for equilibrium equations</a>. </td>
-%       <td>  <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a>, <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a>, <a href="matlab:doc('recsSS')"><tt>recsSS</tt></a> </td>
+%       <td>  <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a>, <a href="matlab:doc('recsmodel')"><tt>recsmodel</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a>, <a href="matlab:doc('recsSS')"><tt>recsSS</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>eqsolveroptions</tt> </td>
 %       <td> Options structure to be passed to eqsolver. </td>
-%       <td> <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a>, <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a>, <a href="matlab:doc('recsSS')"><tt>recsSS</tt></a> </td>
+%       <td> <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a>, <a href="matlab:doc('recsmodel')"><tt>recsmodel</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a>, <a href="matlab:doc('recsSS')"><tt>recsSS</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>extrapolate</tt> </td>
@@ -68,7 +68,7 @@
 %     <tr>
 %       <td> <tt>Python</tt> </td>
 %       <td> 1 to call Python directly instead of the executable file (default: 0, only for Windows and for developement).</td>
-%       <td> <a href="matlab:doc('recsmodelinit')"><tt>recsmodelinit</tt></a> </td>
+%       <td> <a href="matlab:doc('recsmodel')"><tt>recsmodel</tt></a> </td>
 %     </tr>
 %     <tr>
 %       <td> <tt>reemethod</tt> </td>

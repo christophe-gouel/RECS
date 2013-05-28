@@ -1,23 +1,23 @@
 warning('off','backtrace')
 addpath('../demos');
 % cs1
-mc1 = recsmodelinit('cs1.yaml',struct('Mu',100,'Sigma',10^2,'order',5));
+mc1 = recsmodel('cs1.yaml',struct('Mu',100,'Sigma',10^2,'order',5));
 [ic1,sc1] = recsinterpinit(20,mc1.sss/2,mc1.sss*2);
 Tc1 = 15;
 % sto1
-ms1 = recsmodelinit('sto1.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
+ms1 = recsmodel('sto1.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
 [is1,ss1] = recsinterpinit(30,ms1.sss*0.7,ms1.sss*1.5);
 Ts1 = 5;
 % sto2
-ms2 = recsmodelinit('sto2.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
+ms2 = recsmodel('sto2.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
 [is2,ss2] = recsinterpinit(50,0.7,2);
 Ts2 = 5;
 % gro1
-mg1 = recsmodelinit('gro1.yaml',struct('Mu',0,'Sigma',0.007^2,'order',5));
+mg1 = recsmodel('gro1.yaml',struct('Mu',0,'Sigma',0.007^2,'order',5));
 [ig1,sg1] = recsinterpinit(10,[0.85*mg1.sss(1) min(mg1.e)*4],[1.15*mg1.sss(1) max(mg1.e)*4]);
 Tg1 = 50;
 % gro2
-mg2 = recsmodelinit('gro2.yaml',struct('Mu',0,'Sigma',0.04^2,'order',7));
+mg2 = recsmodel('gro2.yaml',struct('Mu',0,'Sigma',0.04^2,'order',7));
 [ig2,sg2] = recsinterpinit(14,[0.47*mg2.sss(1)  min(mg2.e)*3.5],[1.72*mg2.sss(1)  max(mg2.e)*3.5]);
 Tg2 = 50;
 
