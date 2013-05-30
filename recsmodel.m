@@ -153,6 +153,22 @@ classdef recsmodel
         end
       end % shocks and steady state
     end % recsmodel
+    function SQ = StateQuant(model)
+      nrep = 10000;
+      nper = 200;
+      d = model.dim{1};
+      ssim = zeros(nrep,d,nper+1);
+      ssim(:,:,1) = model.sss(ones(nrep,1),:);
+      output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
+      for t=1:nper
+        ssim(:,:,t+1) = model.g(ssim(:,:,t),model.xss(ones(nrep,1),:),...
+                                model.funrand(nrep),model.params,output);
+      end
+      quant = [0 0.001 0.01 0.5 0.99 0.999 1];
+      SQ = [quant' ...
+            quantile(reshape(permute(real(ssim(:,:,2:end)),[1 3 2]),nrep*nper,d),...
+                     quant)];
+    end % StateQuant
   end % methods
 
 end % classdef
