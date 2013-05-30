@@ -165,9 +165,11 @@ classdef recsmodel
                                 model.funrand(nrep),model.params,output);
       end
       quant = [0 0.001 0.01 0.5 0.99 0.999 1];
-      SQ = [quant' ...
-            quantile(reshape(permute(real(ssim(:,:,2:end)),[1 3 2]),nrep*nper,d),...
-                     quant)];
+      SQ = quantile(reshape(permute(real(ssim(:,:,2:end)),[1 3 2]),nrep*nper,d),...
+                     quant);
+      if d==1, SQ = [quant' SQ'];
+      else,    SQ = [quant' SQ ];
+      end
     end % StateQuant
   end % methods
 
