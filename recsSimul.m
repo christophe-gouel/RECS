@@ -42,8 +42,8 @@ function [ssim,xsim,esim,stat,fsim] = recsSimul(model,interp,s0,nper,shocks,opti
 %    functional       : 1 if the equilibrium equations are a functional equation
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once, 1 to loop
-%                       over each grid points, or n to loop over n blocks of 
-%                       grid points 
+%                       over each grid points, or n to loop over n blocks of
+%                       grid points
 %    funapprox        : 'expapprox', 'expfunapprox', 'resapprox-simple'
 %                       or 'resapprox-complete' (default)
 %    simulmethod      : 'interpolation' (default) or 'solve'
@@ -86,7 +86,7 @@ nrep  = size(s0,1);
 [d,m] = model.dim{1:2};
 
 if ~isempty(shocks) && (numel(shocks)~=d || isempty(nper))
-  nper = size(shocks,3)+1; 
+  nper = size(shocks,3)+1;
 end
 
 if isempty(nper) || nper==0, nper = 1; end
@@ -132,7 +132,7 @@ g      = model.g;
 h      = model.h;
 params  = model.params;
 w       = model.w;
-if isfield(model,'funrand') % Check if a random shocks generator function is provided
+if isfield(model,'funrand') || (isobject(model) && ~isempty(model.funrand)) % Check if a random shocks generator function is provided
   funrand = model.funrand;
 else % Use the discretisation to generate the shocks
   funrand = @(N) e(discrand(N,w),:); % could be implemented also with datasample
@@ -168,9 +168,9 @@ end
 for t=1:nper
   if t>1, ssim(:,:,t) = g(ssim(:,:,t-1),xsim(:,:,t-1),esim(:,:,t),params,output); end
   if extrapolate, sinterp = ssim(:,:,t);
-  else 
+  else
     sinterp = max(min(ssim(:,:,t),fspace.b(ones(nrep,1),:)), ...
-                  fspace.a(ones(nrep,1),:)); 
+                  fspace.a(ones(nrep,1),:));
   end
   [LB,UB]    = b(ssim(:,:,t),params);
   Phi        = funbasx(fspace,sinterp);
