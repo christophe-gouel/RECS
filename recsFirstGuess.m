@@ -43,21 +43,21 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,T,
 %
 % [INTERP,X,Z,EXITFLAG,OUTPUT] = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,...)
 %
-% See also RECSSOLVEDETERMINISTICPB, RECSSOLVEREE, RECSSS.
+% See also RECSSOLVEDETERMINISTICPB, RECSSOLVELOCAL, RECSSOLVEREE, RECSSS.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
 if nargin <=3 || isempty(sss)
-  if isfield(model,'sss')
+  if isfield(model,'sss') || (isobject(model) && ~isempty(model.sss))
     sss = model.sss;
   else
   sss = [];
   end
 end
 if nargin <=4 || isempty(xss)
-  if isfield(model,'xss')
+  if isfield(model,'xss') || (isobject(model) && ~isempty(model.xss))
     xss = model.xss;
   else
     xss = [];
