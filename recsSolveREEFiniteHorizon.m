@@ -24,13 +24,14 @@ else
 end
 
 % Extract fields of model
-b      = model.b;
-e      = model.e;
-f      = model.f;
-g      = model.g;
-h      = model.h;
-params = model.params;
-w      = model.w;
+b         = model.b;
+e         = model.e;
+f         = model.f;
+g         = model.g;
+h         = model.h;
+ixforward = model.ixforward;
+params    = model.params;
+w         = model.w;
 
 % Identify variables dimensions
 n      = size(x,1);
@@ -55,7 +56,8 @@ if any(isnan(xT(:)))
   xinit = x;
   xinit(~isnan(xT)) = xT(~isnan(xT));
   optionsT = catstruct(options,struct('funapprox','expapprox'));
-  X(:,:,T) = recsSolveEquilibrium(s,xinit,z,b,f,g,h,params,c,e,w,fspace,optionsT,LB,UB);
+  X(:,:,T) = recsSolveEquilibrium(s,xinit,z,b,f,g,h,params,c,e,w,fspace,...
+                                  ixforward,optionsT,LB,UB);
 else
   X(:,:,T) = xT;
 end
@@ -64,7 +66,8 @@ end
 for t=T-1:-1:1
   cX(:,:,t+1)           = funfitxy(fspace,Phi,X(:,:,t+1));
   [X(:,:,t),~,exitflag] = recsSolveEquilibrium(s,X(:,:,t+1),z,b,f,g,h,params,...
-                                               cX(:,:,t+1),e,w,fspace,options);
+                                               cX(:,:,t+1),e,w,fspace,...
+                                               ixforward,options);
   if exitflag~=1
     warning('RECS:FailureREE','Failure to find a rational expectations equilibrium');
   end

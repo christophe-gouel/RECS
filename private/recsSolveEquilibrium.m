@@ -1,4 +1,4 @@
-function [x,fval,exitflag] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,c,e,w,fspace,options,LB,UB)
+function [x,fval,exitflag] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,c,e,w,fspace,ixforward,options,LB,UB)
 % RECSSOLVEEQUILIBRIUM Solves the system of equilibrium equations using x as starting values
 %
 % RECSSOLVEEQUILIBRIUM is called by recsSimul, recsSolveREEFiniteHorizon,
@@ -18,7 +18,7 @@ funapprox        = lower(options.funapprox);
 loop_over_s      = options.loop_over_s;
 
 [n,m]            = size(x);
-if nargin<=13, [LB,UB] = b(s,params); end
+if nargin<=14, [LB,UB] = b(s,params); end
 
 %% Solve equilibrium equations on grid points
 if loop_over_s
@@ -32,7 +32,8 @@ if loop_over_s
                                                b,f,g,h,params,eqsolver,...
                                                grid,c,e,w,fspace,funapprox,...
                                                eqsolveroptions,...
-                                               LB(i,:),UB(i,:),extrapolate);
+                                               LB(i,:),UB(i,:),extrapolate,...
+                                               ixforward);
     end
   else
     %% Solve separately for blocks of grid points
@@ -51,22 +52,24 @@ if loop_over_s
                                            b,f,g,h,params,eqsolver,...
                                            grid,c,e,w,fspace,funapprox,...
                                            eqsolveroptions,...
-                                           LB{i},UB{i},extrapolate);
+                                           LB{i},UB{i},extrapolate,...
+                                           ixforward);
     end
     x            = cell2mat(x);
     fval         = cell2mat(fval);
   end % if loop_over_s==1
-  exitflag       = all(exitflag);    
+  exitflag       = all(exitflag);
 else
   %% Solve all the grid in one step
   [~,grid]          = spblkdiag(zeros(m,m,n),[],0);
   [x,fval,exitflag] = eqsolve(x,s,z,b,f,g,h,params,eqsolver,grid,c,e,w,fspace,...
-                              funapprox,eqsolveroptions,LB,UB,extrapolate);
+                              funapprox,eqsolveroptions,LB,UB,extrapolate,...
+                              ixforward);
 end % if loop_over_s
 
 function [x,fval,exitflag] = eqsolve(x,s,z,b,f,g,h,params,eqsolver,grid,c,e,w,...
                                      fspace,funapprox,eqsolveroptions,LB,UB,...
-                                     extrapolate)
+                                     extrapolate,ixforward)
 %% Eqsolve
 
 [n,m]          = size(x);
@@ -76,7 +79,7 @@ UB             = reshape(UB',[n*m 1]);
 
 [x,fval,exitflag] = runeqsolver(@recsEquilibrium,x,LB,UB,eqsolver,eqsolveroptions,...
                                 s,z,b,f,g,h,params,grid,c,e,w,fspace,funapprox,...
-                                extrapolate);
+                                extrapolate,ixforward);
 
 if exitflag~=1, disp('No convergence'); end
 

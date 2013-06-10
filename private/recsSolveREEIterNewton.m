@@ -24,13 +24,14 @@ reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
                                options.reesolveroptions);
 useapprox          = options.useapprox;
 
-b      = model.b;
-e      = model.e;
-f      = model.f;
-g      = model.g;
-h      = model.h;
-params = model.params;
-w      = model.w;
+b         = model.b;
+e         = model.e;
+f         = model.f;
+g         = model.g;
+h         = model.h;
+ixforward = model.ixforward;
+params    = model.params;
+w         = model.w;
 
 fspace = interp.fspace;
 Phi    = interp.Phi;
@@ -58,7 +59,8 @@ function [R,dRdc] = ResidualFunction(cc)
     x       = min(max(funeval(cc,fspace,Phi),LB),UB);
   end % if not previous x is used
 
-  [x,fval]  = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
+  [x,fval]  = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,...
+                                   ixforward,options);
   if nargout==1
     %% Without Jacobian
     R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
@@ -66,7 +68,7 @@ function [R,dRdc] = ResidualFunction(cc)
     %% With Jacobian
     [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
     [~,Fx,Fc] = recsEquilibrium(x,s,z,b,f,g,h,params,grid,cc,e,w,fspace,...
-                                funapprox,extrapolate);
+                                funapprox,extrapolate,ixforward);
     Fc        = sparse(Fc);
     dRdc      = -Rx*(Fx\Fc)+Rc;
   end

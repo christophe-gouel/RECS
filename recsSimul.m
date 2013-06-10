@@ -125,13 +125,14 @@ if ~any(strcmp(simulmethod,{'interpolation','solve'}))
                       'be carried out using the default option, ''interpolation''.'])
 end
 
-b      = model.b;
-e      = model.e;
-f      = model.f;
-g      = model.g;
-h      = model.h;
-params  = model.params;
-w       = model.w;
+b         = model.b;
+e         = model.e;
+f         = model.f;
+g         = model.g;
+h         = model.h;
+ixforward = model.ixforward;
+params    = model.params;
+w         = model.w;
 if isfield(model,'funrand') || (isobject(model) && ~isempty(model.funrand)) % Check if a random shocks generator function is provided
   funrand = model.funrand;
 else % Use the discretisation to generate the shocks
@@ -188,14 +189,16 @@ for t=1:nper
                                                       funeval(cz,fspace,Phi),...
                                                       b,f,g,h,...
                                                       params,...
-                                                      [],[],[],[],options);
+                                                      [],[],[],[],...
+                                                      ixforward,options);
           case 'resapprox-complete'
             [xsim(:,:,t),fval] = recsSolveEquilibrium(ssim(:,:,t),...
                                                       xsim(:,:,t),...
                                                       zeros(nrep,0),...
                                                       b,f,g,h,...
                                                       params,...
-                                                      cx,e,w,fspace,options);
+                                                      cx,e,w,fspace,...
+                                                      ixforward,options);
           case 'expfunapprox'
             if functional, params{end} = interp.ch; end
             [xsim(:,:,t),fval] = recsSolveEquilibrium(ssim(:,:,t),...
@@ -203,7 +206,8 @@ for t=1:nper
                                                       zeros(nrep,0),...
                                                       b,f,g,h,...
                                                       params,...
-                                                      interp.ch,e,w,fspace,options);
+                                                      interp.ch,e,w,fspace,...
+                                                      ixforward,options);
         end % switch funapprox
       otherwise
         if nargout==5

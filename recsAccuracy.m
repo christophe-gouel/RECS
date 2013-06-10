@@ -52,13 +52,14 @@ end
 display     = options.display;
 extrapolate = options.extrapolate;
 
-b      = model.b;
-e      = model.e;
-f      = model.f;
-g      = model.g;
-h      = model.h;
-params = model.params;
-w      = model.w;
+b         = model.b;
+e         = model.e;
+f         = model.f;
+g         = model.g;
+h         = model.h;
+ixforward = model.ixforward;
+params    = model.params;
+w         = model.w;
 
 cx     = interp.cx;
 fspace = interp.fspace;
@@ -90,7 +91,9 @@ if extrapolate, seninterp = sen;
 else
   seninterp = max(min(sen,fspace.b(ones(n*t*k,1),:)),fspace.a(ones(n*t*k,1),:));
 end
-xen       = min(max(funeval(cx,fspace,seninterp),LBn),UBn);
+xen              = zeros(n*t*k,m);
+xen(:,ixforward) = min(max(funeval(cx(:,ixforward),fspace,seninterp),...
+                           LBn(:,ixforward)),UBn(:,ixforward));
 if nargout(h)<6
   hv                 = h(ss,xx,ee,sen,xen,params,output);
 else

@@ -22,13 +22,14 @@ reesolveroptions   = catstruct(struct('showiters' , options.display,...
                                options.reesolveroptions);
 useapprox          = options.useapprox;
 
-b      = model.b;
-e      = model.e;
-f      = model.f;
-g      = model.g;
-h      = model.h;
-params = model.params;
-w      = model.w;
+b         = model.b;
+e         = model.e;
+f         = model.f;
+g         = model.g;
+h         = model.h;
+ixforward = model.ixforward;
+params    = model.params;
+w         = model.w;
 
 fspace = interp.fspace;
 Phi    = interp.Phi;
@@ -104,7 +105,8 @@ function [R,FLAG] = ResidualREE(cc)
         z     = funeval(cc,fspace,Phi);
 
         % Calculation of x
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
+        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
+                                               fspace,ixforward,options);
 
         % Calculation of snext
         xx      = x(ind,:);
@@ -117,13 +119,19 @@ function [R,FLAG] = ResidualREE(cc)
 
         % Calculation of xnext
         [LBnext,UBnext] = b(snext,params);
-        % xnext calculated by interpolation
-        xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LBnext),UBnext);
-        if ~useapprox  % xnext calculated by equation solve
+        if useapprox % xnext calculated by interpolation
+          xnext              = zeros(n*k,m);
+          xnext(:,ixforward) = min(max(funeval(funfitxy(fspace,Phi,x(:,ixforward)),...
+                                               fspace,snextinterp),...
+                                       LBnext(:,ixforward)),UBnext(:,ixforward));
+        else  % xnext calculated by equation solve
+          xnext = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),...
+                          LBnext),UBnext);
           xnext = recsSolveEquilibrium(snext,...
                                        xnext,...
                                        funeval(cc,fspace,snextinterp),...
-                                       b,f,g,h,params,cc,e,w,fspace,options);
+                                       b,f,g,h,params,cc,e,w,fspace,...
+                                       ixforward,options);
         end
 
         % Calculation of z
@@ -143,7 +151,8 @@ function [R,FLAG] = ResidualREE(cc)
         cc    = reshape(cc,n,p);
         if functional, params{end} = cc; end
 
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
+        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
+                                               fspace,ixforward,options);
         output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
         R      = funfitxy(fspace,Phi,h([],[],[],s,x,params,output))-cc;
 
@@ -168,8 +177,10 @@ function [R,FLAG] = ResidualREE(cc)
             snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
                               fspace.a(ones(n*k,1),:));
           end % extrapolate
-          [LBnext,UBnext] = b(snext,params);
-          xnext   = min(max(funeval(cc,fspace,snextinterp),LBnext),UBnext);
+          [LBnext,UBnext]    = b(snext,params);
+          xnext              = zeros(n*k,m);
+          xnext(:,ixforward) = min(max(funeval(cc(:,ixforward),fspace,snextinterp),...
+                                       LBnext(:,ixforward)),UBnext(:,ixforward));
 
           % Calculation of z
           if nargout(h)<6
@@ -181,7 +192,8 @@ function [R,FLAG] = ResidualREE(cc)
           z     = reshape(w'*reshape(hv,k,n*p),n,p);
         end % if strcmp(funapprox,'resapprox-simple')
 
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,options);
+        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
+                                               fspace,ixforward,options);
         R            = funfitxy(fspace,Phi,x)-cc;
     end % switch funapprox
   else
@@ -201,8 +213,10 @@ function [R,FLAG] = ResidualREE(cc)
       snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
                         fspace.a(ones(n*k,1),:));
     end % extrapolate
-    [LBnext,UBnext] = b(snext,params);
-    xnext   = min(max(funeval(cc,fspace,snextinterp),LBnext),UBnext);
+    [LBnext,UBnext]    = b(snext,params);
+    xnext              = zeros(n*k,m);
+    xnext(:,ixforward) = min(max(funeval(cc(:,ixforward),fspace,snextinterp),...
+                                 LBnext(:,ixforward)),UBnext(:,ixforward));
 
     % Calculation of z
     if nargout(h)<6

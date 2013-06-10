@@ -31,6 +31,7 @@ classdef recsmodel
     gp
     hp
     IncidenceMatrices
+    ixforward % Index of response variables that appear with leads
   end % Hidden properties
 
   methods
@@ -111,10 +112,13 @@ classdef recsmodel
       model.h  = @(s,x,e,sn,xn,p,output) model.func('h',s,x ,[],e ,sn,xn,p,output);
       model.ee = @(s,x,z,p)              model.func('e',s,x ,z ,[],[],[],p);
 
+      %% Incidence matrices and dimensions
       model.IncidenceMatrices  = model.func('J');
       model.dim = {size(model.IncidenceMatrices.fs,2) ...
                    size(model.IncidenceMatrices.fs,1) ...
                    size(model.IncidenceMatrices.fz,2)};
+      model.ixforward = sum(model.IncidenceMatrices.hxnext,1)>=1;
+
 
       %% Prepare shocks information & find steady state
       if nargin>=2 && ~isempty(shocks)

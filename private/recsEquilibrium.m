@@ -1,4 +1,4 @@
-function [F,Jx,Jc] = recsEquilibrium(x,s,z,b,f,g,h,params,gridJx,c,e,w,fspace,funapprox,extrapolate)
+function [F,Jx,Jc] = recsEquilibrium(x,s,z,b,f,g,h,params,gridJx,c,e,w,fspace,funapprox,extrapolate,ixforward)
 % RECSEQUILIBRIUM evaluates the equilibrium equations and Jacobian
 %
 % RECSEQUILIBRIUM is called by recsSolveREEFull and recsSolveEquilibrium. It is not
@@ -13,6 +13,7 @@ function [F,Jx,Jc] = recsEquilibrium(x,s,z,b,f,g,h,params,gridJx,c,e,w,fspace,fu
 [n,d] = size(s);
 x     = reshape(x,[],n)';
 m     = size(x,2);
+mf    = sum(ixforward); % Number of forward response variables
 
 %% Evaluate the equilibrium equations and Jacobian
 switch funapprox
@@ -42,7 +43,7 @@ switch funapprox
       else
           snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
       end
-      Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)],'expanded'); 
+      Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)],'expanded');
       % It seems to be faster with 'expanded', but may use more memory. To confirm
       % later.
 %       Bsnext = funbasx(fspace,snextinterp,[zeros(1,d); eye(d)]);
@@ -60,9 +61,12 @@ switch funapprox
           hs = H(:,:,2:end);
         case 'resapprox-complete'
           [LBnext,UBnext]      = b(snext,params);
-          Xnext                = funeval(c,fspace,Bsnext,[zeros(1,d); eye(d)]);
-          xnext                = min(max(Xnext(:,:,1),LBnext),UBnext);
-          xnextds              = Xnext(:,:,2:end);
+          Xnext                = funeval(c(:,ixforward),fspace,Bsnext,...
+                                         [zeros(1,d); eye(d)]);
+          xnext                = zeros(n*k,m);
+          xnext(:,ixforward)   = min(max(Xnext(:,:,1),LBnext(:,ixforward)),...
+                                     UBnext(:,ixforward));
+          xfnextds             = Xnext(:,:,2:end);
 
           output = struct('F',1,'Js',0,'Jx',1,'Jsn',1,'Jxn',1,'hmult',1);
           if nargout(h)<6
@@ -86,8 +90,10 @@ switch funapprox
         case 'expfunapprox'
           Jxtmp = arraymult(hs,gx,k*n,p,d,m);
         case 'resapprox-complete'
-          Jxtmp = hx+arraymult(hsnext+arraymult(hxnext,xnextds,k*n,p,m,d),gx,...
-                               k*n,p,d,m);
+          Jxtmp = hx+...
+                  arraymult(hsnext+...
+                            arraymult(hxnext(:,:,ixforward),xfnextds,k*n,p,mf,d),...
+                            gx,k*n,p,d,m);
       end
       Jxtmp = reshape(w'*reshape(Jxtmp,k,n*p*m),n,p,m);
       Jx    = fx+arraymult(fz,Jxtmp,n,m,p,m);
@@ -147,7 +153,9 @@ switch funapprox
             snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)), ...
                               fspace.a(ones(n*k,1),:));
           end
-          xnext   = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
+          xnext              = zeros(n*k,m);
+          xnext(:,ixforward) = min(max(funeval(c(:,ixforward),fspace,snextinterp),...
+                                       LBnext(:,ixforward)),UBnext(:,ixforward));
           output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
           if nargout(h)<6
             hv                 = h(ss,xx,ee,snext,xnext,params,output);
