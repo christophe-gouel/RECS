@@ -18,6 +18,9 @@ classdef recsmodel
     sss     % State variables at steady state
     xss     % Response variables at steady state
     zss     % Expectations variables at steady state
+    dima    % Dimension of auxiliary variables
+    fa      %
+    ha      %
   end % properties
   properties (SetAccess=immutable)
     dim     % Problem's dimensions {d,m,p}
