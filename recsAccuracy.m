@@ -66,7 +66,7 @@ fspace = interp.fspace;
 
 [n,d,t] = size(s);
 k       = size(e,1);
-p       = model.dim{3};
+[m,p]   = model.dim{2:3};
 
 se      = permute(s,[1 3 2]);
 se      = reshape(se,n*t,d);
