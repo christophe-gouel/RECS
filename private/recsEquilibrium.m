@@ -61,7 +61,7 @@ switch funapprox
           hs = H(:,:,2:end);
         case 'resapprox-complete'
           [LBnext,UBnext]      = b(snext,params);
-          Xnext                = funeval(c(:,ixforward),fspace,Bsnext,...
+          Xnext                = funeval(c,fspace,Bsnext,...
                                          [zeros(1,d); eye(d)]);
           xnext                = zeros(n*k,m);
           xnext(:,ixforward)   = min(max(Xnext(:,:,1),LBnext(:,ixforward)),...
@@ -115,11 +115,11 @@ switch funapprox
             Jc    = arraymult(fz,Jc,n,m,p,numel(c));
             Jc    = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
           case 'resapprox-complete'
-            [~,gridJc] = spblkdiag(zeros(p,m,k),[],0);
+            [~,gridJc] = spblkdiag(zeros(p,mf,k),[],0);
             kw     = kron(w',eye(p));
-            hxnext = num2cell(reshape(hxnext,[k n p m]),[1 3 4])';
+            hxnext = num2cell(reshape(hxnext(:,:,ixforward),[k n p mf]),[1 3 4])';
             Jctmp  = cellfun(@(X,Y) kw*spblkdiag(permute(X,[3 4 2 1]),gridJc)*...
-                             kron(Y',speye(m)),hxnext,Bsnext,'UniformOutput',false);
+                             kron(Y',speye(mf)),hxnext,Bsnext,'UniformOutput',false);
             Jc   = zeros(n*m,numel(c));
             for i=1:n
               Jc((i-1)*m+1:i*m,:) = permute(fz(i,:,:),[2 3 1])*Jctmp{i};
@@ -154,7 +154,7 @@ switch funapprox
                               fspace.a(ones(n*k,1),:));
           end
           xnext              = zeros(n*k,m);
-          xnext(:,ixforward) = min(max(funeval(c(:,ixforward),fspace,snextinterp),...
+          xnext(:,ixforward) = min(max(funeval(c,fspace,snextinterp),...
                                        LBnext(:,ixforward)),UBnext(:,ixforward));
           output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
           if nargout(h)<6

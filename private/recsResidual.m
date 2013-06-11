@@ -1,4 +1,4 @@
-function [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi)
+function [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward)
 % RECSRESIDUAL evaluates the residual of rational expectations and its Jacobians
 %
 % RECSRESIDUAL is called by recsSolveREEFull and recsSolveREEIterNewton. It is not
@@ -11,6 +11,7 @@ function [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi)
 
 %%
 [n,m] = size(x);
+mf    = sum(ixforward); % Number of forward response variables
 
 switch funapprox
  case 'expfunapprox'
@@ -22,8 +23,8 @@ switch funapprox
   end
 
  case 'resapprox-complete'
-  R = funeval(c,fspace,Phi)-x;
-  R = reshape(R',n*m,1);
+  R = funeval(c,fspace,Phi)-x(:,ixforward);
+  R = reshape(R',n*mf,1);
 
 end
 
@@ -42,9 +43,11 @@ if nargout>=2
     Rc = kron(B,speye(p));
 
    case 'resapprox-complete'
-    Rx = -speye(n*m);
-
-    Rc = kron(B,speye(m));
+%    Rx = -speye(n*mf);
+     indx = 1:n*m;
+     Rx = sparse(1:n*mf,indx(repmat(ixforward,1,n)),-ones(n*mf,1),n*mf,n*m,n*mf);
+    
+     Rc = kron(B,speye(mf));
 
   end
 end

@@ -40,6 +40,10 @@ Phi    = interp.Phi;
 z        = zeros(n,0);
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 
+if strcmp(funapprox,'resapprox-complete')
+  c = c(:,ixforward);
+end
+
 %% Solve for the rational expectations equilibrium
 [c,~,exitflag] = runeqsolver(@ResidualFunction,c(:),...
                              -inf(numel(c),1),inf(numel(c),1),...
@@ -54,7 +58,7 @@ function [R,dRdc] = ResidualFunction(cc)
   cc    = reshape(cc,n,[]);
   if functional, params{end} = cc; end
 
-  if useapprox && strcmp(funapprox,'resapprox-complete') % x calculated by interpolation
+  if 0 %useapprox && strcmp(funapprox,'resapprox-complete') % x calculated by interpolation
     [LB,UB] = b(s,params);
     x       = min(max(funeval(cc,fspace,Phi),LB),UB);
   end % if not previous x is used
@@ -63,10 +67,10 @@ function [R,dRdc] = ResidualFunction(cc)
                                    ixforward,options);
   if nargout==1
     %% Without Jacobian
-    R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
+    R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward);
   else
     %% With Jacobian
-    [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi);
+    [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward);
     [~,Fx,Fc] = recsEquilibrium(x,s,z,b,f,g,h,params,grid,cc,e,w,fspace,...
                                 funapprox,extrapolate,ixforward);
     Fc        = sparse(Fc);

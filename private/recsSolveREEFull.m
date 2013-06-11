@@ -32,19 +32,27 @@ Phi    = interp.Phi;
 
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 [LB,UB]  = model.b(s,params);
+
+if strcmp(funapprox,'resapprox-complete')
+  c = c(:,ixforward);
+end
+
 if strcmp(funapprox,'resapprox-complete') && all(isinf(LB(:))) && all(isinf(UB(:)))
   %% Reshape inputs
-  C        = reshape(c',n*m,1);
-  B        = inf(n*m,1);
+  X              = x;
+  X(:,ixforward) = c;
+  X              = reshape(X',n*m,1);
+  B              = inf(n*m,1);
 
   %% Solve for the rational expectations equilibrium
-  [C,F,exitflag] = runeqsolver(@FullCompactPb,C,-B,B,eqsolver,eqsolveroptions,...
+  [X,F,exitflag] = runeqsolver(@FullCompactPb,X,-B,B,eqsolver,eqsolveroptions,...
                                s,b,f,g,h,params,grid,e,w,fspace,funapprox,Phi,...
                                m,functional,extrapolate,ixforward);
 
   %% Reshape outputs
-  c     = reshape(C,m,n)';
-  x     = funeval(c,fspace,Phi);
+  x              = reshape(X,m,n)';
+  c              = x(:,ixforward);
+  x(:,ixforward) = funeval(c,fspace,Phi);
   fval  = reshape(F,m,n)';
 else
   %% Reshape inputs
@@ -63,6 +71,9 @@ else
   fval  = reshape(G(1:n*m),m,n)';
 end
 
+if strcmp(funapprox,'resapprox-complete')
+  c = funfitxy(fspace,Phi,x);
+end
 
 function [G,J] = FullPb(X,s,b,f,g,h,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate,ixforward)
 % FULLPB evaluates the equations and Jacobian of the complete rational expectations problem
@@ -79,39 +90,43 @@ if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
                               grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
-  [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi);
+  [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward);
   J = [Fx Fc;
        Rx Rc];
 else
   %% Without Jacobian
   F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
                       grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
-  R = recsResidual(s,x,h,params,c,fspace,funapprox,Phi);
+  R = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward);
 end
 
 % Concatenate equilibrium equations and rational expectations residual
 G = [F; R];
 
 
-function [F,J] = FullCompactPb(C,s,b,f,g,h,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate,ixforward)
+function [F,J] = FullCompactPb(X,s,b,f,g,h,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate,ixforward)
 % FULLCOMPACTPB evaluates the equations and Jacobian of the complete rational expectations problem as a single set of equations (equilibrium and residual equation are confounded)
 
 %% Initialization
-n     = size(s,1);
-c     = reshape(C,m,n)';
+n              = size(s,1);
+x              = reshape(X,m,n)';
+c              = x(:,ixforward);
 if functional, params{end} = c; end
-x     = funeval(c,fspace,Phi);
+x(:,ixforward) = funeval(c,fspace,Phi);
+indx           = 1:n*m;
+indxforward    = repmat(ixforward,1,n);
+indxstatic     = ~indxforward;
 
 %% Evaluate equations and Jacobian
 if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
                               grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
-  [~,~,Rc]  = recsResidual(s,x,h,params,c,fspace,funapprox,Phi);
-
+  [~,~,Rc]  = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward);
   Fc = sparse(Fc);
-  J  = Fx*Rc+Fc;
 
+  J(:,[indx(indxstatic) indx(indxforward)]) = [Fx(:,indxstatic) Fx(:,indxforward)*Rc+Fc];
+  
 else
   %% Without Jacobian
   F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
