@@ -215,10 +215,7 @@ function [R,FLAG] = ResidualREE(cc)
     end % switch funapprox
   else
     %% Explicit model
-    cc = reshape(cc,n,m);
-
-    % Calculation of x by interpolation
-    if useapprox, x = min(max(funeval(cc,fspace,Phi),LB),UB); end
+    cc = reshape(cc,n,mf);
 
     % Calculation of snext
     xx     = x(ind,:);
@@ -232,7 +229,7 @@ function [R,FLAG] = ResidualREE(cc)
     end % extrapolate
     [LBnext,UBnext]    = b(snext,params);
     xnext              = zeros(n*k,m);
-    xnext(:,ixforward) = min(max(funeval(cc(:,ixforward),fspace,snextinterp),...
+    xnext(:,ixforward) = min(max(funeval(cc,fspace,snextinterp),...
                                  LBnext(:,ixforward)),UBnext(:,ixforward));
 
     % Calculation of z
@@ -248,9 +245,9 @@ function [R,FLAG] = ResidualREE(cc)
     x      = min(max(f(s,[],z,params,output),LB),UB);
 
     % Prepare output
-    R      = funfitxy(fspace,Phi,x)-cc;
+    R      = funfitxy(fspace,Phi,x(:,ixforward))-cc;
     exitEQ = 1;
-    fval      = zeros(size(x));
+    fval   = zeros(size(x));
 
   end % if ~explicit
   R        = R(:);

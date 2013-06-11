@@ -1,6 +1,6 @@
 % RECSDEMOS runs all RECS demonstration files
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 warning('off','backtrace')
@@ -17,6 +17,10 @@ disp('GRO2 Stochastic growth model with irreversible investment')
 clear interp model options
 gro2
 
+disp('GRO3 Stochastic growth model with recursive preferences and stochastic volatility')
+clear interp model options
+gro3
+
 disp('CS1 Consumption/saving model with borrowing constraint');
 clear interp model options
 cs1
@@ -28,6 +32,10 @@ cs2
 disp('STO1 Competitive storage model');
 clear interp model options
 sto1
+
+disp('STO1 Competitive storage model with explicit formulation');
+clear interp model options
+sto1FX
 
 disp('STO2 Competitive storage with floor-price backed by public storage');
 clear interp model options
