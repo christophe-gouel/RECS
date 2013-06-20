@@ -39,9 +39,9 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,vara
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if strcmp(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
+if strcmpi(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
 
-if strcmp(eqsolveroptions.Jacobian,'off') && any(strcmp(eqsolver,{'lmmcp','ncpsolve','path'}))
+if strcmpi(eqsolveroptions.Jacobian,'off') && any(strcmpi(eqsolver,{'lmmcp','ncpsolve','path'}))
   eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,varargin);
 else
   eqtosolve = @(Y) func(Y,varargin{:});
@@ -49,8 +49,8 @@ end
 
 
 %% Derivative Check
-if strcmp(eqsolveroptions.DerivativeCheck,'on')
-  Jnum  = numjac(func,x,[],0,varargin{:});
+if strcmpi(eqsolveroptions.DerivativeCheck,'on')
+  Jnum  = numjac(func,x,struct([]),varargin{:});
   [~,J] = func(x,varargin{:});
   dJ    = norm(full(abs(J-Jnum)./max(1.0,abs(J))),Inf);
   fprintf(1,'Derivative Check: max relative diff = %g\n\n',dJ) %#ok<PRTCAL>
@@ -97,8 +97,8 @@ function [F,J] = PbWithNumJac(func,Y,eqsolver,otherarg)
 % PBWITHNUMJAC Calculates the numerical Jacobian of the problem func with respect to Y
 
 if nargout==2
-  J = numjac(func,Y,[],0,otherarg{:});
-  if strcmp(eqsolver,'path')
+  J = numjac(func,Y,struct([]),otherarg{:});
+  if strcmpi(eqsolver,'path')
     J = sparse(J);
   end
 end
