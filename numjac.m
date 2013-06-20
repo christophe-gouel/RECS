@@ -10,8 +10,8 @@ function J = numjac(FUN,x,options,varargin)
 %  FinDiffType    : 'central' (default) or 'forward' for central or forward 
 %                   finite differences
 %  FinDiffRelStep : scalar or vector step size factor. For central finite 
-%                   differences, FinDiffRelStep = eps^(1/3), and for forward
-%                   finite differences FinDiffRelStep = sqrt(eps).
+%                   differences, the default value is FinDiffRelStep = eps^(1/3),
+%                   and for forward finite differences FinDiffRelStep = sqrt(eps).
 %  SerialProblem  : true or false (default), if true considers the problem as a
 %                   serial problem: X is a n-by-d matrix and FUN(X) outputs a 
 %                   n-by-d matrix, such that each line is independent from the 
