@@ -21,8 +21,6 @@ classdef recsmodel
     dima    % Dimension of auxiliary variables
     fa      %
     ha      %
-  end % properties
-  properties (SetAccess=immutable)
     dim     % Problem's dimensions {d,m,p}
   end % Immutable properties
   properties (Hidden=true)
@@ -175,7 +173,7 @@ classdef recsmodel
       SQ = quantile(reshape(permute(real(ssim(:,:,2:end)),[1 3 2]),nrep*nper,d),...
                      quant);
       if d==1, SQ = [quant' SQ'];
-      else,    SQ = [quant' SQ ];
+      else     SQ = [quant' SQ ];
       end
     end % StateQuant
   end % methods
