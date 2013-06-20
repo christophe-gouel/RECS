@@ -22,7 +22,7 @@ classdef recsmodel
     fa      %
     ha      %
     dim     % Problem's dimensions {d,m,p}
-  end % Immutable properties
+  end
   properties (Hidden=true)
     bp
     fp
