@@ -1,4 +1,4 @@
-function A = blktridiag(Amd,Asub,Asup,n)
+function [A,grid] = blktridiag(Amd,Asub,Asup,n,grid)
 % BLKTRIDIAG: computes a sparse (block) tridiagonal matrix with n blocks
 % usage: A = BLKTRIDIAG(Amd,Asub,Asup,n)  % identical blocks
 % usage: A = BLKTRIDIAG(Amd,Asub,Asup)    % a list of distinct blocks
@@ -77,8 +77,10 @@ function A = blktridiag(Amd,Asub,Asup,n)
 % Original release date: 4/01/06
 % Current release date: 12/14/07
 
+% (C) 2013 Christophe Gouel
+
 % Which mode of operation are we in?
-if nargin==4
+if nargin>=4 && ~isempty(n)
   % replicated block mode
   
   % verify the inputs in this mode are 2-d arrays.
@@ -110,6 +112,7 @@ if nargin==4
       % faster as Jos points out
       A = spdiags(repmat([Asub Amd Asup],n,1),-1:1,n,n);
     end
+    grid = [];
     % no need to go any farther
     return
   end
@@ -125,7 +128,7 @@ if nargin==4
     v=[v;repmat(Asup(:),n-1,1)];
   end
   
-elseif nargin==3
+else
   % non-replicated blocks, supplied as planes of a 3-d array
   
   % get block sizes, check for consistency
@@ -150,43 +153,40 @@ elseif nargin==3
       % best to just use spdiags
       A = spdiags([[Asub(:);0], Amd(:), [0;Asup(:)]],-1:1,n,n);
     end
+    grid = [];
     % no need to go any farther
     return
   end
   
-  % The main diagonal elements
-  v = Amd(:);
+  %%
+  if n>1
+    v = [Amd(:); Asub(:); Asup(:)];
+  else
+    v = Amd(:);
+  end
+end
+
+if nargin<5 || isempty(grid)
+  % now generate the index arrays. first the main diagonal
+  [ind1,ind2,ind3]=ndgrid(0:p-1,0:q-1,0:n-1);
+  rind = 1+ind1(:)+p*ind3(:);
+  cind = 1+ind2(:)+q*ind3(:);
   % then the sub and super diagonal blocks.
   if n>1
     % sub-diagonal
-    v=[v;Asub(:)];
+    [ind1,ind2,ind3]=ndgrid(0:p-1,0:q-1,0:n-2);
+    rind = [rind;1+p+ind1(:)+p*ind3(:)];
+    cind = [cind;1+ind2(:)+q*ind3(:)];
 
     % super-diagonal
-    v=[v;Asup(:)];
+    rind = [rind;1+ind1(:)+p*ind3(:)];
+    cind = [cind;1+q+ind2(:)+q*ind3(:)];
   end
-else
-  % must have 3 or 4 arguments
-  error 'Must have either 3 or 4 arguments to BLKTRIDIAG'
-end
-
-% now generate the index arrays. first the main diagonal
-[ind1,ind2,ind3]=ndgrid(0:p-1,0:q-1,0:n-1);
-rind = 1+ind1(:)+p*ind3(:);
-cind = 1+ind2(:)+q*ind3(:);
-% then the sub and super diagonal blocks.
-if n>1
-  % sub-diagonal
-  [ind1,ind2,ind3]=ndgrid(0:p-1,0:q-1,0:n-2);
-  rind = [rind;1+p+ind1(:)+p*ind3(:)];
-  cind = [cind;1+ind2(:)+q*ind3(:)];
-
-  % super-diagonal
-  rind = [rind;1+ind1(:)+p*ind3(:)];
-  cind = [cind;1+q+ind2(:)+q*ind3(:)];
+  grid = [rind cind];
 end
 
 % build the final array all in one call to sparse
-A = sparse(rind,cind,v,n*p,n*q);
+A = sparse(grid(:,1),grid(:,2),v,n*p,n*q);
 
 % ====================================
 % end mainline

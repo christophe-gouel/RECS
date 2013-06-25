@@ -1,4 +1,4 @@
-function [F,J] = recsDeterministicPb(X,fp,gp,hp,s0,xss,p,e,params,nx)
+function [F,J,grid] = recsDeterministicPb(X,fp,gp,hp,s0,xss,p,e,params,nx,grid)
 % RECSDETERMINISTICPB Evaluates the equations and Jacobian of the deterministic problem.
 %
 % RECSDETERMINISTICPB is called by recsSolveDeterministicPb. It is not meant to be
@@ -30,7 +30,7 @@ snext = X(:,(M+p+1):(M+p+d));
 s     = [s0; snext(1:end-1,:)];
 
 %% Computation of equations and Jacobian
-if nargout==2  
+if nargout>=2  
   %% With Jacobian
   output                  = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1);
   [f,fs,fx,fz]            = fp(s,x,w,v,z,params,output);
@@ -52,7 +52,10 @@ if nargout==2
              cat(2,zeros(T-1,M,M),-hxnext(1:end-1,:,:),zeros(T-1,d,M)),...
              zeros(T-1,M+p+d,p+d));
 
-  J = blktridiag(permute(Jmd,[2 3 1]),permute(Jsub,[2 3 1]),permute(Jsup,[2 3 1]));
+  [J,grid] = blktridiag(permute(Jmd ,[2 3 1]),...
+                        permute(Jsub,[2 3 1]),...
+                        permute(Jsup,[2 3 1]),...
+                        [],grid);
 
 else
   %% Without Jacobian

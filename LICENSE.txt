@@ -23,6 +23,7 @@ License: Expat
 
 Files: blktridiag.m
 Copyright: 2009, John D'Errico
+           2013, Christophe Gouel
 License: BSD-2-clause
  All rights reserved.
  .

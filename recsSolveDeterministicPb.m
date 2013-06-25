@@ -90,11 +90,15 @@ X = X(ones(T,1),:)';
 X = reshape(X,n,1);
 
 %% Solve deterministic problem
+
+% Precalculation of indexes for the sparse Jacobian (could be made more efficient)
+[~,~,grid] = recsDeterministicPb(X,fp,gp,hp,s0,xss,p,e,params,nx,[]);
+
+SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver, ...
+                                     eqsolveroptions,fp,gp,hp,S0,xss,p,e, ...
+                                     params,nx,grid);
+
 % Simple continuation problem applied on a Newton solve
-
-SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver,...
-                                     eqsolveroptions,fp,gp,hp,S0,xss,p,e,params,nx);
-
 [X,F,exitflag,N] = SCP(X,s0,sss,SCPSubProblem,1);
 if exitflag~=1
   warning('RECS:FailureDeterministic',...
