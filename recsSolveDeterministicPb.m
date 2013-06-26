@@ -91,8 +91,9 @@ X = reshape(X,n,1);
 
 %% Solve deterministic problem
 
-% Precalculation of indexes for the sparse Jacobian (could be made more efficient)
-[~,~,grid] = recsDeterministicPb(X,fp,gp,hp,s0,xss,p,e,params,nx,[]);
+% Precalculation of indexes for the sparse Jacobian
+tmp      = zeros(M+p+d,M+p+d,T);
+[~,grid] = blktridiag(tmp,tmp(:,:,1:end-1),tmp(:,:,1:end-1));
 
 SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver, ...
                                      eqsolveroptions,fp,gp,hp,S0,xss,p,e, ...
