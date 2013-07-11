@@ -24,9 +24,6 @@
 %   equilibrium equations and the rational expectations equilibrium.
 % * MATLAB Parallel Computing Toolbox. This toolbox allows many RECS programs to
 %   be run in parallel to speed-up computation.
-% * <https://computation.llnl.gov/casc/sundials/main.html Sundials Toolbox>,
-%   which provides a compiled Newton-Krylov solver for solving the rational
-%   expectations equilibrium.
 % * MATLAB Statistics Toolbox. Useful to simulate models in which shocks follow
 %   other distributions than the normal.
 
