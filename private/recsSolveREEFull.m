@@ -33,11 +33,9 @@ Phi    = interp.Phi;
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 [LB,UB]  = model.b(s,params);
 
-if strcmp(funapprox,'resapprox-complete')
-  c = c(:,ixforward);
-end
+if strcmp(funapprox,'resapprox-complete'), c = c(:,ixforward); end
 
-if strcmp(funapprox,'resapprox-complete') && all(isinf(LB(:))) && all(isinf(UB(:)))
+if strcmp(funapprox,'resapprox-complete') && all(isinf([LB(:); UB(:)]))
   %% Reshape inputs
   X              = x;
   X(:,ixforward) = c;
@@ -71,9 +69,7 @@ else
   fval  = reshape(G(1:n*m),m,n)';
 end
 
-if strcmp(funapprox,'resapprox-complete')
-  c = funfitxy(fspace,Phi,x);
-end
+if strcmp(funapprox,'resapprox-complete'),  c = funfitxy(fspace,Phi,x); end
 
 function [G,J] = FullPb(X,s,b,f,g,h,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate,ixforward)
 % FULLPB evaluates the equations and Jacobian of the complete rational expectations problem
@@ -90,14 +86,14 @@ if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
                               grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
-  [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward);
+  [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward,true);
   J = [Fx Fc;
        Rx Rc];
 else
   %% Without Jacobian
   F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
                       grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
-  R = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward);
+  R = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward,true);
 end
 
 % Concatenate equilibrium equations and rational expectations residual
@@ -122,7 +118,7 @@ if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
                               grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
-  [~,~,Rc]  = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward);
+  [~,~,Rc]  = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward,true);
   Fc = sparse(Fc);
 
   J(:,[indx(indxstatic) indx(indxforward)]) = [Fx(:,indxstatic) Fx(:,indxforward)*Rc+Fc];

@@ -18,11 +18,13 @@ functional         = options.functional;
 funapprox          = lower(options.funapprox);
 reesolver          = lower(options.reesolver);
 reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
-                                      'Display'        ,'iter',...
-                                      'DerivativeCheck','off' ,...
-                                      'Jacobian'       , 'on')         ,...
+                                      'DerivativeCheck','off'          ,...
+                                      'Display'        ,'iter'         ,...
+                                      'Jacobian'       , 'on'          ,...
+                                      'lmeth'          , 3)         ,...
                                options.reesolveroptions);
-useapprox          = options.useapprox;
+
+NewtonMethod       = ~any(strcmpi(reesolver,{'krylov','sa'}));
 
 b         = model.b;
 e         = model.e;
@@ -40,15 +42,17 @@ Phi    = interp.Phi;
 z        = zeros(n,0);
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 
-if strcmp(funapprox,'resapprox-complete')
-  c = c(:,ixforward);
-end
+if strcmp(funapprox,'resapprox-complete'),  c = c(:,ixforward); end
 
 %% Solve for the rational expectations equilibrium
-[c,~,exitflag] = runeqsolver(@ResidualFunction,c(:),...
-                             -inf(numel(c),1),inf(numel(c),1),...
-                             reesolver,...
-                             reesolveroptions);
+[c,~,exitREE] = runeqsolver(@ResidualFunction,c(:),...
+                            -inf(numel(c),1),inf(numel(c),1),...
+                            reesolver,...
+                            reesolveroptions);
+
+exitflag = and(exitREE,exitEQ);
+
+if strcmp(funapprox,'resapprox-complete'), c = funfitxy(fspace,Phi,x); end
 
 
 %% Nested function
@@ -58,19 +62,14 @@ function [R,dRdc] = ResidualFunction(cc)
   cc    = reshape(cc,n,[]);
   if functional, params{end} = cc; end
 
-  if 0 %useapprox && strcmp(funapprox,'resapprox-complete') % x calculated by interpolation
-    [LB,UB] = b(s,params);
-    x       = min(max(funeval(cc,fspace,Phi),LB),UB);
-  end % if not previous x is used
-
-  [x,fval]  = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,...
-                                   ixforward,options);
+  [x,fval,exitEQ]  = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,...
+                                          ixforward,options);
   if nargout==1
     %% Without Jacobian
-    R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward);
+    R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward,NewtonMethod);
   else
     %% With Jacobian
-    [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward);
+    [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward,true);
     [~,Fx,Fc] = recsEquilibrium(x,s,z,b,f,g,h,params,grid,cc,e,w,fspace,...
                                 funapprox,extrapolate,ixforward);
     Fc        = sparse(Fc);

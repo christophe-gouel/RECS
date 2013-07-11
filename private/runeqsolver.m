@@ -41,7 +41,8 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,vara
 %% Initialization
 if strcmpi(eqsolver,'path'), global eqtosolve; end %#ok<TLEV>
 
-if strcmpi(eqsolveroptions.Jacobian,'off') && any(strcmpi(eqsolver,{'lmmcp','ncpsolve','path'}))
+if strcmpi(eqsolveroptions.Jacobian,'off') && ...
+      any(strcmpi(eqsolver,{'lmmcp','ncpsolve','path'}))
   eqtosolve = @(Y) PbWithNumJac(func,Y,eqsolver,varargin);
 else
   eqtosolve = @(Y) func(Y,varargin{:});
@@ -72,6 +73,11 @@ try
                               x,...
                               options);
 
+    case 'krylov'
+      [x,~,exitflag] = nsoli(eqtosolve, x, eqsolveroptions);
+      exitflag = ~exitflag;
+      f = NaN(size(x));
+
     case 'ncpsolve'
       exitflag = 1;  % ncpsolve does not output any exitflag on a failure
       [x,f]    = ncpsolve(@ncpsolvetransform,...
@@ -86,6 +92,9 @@ try
     case 'path'
       [x,f,exitflag] = recspathmcp(x,LB,UB,'pathtransform');
       clear global eqtosolve
+    
+    case 'sa'
+      [x,f,exitflag] = SA(eqtosolve, x, eqsolveroptions);
 
   end
 catch
@@ -98,8 +107,6 @@ function [F,J] = PbWithNumJac(func,Y,eqsolver,otherarg)
 
 if nargout==2
   J = numjac(func,Y,struct([]),otherarg{:});
-  if strcmpi(eqsolver,'path')
-    J = sparse(J);
-  end
+  if strcmpi(eqsolver,'path'), J = sparse(J); end
 end
 F = func(Y,otherarg{:});
