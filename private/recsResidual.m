@@ -21,6 +21,12 @@ mf    = sum(ixforward); % Number of forward response variables
 
 %% Evaluate residual
 switch funapprox
+  case 'resapprox'
+    if NewtonMethod, R = funeval(c,fspace,Phi)-x(:,ixforward);
+    else             R = funfitxy(fspace,Phi,x(:,ixforward))-c;
+    end
+    R = reshape(R',n*mf,1);
+
   case 'expfunapprox'
     p  = size(c,2);
     if nargout==1
@@ -31,12 +37,6 @@ switch funapprox
       R = reshape(R',n*p,1);
     end
     
-  case 'resapprox'
-    if NewtonMethod, R = funeval(c,fspace,Phi)-x(:,ixforward);
-    else             R = funfitxy(fspace,Phi,x(:,ixforward))-c;
-    end
-    R = reshape(R',n*mf,1);
-
 end
 
 %% Evaluate Jacobian if required
@@ -44,15 +44,6 @@ if nargout>=2
   B = funbas(fspace,s);
   
   switch funapprox
-    case 'expfunapprox'
-      output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',1,'hmult',0);
-      [hv,~,~,~,hxnext] = h([],[],[],s,x,params,output);
-      R  = funeval(c,fspace,Phi)-hv;
-      R  = reshape(R',n*p,1);
-      Rx = -spblkdiag(permute(hxnext,[2 3 1]));
-      
-      Rc = kron(B,speye(p));
-      
     case 'resapprox'
       if m==mf
         Rx = -speye(n*mf);
@@ -62,6 +53,15 @@ if nargout>=2
       end
       
       Rc = kron(B,speye(mf));
+      
+    case 'expfunapprox'
+      output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',1,'hmult',0);
+      [hv,~,~,~,hxnext] = h([],[],[],s,x,params,output);
+      R  = funeval(c,fspace,Phi)-hv;
+      R  = reshape(R',n*p,1);
+      Rx = -spblkdiag(permute(hxnext,[2 3 1]));
+      
+      Rc = kron(B,speye(p));
       
   end
 end

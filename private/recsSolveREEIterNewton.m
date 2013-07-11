@@ -24,6 +24,7 @@ reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
                                       'Jacobian'       , 'on'          ,...
                                       'lmeth'          , 3)         ,...
                                options.reesolveroptions);
+useapprox          = options.useapprox;
 
 NewtonMethod       = ~any(strcmpi(reesolver,{'krylov','sa'}));
 
@@ -43,13 +44,14 @@ Phi    = interp.Phi;
 n = size(x,1);
 
 %% Precalculations
-if ~explicit
+if ~(explicit || strcmp(funapprox,'expapprox'))
   z        = zeros(n,0);
   [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 else
   k       = length(w);
   xnext   = zeros(n*k,m);
   output  = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
+  vec     = @(X) X(:);
   [LB,UB] = b(s,params);
   ind     = (1:n);
   ind     = ind(ones(1,k),:);
@@ -79,8 +81,8 @@ function [R,dRdc] = ResidualFunction(cc)
   cc    = reshape(cc,n,[]);
   if functional, params{end} = cc; end
 
-  if ~explicit
-    %% Non-explicit models
+  if ~(explicit || strcmpi(funapprox,'expapprox'))
+    %% Non-explicit models with response variable or expectations function approximation
     [x,fval,exitEQ]  = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,...
                                             ixforward,options);
     if nargout==1
@@ -95,6 +97,52 @@ function [R,dRdc] = ResidualFunction(cc)
       dRdc      = -Rx*(Fx\Fc)+Rc;
     end
   
+  elseif strcmpi(funapprox,'expapprox')
+    %% Expectations approximation (PEA)
+    
+    % Calculation of z by interpolation
+    z     = funeval(cc,fspace,Phi);
+
+    % Calculation of x
+    [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
+                                           fspace,ixforward,options);
+
+    % Calculation of snext
+    xx      = x(ind,:);
+    snext   = g(ss,xx,ee,params,output);
+
+    % Calculation of xnext
+    if extrapolate>=1, snextinterp = snext;
+    else
+      snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
+                        fspace.a(ones(n*k,1),:));
+    end % extrapolate
+    [LBnext,UBnext] = b(snext,params);
+    if useapprox % xnext calculated by interpolation
+      xnext(:,ixforward) = min(max(funeval(funfitxy(fspace,Phi,x(:,ixforward)),...
+                                           fspace,snextinterp),...
+                                   LBnext(:,ixforward)),UBnext(:,ixforward));
+    else  % xnext calculated by equation solve
+      xnext = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),...
+                      LBnext),UBnext);
+      xnext = recsSolveEquilibrium(snext,xnext,...
+                                   funeval(cc,fspace,snextinterp),...
+                                   b,f,g,h,params,cc,e,w,fspace,...
+                                   ixforward,options);
+    end
+    
+    % Calculation of z
+    if nargout(h)<6
+      hv                 = h(ss,xx,ee,snext,xnext,params,output);
+    else
+      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
+      hv                 = hv.*hmult;
+    end
+    z     = reshape(w'*reshape(hv,k,n*p),n,p);
+    
+    % Prepare output
+    R     = vec(funfitxy(fspace,Phi,z)-cc);
+
   else
     %% Explicit models
     
@@ -125,10 +173,9 @@ function [R,dRdc] = ResidualFunction(cc)
     x      = min(max(f(s,[],z,params,output),LB),UB);
 
     % Prepare output
-    R      = funfitxy(fspace,Phi,x(:,ixforward))-cc;
-    R      = R(:);
+    R      = vec(funfitxy(fspace,Phi,x(:,ixforward))-cc);
 
-  end % if ~explicit
+  end % if ~(explicit || strcmpi(funapprox,'expapprox'))
 
 end
 
