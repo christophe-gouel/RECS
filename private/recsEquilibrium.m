@@ -17,7 +17,7 @@ mf    = sum(ixforward); % Number of forward response variables
 
 %% Evaluate the equilibrium equations and Jacobian
 switch funapprox
-  case {'expapprox','resapprox-simple'}
+  case 'expapprox'
     if nargout==2
       %% With Jacobian
       output  = struct('F',1,'Js',0,'Jx',1,'Jz',0);
@@ -27,7 +27,7 @@ switch funapprox
       output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
       F      = f(s,x,z,params,output);
     end
-  case {'expfunapprox','resapprox-complete'}
+  case {'expfunapprox','resapprox'}
     k     = size(e,1);
     ind   = (1:n);
     ind   = ind(ones(1,k),:);
@@ -59,7 +59,7 @@ switch funapprox
           end
           hv = H(:,:,1);
           hs = H(:,:,2:end);
-        case 'resapprox-complete'
+        case 'resapprox'
           [LBnext,UBnext]      = b(snext,params);
           Xnext                = funeval(c,fspace,Bsnext,...
                                          [zeros(1,d); eye(d)]);
@@ -89,7 +89,7 @@ switch funapprox
       switch funapprox
         case 'expfunapprox'
           Jxtmp = arraymult(hs,gx,k*n,p,d,m);
-        case 'resapprox-complete'
+        case 'resapprox'
           Jxtmp = hx+...
                   arraymult(hsnext+...
                             arraymult(hxnext(:,:,ixforward),xfnextds,k*n,p,mf,d),...
@@ -105,7 +105,7 @@ switch funapprox
         end
         Bsnext = mat2cell(Bsnext.vals{1}',n,k*ones(n,1))';
         switch funapprox % The product with fz is vectorized for 'expfunapprox' and
-                         % executed in a loop for resapprox-complete', because it
+                         % executed in a loop for resapprox', because it
                          % seems to be the fastest ways to do it.
           case 'expfunapprox'
             [~,gridJc] = spblkdiag(zeros(1,n,p),[],0);
@@ -114,7 +114,7 @@ switch funapprox
             Jc    = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);
             Jc    = arraymult(fz,Jc,n,m,p,numel(c));
             Jc    = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
-          case 'resapprox-complete'
+          case 'resapprox'
             [~,gridJc] = spblkdiag(zeros(p,mf,k),[],0);
             kw     = kron(w',eye(p));
             hxnext = num2cell(reshape(hxnext(:,:,ixforward),[k n p mf]),[1 3 4])';
@@ -146,7 +146,7 @@ switch funapprox
             hv                = hv.*hmult;
           end
 
-        case 'resapprox-complete'
+        case 'resapprox'
           [LBnext,UBnext] = b(snext,params);
           if extrapolate>=1, snextinterp = snext;
           else

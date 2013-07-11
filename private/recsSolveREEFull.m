@@ -33,9 +33,9 @@ Phi    = interp.Phi;
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 [LB,UB]  = model.b(s,params);
 
-if strcmp(funapprox,'resapprox-complete'), c = c(:,ixforward); end
+if strcmpi(funapprox,'resapprox'), c = c(:,ixforward); end
 
-if strcmp(funapprox,'resapprox-complete') && all(isinf([LB(:); UB(:)]))
+if strcmpi(funapprox,'resapprox') && all(isinf([LB(:); UB(:)]))
   %% Reshape inputs
   X              = x;
   X(:,ixforward) = c;
@@ -69,7 +69,7 @@ else
   fval  = reshape(G(1:n*m),m,n)';
 end
 
-if strcmp(funapprox,'resapprox-complete'),  c = funfitxy(fspace,Phi,x); end
+if strcmpi(funapprox,'resapprox'),  c = funfitxy(fspace,Phi,x); end
 
 function [G,J] = FullPb(X,s,b,f,g,h,params,grid,e,w,fspace,funapprox,Phi,m,functional,extrapolate,ixforward)
 % FULLPB evaluates the equations and Jacobian of the complete rational expectations problem

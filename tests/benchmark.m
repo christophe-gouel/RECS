@@ -24,7 +24,7 @@ Tg2 = 50;
 mcpsolverlist    = {'lmmcp','ncpsolve','path'};
 reemethodlist    = {'iter','1-step'};
 modellist        = {'c1','g1','g2','s1','s2'};
-funapproxlist    = {'resapprox-complete','expapprox'};
+funapproxlist    = {'resapprox','expapprox'};
 
 time = zeros(length(modellist)*length(mcpsolverlist),4);
 

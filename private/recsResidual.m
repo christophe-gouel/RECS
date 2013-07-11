@@ -31,7 +31,7 @@ switch funapprox
       R = reshape(R',n*p,1);
     end
     
-  case 'resapprox-complete'
+  case 'resapprox'
     if NewtonMethod, R = funeval(c,fspace,Phi)-x(:,ixforward);
     else             R = funfitxy(fspace,Phi,x(:,ixforward))-c;
     end
@@ -53,7 +53,7 @@ if nargout>=2
       
       Rc = kron(B,speye(p));
       
-    case 'resapprox-complete'
+    case 'resapprox'
       if m==mf
         Rx = -speye(n*mf);
       else

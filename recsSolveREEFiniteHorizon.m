@@ -11,7 +11,7 @@ defaultopt = struct(                                        ...
                                  'Jacobian'       , 'on')  ,...
     'extrapolate'       , 1                                ,...
     'loop_over_s'       , 0                                ,...
-    'funapprox'         , 'resapprox-complete');
+    'funapprox'         , 'resapprox');
 if nargin <=6
   options = defaultopt;
 else
@@ -19,7 +19,7 @@ else
   if isfield(options,'eqsolveroptions')
     options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
   end
-  options = catstruct(options,struct('funapprox','resapprox-complete'));
+  options = catstruct(options,struct('funapprox','resapprox'));
   options = catstruct(defaultopt,options);
 end
 

@@ -6,7 +6,7 @@
 warning('off')
 
 reemethodlist = {'iter' 'iter-newton' '1-step'};
-funapproxlist = {'resapprox-complete' 'resapprox-simple' 'expfunapprox' 'expapprox'};
+funapproxlist = {'resapprox' 'expfunapprox' 'expapprox'};
 
 
 recsdirectory   = fileparts(which('recsSimul'));
@@ -36,7 +36,7 @@ end
 disp('Check full Newton approach')
 options.reemethod = '1-step';
 for funapprox=funapproxlist
-  if any(strcmp(funapprox,{'resapprox-simple','expapprox'})), continue; end
+  if strcmp(funapprox,'expapprox'), continue; end
   fprintf(1,' Functional approximation - %s\n',funapprox{1});
   options.funapprox = funapprox{1};
   recsSolveREE(interp,model,s,x,options);
@@ -50,7 +50,7 @@ options.reesolveroptions.DerivativeCheck = 'on';
 options.reesolveroptions.MaxIter         = 0;
 options.reesolveroptions.Display         = 'off';
 for funapprox=funapproxlist
-  if any(strcmp(funapprox,{'resapprox-simple','expapprox'})), continue; end
+  if strcmp(funapprox,'expapprox'), continue; end
   fprintf(1,' Functional approximation - %s\n',funapprox{1});
   options.funapprox = funapprox{1};
   recsSolveREE(interp,model,s,x,options);

@@ -42,7 +42,7 @@ Phi    = interp.Phi;
 z        = zeros(n,0);
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
 
-if strcmp(funapprox,'resapprox-complete'),  c = c(:,ixforward); end
+if strcmpi(funapprox,'resapprox'),  c = c(:,ixforward); end
 
 %% Solve for the rational expectations equilibrium
 [c,~,exitREE] = runeqsolver(@ResidualFunction,c(:),...
@@ -52,7 +52,7 @@ if strcmp(funapprox,'resapprox-complete'),  c = c(:,ixforward); end
 
 exitflag = and(exitREE,exitEQ);
 
-if strcmp(funapprox,'resapprox-complete'), c = funfitxy(fspace,Phi,x); end
+if strcmpi(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x); end
 
 
 %% Nested function

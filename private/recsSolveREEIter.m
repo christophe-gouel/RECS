@@ -42,7 +42,7 @@ k      = length(w);               % number of shock values
 z      = zeros(n,0);
 
 %% Precalculations
-if explicit || any(strcmp(funapprox,{'expapprox','resapprox-simple'}))
+if explicit || strcmp(funapprox,'expapprox')
   [LB,UB] = b(s,params);
   ind     = (1:n);
   ind     = ind(ones(1,k),:);
@@ -50,9 +50,7 @@ if explicit || any(strcmp(funapprox,{'expapprox','resapprox-simple'}))
   ee      = e(repmat(1:k,1,n),:);
 end
 
-if strcmp(funapprox,'resapprox-complete')
-  c = c(:,ixforward);
-end
+if strcmp(funapprox,'resapprox'), c = c(:,ixforward); end
 
 %% Solve for the rational expectations equilibrium
 switch reesolver
@@ -84,9 +82,7 @@ else
   exitflag = 0;
 end
 
-if strcmp(funapprox,'resapprox-complete')
-  c = funfitxy(fspace,Phi,x);
-end
+if strcmp(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x); end
 
 
 %% Nested function
@@ -155,45 +151,7 @@ function R = ResidualREE(cc)
         output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
         R      = funfitxy(fspace,Phi,h([],[],[],s,x,params,output))-cc;
 
-      case 'resapprox-simple'
-        %% Response variables approximation
-        cc    = reshape(cc,n,m);
-        if functional, params{end} = cc; end
-
-        if useapprox % x calculated by interpolation
-          [LB,UB] = b(s,params);
-          x       = min(max(funeval(cc,fspace,Phi),LB),UB);
-        end % if not previous x is used
-
-        % Calculation of snext
-        xx     = x(ind,:);
-        snext  = g(ss,xx,ee,params,output);
-        
-        % Calculation of xnext
-        if extrapolate>=1, snextinterp = snext;
-        else
-          snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
-                            fspace.a(ones(n*k,1),:));
-        end % extrapolate
-        [LBnext,UBnext]    = b(snext,params);
-        xnext              = zeros(n*k,m);
-        xnext(:,ixforward) = min(max(funeval(cc(:,ixforward),fspace,snextinterp),...
-                                     LBnext(:,ixforward)),UBnext(:,ixforward));
-        
-        % Calculation of z
-        if nargout(h)<6
-          hv                 = h(ss,xx,ee,snext,xnext,params,output);
-        else
-          [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
-          hv                 = hv.*hmult;
-        end
-        z     = reshape(w'*reshape(hv,k,n*p),n,p);
-
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
-                                               fspace,ixforward,options);
-        R            = funfitxy(fspace,Phi,x)-cc;
-      
-      case 'resapprox-complete'
+      case 'resapprox'
         %% Response variables approximation
         cc    = reshape(cc,n,mf);
         if functional, params{end} = cc; end

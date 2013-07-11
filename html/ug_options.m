@@ -50,7 +50,7 @@
 %         <ul>
 %           <li> '<tt>expapprox</tt>': expectations (variables <tt>z</tt>), similar to the parameterized expectations approach of den Haan and Marcet (1990).</li>
 %           <li> '<tt>expfunapprox</tt>': expectations function (function <tt>h</tt>).</li>
-%           <li> '<tt>resapprox-simple</tt>' or '<tt>resapprox-complete</tt>' (default): response variables (variables <tt>x</tt>).</li>
+%           <li> '<tt>resapprox</tt>' (default): response variables (variables <tt>x</tt>).</li>
 %         </ul>
 %       </td>
 %       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>

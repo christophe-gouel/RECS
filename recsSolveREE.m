@@ -37,8 +37,7 @@ function [interp,x,z,fval,exitflag,output] = recsSolveREE(interp,model,s,x,optio
 %                       interpolation space, 0 or -1 to forbid it (default: 1).
 %                       For -1 and 2, RECSSOLVEREE displays a warning if state
 %                       variables exceed the interpolation space.
-%    funapprox        : 'expapprox', 'expfunapprox', 'resapprox-simple'
-%                       or 'resapprox-complete' (default)
+%    funapprox        : 'expapprox', 'expfunapprox', or 'resapprox' (default)
 %    functional       : 1 if the equilibrium equations are a functional equation
 %                       problem (default: 0)
 %    loop_over_s      : 0 (default) to solve all grid points at once, 1 to loop
@@ -87,7 +86,7 @@ defaultopt = struct(                                        ...
     'extrapolate'       , 1                                ,...
     'functional'        , 0                                ,...
     'loop_over_s'       , 0                                ,...
-    'funapprox'         , 'resapprox-complete'             ,...
+    'funapprox'         , 'resapprox'                      ,...
     'reemethod'         , 'iter'                           ,...
     'reesolver'         , 'sa'                             ,...
     'reesolveroptions'  , struct([])                       ,...
@@ -116,11 +115,11 @@ params = model.params;
 w      = model.w;
 
 if any(strcmp(reemethod,{'1-step','iter-newton'})) && ...
-      any(strcmp(funapprox,{'expapprox','resapprox-simple'}))
+      strcmp(funapprox,'expapprox')
   warning('RECS:Switching2Iterative',...
           ['Solving the rational expectations problem is not implemented when ' ...
            'approximating this function. Switching to the default options.'])
-  funapprox         = 'resapprox-complete';
+  funapprox         = 'resapprox';
   options.funapprox = funapprox;
   reemethod         = 'iter';
 end
@@ -272,7 +271,7 @@ if isempty(z)
       hv                = hv.*hmult;
     end
 
-   case 'resapprox-complete'
+   case 'resapprox'
     [LBnext,UBnext] = b(snext,params);
     xnext           = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
     output          = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);

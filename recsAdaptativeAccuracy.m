@@ -26,6 +26,6 @@ for i=1:size(snodes,2)
   [~,x] = recsSimul(model,interp,s,1,[],options);
   Phi   = funbasx(interp.fspace,s);
   R = recsResidual(s,x,model.h,model.params,interp.cx,interp.fspace,...
-                   'resapprox-complete',Phi);
+                   'resapprox',Phi);
   res(i) = norm(R,Inf);
 end
