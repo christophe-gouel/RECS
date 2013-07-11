@@ -76,17 +76,6 @@ switch reesolver
   case 'sa'
     [c,~,exitREE] = SA(@ResidualREE, c(:), reesolveroptions);
 
-  case 'kinsol'
-    neq = numel(c);
-    KINoptions  = KINSetOptions('Verbose',       false,...
-                                'LinearSolver',  'GMRES',...
-                                'ErrorMessages', false,...
-                                'FuncNormTol',   reesolveroptions.atol);
-    KINInit(@ResidualREE,neq,KINoptions);
-    [status, c] = KINSol(c(:),'LineSearch',ones(neq,1),ones(neq,1));
-    KINFree;
-    if status==0 || status==1, exitREE = 1; else exitREE = 0; end
-
 end % switch reesolver
 
 if exitREE==1 && exitEQ==1
@@ -101,7 +90,7 @@ end
 
 
 %% Nested function
-function [R,FLAG] = ResidualREE(cc)
+function R = ResidualREE(cc)
 % RESIDUALREE Calculates the residual of the model with regards to rational expectations
 
   if ~explicit
@@ -251,7 +240,6 @@ function [R,FLAG] = ResidualREE(cc)
 
   end % if ~explicit
   R        = R(:);
-  FLAG     = 0;
 end
 
 end
