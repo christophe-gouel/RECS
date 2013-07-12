@@ -11,9 +11,9 @@ funapproxlist = {'resapprox' 'expfunapprox' 'expapprox'};
 recsdirectory   = fileparts(which('recsSimul'));
 addpath(fullfile(recsdirectory,'demos'))
 
-expfunOK = [1 1 0];
+expfunOK = [1 1 1 0 0];
 
-for iter=1:3
+for iter=1:5
   clear model interp s x
   switch iter
     case 1
@@ -23,21 +23,40 @@ for iter=1:3
       [interp,s] = recsinterpinit(10,[0.85*model.sss(1) min(model.e)*4],...
                                   [1.15*model.sss(1) max(model.e)*4],'cheb');
       [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);
-      
+
     case 2
+      %% GRO3
+      disp('Stochastic growth model with recursive preferences and stochastic volatility')
+      model = recsmodel('gro3.yaml',struct('Mu',[0 0],'Sigma',eye(2),'order',5));
+      [interp,s] = recsinterpinit(4,...
+                                  [0.85*model.sss(1) -0.11 log(0.007)*1.15],...
+                                  [1.20*model.sss(1)  0.11 log(0.007)*0.85],...
+                                  'cheb');
+      [interp,x] = recsFirstGuess(interp,model,s);
+
+    case 3
       %% CS1
       disp('Consumption/saving model with borrowing constraint')
       model      = recsmodel('cs1.yaml',struct('Mu',100,'Sigma',100,'order',5));
       [interp,s] = recsinterpinit(20,model.sss/2,model.sss*2);
       x          = s;
       
-    case 3
+    case 4
       %% STO1
       disp('Competitive storage model')
       model = recsmodel('sto1.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
       [interp,s] = recsinterpinit(40,model.sss*0.7,model.sss*1.5);
       [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 
+    case 5
+      %% STO6
+      disp('Two-country storage-trade model')
+      model = recsmodel('sto6.yaml',struct('Mu',[1 1],...
+                                           'Sigma',diag([0.05 0.05])^2,...
+                                           'order',5));
+      [interp,s] = recsinterpinit(7,0.73*model.sss,2*model.sss);
+      [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
+      
   end % switch
   
   [LB,UB] = model.b(s,model.params);
