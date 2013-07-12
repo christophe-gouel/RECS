@@ -114,8 +114,7 @@ h      = model.h;
 params = model.params;
 w      = model.w;
 
-if any(strcmp(reemethod,{'1-step','iter-newton'})) && ...
-      strcmp(funapprox,'expapprox')
+if strcmp(reemethod,'1-step') && strcmp(funapprox,'expapprox')
   warning('RECS:Switching2Iterative',...
           ['Solving the rational expectations problem is not implemented when ' ...
            'approximating this function. Switching to the default options.'])
@@ -203,7 +202,7 @@ switch reemethod
   case 'iter'
     [c,x,z,fval,exitflag] = recsSolveREEIter(interp,model,s,x,c,options);
   case 'iter-newton'
-    [c,x,fval,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);
+    [c,x,z,fval,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);
   case '1-step'
     [c,x,fval,exitflag] = recsSolveREEFull(interp,model,s,x,c,options);
   otherwise

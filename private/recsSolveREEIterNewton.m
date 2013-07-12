@@ -1,4 +1,4 @@
-function [c,x,fval,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
+function [c,x,z,fval,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options)
 % RECSSOLVEREEITERNEWTON finds the REE of a model by doing a Newton iteration for the rational expectations step
 %
 % RECSSOLVEREEITERNEWTON is called by recsSolveREE. It is not meant to be called
@@ -41,7 +41,8 @@ w         = model.w;
 fspace = interp.fspace;
 Phi    = interp.Phi;
 
-n = size(x,1);
+n   = size(x,1);
+vec = @(X) X(:);
 
 %% Precalculations
 if ~(explicit || strcmp(funapprox,'expapprox'))
@@ -51,7 +52,6 @@ else
   k       = length(w);
   xnext   = zeros(n*k,m);
   output  = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
-  vec     = @(X) X(:);
   [LB,UB] = b(s,params);
   ind     = (1:n);
   ind     = ind(ones(1,k),:);
@@ -64,21 +64,23 @@ end
 if strcmpi(funapprox,'resapprox'),  c = c(:,ixforward); end
 
 %% Solve for the rational expectations equilibrium
-[c,~,exitREE] = runeqsolver(@ResidualFunction,c(:),...
+[c,~,exitREE] = runeqsolver(@ResidualFunction,vec(c'),...
                             -inf(numel(c),1),inf(numel(c),1),...
                             reesolver,...
                             reesolveroptions);
 
 exitflag = and(exitREE,exitEQ);
 
-if strcmpi(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x); end
+if strcmpi(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x); 
+else                               c = reshape(c,[],n)';
+end
 
 
 %% Nested function
 function [R,dRdc] = ResidualFunction(cc)
 % RESIDUALFUNCTION Calculates the residual of the model with regards to rational expectations
 
-  cc    = reshape(cc,n,[]);
+  cc    = reshape(cc,[],n)';
   if functional, params{end} = cc; end
 
   if ~(explicit || strcmpi(funapprox,'expapprox'))
@@ -141,7 +143,7 @@ function [R,dRdc] = ResidualFunction(cc)
     z     = reshape(w'*reshape(hv,k,n*p),n,p);
     
     % Prepare output
-    R     = vec(funfitxy(fspace,Phi,z)-cc);
+    R     = vec((funfitxy(fspace,Phi,z)-cc)');
 
   else
     %% Explicit models
@@ -173,7 +175,7 @@ function [R,dRdc] = ResidualFunction(cc)
     x      = min(max(f(s,[],z,params,output),LB),UB);
 
     % Prepare output
-    R      = vec(funfitxy(fspace,Phi,x(:,ixforward))-cc);
+    R      = vec((funfitxy(fspace,Phi,x(:,ixforward))-cc)');
 
   end % if ~(explicit || strcmpi(funapprox,'expapprox'))
 
