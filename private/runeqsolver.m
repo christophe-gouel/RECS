@@ -13,8 +13,8 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,eqsolver,eqsolveroptions,vara
 % is not an MCP solver). RUNEQSOLVER returns X the solution. FUNC is an
 % anonymous function that evaluates the equations, and possible the Jacobian at
 % X.
-% EQSOLVER designates the solver to use. Possible choices are 'lmmcp', 'fsolve',
-% 'ncpsolve', and 'path'.
+% EQSOLVER designates the solver to use. Possible choices are 'lmmcp', 'sa',
+% 'krylov', 'fsolve', 'mixed' (mix of 'sa' and 'krylov'), 'ncpsolve', and 'path'.
 % EQSOLVEROPTIONS is a structure containing the options for the solver. See each
 % solver's documentation for the available options. Common options are:
 %    Jacobian        : 'off' to use numerical differentiation and 'on' if FUNC
@@ -87,14 +87,14 @@ try
       clear global eqtosolve
     
     case 'mixed'
-      reesolveroptions.maxit = 10;
-      reesolveroptions.atol  = 1E-2;
-      reesolveroptions.rtol  = 1E-3;
+      eqsolveroptions.maxit = 10;
+      eqsolveroptions.atol  = 1E-2;
+      eqsolveroptions.rtol  = 1E-3;
       [x,f,exitflag] = SA(eqtosolve, x, eqsolveroptions);
       
-      reesolveroptions.maxit = 40;
-      reesolveroptions.atol  = sqrt(eps);
-      reesolveroptions.rtol  = sqrt(eps);
+      eqsolveroptions.maxit = 40;
+      eqsolveroptions.atol  = sqrt(eps);
+      eqsolveroptions.rtol  = sqrt(eps);
       [x,~,exitflag] = nsoli(eqtosolve, x, eqsolveroptions);
       exitflag = ~exitflag;
       f = NaN(size(x));

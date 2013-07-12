@@ -22,7 +22,7 @@ mg2 = recsmodel('gro2.yaml',struct('Mu',0,'Sigma',0.04^2,'order',7));
 Tg2 = 50;
 
 mcpsolverlist    = {'lmmcp','ncpsolve','path'};
-reemethodlist    = {'iter-newton','1-step'};
+reemethodlist    = {'iter','1-step'};
 modellist        = {'c1','g1','g2','s1','s2'};
 funapproxlist    = {'resapprox','expapprox'};
 

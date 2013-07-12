@@ -1,10 +1,10 @@
 function [c,x,z,fval,exitflag] = recsSolveREEIter(interp,model,s,x,c,options)
-% RECSSOLVEREEITER Finds the REE of a model by iteration between equilibrium equations and rational expectations
+% RECSSOLVEREEITER the REE of a model by iteration between equilibrium equations and rational expectations
 %
-% RECSSOLVEREEITER is called by recsSolveREE. It is not meant to be called directly
-% by the user.
+% RECSSOLVEREEITER is called by recsSolveREE. It is not meant to be called
+% directly by the user.
 %
-% See also RECSSOLVEEREE, RECSSOLVEREEITERNEWTON, RECSSOLVEEREEFULL.
+% See also RECSSOLVEREE, RECSSOLVEREEFULL.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -15,12 +15,15 @@ extrapolate        = options.extrapolate;
 funapprox          = lower(options.funapprox);
 functional         = options.functional;
 reesolver          = lower(options.reesolver);
-reesolveroptions   = catstruct(struct('showiters' , options.display,...
-                                      'atol'      , sqrt(eps),...
-                                      'lmeth'     , 3,...
-                                      'rtol'      , eps),...
+reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
+                                      'DerivativeCheck','off'          ,...
+                                      'Display'        ,'iter'         ,...
+                                      'Jacobian'       , 'on'          ,...
+                                      'lmeth'          , 3)         ,...
                                options.reesolveroptions);
 useapprox          = options.useapprox;
+
+NewtonMethod       = ~any(strcmpi(reesolver,{'sa','krylov','mixed'}));
 
 b         = model.b;
 e         = model.e;
@@ -31,139 +34,117 @@ ixforward = model.ixforward;
 params    = model.params;
 w         = model.w;
 [m,p]     = model.dim{2:3};
-mf        = sum(ixforward); % Number of forward response variables
 
 fspace = interp.fspace;
 Phi    = interp.Phi;
 
-n      = size(x,1);
-output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
-k      = length(w);               % number of shock values
-z      = zeros(n,0);
+n   = size(x,1);
+vec = @(X) X(:);
 
 %% Precalculations
-if explicit || strcmp(funapprox,'expapprox')
+if ~(explicit || strcmp(funapprox,'expapprox'))
+  z        = zeros(n,0);
+  [~,grid] = spblkdiag(zeros(m,m,n),[],0);
+else
+  k       = length(w);
+  xnext   = zeros(n*k,m);
+  output  = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
   [LB,UB] = b(s,params);
   ind     = (1:n);
   ind     = ind(ones(1,k),:);
   ss      = s(ind,:);
   ee      = e(repmat(1:k,1,n),:);
+  exitEQ  = 1;
+  fval    = zeros(size(x));
 end
 
-if strcmp(funapprox,'resapprox'), c = c(:,ixforward); end
+if strcmpi(funapprox,'resapprox'),  c = c(:,ixforward); end
 
 %% Solve for the rational expectations equilibrium
-switch reesolver
-  % Attention: the variables x and z are changed by the nested function 'ResidualREE'
-  case 'mixed'
-    reesolveroptions.maxit = 10;
-    reesolveroptions.atol  = 1E-2;
-    reesolveroptions.rtol  = 1E-3;
-    c = SA(@ResidualREE, c(:), reesolveroptions);
+[c,~,exitREE] = runeqsolver(@ResidualFunction,vec(c'),...
+                            -inf(numel(c),1),inf(numel(c),1),...
+                            reesolver,...
+                            reesolveroptions);
 
-    reesolveroptions.maxit = 40;
-    reesolveroptions.atol  = 1E-7;
-    reesolveroptions.rtol  = 1E-25;
-    [c,~,exitREE] = nsoli(@ResidualREE, c(:), reesolveroptions);
-    if exitREE==0, exitREE = 1; else exitREE = 0; end
+exitflag = and(exitREE,exitEQ);
 
-  case 'krylov'
-    [c,~,exitREE] = nsoli(@ResidualREE, c(:), reesolveroptions);
-    if exitREE==0, exitREE = 1; else exitREE = 0; end
-
-  case 'sa'
-    [c,~,exitREE] = SA(@ResidualREE, c(:), reesolveroptions);
-
-end % switch reesolver
-
-if exitREE==1 && exitEQ==1
-  exitflag = 1;
-else
-  exitflag = 0;
+if strcmpi(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x); 
+else                               c = reshape(c,[],n)';
 end
-
-if strcmp(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x); end
 
 
 %% Nested function
-function R = ResidualREE(cc)
-% RESIDUALREE Calculates the residual of the model with regards to rational expectations
+function [R,dRdc] = ResidualFunction(cc)
+% RESIDUALFUNCTION Calculates the residual of the model with regards to rational expectations
 
-  if ~explicit
-    switch funapprox
-      case 'expapprox'
-        %% Expectations approximations
-        cc    = reshape(cc,n,p);
-        if functional, params{end} = cc; end
+  cc    = reshape(cc,[],n)';
+  if functional, params{end} = cc; end
 
-        % Calculation of z by interpolation
-        z     = funeval(cc,fspace,Phi);
+  if ~(explicit || strcmpi(funapprox,'expapprox'))
+    %% Non-explicit models with response variable or expectations function approximation
+    [x,fval,exitEQ]  = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,fspace,...
+                                            ixforward,options);
+    if nargout==1
+      %% Without Jacobian
+      R = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward,NewtonMethod);
+    else
+      %% With Jacobian
+      [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward,true);
+      [~,Fx,Fc] = recsEquilibrium(vec(x'),s,z,b,f,g,h,params,grid,cc,e,w,...
+                                  fspace,funapprox,extrapolate,ixforward);
+      Fc        = sparse(Fc);
+      dRdc      = -Rx*(Fx\Fc)+Rc;
+    end
+  
+  elseif strcmpi(funapprox,'expapprox')
+    %% Expectations approximation (PEA)
+    
+    % Calculation of z by interpolation
+    z     = funeval(cc,fspace,Phi);
 
-        % Calculation of x
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
-                                               fspace,ixforward,options);
+    % Calculation of x
+    [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
+                                           fspace,ixforward,options);
 
-        % Calculation of snext
-        xx      = x(ind,:);
-        snext   = g(ss,xx,ee,params,output);
-        if extrapolate>=1, snextinterp = snext;
-        else
-          snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
-                            fspace.a(ones(n*k,1),:));
-        end
+    % Calculation of snext
+    xx      = x(ind,:);
+    snext   = g(ss,xx,ee,params,output);
 
-        % Calculation of xnext
-        [LBnext,UBnext] = b(snext,params);
-        if useapprox % xnext calculated by interpolation
-          xnext              = zeros(n*k,m);
-          xnext(:,ixforward) = min(max(funeval(funfitxy(fspace,Phi,x(:,ixforward)),...
-                                               fspace,snextinterp),...
-                                       LBnext(:,ixforward)),UBnext(:,ixforward));
-        else  % xnext calculated by equation solve
-          xnext = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),...
-                          LBnext),UBnext);
-          xnext = recsSolveEquilibrium(snext,...
-                                       xnext,...
-                                       funeval(cc,fspace,snextinterp),...
-                                       b,f,g,h,params,cc,e,w,fspace,...
-                                       ixforward,options);
-        end
+    % Calculation of xnext
+    if extrapolate>=1, snextinterp = snext;
+    else
+      snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
+                        fspace.a(ones(n*k,1),:));
+    end % extrapolate
+    [LBnext,UBnext] = b(snext,params);
+    if useapprox % xnext calculated by interpolation
+      xnext(:,ixforward) = min(max(funeval(funfitxy(fspace,Phi,x(:,ixforward)),...
+                                           fspace,snextinterp),...
+                                   LBnext(:,ixforward)),UBnext(:,ixforward));
+    else  % xnext calculated by equation solve
+      xnext = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),...
+                      LBnext),UBnext);
+      xnext = recsSolveEquilibrium(snext,xnext,...
+                                   funeval(cc,fspace,snextinterp),...
+                                   b,f,g,h,params,cc,e,w,fspace,...
+                                   ixforward,options);
+    end
+    
+    % Calculation of z
+    if nargout(h)<6
+      hv                 = h(ss,xx,ee,snext,xnext,params,output);
+    else
+      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
+      hv                 = hv.*hmult;
+    end
+    z     = reshape(w'*reshape(hv,k,n*p),n,p);
+    
+    % Prepare output
+    R     = vec((funfitxy(fspace,Phi,z)-cc)');
 
-        % Calculation of z
-        if nargout(h)<6
-          hv                 = h(ss,xx,ee,snext,xnext,params,output);
-        else
-          [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
-          hv                 = hv.*hmult;
-        end
-        z     = reshape(w'*reshape(hv,k,n*p),n,p);
-
-        % Prepare output
-        R     = funfitxy(fspace,Phi,z)-cc;
-
-      case 'expfunapprox'
-        %% Expectations function approximation
-        cc    = reshape(cc,n,p);
-        if functional, params{end} = cc; end
-
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
-                                               fspace,ixforward,options);
-        output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-        R      = funfitxy(fspace,Phi,h([],[],[],s,x,params,output))-cc;
-
-      case 'resapprox'
-        %% Response variables approximation
-        cc    = reshape(cc,n,mf);
-        if functional, params{end} = cc; end
-
-        [x,fval,exitEQ] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,cc,e,w,...
-                                               fspace,ixforward,options);
-        R            = funfitxy(fspace,Phi,x(:,ixforward))-cc;
-    end % switch funapprox
   else
-    %% Explicit model
-    cc = reshape(cc,n,mf);
-
+    %% Explicit models
+    
     % Calculation of snext
     xx     = x(ind,:);
     snext  = g(ss,xx,ee,params,output);
@@ -175,7 +156,6 @@ function R = ResidualREE(cc)
                         fspace.a(ones(n*k,1),:));
     end % extrapolate
     [LBnext,UBnext]    = b(snext,params);
-    xnext              = zeros(n*k,m);
     xnext(:,ixforward) = min(max(funeval(cc,fspace,snextinterp),...
                                  LBnext(:,ixforward)),UBnext(:,ixforward));
 
@@ -192,12 +172,10 @@ function R = ResidualREE(cc)
     x      = min(max(f(s,[],z,params,output),LB),UB);
 
     % Prepare output
-    R      = funfitxy(fspace,Phi,x(:,ixforward))-cc;
-    exitEQ = 1;
-    fval   = zeros(size(x));
+    R      = vec((funfitxy(fspace,Phi,x(:,ixforward))-cc)');
 
-  end % if ~explicit
-  R        = R(:);
+  end % if ~(explicit || strcmpi(funapprox,'expapprox'))
+
 end
 
 end

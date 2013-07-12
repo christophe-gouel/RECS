@@ -65,7 +65,7 @@ for iter=1:5
                    'eqsolveroptions',struct('DerivativeCheck','on'),...
                    'reesolveroptions',struct('maxit',0));
   disp('Check equilibrium equations')
-  options.reemethod = 'iter-newton';
+  options.reemethod = 'iter';
   for funapprox=funapproxlist
     if strcmp(funapprox,'expfunapprox') && ~expfunOK(iter), continue; end
     fprintf(1,' Functional approximation - %s\n',funapprox{1});
@@ -86,7 +86,7 @@ for iter=1:5
   if all(isinf([LB(:); UB(:)]))
     disp('Check iterative Newton approach')
     options.reesolver = 'fsolve';
-    options.reemethod = 'iter-newton';
+    options.reemethod = 'iter';
     options.eqsolveroptions.DerivativeCheck = 'off';
     options.reesolveroptions.DerivativeCheck = 'on';
     options.reesolveroptions.MaxIter         = 0;

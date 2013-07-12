@@ -43,7 +43,7 @@ function [interp,x,z,fval,exitflag,output] = recsSolveREE(interp,model,s,x,optio
 %    loop_over_s      : 0 (default) to solve all grid points at once, 1 to loop
 %                       over each grid points, or n to loop over n blocks of 
 %                       grid points 
-%    reemethod        : 'iter' (default), 'iter-newton' or '1-step'
+%    reemethod        : 'iter' (default) or '1-step'
 %    reesolver        : 'krylov', 'mixed', 'SA' (default) or 'fsolve'
 %    reesolveroptions : options structure to be passed to reesolver
 %    useapprox        : (default: 1) behaviour dependent of the chosen function to
@@ -201,13 +201,11 @@ end
 switch reemethod
   case 'iter'
     [c,x,z,fval,exitflag] = recsSolveREEIter(interp,model,s,x,c,options);
-  case 'iter-newton'
-    [c,x,z,fval,exitflag] = recsSolveREEIterNewton(interp,model,s,x,c,options);
   case '1-step'
     [c,x,fval,exitflag] = recsSolveREEFull(interp,model,s,x,c,options);
   otherwise
     error(['%s is not a valid value for reemethod. Valid values are ''iter'' ' ...
-           '(default), ''iter-newton'' and ''1-step''.'],reemethod)
+           '(default) and ''1-step''.'],reemethod)
 end
 
 if exitflag~=1

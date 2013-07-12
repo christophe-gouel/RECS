@@ -75,7 +75,6 @@
 %       <td> Define the method to solve for rational expextations:
 %            <ul>
 %              <li> '<tt>iter</tt>' (default): time iteration.</li>
-%              <li> '<tt>iter-newton</tt>': time iteration with Newton step.</li>
 %              <li> '<tt>1-step</tt>': rational expectations and equilibrium equations are solved in one step (as suggested in Judd, 1992).</li>
 %            </ul>
 %       </td>
