@@ -108,12 +108,17 @@ switch funapprox
                          % executed in a loop for resapprox', because it
                          % seems to be the fastest ways to do it.
           case 'expfunapprox'
-            [~,gridJc] = spblkdiag(zeros(1,n,p),[],0);
-            Jc    = cellfun(@(X) full(spblkdiag((X*w)',gridJc,1,p)),...
-                            Bsnext,'UniformOutput',false);
-            Jc    = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);
-            Jc    = arraymult(fz,Jc,n,m,p,numel(c));
-            Jc    = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
+            if issparse(Bsnext{1})
+              Jc = cellfun(@(X) kron((X*w)',speye(p)),Bsnext,'UniformOutput',false);
+              Jc = cat(1,Jc{:});
+              fz = spblkdiag(permute(fz,[2 3 1]));
+              Jc = fz*Jc;        
+            else
+              Jc = cellfun(@(X) kron((X*w)',  eye(p)),Bsnext,'UniformOutput',false);
+              Jc = permute(reshape(cat(1,Jc{:}),[p n numel(c)]),[2 1 3]);
+              Jc = arraymult(fz,Jc,n,m,p,numel(c));
+              Jc = reshape(permute(Jc,[2 1 3]),[n*m numel(c)]);
+            end
           case 'resapprox'
             [~,gridJc] = spblkdiag(zeros(p,mf,k),[],0);
             kw     = kron(w',eye(p));
