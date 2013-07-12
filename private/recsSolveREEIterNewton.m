@@ -93,8 +93,8 @@ function [R,dRdc] = ResidualFunction(cc)
     else
       %% With Jacobian
       [R,Rx,Rc] = recsResidual(s,x,h,params,cc,fspace,funapprox,Phi,ixforward,true);
-      [~,Fx,Fc] = recsEquilibrium(x,s,z,b,f,g,h,params,grid,cc,e,w,fspace,...
-                                  funapprox,extrapolate,ixforward);
+      [~,Fx,Fc] = recsEquilibrium(vec(x'),s,z,b,f,g,h,params,grid,cc,e,w,...
+                                  fspace,funapprox,extrapolate,ixforward);
       Fc        = sparse(Fc);
       dRdc      = -Rx*(Fx\Fc)+Rc;
     end
