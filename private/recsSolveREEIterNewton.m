@@ -26,7 +26,7 @@ reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
                                options.reesolveroptions);
 useapprox          = options.useapprox;
 
-NewtonMethod       = ~any(strcmpi(reesolver,{'krylov','sa'}));
+NewtonMethod       = ~any(strcmpi(reesolver,{'sa','krylov','mixed'}));
 
 b         = model.b;
 e         = model.e;

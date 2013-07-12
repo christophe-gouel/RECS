@@ -63,15 +63,10 @@ end
 try
   switch eqsolver
     case 'lmmcp'
-      [x,f,exitflag] = lmmcp(eqtosolve,...
-                             x,LB,UB,...
-                             eqsolveroptions);
-
-    case 'fsolve'
-      options = optimset(optimset('Display','off'),eqsolveroptions);
-      [x,f,exitflag] = fsolve(eqtosolve,...
-                              x,...
-                              options);
+      [x,f,exitflag] = lmmcp(eqtosolve, x, LB, UB, eqsolveroptions);
+    
+    case 'sa'
+      [x,f,exitflag] = SA(eqtosolve, x, eqsolveroptions);
 
     case 'krylov'
       [x,~,exitflag] = nsoli(eqtosolve, x, eqsolveroptions);
@@ -80,9 +75,7 @@ try
 
     case 'ncpsolve'
       exitflag = 1;  % ncpsolve does not output any exitflag on a failure
-      [x,f]    = ncpsolve(@ncpsolvetransform,...
-                          LB,UB,x,...
-                          eqtosolve);
+      [x,f]    = ncpsolve(@ncpsolvetransform, LB, UB, x, eqtosolve);
       f        = -f;
       if strcmp(lastwarn,'Failure to converge in ncpsolve')
         exitflag = 0;
@@ -90,11 +83,25 @@ try
       end
 
     case 'path'
-      [x,f,exitflag] = recspathmcp(x,LB,UB,'pathtransform');
+      [x,f,exitflag] = recspathmcp(x, LB, UB, 'pathtransform');
       clear global eqtosolve
     
-    case 'sa'
+    case 'mixed'
+      reesolveroptions.maxit = 10;
+      reesolveroptions.atol  = 1E-2;
+      reesolveroptions.rtol  = 1E-3;
       [x,f,exitflag] = SA(eqtosolve, x, eqsolveroptions);
+      
+      reesolveroptions.maxit = 40;
+      reesolveroptions.atol  = sqrt(eps);
+      reesolveroptions.rtol  = sqrt(eps);
+      [x,~,exitflag] = nsoli(eqtosolve, x, eqsolveroptions);
+      exitflag = ~exitflag;
+      f = NaN(size(x));
+
+    case 'fsolve'
+      options = optimset(optimset('Display','off'),eqsolveroptions);
+      [x,f,exitflag] = fsolve(eqtosolve, x, options);
 
   end
 catch
