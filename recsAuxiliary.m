@@ -1,7 +1,7 @@
 function [interp,xa,za] = recsAuxiliary(model,interp,s,x,z,xa,options)
 % RECSAUXILIARY calculates auxiliary variables not included in the core model
 %
-% INTERP = RECSAUXILIARY(MODEL,INTERP,S,X,Z) 
+% INTERP = RECSAUXILIARY(MODEL,INTERP,S,X,Z)
 % For the definition of MODEL and INTERP structure, see recsSolveREE
 % documentation. RECSAUXILIARY returns the interpolation structure INTERP, in
 % which the coefficients matrices cxa (for auxiliary variables) and cza (for
@@ -36,11 +36,12 @@ function [interp,xa,za] = recsAuxiliary(model,interp,s,x,z,xa,options)
 %% Initialization
 defaultopt = struct(                                      ...
     'eqsolver'       , 'krylov'                          ,...
-    'eqsolveroptions', struct('DerivativeCheck', 'off' ,...
+    'eqsolveroptions', struct('Diagnostics'    , 'off' ,...
+                              'DerivativeCheck', 'off' ,...
                               'Jacobian'       , 'off')  ,...
     'extrapolate'    , 1);
 if nargin <=6
-  options = defaultopt; 
+  options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
   if isfield(options,'eqsolveroptions')
@@ -126,16 +127,16 @@ function R = ResidualVFI(xa_old,serial)
 % RESIDUALVFI
 
   if ~serial, xa_old = reshape(xa_old,n,ma); end
-  
+
   cxa    = funfitxy(fspace,Phi,xa_old);
   xanext = Phinext*cxa;
 %   xanext = funeval(cxa,fspace,Phinext);
   ha     = model.ha(ss,xx,xa_old(ind,:),ee,snext,xnext,xanext,params);
   za     = reshape(w'*reshape(ha,k,n*pa),n,pa);
   xa     = fa(s,x,z,za,params);
-  R      = xa-xa_old;  
+  R      = xa-xa_old;
   if ~serial, R = R(:); end
-  
+
 end
 
 end

@@ -16,6 +16,7 @@ funapprox          = lower(options.funapprox);
 functional         = options.functional;
 reesolver          = lower(options.reesolver);
 reesolveroptions   = catstruct(struct('showiters'      ,options.display,...
+                                      'Diagnostics'    , 'off'         ,...
                                       'DerivativeCheck','off'          ,...
                                       'Display'        ,'iter'         ,...
                                       'Jacobian'       , 'on'          ,...
@@ -68,7 +69,7 @@ if strcmpi(funapprox,'resapprox'),  c = c(:,ixforward); end
 
 exitflag = and(exitREE,exitEQ);
 
-if strcmpi(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x); 
+if strcmpi(funapprox,'resapprox'), c = funfitxy(fspace,Phi,x);
 else                               c = reshape(c,[],n)';
 end
 
@@ -95,10 +96,10 @@ function [R,dRdc] = ResidualFunction(cc)
       Fc        = sparse(Fc);
       dRdc      = -Rx*(Fx\Fc)+Rc;
     end
-  
+
   elseif strcmpi(funapprox,'expapprox')
     %% Expectations approximation (PEA)
-    
+
     % Calculation of z by interpolation
     z     = funeval(cc,fspace,Phi);
 
@@ -129,7 +130,7 @@ function [R,dRdc] = ResidualFunction(cc)
                                    b,f,g,h,params,cc,e,w,fspace,...
                                    ixforward,options);
     end
-    
+
     % Calculation of z
     if nargout(h)<6
       hv                 = h(ss,xx,ee,snext,xnext,params,output);
@@ -138,13 +139,13 @@ function [R,dRdc] = ResidualFunction(cc)
       hv                 = hv.*hmult;
     end
     z     = reshape(w'*reshape(hv,k,n*p),n,p);
-    
+
     % Prepare output
     R     = vec((funfitxy(fspace,Phi,z)-cc)');
 
   else
     %% Explicit models
-    
+
     % Calculation of snext
     xx     = x(ind,:);
     snext  = g(ss,xx,ee,params,output);

@@ -58,13 +58,19 @@ if strcmpi(eqsolveroptions.DerivativeCheck,'on')
   eqsolveroptions.DerivativeCheck = 'off';
 end
 
+%% Diagnostics
+if strcmpi(eqsolveroptions.Diagnostics,'on')
+  [f,J] = eqtosolve(x);
+  Diagnostics(x,f,J)
+  eqsolveroptions.Diagnostics = 'off';
+end
 
 %% Solve equations
 try
   switch eqsolver
     case 'lmmcp'
       [x,f,exitflag] = lmmcp(eqtosolve, x, LB, UB, eqsolveroptions);
-    
+
     case 'sa'
       [x,f,exitflag] = SA(eqtosolve, x, eqsolveroptions);
 
@@ -85,13 +91,13 @@ try
     case 'path'
       [x,f,exitflag] = recspathmcp(x, LB, UB, 'pathtransform');
       clear global eqtosolve
-    
+
     case 'mixed'
       eqsolveroptions.maxit = 10;
       eqsolveroptions.atol  = 1E-2;
       eqsolveroptions.rtol  = 1E-3;
       [x,f,exitflag] = SA(eqtosolve, x, eqsolveroptions);
-      
+
       eqsolveroptions.maxit = 40;
       eqsolveroptions.atol  = sqrt(eps);
       eqsolveroptions.rtol  = sqrt(eps);

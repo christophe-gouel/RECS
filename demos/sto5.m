@@ -51,8 +51,7 @@ interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
 
 %% Solve for rational expectations
 % Define options
-options = struct('funapprox'  ,'expfunapprox',...
-                 'simulmethod','solve'       ,...
+options = struct('simulmethod','solve'       ,...
                  'stat'       ,1);
 %%
 [interp,x] = recsSolveREE(interp,model,s,[],options);
