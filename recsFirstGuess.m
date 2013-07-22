@@ -32,6 +32,8 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,T,
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
 %    eqsolveroptions  : options structure to be passed to eqsolver (default:
 %                       empty structure)
+%    fgmethod         : 'auto' (default), 'perturbation', 'perfect-foresight' or
+%                       'steady-state'
 %
 % [INTERP,X] = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,...) returns X, n-by-m matrix,
 % containing the value of the response variables in the first period.
@@ -78,6 +80,7 @@ n = size(s,1);
 
 g      = model.g;
 h      = model.h;
+p      = model.dim{3};
 params = model.params;
 
 %% Solve for the deterministic steady state
@@ -85,30 +88,46 @@ params = model.params;
 
 %% Find first-guess
 [LB,UB]    = model.b(s,params);
-if (strcmp(fgmethod,'auto') && all(isinf([LB(:); UB(:)]))) || strcmp(fgmethod,'perturbation')
-  %% First-order perturbation
-  model    = recsSolveLocal(model);
-  x        = min(max(model.LinearSolution.X(s),LB),UB);
-  z        = model.LinearSolution.Z(s);
-  exitflag = 1;
-  output   = [];
-else
-  %% Solve the perfect foresight problem on each point of the grid
-  x        = zeros(n,size(xss,2));
-  z        = zeros(n,size(zss,2));
-  exitflag = zeros(n,1);
-  N        = zeros(n,1);
-
-  parfor i=1:n
-    [X,~,Z,~,exitflag(i),N(i)] = recsSolveDeterministicPb(model,s(i,:),...
-                                                      T,xss,zss,sss,options);
-    x(i,:) = X(1,:);
-    z(i,:) = Z(1,:);
-  end
-  output = struct('exitflag',exitflag,...
-                  'N'       ,N);
-  exitflag = ~any(exitflag~=1);
+if strcmpi(fgmethod,'auto') && all(isinf([LB(:); UB(:)]))
+  fgmethod = 'perturbation';
+elseif strcmpi(fgmethod,'auto')
+  fgmethod = 'perfect-foresight';
 end
+
+switch fgmethod
+  case 'perturbation'
+    %% First-order perturbation
+    model    = recsSolveLocal(model);
+    x        = min(max(model.LinearSolution.X(s),LB),UB);
+    z        = model.LinearSolution.Z(s);
+    exitflag = 1;
+    output   = [];
+
+  case 'perfect-foresight'
+    %% Solve the perfect foresight problem on each point of the grid
+    x        = zeros(n,size(xss,2));
+    z        = zeros(n,size(zss,2));
+    exitflag = zeros(n,1);
+    N        = zeros(n,1);
+
+    parfor i=1:n
+      [X,~,Z,~,exitflag(i),N(i)] = recsSolveDeterministicPb(model,s(i,:),...
+                                                        T,xss,zss,sss,options);
+      x(i,:) = X(1,:);
+      z(i,:) = Z(1,:);
+    end
+    output = struct('exitflag',exitflag,...
+                    'N'       ,N);
+    exitflag = ~any(exitflag~=1);
+
+  case 'steady-state'
+    %% Response variables equal to their steady-state values
+    x        = min(max(repmat(xss,n,1),LB),UB);
+    z        = NaN(n,p);
+    exitflag = 1;
+    output   = [];
+
+end % switch fgmethod
 
 %% Prepare output
 interp.cx = funfitxy(interp.fspace,interp.Phi,x);
