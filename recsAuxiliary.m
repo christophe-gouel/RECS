@@ -45,7 +45,8 @@ if nargin <=6
 else
   warning('off','catstruct:DuplicatesFound')
   if isfield(options,'eqsolveroptions')
-    options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
+    options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,...
+                                        options.eqsolveroptions);
   end
   options = catstruct(defaultopt,options);
 end
@@ -75,7 +76,8 @@ snext         = g(ss,xx,ee,params,struct('F',1,'Js',0,'Jx',0));
 if options.extrapolate>=1
   snextinterp = snext;
 else
-  snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
+  snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),...
+                    fspace.a(ones(n*k,1),:));
 end
 Phinext       = funbas(fspace,snextinterp);
 % Phinext       = funbasx(fspace,snextinterp);
@@ -94,19 +96,10 @@ za      = zeros(n,pa);
 if pa>0
   %% With auxiliary expectations function
   if nargin<=5 || isempty(xa), xa  = fa(s,x,z,za,params); end
-  switch eqsolver
-    case 'sa'
-      [xa,~,exitflag] = SA(@(X) ResidualVFI(X,true), xa, eqsolveroptions);
-    case 'krylov'
-      [xa,~,exitflag] = nsoli(@(X) ResidualVFI(X,false), xa(:), eqsolveroptions);
-      xa              = reshape(xa,n,ma);
-      if exitflag==0, exitflag = 1; else exitflag = 0; end
-    case {'lmmcp','fsolve','ncpsolve','path'}
-      [xa,~,exitflag] = runeqsolver(@(X) ResidualVFI(X,false),xa(:),...
-                                    -inf(numel(xa),1),inf(numel(xa),1),...
-                                    eqsolver,eqsolveroptions);
-      xa              = reshape(xa,n,ma);
-  end
+  [xa,~,exitflag] = runeqsolver(@(X) ResidualVFI(X,false),xa(:),...
+                                -inf(numel(xa),1),inf(numel(xa),1),...
+                                eqsolver,eqsolveroptions);
+  xa              = reshape(xa,n,ma);
 
   if exitflag~=1
     warning('RECS:FailureVFI','Failure to converge for auxiliary variables');

@@ -158,9 +158,9 @@ switch funapprox
       error(['With functional problems, a first guess has to be provided for ' ...
              'the approximation coefficients.'])
     else
-      xx     = x(ind,:);
-      output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      snext  = g(ss,xx,ee,params,output);
+      xx      = x(ind,:);
+      outputF = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+      snext   = g(ss,xx,ee,params,outputF);
       if extrapolate>=1, snextinterp = snext;
       else
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
@@ -168,9 +168,9 @@ switch funapprox
       [LBnext,UBnext] = b(snext,params);
       xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LBnext),UBnext);
       if nargout(h)<6
-        hv                 = h(ss,xx,ee,snext,xnext,params,output);
+        hv                 = h(ss,xx,ee,snext,xnext,params,outputF);
       else
-        [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
+        [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,outputF);
         hv                 = hv.*hmult;
       end
       z         = reshape(w'*reshape(hv,k,n*p),n,p);
@@ -183,8 +183,8 @@ switch funapprox
       error(['With functional problems, a first guess has to be provided for ' ...
              'the approximation coefficients.'])
     else
-      output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-      c      = funfitxy(fspace,Phi,h([],[],[],s,x,params,output));
+      outputF = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+      c       = funfitxy(fspace,Phi,h([],[],[],s,x,params,outputF));
     end
   otherwise
     if isfield(interp,'cx') && ~isempty(interp.cx)
@@ -223,8 +223,8 @@ switch funapprox
   interp.cz = c;
   interp.cx = funfitxy(fspace,Phi,x);
   if isfield(interp,'ch')
-    output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,output));
+    outputF   = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,outputF));
   end
  case 'expfunapprox'
   interp.ch = c;
@@ -233,17 +233,16 @@ switch funapprox
   interp.cx = c;
   if ~isempty(z), interp.cz = funfitxy(fspace,Phi,z); end
   if isfield(interp,'ch')
-    output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,output));
+    outputF   = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
+    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,outputF));
   end
 end
 
 % Check if state satisfies bounds
-xx     = x(ind,:);
-output = struct('F',1,'Js',0,'Jx',0);
-snext  = g(ss,xx,ee,params,output);
-output = struct('snextmin',min(snext),...
-                'snextmax',max(snext));
+xx      = x(ind,:);
+outputF = struct('F',1,'Js',0,'Jx',0);
+snext   = g(ss,xx,ee,params,outputF);
+output  = struct('snextmin',min(snext),'snextmax',max(snext));
 if extrapolate==2 || extrapolate==-1
   if any(min(snext)<fspace.a)
     warning('RECS:Extrapolation','State variables beyond smin')
@@ -264,19 +263,19 @@ if isempty(z)
    case 'expfunapprox'
     hv   = funeval(c,fspace,snextinterp);
     if nargout(h)==6
-      output            = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),params,output);
+      outputF           = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+      [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),params,outputF);
       hv                = hv.*hmult;
     end
 
    case 'resapprox'
     [LBnext,UBnext] = b(snext,params);
     xnext           = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
-    output          = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
+    outputF         = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
     if nargout(h)<6
-       hv                = h(ss,xx,ee,snext,xnext,params,output);
+       hv                = h(ss,xx,ee,snext,xnext,params,outputF);
     else
-      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
+      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,outputF);
       hv                 = hv.*hmult;
     end
 
