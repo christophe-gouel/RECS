@@ -1,15 +1,13 @@
 function recsInstall
-% RECSINSTALL Finalizes RECS installation
+% RECSINSTALL Finalizes RECS installation from source
 %
-% RECSINSTALL does three things:
-%   - it downloads a dolo-recs executable from google code
-%     (http://code.google.com/p/dynare-python/downloads/list). Only
-%     the executable corresponding to the platform in use is
-%     downloaded, so if you use several OS, you need to launch
-%     RECSINSTALL on all of them.
-%   - it prepares the html help files;
+% RECSINSTALL does the following things:
+%   - Check if recs folder does not include spaces.
+%   - Under Windows, it creates a dolo-recs executable.
+%   - It prepares the html help files.
+%   - Check if there is the solver Path.
 
-% Copyright (C) 2011-2012 Christophe Gouel
+% Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialize
@@ -25,38 +23,20 @@ if ~isempty(strfind(recsdirectory,' '))
            'relocate RECS in a folder without space in its name.'])
 end
 
-%% Install binary files
-fprintf(' - Download dolo-recs executable from Internet: ')
+%% Create dolo-recs executable for Windows
+fprintf(' - Create dolo-recs executable for Windows: \n')
 if ispc
-  extension = '.exe';
-else
-  extension = '';
-end
-
-if ~(ispc || strcmp(computer('arch'),'glnx86'))
-  fprintf('Failure.\n');
-  warning('RECS:NoExecForThisArch',...
-          'Executable not available on this platform.')
-else
-  if ispc
-    txt = 'win32';
+  dolo     = fullfile(recsdirectory,'Python','dolo');
+  dolorecs = fullfile(dolo,'bin','dolo-recs');
+  status = system(['pyinstaller.py --onefile --out=pyinstaller --paths=' dolo ' ' dolorecs]);
+  if ~status
+    movefile(fullfile('.','pyinstaller','dist','dolo-recs.exe'),...
+             fullfile(dolo,'bin','dolo-recs.exe'),'f');
+    rmdir('pyinstaller','s');
+    delete('*.log');
   else
-    txt = computer('arch');
-  end
-  [~,~]  = mkdir(recsdirectory,fullfile('exe',txt));
-  [~,s3] = urlwrite(['http://dynare-python.googlecode.com/files/dolo-recs-'...
-                     txt extension],...
-                    fullfile(recsdirectory,'exe',txt,...
-                             ['dolo-recs' extension]));
-  if ~s3
-  fprintf('Failure.\n');
-  warning('RECS:FailureDownloadingURL',...
-          ['Failure to download dolo-recs executable. RECS is not properly ' ...
-           'installed, see <a href="%s">%s</a> to download dolo-recs manually.'],...
-          'http://code.google.com/p/dynare-python/downloads/list',...
-          'http://code.google.com/p/dynare-python/downloads/list');
-  else
-    fprintf('Done.\n');
+    warning('RECS:DoloRecsCreationFailure',...
+            'Failure to create dolo-recs executable for Windows')
   end
 end
 

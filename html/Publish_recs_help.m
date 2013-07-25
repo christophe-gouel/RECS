@@ -166,4 +166,9 @@ delete(fullfile(targetdirectory,'clearpublish.html'));
 cd(currentfolder)
 
 %% Build search database
-if ~website, builddocsearchdb(targetdirectory); end
+if ~website
+  if exist(fullfile(targetdirectory,'helpsearch'),'dir')
+    rmdir(fullfile(targetdirectory,'helpsearch'),'s')
+  end
+  builddocsearchdb(targetdirectory);
+end
