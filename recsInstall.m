@@ -32,8 +32,8 @@ if ispc
   if ~status
     movefile(fullfile('.','pyinstaller','dist','dolo-recs.exe'),...
              fullfile(dolo,'bin','dolo-recs.exe'),'f');
-    rmdir('pyinstaller','s');
     delete('*.log');
+    rmdir('pyinstaller','s');
   else
     warning('RECS:DoloRecsCreationFailure',...
             'Failure to create dolo-recs executable for Windows')
