@@ -81,8 +81,9 @@ if nargin<5;
   end
 end
 
-nrep  = size(s0,1);
 [d,m] = model.dim{1:2};
+validateattributes(s0,{'numeric'},{'size',[NaN,d],'nonempty'},3)
+nrep  = size(s0,1);
 
 if ~isempty(shocks) && (numel(shocks)~=d || isempty(nper))
   nper = size(shocks,3)+1;
@@ -223,14 +224,14 @@ if exist('cX','var') && t>T
 end
 
 %% Check if state satisfies bounds
-snmin = min(reshape(permute(ssim,[1 3 2]),[],d));
-snmax = max(reshape(permute(ssim,[1 3 2]),[],d));
-if any(snmin<fspace.a)
+ssimlong = reshape(permute(ssim,[1 3 2]),[],d);
+if any(min(ssimlong,[],1)<fspace.a)
   warning('RECS:Extrapolation','Extrapolating beyond smin')
 end
-if any(snmax>fspace.b)
+if any(max(ssimlong,[],1)>fspace.b)
   warning('RECS:Extrapolation','Extrapolating beyond smax')
 end
+clear('ssimlong')
 
 %% Compute some descriptive statistics
 if (nargout>=4 || statdisplay) && (nper >= 40)
