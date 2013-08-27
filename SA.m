@@ -2,11 +2,12 @@ function [x,fval,exitflag] = SA(f,x,options,varargin)
 % SA Solves a system of equations by successive approximation
 %
 % SA solves a system of equations by iterating on the evaluations of the
-% equations: x[i+1] = x[i]+dx[i] until norm(f(x)) has converged to 0, where
-% dx = lambda*f(x).
+% equations: x[i] = x[i-1]+dx[i-1] until norm(f(x[i]))<=atol+rtol*norm(f(x[0])),
+% where dx = lambda*f(x).
 %
 % To enhance convergence SA uses a backtracking line search that divides dx by 2
-% until norm(f(x+dx)) decreases with respect to norm(f(x)).
+% until norm(f(x+dx)) decreases with respect to norm(f(x)) or until maxsteps
+% iterations have been done.
 %
 % X = SA(F,X0) tries to solve the system of equations F(X)=0 and
 % start at the vector X0. F accepts a vector X and return a vector
@@ -81,7 +82,7 @@ while(fnrm > stop_tol && it < maxit)
   it      = it+1;
   dx      = lambda*fval;
   %% Backstepping
-  for itback=1:maxsteps 
+  for itback=1:maxsteps
     fvalnew     = feval(f,x+dx,varargin{:});
     fnrmnew     = norm(fvalnew(:));
     isnotdomerr = ~any(reshape(isinf(fvalnew) | (imag(fvalnew)~=0) | isnan(fvalnew),...
