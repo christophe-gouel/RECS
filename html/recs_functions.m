@@ -11,7 +11,7 @@
 % decision rules
 % * <matlab:doc('recsdemos') |recsdemos|> - Run all RECS demonstration files
 % * <matlab:doc('recsFirstGuess') |recsFirstGuess|> - Find a first guess using the
-% perfect foresight solution
+% perfect foresight solution or the first-order approximation of the model
 % * <matlab:doc('recsinterpinit') |recsinterpinit|> - Prepare a RECS
 % interpolation structure
 % * <matlab:doc('recsmodel') |recsmodel|> - Prepare a RECS model object

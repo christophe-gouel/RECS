@@ -31,7 +31,7 @@ Mu                = 0;
 sigma             = 0.007;
 
 %%
-% You generate the MATLAB model file and pack the model structure with the
+% You generate the MATLAB model file and pack the model object with the
 % following command
 model = recsmodel('gro1.yaml',...
                   struct('Mu',Mu,'Sigma',sigma^2,'order',5));
@@ -51,8 +51,8 @@ smax          = [1.15*model.sss(1) max(model.e)*4];
 %%
 [interp,s] = recsinterpinit(order,smin,smax,'cheb');
 
-%% Find a first guess through the perfect foresight solution
-[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);
+%% Find a first guess through first-order approximation around the steady state
+[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss);
 
 %% Define options
 % With high order Chebyshev polynomials, extrapolation outside the state space

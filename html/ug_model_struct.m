@@ -1,4 +1,4 @@
-%% Define the model structure
+%% Define the model object
 % Now the model should be written in a Yaml file, however MATLAB does not know
 % anything about the Yaml file and, even if it did, although the file is easy
 % for humans to read and write, it means nothing to MATLAB. So we
@@ -6,7 +6,7 @@
 % suitable for MATLAB. Also, we have to provide additional information about the
 % structure of shocks.
 
-%% Convert the Yaml file and create the model structure
+%% Convert the Yaml file and create the model object
 % This task is done by the function |recsmodel| that calls a Python
 % preprocessor, to convert the model described in a Yaml file to a file readable
 % by MATLAB and RECS programs. In the conversion, it calculates the analytic
@@ -22,7 +22,7 @@
 % definition in a MATLAB readable form but also all the derivatives of the
 % equations, plus some additional information such as the parameters values for
 % calibration or a first guess for the steady state.
-% * It creates in MATLAB workspace the structure |model| with two fields: the
+% * It creates in MATLAB workspace the object |model| with two fields: the
 % function name, |func| equal to |@filemodel|, and the parameters values,
 % |params|, if these latter have been provided in the Yaml file.
 
@@ -39,15 +39,15 @@
 % positive definite variance/covariance matrix, and |order| is a scalar or a
 % size-q vector equal to the number of nodes for each shock variable.
 %
-% This function call creates at least three additional fields in the model
-% structure: |e| a matrix of the nodes for the shocks discretization; |w| the
+% This function call fills at least three additional properties in the model
+% object: |e| a matrix of the nodes for the shocks discretization; |w| the
 % vector of associated probabilities; and |funrand| an anonymous function that
 % can generate random numbers corresponding to the underlying distribution.
 %
 % If a first-guess for the deterministic steady state has been provided,
 % |recsmodel| attempts also to find the deterministic steady state of the
-% problem. If it finds it, it is displayed on screen and output as three fields
-% in the model structure: |sss|, |xss|, and |zss| for, respectively, the
+% problem. If it finds it, it is displayed on screen and output as three
+% properties in the model object: |sss|, |xss|, and |zss| for, respectively, the
 % steady-state values of state, response and expectations variables.
 
 %% An example
@@ -65,7 +65,7 @@ model = recsmodel('gro1.yaml',...
 % productivity.
 
 %%
-% The model structure has the following fields:
+% The model object has the following properties:
 disp(model)
 
 %% Notes on functions used

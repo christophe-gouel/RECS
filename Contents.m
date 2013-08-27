@@ -7,7 +7,7 @@
 %   recsConvert               - Convert the interpolation structure of a model to another form.
 %   recsDecisionRules         - Plot a model decision rules
 %   recsdemos                 - Run all RECS demonstration files.
-%   recsFirstGuess            - Find a first guess using the perfect foresight solution.
+%   recsFirstGuess            - Find a first guess using the perfect foresight solution or the first-order approximation of the model
 %   recsinterpinit            - Prepare a RECS interpolation structure.
 %   recsmodel                 - Prepare a RECS model object.
 %   recsSimul                 - Simulate a model.

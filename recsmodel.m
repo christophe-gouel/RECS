@@ -19,8 +19,8 @@ classdef recsmodel
     xss     % Response variables at steady state
     zss     % Expectations variables at steady state
     dima    % Dimension of auxiliary variables
-    fa      %
-    ha      %
+    fa      % Anonymous function that defines the model's auxiliary equations
+    ha      % Anonymous function that defines the model's auxiliary expectations
     dim     % Problem's dimensions {d,m,p}
   end
   properties (Hidden=true)

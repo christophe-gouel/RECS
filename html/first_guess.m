@@ -4,11 +4,18 @@
 % convergence only if the starting point is not too far from the
 % solution. Hence, the importance of a good first guess.
 %
-%% The perfect foresight problem as first guess
 % RECS can attempt to calculate for you a first guess that is good in most
-% situations. It does it by calculating the perfect foresight solution of the
-% deterministic problem in which the shocks in the stochastic problem have been
-% substituted by their expectations:
+% situations. The method chosen by RECS depends on the model's features. In the
+% absence of complementarity constraints, the first guess is the solution of
+% first-order perturbation around the deterministic steady state. If the model
+% has complementarity constraints, the first guess is the perfect foresight
+% solution of the deterministic problem in which the shocks in the stochastic
+% problem have been substituted by their expectations.
+%
+%% The perfect foresight problem as first guess
+% It does it by calculating the perfect foresight solution of the deterministic
+% problem in which the shocks in the stochastic problem have been substituted by
+% their expectations:
 %
 % $$\underline{x}(s) \le x \le \overline{x}(s) \perp f(s,x,z),$$
 %

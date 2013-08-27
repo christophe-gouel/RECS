@@ -1,6 +1,6 @@
 %% Define the interpolation structure
 % Following the previous two steps (<ug_model_files.html Writing RECS model
-% files> and <ug_model_struct.html Defining the model structure>) to completely
+% files> and <ug_model_struct.html Defining the model object>) to completely
 % define the problem, it remains only to define the domain over which it will be
 % approximated and the precision of the approximation.
 
@@ -25,7 +25,7 @@
 
 %% An example
 % We now define the interpolation structure for the stochastic growth model
-% example (<gro1.html GRO1>). Using the model structure defined in
+% example (<gro1.html GRO1>). Using the model object defined in
 % <ug_model_struct.html the preceding step>, we choose bounds for capital 15%
 % below and above the steady-state value (|model.sss(1)|), and for productivity,
 % which follows an AR(1), we choose 4 times below minimum and 4 times above
@@ -36,10 +36,10 @@ smax          = [1.15*model.sss(1) max(model.e)*4];
 % Using 10 nodes for each dimension and Chebyshev polynomials, the function call
 % is:
 [interp,s] = recsinterpinit(10,smin,smax,'cheb');
-%% 
+%%
 % The interpolation structure has the following fields:
 disp(interp)
-  
+
 %% Choice Spline/Chebyshev polynomials
 % To be completed
 

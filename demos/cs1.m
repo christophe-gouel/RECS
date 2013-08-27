@@ -29,7 +29,7 @@ Mu                = 100;
 sigma             = 10;
 
 %%
-% You generate the MATLAB model file and pack the model structure with the
+% You generate the MATLAB model file and pack the model object with the
 % following command
 model = recsmodel('cs1.yaml',...
                   struct('Mu',Mu,'Sigma',sigma^2,'order',5));

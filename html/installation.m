@@ -66,3 +66,31 @@
 %
 % Let me know whether or not it works.
 
+%% Installation from source
+% If you want to work with the bleeding edge version of RECS, which may be
+% unstable, or if you want to contribute to RECS development, you need to
+% install RECS from source. The installation requires <http://git-scm.com/ Git>.
+%
+% When installing from source, all platforms (Linux, Mac, and Windows) require
+% <http://www.python.org/download/ Python 2.7.X>, along with
+% <http://pyyaml.org/wiki/PyYAML PyYaml>, <http://sympy.org SymPy>, and
+% <http://www.scipy.org/Download SciPy>. Under Windows, it is also necessary to
+% install <http://www.pyinstaller.org/ PyInstaller> and to make its folder
+% available in Windows Path.
+%
+% # Download the latest version of RECS from the git repository by typing in a
+% command line: |git clone https://github.com/christophe-gouel/RECS.git recs|
+% # From RECS folder (|cd recs|), download recs submodules with two commands:
+% |git submodule init| and |git submodule update|.
+% # Install the CompEcon toolbox: (i) <http://www4.ncsu.edu/~pfackler/compecon/
+% Download the CompEcon toolbox archive>; (ii) Unzip the archive into a folder,
+% called here |compeconfolder|; (iii) Add CompEcon to the MATLAB path:
+% |addpath('compeconfolder/CEtools','compeconfolder/CEdemos')|; (iv) Type
+% |mexall| in MATLAB prompt to create all CompEcon mex files.
+% # (optional) Install other dependencies.
+% # Add the RECS folder to the MATLAB path: |addpath('recsfolder')|.
+% # Finalizes RECS installation from source by running in MATLAB the function
+% |recsInstall|.
+% # You can test your installation by running RECS demonstration files by typing
+% |recsdemos|. You can also access RECS documentation in MATLAB by typing |doc|.
+

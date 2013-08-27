@@ -18,7 +18,7 @@
 
       <tocitem target="ug_setting_up.html"> Setting Up a Rational Expectations Problem
         <tocitem target="ug_model_files.html"> Writing model files </tocitem>
-	<tocitem target="ug_model_struct.html"> Defining the model structure </tocitem>
+	<tocitem target="ug_model_struct.html"> Defining the model object </tocitem>
         <tocitem target="ug_interpolation.html"> Defining the interpolation structure </tocitem>
       </tocitem>
       <tocitem target="ss.html"> Steady state </tocitem>
