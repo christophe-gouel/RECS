@@ -1,4 +1,4 @@
-function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,T,options)
+function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,options)
 % RECSFIRSTGUESS finds a first guess using the perfect foresight solution
 %
 % RECSFIRSTGUESS tries to find a first-guess for the rational expectations model
@@ -23,10 +23,7 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,T,
 %    params : model's parameters, it is preferable to pass them as a cell array
 %             but other formats are acceptable
 %
-% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T) uses T (integer) for time
-% horizon.
-%
-% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,T,OPTIONS) solves the problem
+% INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,OPTIONS) solves the problem
 % with the parameters defined by the structure OPTIONS. The fields of the
 % structure are
 %    eqsolver         : 'fsolve', 'lmmcp' (default), 'ncpsolve' or 'path'
@@ -34,6 +31,8 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,T,
 %                       empty structure)
 %    fgmethod         : 'auto' (default), 'perturbation', 'perfect-foresight' or
 %                       'steady-state'
+%    T                : integer defining the time horizon at which the model is
+%                       supposed to converge to its steady state (default: 50)
 %
 % [INTERP,X] = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,...) returns X, n-by-m matrix,
 % containing the value of the response variables in the first period.
@@ -65,9 +64,9 @@ if nargin <=4 || isempty(xss)
     xss = [];
   end
 end
-if nargin <=5 || isempty(T), T = 50; end
-defaultopt = struct('fgmethod','auto');
-if nargin <=6
+defaultopt = struct('fgmethod','auto',...
+                    'T'       ,50);
+if nargin <=5
   options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
@@ -75,6 +74,7 @@ else
 end
 
 fgmethod = options.fgmethod;
+T        = options.T;
 
 n = size(s,1);
 

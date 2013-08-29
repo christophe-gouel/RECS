@@ -47,16 +47,14 @@ smax          = [1.6;                    2.12];
 [interp,s]    = recsinterpinit(25,smin,smax);
 
 %% Find a first guess through the perfect foresight solution
-interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
+interp = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
 
 %% Solve for rational expectations
-% Define options
-options = struct('simulmethod','solve'       ,...
-                 'stat'       ,1);
-%%
-[interp,x] = recsSolveREE(interp,model,s,[],options);
+[interp,x] = recsSolveREE(interp,model,s);
 
 %% Simulate the model
+options = struct('simulmethod','solve'       ,...
+                 'stat'       ,1);
 recsSimul(model,interp,repmat([1 1],10,1),200,[],options);
 subplot(2,3,1)
 xlabel('Availability')

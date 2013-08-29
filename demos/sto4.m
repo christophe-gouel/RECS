@@ -1,6 +1,6 @@
 %% STO4 Competitive storage with price-band backed by public storage
 % This model is an extension of Miranda and Helmberger (1988) to include a
-% capacity constraint on the public stock level.
+% capacity constraint on the public stock level (see also Gouel 2013).
 
 %% Model's structure
 %
@@ -61,7 +61,7 @@ Sgbar = model.params(end-1);
 [interp,s] = recsinterpinit(20,[0.74 0],[1.4 Sgbar]);
 
 %% Find a first guess through the perfect foresight solution
-interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
+interp = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
 
 %% Solve for rational expectations
 [interp,x] = recsSolveREE(interp,model,s);
@@ -92,6 +92,10 @@ xlabel('Decrease in public stock level')
 ylabel('Frequency')
 
 %% References
+% <http://dx.doi.org/10.1093/ajae/aat016 Gouel, C. (2013). Rules versus
+% discretion in food storage policies. _American Journal of Agricultural
+% Economics_, 95(4), 1029-1044.>
+%
 % <http://www.jstor.org/stable/1814697 Miranda, M. J. and Helmberger,
 % P. G. (1988). The effects of commodity price stabilization programs. _The
 % American Economic Review_, 78(1), 46-58.>

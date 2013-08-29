@@ -13,7 +13,7 @@ end
 [interp,s] = recsinterpinit(n,min(model.e)*0.95,2);
 
 %% Find a first guess through the perfect foresight solution
-[interp,xinit] = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
+[interp,xinit] = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
 
 %% Solve for rational expectations
 [interp,x] = recsSolveREE(interp,model,s,xinit,struct('reemethod','1-step'));
@@ -31,7 +31,7 @@ if situation==1
                'Private stock (Approximated decision rule)',...
                'Public stock (Approximated decision rule)');
   set(leg,'Location','NorthWest')
-  set(leg,'Box','off')                    
+  set(leg,'Box','off')
   xlabel('Availability')
   ylabel('Stock')
   title('Storage rules with a grid of 6 points')

@@ -1,5 +1,20 @@
 function model = recsSolveLocal(model)
 % RECSSOLVELOCAL Calculates the first-order perturbation solution of a rational expectations model
+%
+% RECSSOLVELOCAL implementes a slightly modified version of Klein's (2000) method.
+%
+% MODEL = RECSSOLVELOCAL(MODEL) calculates the first-order perturbation solution
+% of the rational expectations model defined in the object MODEL. RECSSOLVELOCAL
+% add to the properties of the object MODEL the structure LinearSolution, which
+% contains the linear solution. To be used, RECSSOLVELOCAL requires the
+% deterministic steady state to have been found before.
+%
+% References
+% Klein, P. (2000), Using the generalized Schur form to solve a multivariate
+% linear rational expectations model, Journal of Economic Dynamics and Control,
+% 24(10), 1405-1423.
+%
+% See also RECSFIRSTGUESS, RECSSS.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

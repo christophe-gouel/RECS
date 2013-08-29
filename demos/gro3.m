@@ -56,7 +56,7 @@ smax       = [1.20*model.sss(1)  0.11 log(0.007)*0.85];
 %%
 [interp,s] = recsinterpinit(4,smin,smax,'cheb');
 
-%% Find a first guess through the perfect foresight solution
+%% Find a first guess through first-order approximation around the steady state
 [interp,x] = recsFirstGuess(interp,model,s);
 
 %% Define options

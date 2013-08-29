@@ -36,7 +36,7 @@ for j=1:2
   for modeliter=modellist
     interp = eval(['i' modeliter{1}]);
     model  = eval(['m' modeliter{1}]);
-    T      = eval(['T' modeliter{1}]);
+    options.T = eval(['T' modeliter{1}]);
     s      = eval(['s' modeliter{1}]);
     for eqsolver=mcpsolverlist
       i = i+1;
@@ -44,7 +44,10 @@ for j=1:2
       modelvar{i}  = modeliter{1};
       options.eqsolver  = eqsolver{1};
       options.funapprox = funapproxlist{1};
-      tic; [interp,~,~,exitflag] = recsFirstGuess(interp,model,s,model.sss,model.xss,Ts1,options); tmp = toc;
+      tic;
+      [interp,~,~,exitflag] = recsFirstGuess(interp,model,s,model.sss, ...
+                                             model.xss,options);
+      tmp = toc;
       if exitflag==1, time(i,1) = tmp; else time(i,1) = NaN; end
       options.reemethod = reemethodlist{1};
       tic; [~,~,~,~,exitflag] = recsSolveREE(interp,model,s,[],options); tmp = toc;

@@ -24,7 +24,7 @@ model2 = recsmodel('sto2.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %%
 % *Find a first guess through the perfect foresight solution*
-interp2 = recsFirstGuess(interp,model2,s,[],[],5);
+interp2 = recsFirstGuess(interp,model2,s,[],[],struct('T',5));
 
 %%
 % *Solve for rational expectations*

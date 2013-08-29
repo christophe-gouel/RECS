@@ -40,7 +40,7 @@ model = recsmodel('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 [interp,s] = recsinterpinit(40,model.sss*0.7,model.sss*1.5);
 
 %% Find a first guess through the perfect foresight solution
-interp = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
+interp = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
 
 %% Solve for rational expectations
 [interp,x] = recsSolveREE(interp,model,s);

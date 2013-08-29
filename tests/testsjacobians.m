@@ -22,7 +22,7 @@ for iter=1:5
       model = recsmodel('gro1.yaml',struct('Mu',0,'Sigma',0.007^2,'order',5));
       [interp,s] = recsinterpinit(10,[0.85*model.sss(1) min(model.e)*4],...
                                   [1.15*model.sss(1) max(model.e)*4],'cheb');
-      [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50);
+      [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss);
 
     case 2
       %% GRO3
@@ -40,13 +40,13 @@ for iter=1:5
       model      = recsmodel('cs1.yaml',struct('Mu',100,'Sigma',100,'order',5));
       [interp,s] = recsinterpinit(20,model.sss/2,model.sss*2);
       x          = s;
-      
+
     case 4
       %% STO1
       disp('Competitive storage model')
       model = recsmodel('sto1.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
       [interp,s] = recsinterpinit(40,model.sss*0.7,model.sss*1.5);
-      [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
+      [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
 
     case 5
       %% STO6
@@ -55,12 +55,12 @@ for iter=1:5
                                            'Sigma',diag([0.05 0.05])^2,...
                                            'order',5));
       [interp,s] = recsinterpinit(7,0.73*model.sss,2*model.sss);
-      [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,5);
-      
+      [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
+
   end % switch
-  
+
   [LB,UB] = model.b(s,model.params);
-  
+
   options = struct('display',0,...
                    'eqsolveroptions',struct('DerivativeCheck','on'),...
                    'reesolveroptions',struct('maxit',0));
@@ -72,7 +72,7 @@ for iter=1:5
     options.funapprox = funapprox{1};
     recsSolveREE(interp,model,s,x,options);
   end
-  
+
   disp('Check full Newton approach')
   options.reemethod = '1-step';
   for funapprox=funapproxlist
@@ -82,7 +82,7 @@ for iter=1:5
     options.funapprox = funapprox{1};
     recsSolveREE(interp,model,s,x,options);
   end
-  
+
   if all(isinf([LB(:); UB(:)]))
     disp('Check iterative Newton approach')
     options.reesolver = 'fsolve';

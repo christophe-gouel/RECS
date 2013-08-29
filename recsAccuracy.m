@@ -64,9 +64,10 @@ w         = model.w;
 cx     = interp.cx;
 fspace = interp.fspace;
 
-[n,d,t] = size(s);
+[d,m,p] = model.dim{:};
+validateattributes(s,{'numeric'},{'size',[NaN,d,NaN],'nonempty'},3)
+[n,~,t] = size(s);
 k       = size(e,1);
-[m,p]   = model.dim{2:3};
 
 se      = permute(s,[1 3 2]);
 se      = reshape(se,n*t,d);

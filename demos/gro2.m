@@ -59,8 +59,8 @@ smax          = [1.72*model.sss(1)  max(model.e)*3.5];
 options = struct('fgmethod','perturbation',...
                  'reesolver','mixed');
 
-%% Find a first guess through the perfect foresight solution
-[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,50,options);
+%% Find a first guess through first-order approximation around the steady state
+[interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,options);
 
 %% Solve for rational expectations
 interp = recsSolveREE(interp,model,s,x,options);
