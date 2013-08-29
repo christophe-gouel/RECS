@@ -78,10 +78,11 @@ T        = options.T;
 
 n = size(s,1);
 
-g      = model.g;
-h      = model.h;
-p      = model.dim{3};
-params = model.params;
+g                 = model.g;
+h                 = model.h;
+p                 = model.dim{3};
+params            = model.params;
+IncidenceMatrices = model.IncidenceMatrices;
 
 %% Solve for the deterministic steady state
 [sss,xss,zss] = recsSS(model,sss,xss,catstruct(options,struct('display',0)));
@@ -132,9 +133,11 @@ end % switch fgmethod
 %% Prepare output
 interp.cx = funfitxy(interp.fspace,interp.Phi,x);
 interp.cz = funfitxy(interp.fspace,interp.Phi,z);
+interp.x  = x;
+interp.z  = z;
 
 % Check if it is possible to approximate the expectations function
-if ~isfield(interp,'ch')
+if all(~[IncidenceMatrices.hs(:); IncidenceMatrices.hx(:)])
   e      = model.e;
   K      = size(e,1);
   ind    = (1:n);
@@ -143,27 +146,20 @@ if ~isfield(interp,'ch')
   xx     = x(ind,:);
   ee     = e(repmat(1:K,1,n),:);
 
-  outputFJ = struct('F',1,'Js',0,'Jx',0);
+  outputFJ = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
   snext    = g(ss,xx,ee,params,outputFJ);
   xnext    = funeval(interp.cx,interp.fspace,snext);
 
-  outputFJ  = struct('F',0,'Js',1,'Jx',1,'Jsn',0,'Jxn',0,'hmult',0);
-  [~,hs,hx] = h(ss,xx,ee,snext,xnext,params,outputFJ);
-
-  outputFJ = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-  if size(ss,1)>100;
-    i = unique(randi(size(ss,1),100,1));
-  else
-    i = 1:size(ss,1);
+  if size(ss,1)>100, i = unique(randi(size(ss,1),100,1));
+  else               i = 1:size(ss,1);
   end
-  he     = numjac(@(E) reshape(h(ss(i,:),xx(i,:),E,snext(i,:),xnext(i,:),...
-                                 params,outputFJ),[],1),ee(i,:));
-end
+  he = numjac(@(E) reshape(h(ss(i,:),xx(i,:),E,snext(i,:),xnext(i,:),...
+                             params,outputFJ),[],1),ee(i,:));
 
-% Calculate the approximation of the expectations function (if possible)
-if isfield(interp,'ch') || abs(norm(hs(:),Inf)+norm(hx(:),Inf)+norm(he(:),Inf))<eps
-  outputFJ  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-  hv        = h([],[],[],s,x,params,outputFJ);
-  interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
+  % Calculate the approximation of the expectations function (if possible)
+  if norm(he(:),Inf)<eps
+    hv        = h([],[],[],s,x,params,outputFJ);
+    interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
+  end
 end
 
