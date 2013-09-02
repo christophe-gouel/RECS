@@ -76,5 +76,5 @@ end
 cX(:,:,1)               = funfitxy(fspace,Phi,X(:,:,1));
 
 interp.cX = cX;
-
+interp.X  =  X;
 

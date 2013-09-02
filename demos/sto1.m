@@ -43,7 +43,7 @@ model = recsmodel('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 interp = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
 
 %% Solve for rational expectations
-[interp,x] = recsSolveREE(interp,model,s);
+interp = recsSolveREE(interp,model);
 
 %% Plot the decision rules
 recsDecisionRules(model,interp,[],[],[],struct('simulmethod','solve'));

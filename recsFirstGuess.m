@@ -50,6 +50,9 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,op
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
+% Get s from interp structure
+if nargin<=2 || isempty(s), s = interp.s; end
+
 if nargin <=3 || isempty(sss)
   if isfield(model,'sss') || (isobject(model) && ~isempty(model.sss))
     sss = model.sss;

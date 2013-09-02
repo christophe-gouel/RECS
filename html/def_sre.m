@@ -146,7 +146,7 @@
 %
 % The RECS solver implements various methods to solve rational expectations
 % models and to find approximation for the expectations terms. See
-% <ug_methods.html Solution methods> for further information.
+% <solution_methods.html Solution methods> for further information.
 
 %% References
 % <http://dx.doi.org/10.1007/s10614-005-1784-z Fackler, P. L. (2005). A MATLAB

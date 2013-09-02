@@ -7,9 +7,9 @@
 %
 %  [ssim,xsim] = recsSimul(model,interp,s0,nper);
 %
-% where |model| and |interp| have been defined previously as the model and the
-% interpolation structure. |s0| is the initial state and |nper| is the number of
-% simulation periods.
+% where |model| and |interp| have been defined previously as the model object
+% and the interpolation structure. |s0| is the initial state and |nper| is the
+% number of simulation periods.
 %
 % |s0| is not necessarily a unique vector of the state variables. It is possible
 % to provide a matrix of initial states on the basis of which simulations can be
@@ -76,7 +76,7 @@
 %
 % The second method uses the function being approximated (decisions rules,
 % conditional expectations, or expectations function as shown in
-% <ug_methods.html Solution methods>) to approximate next-period expectations
+% <solution_methods.html Solution methods>) to approximate next-period expectations
 % and solve the equilibrium equations to find the current decisions (in a
 % time-iteration approach). For example, if approximated expectations
 % ($z\approx\mathcal{Z}\left(s,c_z\right)$) are used to replace conditional

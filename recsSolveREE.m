@@ -127,16 +127,23 @@ end
 % Get s from interp structure
 if nargin<=2 || isempty(s), s = interp.s; end
 
-% Generate x by interpolation if missing
-if nargin<=3 || isempty(x)
-  [LB,UB] = b(s,params);
-  x       = min(max(funeval(interp.cx,interp.fspace,s),LB),UB);
-end
-
 % Identify variables dimensions
-n      = size(x,1);
+n      = size(s,1);
 [m,p]  = model.dim{2:3};
 k      = length(w);               % number of shock values
+
+% Get x or generate it by interpolation if missing
+if nargin<=3 || isempty(x)
+  if isfield(interp,'x'), x = interp.x;
+  elseif isfield(interp,'cx')
+    [LB,UB] = b(s,params);
+    x       = min(max(funeval(interp.cx,interp.fspace,s),LB),UB);
+  else
+    error(['Solving the rational expectations requires a first guess for ' ...
+           'response variables'])
+  end
+end
+validateattributes(x,{'numeric'},{'size',[n,m],'nonempty'},4)
 
 % Precalculations
 z      = zeros(n,0);
@@ -284,3 +291,5 @@ if isempty(z)
   interp.cz = funfitxy(fspace,Phi,z);
 end
 
+interp.x = x;
+interp.z = z;
