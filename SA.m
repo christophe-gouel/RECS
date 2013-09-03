@@ -74,7 +74,7 @@ it          = 0;
 if showiters
   fprintf(1,'Successive approximation\n');
   fprintf(1,'  Major\t Minor\tResidual\n');
-  fprintf(1,'%7i\t%6i\t%8.1E (Input point)\n',0,0,fnrm);
+  fprintf(1,'%7i\t%6i\t%8.2E (Input point)\n',0,0,fnrm);
 end
 
 %% Iterations
@@ -92,7 +92,7 @@ while(fnrm > stop_tol && it < maxit)
       fval  = fvalnew;
       fnrm  = fnrmnew;
       x     = x+dx;
-      if showiters, fprintf(1,'%7i\t%6i\t%8.1E\n',it,itback,fnrm); end
+      if showiters, fprintf(1,'%7i\t%6i\t%8.2E\n',it,itback,fnrm); end
       break
     end
     if itback>1 && fnrmold<fnrmnew
@@ -100,7 +100,7 @@ while(fnrm > stop_tol && it < maxit)
       fval = fvalold;
       fnrm = fnrmold;
       x    = x+dx*2;
-      if showiters, fprintf(1,'%7i\t%6i\t%8.1E\n',it,itback-1,fnrm); end
+      if showiters, fprintf(1,'%7i\t%6i\t%8.2E\n',it,itback-1,fnrm); end
       break
     end
     fvalold = fvalnew;

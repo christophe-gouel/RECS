@@ -110,7 +110,8 @@ debug         = options.showiters;
 
 if debug==1
   fprintf(1,'Newton-Krylov solver\n');
-  fprintf(1,'  Iteration\tResidual\tInner It.1\tRelative res.\tInner It.2\n');
+%  fprintf(1,'  Iteration\tResidual\tInner It.1\tRelative res.\tInner It.2\n');
+  fprintf(1,'  Major  Residual  Minor 1  Relative res.  Minor 2\n');
 end
 %%
 %
@@ -161,9 +162,9 @@ while(fnrm > stop_tol && itc < maxit)
 %% Change CG
 if debug == 1
   if itc==1
-    fprintf(1,'%8i\t%5.1E\t%5i\t%15.1E\t%9i      (Input point)\n',outstat(itc,:));
+    fprintf(1,'%7i\t%9.2E\t%8i\t%13.2E\t%8i (Input point)\n',outstat(itc,:));
   else
-    fprintf(1,'%8i\t%5.1E\t%5i\t%15.1E\t%9i\n',outstat(itc,:));
+    fprintf(1,'%7i\t%9.2E\t%8i\t%13.2E\t%8i\n',outstat(itc,:));
   end
 end
 %%
@@ -247,7 +248,7 @@ end
 end
 %% Change CG
 if debug == 1
-    fprintf(1,'%8i\t%5.1E\t%5i\t%15.1E\t%9i\n',outstat(itc+1,:));
+    fprintf(1,'%7i\t%9.2E\t%8i\t%13.2E\t%8i\n',outstat(itc+1,:));
 end
 %%
 sol = x;
