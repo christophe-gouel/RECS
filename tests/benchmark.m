@@ -1,4 +1,4 @@
-warning('off','backtrace')
+spmd, warning('off','backtrace'); end
 addpath('../demos');
 % cs1
 mc1 = recsmodel('cs1.yaml',struct('Mu',100,'Sigma',10^2,'order',5));
