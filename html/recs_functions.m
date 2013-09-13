@@ -14,7 +14,7 @@
 % perfect foresight solution or the first-order approximation of the model
 % * <matlab:doc('recsinterpinit') |recsinterpinit|> - Prepare a RECS
 % interpolation structure
-% * <matlab:doc('recsmodel') |recsmodel|> - Prepare a RECS model object
+% * <matlab:doc('recsmodel.recsmodel') |recsmodel|> - Prepare a RECS model object
 % * <matlab:doc('recsSimul') |recsSimul|> - Simulate a model
 % * <matlab:doc('recsSolveDeterministicPb') |recsSolveDeterministicPb|> - Solve a
 % perfect foresight problem

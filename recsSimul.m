@@ -2,23 +2,12 @@ function [ssim,xsim,esim,stat,fsim] = recsSimul(model,interp,s0,nper,shocks,opti
 % RECSSIMUL Simulates a model from starting values given in s0 and for nper period
 %
 % SSIM = RECSSIMUL(MODEL,INTERP,S0,NPER) simulates the model defined in the
-% structure MODEL, by using the interpolation structure defined in the structure
+% object MODEL, by using the interpolation structure defined in the structure
 % INTERP. The simulation starts from the initial state S0 and lasts NPER (scalar)
 % periods. S0 is a nrep-by-d matrix with nrep the number of scenarios to simulate,
 % and d the number of state variables. RECSSIMUL returns the nrep-by-d-by-nper
 % array SSIM that contains the simulated state variables.
-% MODEL is a structure, which includes the following fields:
-%    [e,w]   : discrete distribution with finite support with e the values and w
-%              the probabilities (it could be also the discretisation of a
-%              continuous distribution through quadrature or Monte Carlo drawings)
-%    func    : function name or anonymous function that defines the model's equations
-%    funrand : random shocks generator function (optional). Function handle that
-%              accepts an integer n as input and returns a n-by-q matrix of
-%              shocks. If not provided, shocks will be drawn from the discrete
-%              distribution [e,w].
-%    params  : model's parameters, it is preferable to pass them as a cell array
-%              (compulsory with the functional option) but other formats are
-%              acceptable
+% MODEL is an object created by recsmodel.
 % INTERP is a structure, which includes the following fields:
 %    ch      : coefficient matrix of the interpolation of the expectations
 %              function (optional, to be provided with method 'expfunapprox')

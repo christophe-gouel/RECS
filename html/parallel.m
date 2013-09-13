@@ -8,10 +8,16 @@
 % (iii) simulating models using equations solvers (rather than interpolation).
 %
 %% Enabling parallel computing
-% Parallel computation is enabled for MATLAB Parallel Computing Toolbox by the
-% following call
+% For MATLAB versions before R2013b, parallel computation is enabled for MATLAB
+% Parallel Computing Toolbox by the following call
 %
 %  matlabpool
+%
+% After MATLAB R2013b, by default, parallel computation automatically starts
+% when required or can be started using
+%
+%  parpool
+%
 %
 %% Parallel computing for computing first guess through perfect foresight
 % Solving for a first guess through perfect foresight can take as much time as
@@ -19,9 +25,9 @@
 % perfect-foresight solution has to be solved for each grid point
 % independently.
 %
-% As soon as MATLAB parallel computing features are enabled using |matlabpool|,
-% parallel computing will be used automatically by |recsFirstGuess| by using
-% each MATLAB worker to solve for one grid point.
+% As soon as MATLAB parallel computing features are enabled, parallel computing
+% will be used automatically by |recsFirstGuess| by using each MATLAB worker to
+% solve for one grid point.
 %
 %% Parallel computing for solving for stochastic rational expectations equilibrium
 % Parallel computing can be used with |recsSolveREE| and
@@ -42,7 +48,7 @@
 % |loop_over_s|, any integer value |n| different from 0 and 1 implies that
 % equations will be solved by |n| blocks of grid points. To keep each MATLAB
 % worker occupied, a good rule is to set |n| equal to a multiple of the number
-% of MATLAB workers, which you can obtain from |matlabpool('size')|.
+% of MATLAB workers.
 %
 % It should also be noted that solving smaller systems of equations is easier
 % than solving at once for all grid points (but if it may be slower). So

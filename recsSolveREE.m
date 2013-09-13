@@ -5,7 +5,7 @@ function [interp,x,z,fval,exitflag,output] = recsSolveREE(interp,model,s,x,optio
 % find the REE of a model.
 %
 % INTERP = RECSSOLVEREE(INTERP,MODEL,S,X) tries to find the rational expectations
-% equilibrium of the model defined in the structure MODEL, by using the
+% equilibrium of the model defined in the object MODEL, by using the
 % interpolation structure defined in the structure INTERP. The problem is solved
 % on the grid of state variables provided in matrix S. Matrix X is used as a
 % first guess of response variables on the grid. RECSSOLVEREE returns the
@@ -19,14 +19,7 @@ function [interp,x,z,fval,exitflag,output] = recsSolveREE(interp,model,s,x,optio
 %    ch, cx or cz : a coefficient matrix providing a first guess of the
 %                   approximation of the expectations function for ch, of the
 %                   response variables for cx, or of the expectations for cz
-% MODEL is a structure, which has to include the following fields:
-%    [e,w]  : discrete distribution with finite support with e the values and w the
-%             probabilities (it could be also the discretisation of a continuous
-%             distribution through quadrature or Monte Carlo drawings)
-%    func   : function name or anonymous function that defines the model's equations
-%    params : model's parameters, it is preferable to pass them as a cell array
-%             (compulsory with the functional option) but other formats are
-%             acceptable
+% MODEL is an object created by recsmodel.
 %
 % INTERP = RECSSOLVEREE(INTERP,MODEL,S,X,OPTIONS) solves the problem with the
 % parameters defined by the structure OPTIONS. The fields of the structure are

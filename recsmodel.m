@@ -34,18 +34,17 @@ classdef recsmodel
 
   methods
     function model = recsmodel(inputfile,shocks,outputfile,options)
-    % RECSMODEL Prepares a RECS model structure
+    % RECSMODEL Prepares a recsmodel object
     %
     % RECSMODEL uses dolo (https://github.com/albop/dolo), a Python
     % preprocessor, to convert the model described in a Yaml file to a file readable
     % by MATLAB and RECS programs. In the conversion, dolo calculates the analytic
     % representation of all partial derivatives.
     %
-    % RECSMODEL(INPUTFILE) converts a model structure file, indicated by the string
-    % INPUTFILE, to a m-file, readable by MATLAB and RECS programs.
-    %
-    % MODEL = RECSMODEL(INPUTFILE) returns MODEL a structure containing the name
-    % of the model m-file and its parameters.
+    % MODEL = RECSMODEL(INPUTFILE) converts a model Yaml file, indicated by the
+    % string INPUTFILE, to a m-file, readable by MATLAB and RECS programs. It
+    % returns MODEL an object containing the name of the model m-file, its
+    % parameters, and other properties.
     %
     % MODEL = RECSMODEL(INPUTFILE,SHOCKS) prepares in MODEL the shocks
     % information by using the structure SHOCKS. The fields of the SHOCKS define the

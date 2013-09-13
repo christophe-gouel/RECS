@@ -15,8 +15,7 @@ function H = numhessian(FUN,x,options,varargin)
 %  DiagOnly       : true or false (default), if true calculates only the diagonal
 %                   elements of the Hessian.
 %  FinDiffRelStep : scalar or vector step size factor, the default value is
-%                   FinDiffRelStep = 1E-3. To avoid round-off error, values of
-%                   EPSILON below 1E-4 should be avoided.
+%                   FinDiffRelStep = 1E-4.
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -36,7 +35,7 @@ n  = length(x);
 % options
 defaultopt = struct(             ...
     'DiagOnly'       , false    ,...
-    'FinDiffRelStep' , 1E-3);
+    'FinDiffRelStep' , 1E-4);
 if nargin <= 2
   options = defaultopt;
 else

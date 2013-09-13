@@ -3,18 +3,11 @@ function [se,lEE,lEf] = recsAccuracy(model,interp,s,options)
 %
 % SE = RECSACCURACY(MODEL,INTERP,S) evaluates the accuracy of the approximation
 % defined in the interpolition structure INTERP for the model defined in the
-% structure MODEL. The accuracy is assessed over the state variables contained
+% object MODEL. The accuracy is assessed over the state variables contained
 % in the n-by-d-by-y array S, as output by resSimul. RECSACCURACY returns a
 % n*y-by-d matrix SE containing the state variables on which the accuracy was
 % evaluated.
-% MODEL is a structure, which includes the following fields:
-%    func    : function name or anonymous function that defines the model's equations
-%    params : model's parameters, it is preferable to pass them as a cell array
-%             (compulsory with the functional option) but other formats are
-%             acceptable. If it is problem with functional equations, please
-%             provide as the two last cell elements of params fspace and the
-%             interpolation matrix used:
-%             mode.params = [model.params interp.fspace interp.c]
+% MODEL is an object created by recsmodel.
 % INTERP is a structure, which includes the following fields:
 %    cx      : coefficient matrix of the interpolation of the response variables
 %    fspace  : a definition structure for the interpolation family (created by

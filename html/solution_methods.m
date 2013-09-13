@@ -21,9 +21,9 @@
 %
 % The expectations operator is replaced by a sum over possible realization of
 % shocks, $e_{l}$, to which are associated the probability $w_{l}$. If shocks
-% are normal, the pairs $\left\{e_{l},w_{l}\right\}$ are calculated by RECS a
-% Gaussian quadrature. Using this discretization, we can express the equilibrium
-% equation as
+% are normal, the pairs $\left\{e_{l},w_{l}\right\}$ are calculated by RECS
+% using a Gaussian quadrature. Using this discretization, we can express the
+% equilibrium equation as
 %
 % $$\underline{x}(s) \le x \le \overline{x}(s) \perp f\left(s,x,\sum_{l} w_{l} h\left(s,x,e_{l},g\left(s,x,e_{l}\right),\mathcal{X} \left(g\left(s,x,e_{l}\right),c_{x}\right)\right)\right).$$
 %
@@ -33,7 +33,7 @@
 % Once all the above elements are defined, we can proceed to the algorithm,
 % which runs as follows:
 %
-% # Initialize the spline approximation, $c_{x}^{0}$, based on a
+% # Initialize the approximation, $c_{x}^{0}$, based on a
 % <first_guess.html first guess>, $x^{0}$.
 % # For each point of the grid of state variables, $s_{i}$, solve for $x_{i}$
 % using an <ug_solvers_eq.html MCP solver> the following equation:

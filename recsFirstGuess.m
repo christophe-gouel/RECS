@@ -15,13 +15,7 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,op
 % INTERP is a structure, which has to include the following fields:
 %    fspace       : a definition structure for the interpolation family (created
 %                   by the function fundef)
-% MODEL is a structure, which has to include the following fields:
-%    [e,w]  : discrete distribution with finite support with e the values and w the
-%             probabilities (it could be also the discretisation of a continuous
-%             distribution through quadrature or Monte Carlo drawings)
-%    func   : function name or anonymous function that defines the model's equations
-%    params : model's parameters, it is preferable to pass them as a cell array
-%             but other formats are acceptable
+% MODEL is an object created by recsmodel.
 %
 % INTERP = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,OPTIONS) solves the problem
 % with the parameters defined by the structure OPTIONS. The fields of the

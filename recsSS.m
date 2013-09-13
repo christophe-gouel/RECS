@@ -6,17 +6,10 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 % the model solution.
 %
 % S = RECSSS(MODEL) tries to find the non-stochastic steady state of the model
-% defined in the structure MODEL. This function call uses as first guess for
+% defined in the object MODEL. This function call uses as first guess for
 % steady-state state and response variable the output of the call
 % model.func('ss'). RECSSS returns the value of the state variables at steady state.
-% MODEL is a structure, which has to include the following fields:
-%    [e,w] : discrete distribution with finite support with e the values and w the
-%            probabilities (it could be also the discretisation of a continuous
-%            distribution through quadrature or Monte Carlo drawings)
-%    func   : function name or anonymous function that defines the model's equations
-%    params : model's parameters, it is preferable to pass them as a cell array
-%             (compulsory with the functional option) but other formats are
-%             acceptable
+% MODEL is an object created by recsmodel.
 %
 % S = RECSSS(MODEL,S) uses the vector S as first guess for steady-state state
 % variables.

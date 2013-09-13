@@ -24,8 +24,6 @@
 %   equilibrium equations and the rational expectations equilibrium.
 % * MATLAB Parallel Computing Toolbox. This toolbox allows many RECS programs to
 %   be run in parallel to speed-up computation.
-% * MATLAB Statistics Toolbox. Useful to simulate models in which shocks follow
-%   other distributions than the normal.
 
 %% Installation instructions
 % # <http://code.google.com/p/recs/ Download the latest RECS archive> and unzip

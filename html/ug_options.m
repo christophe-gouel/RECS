@@ -31,7 +31,7 @@
 %     </tr>
 %     <tr>
 %       <td> <tt>eqsolver</tt> </td>
-%       <td> Solver for equilibrium equations: '<tt>fsolve</tt>', '<tt>lmmcp</tt>' (default), '<tt>ncpsolve</tt>' or '<tt>path</tt>', see <a href="ug_solvers_eq.html"> Solvers for equilibrium equations</a>. </td>
+%       <td> Solver for equilibrium equations: '<tt>fsolve</tt>', '<tt>lmmcp</tt>' (default), '<tt>ncpsolve</tt>' or '<tt>path</tt>', see <a href="ug_solvers_eq.html"> Solvers for systems of nonlinear equations and for mixed complementarity problems</a>. </td>
 %       <td>  <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a>, <a href="matlab:doc('recsmodel')"><tt>recsmodel</tt></a>, <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a>, <a href="matlab:doc('recsSS')"><tt>recsSS</tt></a> </td>
 %     </tr>
 %     <tr>
@@ -45,6 +45,11 @@
 %       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
+%       <td> <tt>fgmethod</tt> </td>
+%       <td> Determine which method is used to provide a first guess: '<tt>auto<tt>' (default), '<tt>perturbation<tt>', '<tt>perfect-foresight<tt>' or '<tt>steady-state<tt>'</td>
+%       <td> <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a> </td>
+%     </tr>
+%     <tr>
 %       <td> <tt>funapprox</tt> </td>
 %       <td> Functional approximated to find the rational expectations solution:
 %         <ul>
@@ -53,11 +58,6 @@
 %           <li> '<tt>resapprox</tt>' (default): response variables (variables <tt>x</tt>).</li>
 %         </ul>
 %       </td>
-%       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
-%     </tr>
-%     <tr>
-%       <td> <tt>functional</tt> </td>
-%       <td> <tt>1</tt> if the equilibrium equations are a functional equation problem (default: <tt>0</tt>), used to solve optimal discretionary policy. </td>
 %       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
 %     <tr>
@@ -84,8 +84,12 @@
 %       <td> <tt>reesolver</tt> </td>
 %       <td> Solver for the rational expectations equilibrium, expected values depend on <tt>reemethod</tt>:
 %            <ul>
-%              <li> if <tt>iter</tt>: '<tt>kinsol</tt>', '<tt>krylov</tt>', '<tt>mixed</tt>', or '<tt>SA</tt>' (default).</li>
-%              <li> if <tt>iter-newton</tt>: '<tt>fsolve</tt>', '<tt>lmmcp</tt>', '<tt>ncpsolve</tt>' or '<tt>path</tt>', see <a href="ug_solvers_eq.html">Solvers for equilibrium equations</a>.</li>
+%              <li> if <tt>iter</tt>: see <a href="ug_solvers_eq.html">Solvers for systems of nonlinear equations and for mixed complementarity problems</a>.</li>
+%                <ul>
+%                  <li> Successive approximations: '<tt>SA</tt>' (default).</li>
+%                  <li> Quasi-Newton methods: '<tt>krylov</tt>' or '<tt>mixed</tt>' (succession of '<tt>SA</tt>' and '<tt>krylov</tt>').</li>
+%                  <li> Newton methods: '<tt>fsolve</tt>', '<tt>lmmcp</tt>', '<tt>ncpsolve</tt>', or '<tt>path</tt>'.</li>
+%                </ul>
 %              <li> if <tt>1-step</tt>: irrelevant, the solver is determined by <tt>eqsolver</tt>.</li>
 %            </ul>
 %       </td>

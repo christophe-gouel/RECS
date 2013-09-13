@@ -4,14 +4,13 @@ function [si,xi] = recsIRF(model,interp,shock,nrep,nper,options)
 % RECSIRF computes IRF based on the approach of Koop et al. (1996).
 %
 % SI = RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER) computes the IRF for the model
-% defined in the structure MODEL, by using the interpolation structure defined
-% in the structure INTERP. The IRF are calculated on NREP scenarios of NPER
-% periods each. The impulse is given by the 1-by-q vector SHOCK which is applied
-% at the initial period while the model is on its risky steady state (for a
-% definition, see Coeurdacier et al., 2011). RECSIRF produces plots of the IRF
-% and returns the NPER-by-d matrix SI, containing the difference between the
-% reference simulation and the shock simulation (e.g., the IRF) for the state
-% variables.
+% defined in the object MODEL, by using the interpolation structure defined in
+% the structure INTERP. The IRF are calculated on NREP scenarios of NPER periods
+% each. The impulse is given by the 1-by-q vector SHOCK which is applied at the
+% initial period while the model is on its risky steady state (for a definition,
+% see Coeurdacier et al., 2011). RECSIRF produces plots of the IRF and returns
+% the NPER-by-d matrix SI, containing the difference between the reference
+% simulation and the shock simulation (e.g., the IRF) for the state variables.
 %
 % RECSIRF(MODEL,INTERP,SHOCK,NREP,NPER,OPTIONS) computes the IRF with the
 % parameters defined by the structure OPTIONS. The fields of the structure are

@@ -7,7 +7,7 @@ function Publish_recs_help(website)
 %% Initialization
 if nargin < 1, website = 0; end
 
-warning('off','backtrace')
+spmd, warning('off','backtrace'); end
 
 recsdirectory   = fileparts(which('recsSimul'));
 if website
@@ -117,14 +117,20 @@ if website
                   'SA',...
                   'SCP'};
   for fn = FunctionList
+    if ~strcmp(fn{1},'recsmodel'),  FunctionName = fn{1};
+    else,                           FunctionName = 'recsmodel.recsmodel';
+    end
     copyfile(fullfile(recsdirectory,[fn{1} '.m']),fullfile(targetdirectory,[fn{1} '.m']));
-    txt = help2html([fn{1} '.m']);
+    txt = help2html(FunctionName);
     % Replace see also
     pattern = '"matlab:helpwin (\w*)"';
     txt = regexprep(txt,pattern,'"$1.html"');
+    % Replace recsmodel/recsmodel
+    pattern = 'recsmodel/recsmodel';
+    txt = strrep(txt,pattern,'recsmodel');
     % Replace view code
-    pattern = '"matlab:edit (\w*).m"';
-    txt = regexprep(txt,pattern,'"$1.m"');
+    pattern = '"matlab:edit (\w*)"';
+    txt = regexprep(txt,pattern,[fn{1} '.m']);
     % Replace css file
     pattern = '"file.*\.css"';
     txt = regexprep(txt,pattern,'"layoutfunctionhelp.css"');
@@ -170,3 +176,5 @@ if ~website
   end
   builddocsearchdb(targetdirectory);
 end
+
+close all

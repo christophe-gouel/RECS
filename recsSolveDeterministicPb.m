@@ -2,7 +2,7 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPb(model,s0,T,xss,zss,sss,
 % RECSSOLVEDETERMINISTICPB Solves a perfect foresight problem
 %
 % X = RECSSOLVEDETERMINISTICPB(MODEL,S0,T,XSS,ZSS,SSS) tries to find the perfect
-% foresight solution of the model defined in the structure MODEL. The initial
+% foresight solution of the model defined in the object MODEL. The initial
 % values of state variable are provided by the 1-by-d vector S0. Time horizon
 % (number of periods) is given by the integer T. XSS, ZSS and SSS are,
 % respectively, a 1-by-m vector containing the values of response variables at the
