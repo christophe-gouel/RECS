@@ -91,6 +91,8 @@ if website
     txt = regexprep(txt,pattern,'<tt>ncpsolve</tt>');
     pattern = '"matlab:doc\(''(\w*)''\)"';
     txt = regexprep(txt,pattern,'"$1.html"');
+    pattern = '"matlab:doc\(''recsmodel.recsmodel''\)"';
+    txt = regexprep(txt,pattern,'"recsmodel.html"');
     fid = fopen(fullfile(targetdirectory,htmlfilelist(i,:)),'w');
     fprintf(fid,'%s',txt);
     fclose(fid);

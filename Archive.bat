@@ -15,7 +15,7 @@ md recs-archive\Python
 
 :: Generate RECS documentation
 cd html
-matlab -wait -nosplash -r startup;Publish_recs_help;exit
+matlab -wait -nosplash -r addpath('%1');startup;Publish_recs_help;exit
 cd ..
 
 :: Convert README.md to html
@@ -37,7 +37,7 @@ del Archive.bat
 rename README.md README.txt
 del recsInstall.m
 rmdir /S /Q Python\dolo\.git
-7z a ..\recs-%1.zip .
+7z a ..\recs-%2.zip .
 cd ..
 
 :: Clean temporary folder
