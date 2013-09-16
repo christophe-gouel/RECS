@@ -38,8 +38,8 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin<2 || isempty(s), s = model.func('ss'); end
-if nargin<3 || isempty(x), [~,x] = model.func('ss'); end
+if nargin<2 || isempty(s), s = model.sss; end
+if nargin<3 || isempty(x), [~,x] = model.xss; end
 
 defaultopt = struct(...
     'display'         , 1                               ,...
@@ -105,13 +105,7 @@ s0     = s;
 x0     = x;
 s      = X(1:d)';
 x      = X(d+1:d+m)';
-output = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-if nargout(model.h)<6
-  z = model.h(s,x,e,s,x,params,output);
-else
-  [h,~,~,~,~,hmult] = model.h(s,x,e,s,x,params,output);
-  z = h.*hmult;
-end
+z = model.h(s,x,e,s,x,params);
 
 %% Display steady state
 if exitflag==1 && options.display==1
@@ -144,11 +138,10 @@ M = m+nx(1)+nx(2);
 
 if nargout==2
   %% With Jacobian calculation
-  output = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1);
-  [zz,hs,hx,hsnext,hxnext] = hp(ss,xx,e,ss,xx,params,output);
-  [f,fs,fx,fz]             = fp(ss,xx,ww,vv,zz,params,output);
-  [g,gs,gx]                = gp(ss,xx,e,params,output);
-  fz                       = permute(fz,[2 3 1]);
+  [zz,hs,hx,~,hsnext,hxnext] = hp(ss,xx,e,ss,xx,params,[1 1 1 0 1 1]);
+  [f,fs,fx,fz]               = fp(ss,xx,ww,vv,zz,params,ones(4,1));
+  [g,gs,gx]                  = gp(ss,xx,e,params,[1 1 1 0]);
+  fz                         = permute(fz,[2 3 1]);
 
   J               = zeros(d+M,d+M);
   % With respect to s
@@ -162,10 +155,9 @@ if nargout==2
 
 else
   %% Without Jacobian calculation
-  output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0);
-  zz = hp(ss,xx,e,ss,xx,params,output);
-  f  = fp(ss,xx,ww,vv,zz,params,output);
-  g  = gp(ss,xx,e,params,output);
+  zz = hp(ss,xx,e,ss,xx,params);
+  f  = fp(ss,xx,ww,vv,zz,params);
+  g  = gp(ss,xx,e,params);
 end
 
 F = [ss-g f]';

@@ -22,6 +22,7 @@ classdef recsmodel
     fa      % Anonymous function that defines the model's auxiliary equations
     ha      % Anonymous function that defines the model's auxiliary expectations
     dim     % Problem's dimensions {d,m,p}
+    symbols % Symbols of parameters, shocks, and variables
   end
   properties (Hidden=true)
     bp
@@ -90,9 +91,9 @@ classdef recsmodel
         status = system([fullfile(dolo,'bin','dolo-recs.exe') ' ' which(inputfile) ...
                          ' ' fullfile(inputfiledirectory,outputfile)]);
       else
-        dolorecs = fullfile(dolo,'bin','dolo-recs');
+        dolomatlab = fullfile(dolo,'bin','dolo-matlab --diff');
         setenv('PYTHONPATH',dolo)
-        status = system(['python ' dolorecs ' ' which(inputfile) ...
+        status = system(['python ' dolomatlab ' ' which(inputfile) ...
                          ' '  fullfile(inputfiledirectory,outputfile)]);
       end
 
@@ -100,17 +101,35 @@ classdef recsmodel
         error('Failure to create the model file')
       end
 
-      model.func        = eval(['@' strrep(outputfile,'.m','')]);
-      model.params      = model.func('params');
+      modeltmp      = eval(strrep(outputfile,'.m',''));
+      model.params  = modeltmp.calibration.parameters;
+      model.symbols = modeltmp.symbols;
 
-      model.b  = @(s,p)                  model.func('b',s,[],[],[],[],[],p);
-      model.f  = @(s,x,z,p,output)       model.func('f',s,x ,z ,[],[],[],p,output);
-      model.g  = @(s,x,e,p,output)       model.func('g',s,x ,[],e ,[],[],p,output);
-      model.h  = @(s,x,e,sn,xn,p,output) model.func('h',s,x ,[],e ,sn,xn,p,output);
-      model.ee = @(s,x,z,p)              model.func('e',s,x ,z ,[],[],[],p);
+      sss0 = modeltmp.calibration.states;
+      xss0 = modeltmp.calibration.controls;
 
+      model.b  = @(s,p,varargin) OrganizeBounds(modeltmp,s,p,varargin{:});
+      model.f  = modeltmp.functions.arbitrage;
+      model.g  = modeltmp.functions.transition;
+      model.h  = modeltmp.functions.expectation;
+      model.ee = @() NaN;
+      
       %% Incidence matrices and dimensions
-      model.IncidenceMatrices  = model.func('J');
+      IM = modeltmp.infos.incidence_matrices;
+      model.IncidenceMatrices = struct('fs',IM.arbitrage{1},...
+                                       'fx',IM.arbitrage{2},...
+                                       'fz',IM.arbitrage{3},...
+                                       'gs',IM.transition{1},...
+                                       'gx',IM.transition{2},...
+                                       'ge',IM.transition{3},...
+                                       'hs',IM.expectation{1},...
+                                       'hx',IM.expectation{2},...
+                                       'he',IM.expectation{3},...
+                                       'hsnext',IM.expectation{4},...
+                                       'hxnext',IM.expectation{5},...
+                                       'lbs',IM.arbitrage_lb{1},...
+                                       'ubs',IM.arbitrage_ub{1});
+      
       model.dim = {size(model.IncidenceMatrices.fs,2) ...
                    size(model.IncidenceMatrices.fs,1) ...
                    size(model.IncidenceMatrices.fz,2)};
@@ -146,7 +165,6 @@ classdef recsmodel
         model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,q)*R;
 
         %% Find steady state
-        [sss0,xss0] = model.func('ss');
         if ~isempty(sss0) && ~isempty(xss0)
           [sss,xss,zss,exitflag] = recsSS(model,sss0,xss0,options);
           if exitflag==1
@@ -156,6 +174,18 @@ classdef recsmodel
           end
         end
       end % shocks and steady state
+      
+      function [LB,UB,LB_s,UB_s] = OrganizeBounds(modeltmp,s,p,o)
+      % ORGANIZEBOUNDS reorganizes bounds from dolo-matlab format to RECS format
+        if nargin<4
+          if nargout>2, o = [1; 1];
+          else,         o = [1; 0]; 
+          end
+        end
+        [LB,LB_s] = modeltmp.functions.arbitrage_lb(s,p,o);
+        [UB,UB_s] = modeltmp.functions.arbitrage_ub(s,p,o);        
+      end
+      
     end % recsmodel
     function SQ = StateQuant(model)
       nrep = 10000;
@@ -163,10 +193,9 @@ classdef recsmodel
       d = model.dim{1};
       ssim = zeros(nrep,d,nper+1);
       ssim(:,:,1) = model.sss(ones(nrep,1),:);
-      output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
       for t=1:nper
         ssim(:,:,t+1) = model.g(ssim(:,:,t),model.xss(ones(nrep,1),:),...
-                                model.funrand(nrep),model.params,output);
+                                model.funrand(nrep),model.params);
       end
       quant = [0 0.001 0.01 0.5 0.99 0.999 1];
       SQ = quantile(reshape(permute(real(ssim(:,:,2:end)),[1 3 2]),nrep*nper,d),...

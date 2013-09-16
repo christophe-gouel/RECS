@@ -37,7 +37,7 @@ function [fpval,fps,fpx,fpz] = fp(s,x,w,v,z,params,output,b,f,ix,nx)
 [fval,fs,fx,fz] = f(s,x,z,params,output);
 
 % dF/ds 
-if output.Js
+if output(2)
   if sum(nx)
     [LBx,UBx,dLBxds,dUBxds] = b(s,params);
     dLBxds = dLBxds(:,ix(:,1),:);
@@ -50,14 +50,14 @@ if output.Js
   fps = cat(2,fs,-dLBxds,dUBxds);
 else
   [LBx,UBx] = b(s,params);
-end % if output.Js
+end % if output(2)
 
 fval(:,ix(:,1)) = fval(:,ix(:,1))-w;
 fval(:,ix(:,2)) = fval(:,ix(:,2))+v;
 fpval = [fval x(:,ix(:,1))-LBx(:,ix(:,1)) UBx(:,ix(:,2))-x(:,ix(:,2))];
 
 % dF/dX
-if output.Jx
+if output(3)
   m    = size(x,2);
   dfdw = zeros(m,nx(1));
   if nx(1), dfdw(sub2ind(size(dfdw),int16(find(ix(:,1)))',1:nx(1))) = 1; end
@@ -69,49 +69,31 @@ if output.Jx
             cat(3,fx                    ,-dfdw               ,dfdv                ),...
             cat(3, permute(dfdw,[1 3 2]),zeros(n,nx(1),nx(1)+nx(2))),...
             cat(3,-permute(dfdv,[1 3 2]),zeros(n,nx(2),nx(1)+nx(2))));
-end % if output.Jx
+end % if output(3)
     
 % dF/dz
-if output.Jz
+if output(4)
   p   = size(fz,3);
   fpz = cat(2,fz,zeros(n,nx(1)+nx(2),p));
-end % if output.Jz
+end % if output(4)
 
 return
 
-function [gpval,gps,gpx] = gp(s,x,e,params,output,g,nx)
+function [gpval,gps,gpx,gpe] = gp(s,x,e,params,output,g,nx)
 %% GP
 
-[n,d]             = size(s);
-[gpval,gps,gx]    = g(s,x,e,params,output);
-
-if output.Jx
-  gpx = cat(3,gx,zeros(n,d,nx(1)+nx(2)));
-end
+[n,d]              = size(s);
+[gpval,gps,gx,gpe] = g(s,x,e,params,output);
+if output(3),  gpx = cat(3,gx,zeros(n,d,nx(1)+nx(2))); end
 
 return
 
-function [hpval,hps,hpx,hpsn,hpxn] = hp(s,x,e,snext,xnext,params,output,h,nx)
+function [hpval,hps,hpx,hpe,hpsn,hpxn] = hp(s,x,e,snext,xnext,params,output,h,nx)
 %% HP
 
-[n,d]        = size(snext);
-m            = size(xnext,2);
-output.hmult = 1;
-if nargout(h)<6
-  [hv,hs,hx,hsnext,hxnext]       = h(s,x,e,snext,xnext,params,output);
-else
-  [hv,hs,hx,hsnext,hxnext,hmult] = h(s,x,e,snext,xnext,params,output);
-  hv      = hv.*hmult;
-  if output.Js, hs     = hs.*hmult(:,:,ones(d,1)); end
-  if output.Jx, hx     = hx.*hmult(:,:,ones(m,1)); end
-  if output.Jsn, hsnext = hsnext.*hmult(:,:,ones(d,1)); end
-  if output.Jxn, hxnext = hxnext.*hmult(:,:,ones(m,1)); end
-end
-hpval = hv;
-hps   = hs;
-hpsn  = hsnext;
-p     = size(hv,2);
-if output.Jx,  hpx = cat(3,hx,zeros(n,p,nx(1)+nx(2))); end
-if output.Jxn, hpxn = cat(3,hxnext,zeros(n,p,nx(1)+nx(2))); end
+[hpval,hps,hx,hpe,hpsn,hxnext] = h(s,x,e,snext,xnext,params,output);
+[n,p]     = size(hpval);
+if output(3),  hpx = cat(3,hx,zeros(n,p,nx(1)+nx(2))); end
+if output(6), hpxn = cat(3,hxnext,zeros(n,p,nx(1)+nx(2))); end
 
 return
