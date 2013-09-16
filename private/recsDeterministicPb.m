@@ -32,10 +32,9 @@ s     = [s0; snext(1:end-1,:)];
 %% Computation of equations and Jacobian
 if nargout>=2  
   %% With Jacobian
-  output                  = struct('F',1,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1);
-  [f,fs,fx,fz]            = fp(s,x,w,v,z,params,output);
-  [h,hs,hx,hsnext,hxnext] = hp(s,x,e,snext,xnext,params,output);
-  [g,gs,gx]               = gp(s,x,e,params,output);
+  [f,fs,fx,fz]              = fp(s,x,w,v,z,params,ones(4,1));
+  [h,hs,hx,~,hsnext,hxnext] = hp(s,x,e,snext,xnext,params,[1 1 1 0 1 1]);
+  [g,gs,gx]                 = gp(s,x,e,params,[1 1 1 0]);
 
   identityz = eye(p);
   identityz = permute(identityz(:,:,ones(1,T)),[3 1 2]);
@@ -59,10 +58,9 @@ if nargout>=2
 
 else
   %% Without Jacobian
-  output = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0);
-  h = hp(s,x,e,snext,xnext,params,output);
-  f = fp(s,x,w,v,z,params,output);
-  g = gp(s,x,e,params,output);
+  h = hp(s,x,e,snext,xnext,params,[1 0 0 0 0 0]);
+  f = fp(s,x,w,v,z,params,[1 0 0 0]);
+  g = gp(s,x,e,params,[1 0 0 0]);
 
 end
 F = [f z-h snext-g]';

@@ -112,7 +112,7 @@ classdef recsmodel
       model.f  = modeltmp.functions.arbitrage;
       model.g  = modeltmp.functions.transition;
       model.h  = modeltmp.functions.expectation;
-      model.ee = @() NaN;
+      model.ee = @(s,x,z,p) NaN;
       
       %% Incidence matrices and dimensions
       IM = modeltmp.infos.incidence_matrices;

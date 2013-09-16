@@ -20,12 +20,10 @@ switch funapprox
   case 'expapprox'
     if nargout==2
       %% With Jacobian
-      output  = struct('F',1,'Js',0,'Jx',1,'Jz',0);
-      [F,~,Jx] = f(s,x,z,params,output);
+      [F,~,Jx] = f(s,x,z,params,[1 0 1 0]);
     else
       %% Without Jacobian
-      output = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-      F      = f(s,x,z,params,output);
+      F        = f(s,x,z,params);
     end
   case {'expfunapprox','resapprox'}
     k     = size(e,1);
@@ -37,8 +35,7 @@ switch funapprox
 
     if nargout>=2
       %% With Jacobians
-      output              = struct('F',1,'Js',0,'Jx',1);
-      [snext,~,gx]        = g(ss,xx,ee,params,output);
+      [snext,~,gx]        = g(ss,xx,ee,params,[1 0 1 0]);
       if extrapolate>=1, snextinterp = snext;
       else
           snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
@@ -51,12 +48,6 @@ switch funapprox
       switch funapprox
         case 'expfunapprox'
           H                 = funeval(c,fspace,Bsnext,[zeros(1,d); eye(d)]);
-          if nargout(h)==6
-            output = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-            [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),...
-                                  params,output);
-            H                 = H.*hmult(:,:,ones(1+d,1));
-          end
           hv = H(:,:,1);
           hs = H(:,:,2:end);
         case 'resapprox'
@@ -68,23 +59,11 @@ switch funapprox
                                      UBnext(:,ixforward));
           xfnextds             = Xnext(:,:,2:end);
 
-          output = struct('F',1,'Js',0,'Jx',1,'Jsn',1,'Jxn',1,'hmult',1);
-          if nargout(h)<6
-            [hv,~,hx,hsnext,hxnext]       = h(ss,xx,ee,snext,xnext,...
-                                              params,output);
-          else
-            [hv,~,hx,hsnext,hxnext,hmult] = h(ss,xx,ee,snext,xnext,...
-                                              params,output);
-            hv     = hv.*hmult;
-            hx     = hx.*hmult(:,:,ones(m,1));
-            hsnext = hsnext.*hmult(:,:,ones(d,1));
-            hxnext = hxnext.*hmult(:,:,ones(m,1));
-          end
+          [hv,~,hx,~,hsnext,hxnext] = h(ss,xx,ee,snext,xnext,params,[1 0 1 0 1 1]);
       end
       p           = size(hv,2);
       z           = reshape(w'*reshape(hv,k,n*p),n,p);
-      output      = struct('F',1,'Js',0,'Jx',1,'Jz',1);
-      [F,~,fx,fz] = f(s,x,z,params,output);
+      [F,~,fx,fz] = f(s,x,z,params,[1 0 1 1]);
 
       switch funapprox
         case 'expfunapprox'
@@ -145,8 +124,7 @@ switch funapprox
       end
     else
       %% Without Jacobian
-      output  = struct('F',1,'Js',0,'Jx',0);
-      snext   = g(ss,xx,ee,params,output);
+      snext   = g(ss,xx,ee,params);
 
       switch funapprox
         case 'expfunapprox'
@@ -156,12 +134,6 @@ switch funapprox
                               fspace.a(ones(n*k,1),:));
           end
           hv                  = funeval(c,fspace,snextinterp);
-          if nargout(h)==6
-            output  = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-            [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),...
-                                  params,output);
-            hv                = hv.*hmult;
-          end
 
         case 'resapprox'
           [LBnext,UBnext] = b(snext,params);
@@ -173,18 +145,11 @@ switch funapprox
           xnext              = zeros(n*k,m);
           xnext(:,ixforward) = min(max(funeval(c,fspace,snextinterp),...
                                        LBnext(:,ixforward)),UBnext(:,ixforward));
-          output  = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-          if nargout(h)<6
-            hv                 = h(ss,xx,ee,snext,xnext,params,output);
-          else
-            [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
-            hv                 = hv.*hmult;
-          end
+          hv                 = h(ss,xx,ee,snext,xnext,params);
       end
       p       = size(hv,2);
       z       = reshape(w'*reshape(hv,k,n*p),n,p);
-      output  = struct('F',1,'Js',0,'Jx',0,'Jz',0);
-      F       = f(s,x,z,params,output);
+      F       = f(s,x,z,params);
     end
 end
 

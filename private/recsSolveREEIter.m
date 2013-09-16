@@ -49,7 +49,6 @@ if ~(explicit || strcmp(funapprox,'expapprox'))
 else
   k       = length(w);
   xnext   = zeros(n*k,m);
-  output  = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
   [LB,UB] = b(s,params);
   ind     = (1:n);
   ind     = ind(ones(1,k),:);
@@ -109,7 +108,7 @@ function [R,dRdc] = ResidualFunction(cc)
 
     % Calculation of snext
     xx      = x(ind,:);
-    snext   = g(ss,xx,ee,params,output);
+    snext   = g(ss,xx,ee,params);
 
     % Calculation of xnext
     if extrapolate>=1, snextinterp = snext;
@@ -132,12 +131,7 @@ function [R,dRdc] = ResidualFunction(cc)
     end
 
     % Calculation of z
-    if nargout(h)<6
-      hv                 = h(ss,xx,ee,snext,xnext,params,output);
-    else
-      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
-      hv                 = hv.*hmult;
-    end
+    hv    = h(ss,xx,ee,snext,xnext,params);
     z     = reshape(w'*reshape(hv,k,n*p),n,p);
 
     % Prepare output
@@ -148,7 +142,7 @@ function [R,dRdc] = ResidualFunction(cc)
 
     % Calculation of snext
     xx     = x(ind,:);
-    snext  = g(ss,xx,ee,params,output);
+    snext  = g(ss,xx,ee,params);
 
     % Calculation of xnext
     if extrapolate>=1, snextinterp = snext;
@@ -161,16 +155,11 @@ function [R,dRdc] = ResidualFunction(cc)
                                  LBnext(:,ixforward)),UBnext(:,ixforward));
 
     % Calculation of z
-    if nargout(h)<6
-      hv                 = h(ss,xx,ee,snext,xnext,params,output);
-    else
-      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,output);
-      hv                 = hv.*hmult;
-    end
+    hv     = h(ss,xx,ee,snext,xnext,params);
     z      = reshape(w'*reshape(hv,k,n*p),n,p);
 
     % Calculation of x by explicit formula
-    x      = min(max(f(s,[],z,params,output),LB),UB);
+    x      = min(max(f(s,[],z,params),LB),UB);
 
     % Prepare output
     R      = vec((funfitxy(fspace,Phi,x(:,ixforward))-cc)');

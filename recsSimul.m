@@ -141,7 +141,6 @@ else
 end
 
 %% Generate shocks
-output      = struct('F',1,'Js',0,'Jx',0,'Jz',0);
 ssim        = zeros(nrep,d,nper);
 ssim(:,:,1) = s0;
 xsim        = zeros(nrep,m,nper);
@@ -157,7 +156,7 @@ end
 
 %% Simulate the model
 for t=1:nper
-  if t>1, ssim(:,:,t) = g(ssim(:,:,t-1),xsim(:,:,t-1),esim(:,:,t),params,output); end
+  if t>1, ssim(:,:,t) = g(ssim(:,:,t-1),xsim(:,:,t-1),esim(:,:,t),params); end
   if extrapolate, sinterp = ssim(:,:,t);
   else
     sinterp = max(min(ssim(:,:,t),fspace.b(ones(nrep,1),:)), ...
@@ -201,7 +200,7 @@ for t=1:nper
         end % switch funapprox
       otherwise
         if nargout==5
-          fval = f(ssim(:,:,t),xsim(:,:,t),funeval(cz,fspace,Phi),params,output);
+          fval = f(ssim(:,:,t),xsim(:,:,t),funeval(cz,fspace,Phi),params);
         end
     end % switch simulmethod
   end % Finite or infinite horizon problem

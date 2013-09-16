@@ -143,19 +143,18 @@ if all(~[IncidenceMatrices.hs(:); IncidenceMatrices.hx(:)])
   xx     = x(ind,:);
   ee     = e(repmat(1:K,1,n),:);
 
-  outputFJ = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-  snext    = g(ss,xx,ee,params,outputFJ);
+  snext    = g(ss,xx,ee,params);
   xnext    = funeval(interp.cx,interp.fspace,snext);
 
   if size(ss,1)>100, i = unique(randi(size(ss,1),100,1));
   else               i = 1:size(ss,1);
   end
   he = numjac(@(E) reshape(h(ss(i,:),xx(i,:),E,snext(i,:),xnext(i,:),...
-                             params,outputFJ),[],1),ee(i,:));
+                             params),[],1),ee(i,:));
 
   % Calculate the approximation of the expectations function (if possible)
   if norm(he(:),Inf)<eps
-    hv        = h([],[],[],s,x,params,outputFJ);
+    hv        = h([],[],[],s,x,params);
     interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
   end
 end

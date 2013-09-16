@@ -34,7 +34,7 @@ Mu                = 1;
 sigma             = 0.05;
 
 %%
-model = recsmodel('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
+model = recsmodel('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7),[],struct('Python',1));
 
 %% Define approximation space
 [interp,s] = recsinterpinit(40,model.sss*0.7,model.sss*1.5);

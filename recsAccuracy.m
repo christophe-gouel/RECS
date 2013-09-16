@@ -78,8 +78,7 @@ ind       = ind(ones(1,k),:);
 ss        = se(ind,:);
 xx        = xe(ind,:);
 ee        = e(repmat(1:k,1,n*t),:);
-output    = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',1);
-sen       = g(ss,xx,ee,params,output);
+sen       = g(ss,xx,ee,params);
 [LBn,UBn] = b(sen,params);
 if extrapolate, seninterp = sen;
 else
@@ -88,12 +87,7 @@ end
 xen              = zeros(n*t*k,m);
 xen(:,ixforward) = min(max(funeval(cx(:,ixforward),fspace,seninterp),...
                            LBn(:,ixforward)),UBn(:,ixforward));
-if nargout(h)<6
-  hv                 = h(ss,xx,ee,sen,xen,params,output);
-else
-  [hv,~,~,~,~,hmult] = h(ss,xx,ee,sen,xen,params,output);
-  hv                 = hv.*hmult;
-end
+hv                 = h(ss,xx,ee,sen,xen,params);
 ze        = reshape(w'*reshape(hv,k,n*t*p),n*t,p);
 
 if display==1, disp('Accuracy of the solution'); end
@@ -111,7 +105,7 @@ if display==1 && all(~isnan(lEE_res))
 end
 
 %% Equilibrium equation error
-fe      = f(se,xe,ze,params,output);
+fe      = f(se,xe,ze,params);
 
 Ef      = abs(min(max(-fe,LB-xe),UB-xe));
 lEf     = log10(Ef);

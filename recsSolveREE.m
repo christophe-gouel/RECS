@@ -159,22 +159,16 @@ switch funapprox
              'the approximation coefficients.'])
     else
       xx      = x(ind,:);
-      outputF = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      snext   = g(ss,xx,ee,params,outputF);
+      snext   = g(ss,xx,ee,params);
       if extrapolate>=1, snextinterp = snext;
       else
         snextinterp = max(min(snext,fspace.b(ones(n*k,1),:)),fspace.a(ones(n*k,1),:));
       end
       [LBnext,UBnext] = b(snext,params);
       xnext   = min(max(funeval(funfitxy(fspace,Phi,x),fspace,snextinterp),LBnext),UBnext);
-      if nargout(h)<6
-        hv                 = h(ss,xx,ee,snext,xnext,params,outputF);
-      else
-        [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,outputF);
-        hv                 = hv.*hmult;
-      end
-      z         = reshape(w'*reshape(hv,k,n*p),n,p);
-      c = funfitxy(fspace,Phi,z);
+      hv      = h(ss,xx,ee,snext,xnext,params);
+      z       = reshape(w'*reshape(hv,k,n*p),n,p);
+      c       = funfitxy(fspace,Phi,z);
     end
   case 'expfunapprox'
     if isfield(interp,'ch') && ~isempty(interp.ch)
@@ -183,8 +177,7 @@ switch funapprox
       error(['With functional problems, a first guess has to be provided for ' ...
              'the approximation coefficients.'])
     else
-      outputF = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-      c       = funfitxy(fspace,Phi,h([],[],[],s,x,params,outputF));
+      c       = funfitxy(fspace,Phi,h([],[],[],s,x,params));
     end
   otherwise
     if isfield(interp,'cx') && ~isempty(interp.cx)
@@ -223,8 +216,7 @@ switch funapprox
   interp.cz = c;
   interp.cx = funfitxy(fspace,Phi,x);
   if isfield(interp,'ch')
-    outputF   = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,outputF));
+    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params));
   end
  case 'expfunapprox'
   interp.ch = c;
@@ -233,15 +225,13 @@ switch funapprox
   interp.cx = c;
   if ~isempty(z), interp.cz = funfitxy(fspace,Phi,z); end
   if isfield(interp,'ch')
-    outputF   = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',0);
-    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params,outputF));
+    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params));
   end
 end
 
 % Check if state satisfies bounds
 xx      = x(ind,:);
-outputF = struct('F',1,'Js',0,'Jx',0);
-snext   = g(ss,xx,ee,params,outputF);
+snext   = g(ss,xx,ee,params);
 output  = struct('snextmin',min(snext),'snextmax',max(snext));
 if extrapolate==2 || extrapolate==-1
   if any(min(snext)<fspace.a)
@@ -262,22 +252,11 @@ if isempty(z)
   switch funapprox
    case 'expfunapprox'
     hv   = funeval(c,fspace,snextinterp);
-    if nargout(h)==6
-      outputF           = struct('F',0,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-      [~,~,~,~,~,hmult] = h([],[],ee,snext,zeros(size(snext,1),m),params,outputF);
-      hv                = hv.*hmult;
-    end
 
    case 'resapprox'
     [LBnext,UBnext] = b(snext,params);
     xnext           = min(max(funeval(c,fspace,snextinterp),LBnext),UBnext);
-    outputF         = struct('F',1,'Js',0,'Jx',0,'Jsn',0,'Jxn',0,'hmult',1);
-    if nargout(h)<6
-       hv                = h(ss,xx,ee,snext,xnext,params,outputF);
-    else
-      [hv,~,~,~,~,hmult] = h(ss,xx,ee,snext,xnext,params,outputF);
-      hv                 = hv.*hmult;
-    end
+    hv              = h(ss,xx,ee,snext,xnext,params);
 
   end
   z         = reshape(w'*reshape(hv,k,n*p),n,p);
