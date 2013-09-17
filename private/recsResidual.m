@@ -30,8 +30,8 @@ switch funapprox
   case 'expfunapprox'
     p  = size(c,2);
     if nargout==1
-      if NewtonMethod, R = funeval(c,fspace,Phi)-h([],[],[],s,x,params);
-      else             R = funfitxy(fspace,Phi,h([],[],[],s,x,params))-c;
+      if NewtonMethod, R = funeval(c,fspace,Phi)-h(zeros(n,0),[],[],s,x,params);
+      else             R = funfitxy(fspace,Phi,h(zeros(n,0),[],[],s,x,params))-c;
       end
       R = reshape(R',n*p,1);
     end
@@ -54,7 +54,7 @@ if nargout>=2
       Rc = kron(B,speye(mf));
       
     case 'expfunapprox'
-      [hv,~,~,~,~,hxnext] = h([],[],[],s,x,params,[1 0 0 0 0 1]);
+      [hv,~,~,~,~,hxnext] = h(zeros(n,0),[],[],s,x,params,[1 0 0 0 0 1]);
       R  = funeval(c,fspace,Phi)-hv;
       R  = reshape(R',n*p,1);
       Rx = -spblkdiag(permute(hxnext,[2 3 1]));

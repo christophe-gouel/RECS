@@ -59,25 +59,19 @@ eqsolveroptions  = options.eqsolveroptions;
 [d,m,p] = model.dim{:};
 n       = T*(m+p+d);
 
-e = model.w'*model.e;
+e      = model.w'*model.e;
+fp     = model.fp;
+gp     = model.gp;
+hp     = model.hp;
 params = model.params;
 
-[~,~,dLBxds,dUBxds] = model.b(sss,params);
-dLBxds = permute(dLBxds,[3 2 1]);
-dUBxds = permute(dUBxds,[3 2 1]);
-ix = [sum(dLBxds~=0,1,'native')' sum(dUBxds~=0,1,'native')'];
-nx = int16(sum(ix,1));
+nx = model.nxvarbounds;
 M  = m+sum(nx);
 
 n = n+T*sum(nx);
 
 w = zeros(1,nx(1));
 v = zeros(1,nx(2));
-
-model = mcptransform(model,ix,nx);
-fp    = model.fp;
-gp    = model.gp;
-hp    = model.hp;
 
 [LBx,UBx] = model.bp(sss,params);
 LB = [LBx -inf(1,p+d)];

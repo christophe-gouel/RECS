@@ -47,36 +47,32 @@ if size(s,1)~=1 || size(x,1)~=1 || size(e,1)~=1 || size(snext,1)~=1 || size(xnex
   error('Derivatives can only be check at one location, not on a grid');
 end
 
-e      = model.e;
 f      = model.f;
 g      = model.g;
 h      = model.h;
 params = model.params;
 
-outputF  = struct('F',1,'Js',0,'Jx',0,'Jz',0,'Jsn',0,'Jxn',0,'hmult',0);
-outputJ  = struct('F',0,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',0);
-
 % Analytical derivatives
-[~,fs,fx,fz] = f(s,x,z,params,outputJ);
+[~,fs,fx,fz] = f(s,x,z,params,[0 1 1 1]);
 
-[~,gs,gx] = g(s,x,e,params,outputJ);
+[~,gs,gx] = g(s,x,e,params,[0 1 1 0]);
 
-[~,hs,hx,hsnext,hxnext] = h(s,x,e,snext,xnext,params,outputJ);
+[~,hs,hx,~,hsnext,hxnext] = h(s,x,e,snext,xnext,params,[0 1 1 0 1 1]);
 
 % Numerical derivatives
-if ~isempty(fs), fsnum = numjac(@(S) f(S,x,z,params,outputF),s); end
-fxnum = numjac(@(X) f(s,X,z,params,outputF),x);
-fznum = numjac(@(Z) f(s,x,Z,params,outputF),z);
+if ~isempty(fs), fsnum = numjac(@(S) f(S,x,z,params),s); end
+fxnum = numjac(@(X) f(s,X,z,params),x);
+fznum = numjac(@(Z) f(s,x,Z,params),z);
 
-if ~isempty(gs), gsnum = numjac(@(S) g(S,x,e,params,outputF),s); end
-gxnum = numjac(@(X) g(s,X,e,params,outputF),x);
+if ~isempty(gs), gsnum = numjac(@(S) g(S,x,e,params),s); end
+gxnum = numjac(@(X) g(s,X,e,params),x);
 
 if ~isempty(hs)
-  hsnum = numjac(@(S) h(S,x,e,snext,xnext,params,outputF),s);
+  hsnum = numjac(@(S) h(S,x,e,snext,xnext,params),s);
 end
-hxnum = numjac(@(X) h(s,X,e,snext,xnext,params,outputF),x);
-hsnextnum = numjac(@(SNEXT) h(s,x,e,SNEXT,xnext,params,outputF),snext);
-hxnextnum = numjac(@(XNEXT) h(s,x,e,snext,XNEXT,params,outputF),xnext);
+hxnum = numjac(@(X) h(s,X,e,snext,xnext,params),x);
+hsnextnum = numjac(@(SNEXT) h(s,x,e,SNEXT,xnext,params),snext);
+hxnextnum = numjac(@(XNEXT) h(s,x,e,snext,XNEXT,params),xnext);
 
 % Error
 if ~isempty(fs)

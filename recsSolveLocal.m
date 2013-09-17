@@ -28,12 +28,9 @@ zss    = model.zss;
 [d,m]  = model.dim{1:2};
 
 %% Linearization at steady state
-output            = struct('F',0,'Js',1,'Jx',1,'Jz',1,'Jsn',1,'Jxn',1,'hmult',0);
-[~,fs,fx,fz]      = model.f(sss,xss,zss,params,output);
-[~,gs,gx]         = model.g(sss,xss,e,params,output);
-[~,hs,hx,hsn,hxn] = model.h(sss,xss,e,sss,xss,params,output);
-output            = struct('F',1,'Js',0,'Jx',0);
-ge                = numjac(@(E) model.g(sss,xss,E,params,output),e);
+[~,fs,fx,fz]        = model.f(sss,xss,zss,params,[0 1 1 1]);
+[~,gs,gx,ge]        = model.g(sss,xss,e,params,[0 1 1 1]);
+[~,hs,hx,~,hsn,hxn] = model.h(sss,xss,e,sss,xss,params,[0 1 1 0 1 1]);
 
 % Reshape derivatives
 fs  = permute(fs,[2 3 1]);
@@ -41,6 +38,7 @@ fx  = permute(fx,[2 3 1]);
 fz  = permute(fz,[2 3 1]);
 gs  = permute(gs,[2 3 1]);
 gx  = permute(gx,[2 3 1]);
+ge  = permute(ge,[2 3 1]);
 hs  = permute(hs,[2 3 1]);
 hx  = permute(hx,[2 3 1]);
 hsn = permute(hsn,[2 3 1]);

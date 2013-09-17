@@ -87,8 +87,8 @@ end
 xen              = zeros(n*t*k,m);
 xen(:,ixforward) = min(max(funeval(cx(:,ixforward),fspace,seninterp),...
                            LBn(:,ixforward)),UBn(:,ixforward));
-hv                 = h(ss,xx,ee,sen,xen,params);
-ze        = reshape(w'*reshape(hv,k,n*t*p),n*t,p);
+hv               = h(ss,xx,ee,sen,xen,params);
+ze               = reshape(w'*reshape(hv,k,n*t*p),n*t,p);
 
 if display==1, disp('Accuracy of the solution'); end
 

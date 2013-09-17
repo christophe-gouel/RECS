@@ -14,6 +14,13 @@ else
   options = catstruct(options,defaultopt);
 end
 
+h         = model.h;
+ixforward = model.ixforward;
+params    = model.params
+
+cx     = interp.cx;
+fspace = interp.fspace;
+
 %%
 res = zeros(size(snodes,2),1);             
 for i=1:size(snodes,2)
@@ -23,9 +30,8 @@ for i=1:size(snodes,2)
   snodesnew    = snodes;
   snodesnew{i} = snodei;
   s            = gridmake(snodesnew);
-  [~,x] = recsSimul(model,interp,s,1,[],options);
-  Phi   = funbasx(interp.fspace,s);
-  R = recsResidual(s,x,model.h,model.params,interp.cx,interp.fspace,...
-                   'resapprox',Phi);
+  [~,x]  = recsSimul(model,interp,s,1,[],options);
+  Phi    = funbasx(interp.fspace,s);
+  R      = recsResidual(s,x,h,params,cx,fspace,'resapprox',Phi,ixforward,false);
   res(i) = norm(R,Inf);
 end

@@ -3,7 +3,7 @@ function recsInstall
 %
 % RECSINSTALL does the following things:
 %   - Check if recs folder does not include spaces.
-%   - Under Windows, it creates a dolo-recs executable.
+%   - Under Windows, it creates a dolo-matlab executable.
 %   - It prepares the html help files.
 %   - Check if there is the solver Path.
 
@@ -23,20 +23,20 @@ if ~isempty(strfind(recsdirectory,' '))
            'relocate RECS in a folder without space in its name.'])
 end
 
-%% Create dolo-recs executable for Windows
-fprintf(' - Create dolo-recs executable for Windows: \n')
+%% Create dolo-matlab executable for Windows
+fprintf(' - Create dolo-matlab executable for Windows: \n')
 if ispc
-  dolo     = fullfile(recsdirectory,'Python','dolo');
-  dolorecs = fullfile(dolo,'bin','dolo-recs');
-  status = system(['pyinstaller.py --onefile --out=pyinstaller --paths=' dolo ' ' dolorecs]);
+  dolo       = fullfile(recsdirectory,'Python','dolo');
+  dolomatlab = fullfile(dolo,'bin','dolo-matlab');
+  status = system(['pyinstaller.py --onefile --out=pyinstaller --paths=' dolo ' ' dolomatlab]);
   if ~status
-    movefile(fullfile('.','pyinstaller','dist','dolo-recs.exe'),...
-             fullfile(dolo,'bin','dolo-recs.exe'),'f');
+    movefile(fullfile('.','pyinstaller','dist','dolo-matlab.exe'),...
+             fullfile(dolo,'bin','dolo-matlab.exe'),'f');
     delete('*.log');
     rmdir('pyinstaller','s');
   else
-    warning('RECS:DoloRecsCreationFailure',...
-            'Failure to create dolo-recs executable for Windows')
+    warning('RECS:DoloMatlabCreationFailure',...
+            'Failure to create dolo-matlab executable for Windows')
   end
 end
 

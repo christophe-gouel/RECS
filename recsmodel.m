@@ -23,6 +23,9 @@ classdef recsmodel
     ha      % Anonymous function that defines the model's auxiliary expectations
     dim     % Problem's dimensions {d,m,p}
     symbols % Symbols of parameters, shocks, and variables
+    % MODEL_TYPE - Type of model: fgh1 when expectations are functions forward
+    % variables and fgh2 when they possibly depend on all variables.
+    model_type 
   end
   properties (Hidden=true)
     bp
@@ -31,6 +34,8 @@ classdef recsmodel
     hp
     IncidenceMatrices
     ixforward % Index of response variables that appear with leads
+    ixvarbounds
+    nxvarbounds
   end % Hidden properties
 
   methods
@@ -87,13 +92,15 @@ classdef recsmodel
       inputfiledirectory = fileparts(which(inputfile));
       dolo = fullfile(recsdirectory,'Python','dolo');
 
-      if ispc && ~options.Python
-        status = system([fullfile(dolo,'bin','dolo-recs.exe') ' ' which(inputfile) ...
-                         ' ' fullfile(inputfiledirectory,outputfile)]);
+      if ispc && ~options.Python && ...
+            exist(fullfile(dolo,'bin','dolo-matlab.exe'),'file')
+        status = system([fullfile(dolo,'bin','dolo-matlab.exe') ' --diff ' ...
+                         which(inputfile) ' ' ...
+                         fullfile(inputfiledirectory,outputfile)]);
       else
-        dolomatlab = fullfile(dolo,'bin','dolo-matlab --diff');
+        dolomatlab = fullfile(dolo,'bin','dolo-matlab');
         setenv('PYTHONPATH',dolo)
-        status = system(['python ' dolomatlab ' ' which(inputfile) ...
+        status = system(['python ' dolomatlab ' --diff ' which(inputfile) ...
                          ' '  fullfile(inputfiledirectory,outputfile)]);
       end
 
@@ -135,6 +142,19 @@ classdef recsmodel
                    size(model.IncidenceMatrices.fz,2)};
       model.ixforward = sum(model.IncidenceMatrices.hxnext,1)>=1;
 
+      %% Identify variables for which bounds are variable
+      model.ixvarbounds = logical([sum(model.IncidenceMatrices.lbs,2)...
+                          sum(model.IncidenceMatrices.ubs,2)]);
+      model.nxvarbounds = int16(sum(model.ixvarbounds,1));
+      model             = mcptransform(model);
+
+      %% Identify model type
+      if all(~[model.IncidenceMatrices.hs(:); model.IncidenceMatrices.hx(:); ...
+               model.IncidenceMatrices.he(:)])
+        model.model_type = 'fgh1';
+      else
+        model.model_type = 'fgh2';
+      end
 
       %% Prepare shocks information & find steady state
       if nargin>=2 && ~isempty(shocks)

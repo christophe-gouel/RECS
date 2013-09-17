@@ -7,9 +7,9 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 %
 % S = RECSSS(MODEL) tries to find the non-stochastic steady state of the model
 % defined in the object MODEL. This function call uses as first guess for
-% steady-state state and response variable the output of the call
-% model.func('ss'). RECSSS returns the value of the state variables at steady state.
-% MODEL is an object created by recsmodel.
+% steady-state state and response variable the values available in the
+% properties sss and xss of the object MODEL. RECSSS returns the value of the
+% state variables at steady state. MODEL is an object created by recsmodel.
 %
 % S = RECSSS(MODEL,S) uses the vector S as first guess for steady-state state
 % variables.
@@ -68,30 +68,19 @@ eqsolveroptions = options.eqsolveroptions;
 params = model.params;
 e      = model.w'*model.e;
 [d,m]  = model.dim{1:2};
+fp     = model.fp;
+gp     = model.gp;
+hp     = model.hp;
 
 %% Solve for the deterministic steady state
-
-[~,~,dLBxds,dUBxds] = model.b(s,params);
-dLBxds = permute(dLBxds,[3 2 1]);
-dUBxds = permute(dUBxds,[3 2 1]);
-ix = [sum(dLBxds~=0,1,'native')' sum(dUBxds~=0,1,'native')'];
-nx = int16(sum(ix,1));
-w = zeros(nx(1),1);
-v = zeros(nx(2),1);
-X = [s(:); x(:); w; v];
-
-model = mcptransform(model,ix,nx);
-fp    = model.fp;
-gp    = model.gp;
-hp    = model.hp;
+nx = model.nxvarbounds;
+w  = zeros(nx(1),1);
+v  = zeros(nx(2),1);
+X  = [s(:); x(:); w; v];
 
 [LBx,UBx] = model.bp(s,params);
 LB = [-inf(size(s(:))); LBx(:)];
 UB = [+inf(size(s(:))); UBx(:)];
-
-
-vec = @(X) X(:);
-[F,J] = SSResidual(X,fp,gp,hp,params,e,d,m,nx);
 
 [X,~,exitflag] = runeqsolver(@SSResidual,X,LB,UB,eqsolver,eqsolveroptions,...
                              fp,gp,hp,params,e,d,m,nx);

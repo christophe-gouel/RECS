@@ -177,7 +177,7 @@ switch funapprox
       error(['With functional problems, a first guess has to be provided for ' ...
              'the approximation coefficients.'])
     else
-      c       = funfitxy(fspace,Phi,h([],[],[],s,x,params));
+      c       = funfitxy(fspace,Phi,h(zeros(n,0),[],[],s,x,params));
     end
   otherwise
     if isfield(interp,'cx') && ~isempty(interp.cx)
@@ -215,8 +215,8 @@ switch funapprox
  case 'expapprox'
   interp.cz = c;
   interp.cx = funfitxy(fspace,Phi,x);
-  if isfield(interp,'ch')
-    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params));
+  if strcmp(model.model_type,'fgh1')
+    interp.ch = funfitxy(fspace,Phi,h(zeros(n,0),[],[],s,x,params));
   end
  case 'expfunapprox'
   interp.ch = c;
@@ -224,8 +224,8 @@ switch funapprox
  otherwise
   interp.cx = c;
   if ~isempty(z), interp.cz = funfitxy(fspace,Phi,z); end
-  if isfield(interp,'ch')
-    interp.ch = funfitxy(fspace,Phi,h([],[],[],s,x,params));
+  if strcmp(model.model_type,'fgh1')
+    interp.ch = funfitxy(fspace,Phi,h(zeros(n,0),[],[],s,x,params));
   end
 end
 

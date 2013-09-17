@@ -1,4 +1,4 @@
-function model = mcptransform(model,ix,nx)
+function model = mcptransform(model)
 % MCPTRANSFORM Transform a MCP problem in which bounds are endogenous into a problem with exogenous bounds
 
 % Copyright (C) 2011-2013 Christophe Gouel
@@ -9,6 +9,9 @@ b = model.b;
 f = model.f;
 g = model.g;
 h = model.h;
+
+ix = model.ixvarbounds;
+nx = model.nxvarbounds;
 
 model.bp = @(s,params) bp(s,params,b,ix,nx);
 model.fp = @(s,x,w,v,z,params,output) fp(s,x,w,v,z,params,output,b,f,ix,nx);

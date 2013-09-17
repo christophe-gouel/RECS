@@ -73,13 +73,10 @@ end
 fgmethod = options.fgmethod;
 T        = options.T;
 
-n = size(s,1);
+n        = size(s,1);
 
-g                 = model.g;
-h                 = model.h;
-p                 = model.dim{3};
-params            = model.params;
-IncidenceMatrices = model.IncidenceMatrices;
+p        = model.dim{3};
+params   = model.params;
 
 %% Solve for the deterministic steady state
 [sss,xss,zss] = recsSS(model,sss,xss,catstruct(options,struct('display',0)));
@@ -134,28 +131,8 @@ interp.x  = x;
 interp.z  = z;
 
 % Check if it is possible to approximate the expectations function
-if all(~[IncidenceMatrices.hs(:); IncidenceMatrices.hx(:)])
-  e      = model.e;
-  K      = size(e,1);
-  ind    = (1:n);
-  ind    = ind(ones(1,K),:);
-  ss     = s(ind,:);
-  xx     = x(ind,:);
-  ee     = e(repmat(1:K,1,n),:);
-
-  snext    = g(ss,xx,ee,params);
-  xnext    = funeval(interp.cx,interp.fspace,snext);
-
-  if size(ss,1)>100, i = unique(randi(size(ss,1),100,1));
-  else               i = 1:size(ss,1);
-  end
-  he = numjac(@(E) reshape(h(ss(i,:),xx(i,:),E,snext(i,:),xnext(i,:),...
-                             params),[],1),ee(i,:));
-
-  % Calculate the approximation of the expectations function (if possible)
-  if norm(he(:),Inf)<eps
-    hv        = h([],[],[],s,x,params);
-    interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
-  end
+if strcmp(model.model_type,'fgh1')
+  hv        = model.h(zeros(n,0),[],[],s,x,params);
+  interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
 end
 
