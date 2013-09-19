@@ -144,9 +144,9 @@ if nargout==2
 
 else
   %% Without Jacobian calculation
-  zz = hp(ss,xx,e,ss,xx,params);
-  f  = fp(ss,xx,ww,vv,zz,params);
-  g  = gp(ss,xx,e,params);
+  zz = hp(ss,xx,e,ss,xx,params,[1 0 0 0 0 0]);
+  f  = fp(ss,xx,ww,vv,zz,params,[1 0 0 0]);
+  g  = gp(ss,xx,e,params,[1 0 0 0]);
 end
 
 F = [ss-g f]';

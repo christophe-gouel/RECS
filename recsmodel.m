@@ -91,16 +91,17 @@ classdef recsmodel
       recsdirectory = fileparts(which('recsSimul'));
       inputfiledirectory = fileparts(which(inputfile));
       dolo = fullfile(recsdirectory,'Python','dolo');
-
+      dolooptions = ' --diff  --model_type=fgh2 ';
+      
       if ispc && ~options.Python && ...
             exist(fullfile(dolo,'bin','dolo-matlab.exe'),'file')
-        status = system([fullfile(dolo,'bin','dolo-matlab.exe') ' --diff ' ...
+        status = system([fullfile(dolo,'bin','dolo-matlab.exe') dolooptions ...
                          which(inputfile) ' ' ...
                          fullfile(inputfiledirectory,outputfile)]);
       else
         dolomatlab = fullfile(dolo,'bin','dolo-matlab');
         setenv('PYTHONPATH',dolo)
-        status = system(['python ' dolomatlab ' --diff ' which(inputfile) ...
+        status = system(['python ' dolomatlab dolooptions which(inputfile) ...
                          ' '  fullfile(inputfiledirectory,outputfile)]);
       end
 

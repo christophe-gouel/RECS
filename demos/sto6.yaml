@@ -37,8 +37,8 @@ equations:
 
     .. EPa   = Pa(1)
     .. EPb   = Pb(1)
-    .. EPea  = Pa(1)*ea
-    .. EPeb  = Pb(1)*eb
+    .. EPea  = Pa(1)*ea(1)
+    .. EPeb  = Pb(1)*eb(1)
 
     
 calibration:

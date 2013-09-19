@@ -1,4 +1,4 @@
-**RECS toolbox Version 0.6**
+**RECS toolbox Version 0.7-beta**
 
 A MATLAB solver for nonlinear, dynamic, stochastic, rational expectations
 equilibrium models. RECS stands for "Rational Expectations Complementarity
