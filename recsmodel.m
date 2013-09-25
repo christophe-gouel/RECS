@@ -26,6 +26,7 @@ classdef recsmodel
     % MODEL_TYPE - Type of model: fgh1 when expectations are functions forward
     % variables and fgh2 when they possibly depend on all variables.
     model_type 
+    eq_type
   end
   properties (Hidden=true)
     bp
@@ -196,6 +197,17 @@ classdef recsmodel
         end
       end % shocks and steady state
       
+      %% Equation type
+      model.eq_type = 'mcp';
+      if all(~[model.IncidenceMatrices.lbs(:); model.IncidenceMatrices.ubs(:)])
+        if ~isempty(sss0)
+          [LB,UB] = model.b(sss0,model.params); 
+          if all(isinf([LB(:); UB(:);]))
+            model.eq_type = 'cns';
+          end
+        end
+      end
+        
       function [LB,UB,LB_s,UB_s] = OrganizeBounds(modeltmp,s,p,o)
       % ORGANIZEBOUNDS reorganizes bounds from dolo-matlab format to RECS format
         if nargin<4

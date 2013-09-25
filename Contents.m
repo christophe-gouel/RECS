@@ -1,5 +1,5 @@
 % RECS Toolbox
-% Version 0.-beta (R2013b) 19-Sep-2013
+% Version 0.7-beta (R2013b) 19-Sep-2013
 %
 % RECS functions
 %   recsAccuracy              - Evaluate accuracy of a RECS solution.
