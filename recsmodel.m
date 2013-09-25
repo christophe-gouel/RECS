@@ -148,8 +148,15 @@ classdef recsmodel
       model.ixvarbounds = logical([sum(model.IncidenceMatrices.lbs,2)...
                           sum(model.IncidenceMatrices.ubs,2)]);
       model.nxvarbounds = int16(sum(model.ixvarbounds,1));
-      model             = mcptransform(model);
-
+      if any(model.nxvarbounds)
+        model    = mcptransform(model);
+      else
+        model.bp = @(s,p,varargin) OrganizeBounds(modeltmp,s,p,varargin{:});;
+        model.fp = @(s,x,w,v,z,p,o) modeltmp.functions.arbitrage(s,x,z,p,o);
+        model.gp = modeltmp.functions.transition;
+        model.hp = modeltmp.functions.expectation;
+      end
+        
       %% Identify model type
       if all(~[model.IncidenceMatrices.hs(:); model.IncidenceMatrices.hx(:); ...
                model.IncidenceMatrices.he(:)])

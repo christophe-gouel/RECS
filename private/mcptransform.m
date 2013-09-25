@@ -41,7 +41,7 @@ function [fpval,fps,fpx,fpz] = fp(s,x,w,v,z,params,output,b,f,ix,nx)
 
 % dF/ds 
 if output(2)
-  if sum(nx)
+  if any(nx)
     [LBx,UBx,dLBxds,dUBxds] = b(s,params);
     dLBxds = dLBxds(:,ix(:,1),:);
     dUBxds = dUBxds(:,ix(:,2),:); 
