@@ -4,10 +4,8 @@ classdef recsmodel
   properties
     func    % Anonymous function that defines the model's equations
     params  % Model's parameters
-    b       % Anonymous function that defines the model's bounds
-    f       % Anonymous function that defines the model's equilibrium equations
-    g       % Anonymous function that defines the model's transition equations
-    h       % Anonymous function that defines the model's expectations definition equations
+    % FUNCTIONS - Anonymous functions that defines the model
+    functions 
     ee      % Anonymous function that defines the model's unit-free equation errors
     e       % Values of discrete probability distribution
     w       % Probabilities of discrete probability distribution
@@ -19,8 +17,6 @@ classdef recsmodel
     xss     % Response variables at steady state
     zss     % Expectations variables at steady state
     dima    % Dimension of auxiliary variables
-    fa      % Anonymous function that defines the model's auxiliary equations
-    ha      % Anonymous function that defines the model's auxiliary expectations
     dim     % Problem's dimensions {d,m,p}
     symbols % Symbols of parameters, shocks, and variables
     % MODEL_TYPE - Type of model: fgh1 when expectations are functions forward
@@ -29,10 +25,6 @@ classdef recsmodel
     eq_type
   end
   properties (Hidden=true)
-    bp
-    fp
-    gp
-    hp
     IncidenceMatrices
     ixforward % Index of response variables that appear with leads
     ixvarbounds
@@ -117,11 +109,11 @@ classdef recsmodel
       sss0 = modeltmp.calibration.states;
       xss0 = modeltmp.calibration.controls;
 
-      model.b  = @(s,p,varargin) OrganizeBounds(modeltmp,s,p,varargin{:});
-      model.f  = modeltmp.functions.arbitrage;
-      model.g  = modeltmp.functions.transition;
-      model.h  = modeltmp.functions.expectation;
-      model.ee = @(s,x,z,p) NaN;
+      model.functions.b  = @(s,p,varargin) OrganizeBounds(modeltmp,s,p,varargin{:});
+      model.functions.f  = modeltmp.functions.arbitrage;
+      model.functions.g  = modeltmp.functions.transition;
+      model.functions.h  = modeltmp.functions.expectation;
+      model.functions.ee = @(s,x,z,p) NaN;
       
       %% Incidence matrices and dimensions
       IM = modeltmp.infos.incidence_matrices;
@@ -151,10 +143,10 @@ classdef recsmodel
       if any(model.nxvarbounds)
         model    = mcptransform(model);
       else
-        model.bp = @(s,p,varargin) OrganizeBounds(modeltmp,s,p,varargin{:});;
-        model.fp = @(s,x,w,v,z,p,o) modeltmp.functions.arbitrage(s,x,z,p,o);
-        model.gp = modeltmp.functions.transition;
-        model.hp = modeltmp.functions.expectation;
+        model.functions.bp = @(s,p,varargin) OrganizeBounds(modeltmp,s,p,varargin{:});;
+        model.functions.fp = @(s,x,w,v,z,p,o) modeltmp.functions.arbitrage(s,x,z,p,o);
+        model.functions.gp = modeltmp.functions.transition;
+        model.functions.hp = modeltmp.functions.expectation;
       end
         
       %% Identify model type
@@ -208,7 +200,7 @@ classdef recsmodel
       model.eq_type = 'mcp';
       if all(~[model.IncidenceMatrices.lbs(:); model.IncidenceMatrices.ubs(:)])
         if ~isempty(sss0)
-          [LB,UB] = model.b(sss0,model.params); 
+          [LB,UB] = model.functions.b(sss0,model.params); 
           if all(isinf([LB(:); UB(:);]))
             model.eq_type = 'cns';
           end
@@ -234,8 +226,9 @@ classdef recsmodel
       ssim = zeros(nrep,d,nper+1);
       ssim(:,:,1) = model.sss(ones(nrep,1),:);
       for t=1:nper
-        ssim(:,:,t+1) = model.g(ssim(:,:,t),model.xss(ones(nrep,1),:),...
-                                model.funrand(nrep),model.params);
+        ssim(:,:,t+1) = model.functions.g(ssim(:,:,t),...
+                                          model.xss(ones(nrep,1),:),...
+                                          model.funrand(nrep),model.params);
       end
       quant = [0 0.001 0.01 0.5 0.99 0.999 1];
       SQ = quantile(reshape(permute(real(ssim(:,:,2:end)),[1 3 2]),nrep*nper,d),...

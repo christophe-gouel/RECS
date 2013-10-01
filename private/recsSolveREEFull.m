@@ -16,11 +16,11 @@ extrapolate      = options.extrapolate;
 funapprox        = lower(options.funapprox);
 functional       = options.functional;
 
-b         = model.b;
+b         = model.functions.b;
 e         = model.e;
-f         = model.f;
-g         = model.g;
-h         = model.h;
+f         = model.functions.f;
+g         = model.functions.g;
+h         = model.functions.h;
 ixforward = model.ixforward;
 params    = model.params;
 w         = model.w;
@@ -31,7 +31,7 @@ Phi    = interp.Phi;
 [n,m]  = size(x);
 
 [~,grid] = spblkdiag(zeros(m,m,n),[],0);
-[LB,UB]  = model.b(s,params);
+[LB,UB]  = model.functions.b(s,params);
 
 if strcmpi(funapprox,'resapprox'), c = c(:,ixforward); end
 

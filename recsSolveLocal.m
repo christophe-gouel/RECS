@@ -28,9 +28,9 @@ zss    = model.zss;
 [d,m]  = model.dim{1:2};
 
 %% Linearization at steady state
-[~,fs,fx,fz]        = model.f(sss,xss,zss,params,[0 1 1 1]);
-[~,gs,gx,ge]        = model.g(sss,xss,e,params,[0 1 1 1]);
-[~,hs,hx,~,hsn,hxn] = model.h(sss,xss,e,sss,xss,params,[0 1 1 0 1 1]);
+[~,fs,fx,fz]        = model.functions.f(sss,xss,zss,params,[0 1 1 1]);
+[~,gs,gx,ge]        = model.functions.g(sss,xss,e,params,[0 1 1 1]);
+[~,hs,hx,~,hsn,hxn] = model.functions.h(sss,xss,e,sss,xss,params,[0 1 1 0 1 1]);
 
 % Reshape derivatives
 fs  = permute(fs,[2 3 1]);

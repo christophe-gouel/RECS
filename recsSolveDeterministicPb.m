@@ -60,9 +60,9 @@ eqsolveroptions  = options.eqsolveroptions;
 n       = T*(m+p+d);
 
 e      = model.w'*model.e;
-fp     = model.fp;
-gp     = model.gp;
-hp     = model.hp;
+fp     = model.functions.fp;
+gp     = model.functions.gp;
+hp     = model.functions.hp;
 params = model.params;
 
 nx = model.nxvarbounds;
@@ -73,7 +73,7 @@ n = n+T*sum(nx);
 w = zeros(1,nx(1));
 v = zeros(1,nx(2));
 
-[LBx,UBx] = model.bp(sss,params);
+[LBx,UBx] = model.functions.bp(sss,params);
 LB = [LBx -inf(1,p+d)];
 UB = [UBx +inf(1,p+d)];
 

@@ -26,11 +26,11 @@ useapprox          = options.useapprox;
 
 NewtonMethod       = ~any(strcmpi(reesolver,{'sa','krylov','mixed'}));
 
-b         = model.b;
+b         = model.functions.b;
 e         = model.e;
-f         = model.f;
-g         = model.g;
-h         = model.h;
+f         = model.functions.f;
+g         = model.functions.g;
+h         = model.functions.h;
 ixforward = model.ixforward;
 params    = model.params;
 w         = model.w;

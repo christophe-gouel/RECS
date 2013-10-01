@@ -59,7 +59,7 @@ for iter=1:5
 
   end % switch
 
-  [LB,UB] = model.b(s,model.params);
+  [LB,UB] = model.functions.b(s,model.params);
 
   options = struct('display',0,...
                    'eqsolveroptions',struct('DerivativeCheck','on'),...

@@ -5,18 +5,18 @@ function model = mcptransform(model)
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-b = model.b;
-f = model.f;
-g = model.g;
-h = model.h;
+b = model.functions.b;
+f = model.functions.f;
+g = model.functions.g;
+h = model.functions.h;
 
 ix = model.ixvarbounds;
 nx = model.nxvarbounds;
 
-model.bp = @(s,params) bp(s,params,b,ix,nx);
-model.fp = @(s,x,w,v,z,params,output) fp(s,x,w,v,z,params,output,b,f,ix,nx);
-model.gp = @(s,x,e,params,output) gp(s,x,e,params,output,g,nx);
-model.hp = @(s,x,e,snext,xnext,params,output) hp(s,x,e,snext,xnext,params,output,h,nx);
+model.functions.bp = @(s,params) bp(s,params,b,ix,nx);
+model.functions.fp = @(s,x,w,v,z,params,output) fp(s,x,w,v,z,params,output,b,f,ix,nx);
+model.functions.gp = @(s,x,e,params,output) gp(s,x,e,params,output,g,nx);
+model.functions.hp = @(s,x,e,snext,xnext,params,output) hp(s,x,e,snext,xnext,params,output,h,nx);
 
 function [LB,UB] = bp(s,params,b,ix,nx)
 %% BP

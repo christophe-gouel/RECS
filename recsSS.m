@@ -68,9 +68,9 @@ eqsolveroptions = options.eqsolveroptions;
 params = model.params;
 e      = model.w'*model.e;
 [d,m]  = model.dim{1:2};
-fp     = model.fp;
-gp     = model.gp;
-hp     = model.hp;
+fp     = model.functions.fp;
+gp     = model.functions.gp;
+hp     = model.functions.hp;
 
 %% Solve for the deterministic steady state
 nx = model.nxvarbounds;
@@ -78,7 +78,7 @@ w  = zeros(nx(1),1);
 v  = zeros(nx(2),1);
 X  = [s(:); x(:); w; v];
 
-[LBx,UBx] = model.bp(s,params);
+[LBx,UBx] = model.functions.bp(s,params);
 LB = [-inf(size(s(:))); LBx(:)];
 UB = [+inf(size(s(:))); UBx(:)];
 
@@ -94,7 +94,7 @@ s0     = s;
 x0     = x;
 s      = X(1:d)';
 x      = X(d+1:d+m)';
-z = model.h(s,x,e,s,x,params);
+z = model.functions.h(s,x,e,s,x,params);
 
 %% Display steady state
 if exitflag==1 && options.display==1

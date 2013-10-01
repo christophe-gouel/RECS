@@ -82,7 +82,7 @@ params   = model.params;
 [sss,xss,zss] = recsSS(model,sss,xss,catstruct(options,struct('display',0)));
 
 %% Find first-guess
-[LB,UB]    = model.b(s,params);
+[LB,UB]    = model.functions.b(s,params);
 if strcmpi(fgmethod,'auto') && all(isinf([LB(:); UB(:)]))
   fgmethod = 'perturbation';
 elseif strcmpi(fgmethod,'auto')
@@ -132,7 +132,7 @@ interp.z  = z;
 
 % Check if it is possible to approximate the expectations function
 if strcmp(model.model_type,'fgh1')
-  hv        = model.h(zeros(n,0),[],[],s,x,params);
+  hv        = model.functions.h(zeros(n,0),[],[],s,x,params);
   interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
 end
 

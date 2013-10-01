@@ -45,11 +45,11 @@ end
 display     = options.display;
 extrapolate = options.extrapolate;
 
-b         = model.b;
+b         = model.functions.b;
 e         = model.e;
-f         = model.f;
-g         = model.g;
-h         = model.h;
+f         = model.functions.f;
+g         = model.functions.g;
+h         = model.functions.h;
 ixforward = model.ixforward;
 params    = model.params;
 w         = model.w;
@@ -93,7 +93,7 @@ ze               = reshape(w'*reshape(hv,k,n*t*p),n*t,p);
 if display==1, disp('Accuracy of the solution'); end
 
 %% Euler equation error
-EE      = model.ee(se,xe,ze,params);
+EE      = model.functions.ee(se,xe,ze,params);
 lEE     = log10(abs(EE));
 lEE_res = [log10(max(abs(EE)));
            log10(sum(abs(EE))/size(EE,1))];

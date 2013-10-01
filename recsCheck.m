@@ -47,9 +47,9 @@ if size(s,1)~=1 || size(x,1)~=1 || size(e,1)~=1 || size(snext,1)~=1 || size(xnex
   error('Derivatives can only be check at one location, not on a grid');
 end
 
-f      = model.f;
-g      = model.g;
-h      = model.h;
+f      = model.functions.f;
+g      = model.functions.g;
+h      = model.functions.h;
 params = model.params;
 
 % Analytical derivatives

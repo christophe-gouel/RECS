@@ -115,11 +115,11 @@ if ~any(strcmp(simulmethod,{'interpolation','solve'}))
                       'be carried out using the default option, ''interpolation''.'])
 end
 
-b         = model.b;
+b         = model.functions.b;
 e         = model.e;
-f         = model.f;
-g         = model.g;
-h         = model.h;
+f         = model.functions.f;
+g         = model.functions.g;
+h         = model.functions.h;
 ixforward = model.ixforward;
 params    = model.params;
 w         = model.w;

@@ -53,9 +53,9 @@ end
 eqsolver        = lower(options.eqsolver);
 eqsolveroptions = options.eqsolveroptions;
 
-b      = model.b;
+b      = model.functions.b;
 e      = model.e;
-g      = model.g;
+g      = model.functions.g;
 params = model.params;
 w      = model.w;
 
@@ -89,7 +89,7 @@ xnext           = min(max(Phinext*cx,LBnext),UBnext);
 
 %%
 [ma,pa] = model.dima{:};
-fa      = model.fa;
+fa      = model.functions.fa;
 za      = zeros(n,pa);
 
 %%
@@ -124,7 +124,7 @@ function R = ResidualVFI(xa_old,serial)
   cxa    = funfitxy(fspace,Phi,xa_old);
   xanext = Phinext*cxa;
 %   xanext = funeval(cxa,fspace,Phinext);
-  ha     = model.ha(ss,xx,xa_old(ind,:),ee,snext,xnext,xanext,params);
+  ha     = model.functions.ha(ss,xx,xa_old(ind,:),ee,snext,xnext,xanext,params);
   za     = reshape(w'*reshape(ha,k,n*pa),n,pa);
   xa     = fa(s,x,z,za,params);
   R      = xa-xa_old;

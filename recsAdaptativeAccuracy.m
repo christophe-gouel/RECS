@@ -14,7 +14,7 @@ else
   options = catstruct(options,defaultopt);
 end
 
-h         = model.h;
+h         = model.functions.h;
 ixforward = model.ixforward;
 params    = model.params
 

@@ -101,10 +101,10 @@ functional         = options.functional;
 reemethod          = lower(options.reemethod);
 
 % Extract fields of model
-b      = model.b;
+b      = model.functions.b;
 e      = model.e;
-g      = model.g;
-h      = model.h;
+g      = model.functions.g;
+h      = model.functions.h;
 params = model.params;
 w      = model.w;
 
