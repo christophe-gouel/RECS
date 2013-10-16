@@ -1,0 +1,39 @@
+fghp:
+
+  model_type: fghp
+
+  variable_type: ['states', 'controls', 'expectations', 'statesnext', 'controlsnext']
+
+  equation_type:
+
+      arbitrage:
+          - ['states',0]
+          - ['controls',0]
+          - ['expectations',0]
+
+
+      transition:
+
+          definition: True
+
+          lhs:
+              - ['statesnext',0]
+
+          rhs:
+              - ['states',-1]
+              - ['controls',-1]
+              - ['shocks',0]
+
+      expectation:
+
+          definition: True
+
+          lhs:
+              - ['expectations',0]
+
+          rhs:
+              - ['states',0]
+              - ['controls',0]
+              - ['shocks',1]  
+              - ['statesnext',1]
+              - ['controlsnext',1]

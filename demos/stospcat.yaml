@@ -1,0 +1,58 @@
+declarations:
+
+  states: [A1]
+
+  controls: [S1, S2, S3, P1, P2, P3, A2, A3]
+
+  expectations: [EP]
+
+  shocks: [e]
+
+  parameters: [k, delta, r, elastD, d]
+
+  
+equations:
+
+  arbitrage:
+
+    - P1+k-P2*(1-delta)/(1+r)       |    0 <= S1 <= inf
+    - P2+k-P3*(1-delta)/(1+r)       |    0 <= S2 <= inf
+    - P3+k-EP*(1-delta)/(1+r)       |    0 <= S3 <= inf
+    - A1 - d*P1^elastD-S1           |    0 <= P1 <= inf
+    - A2 - d*P2^elastD-S2           |    0 <= P2 <= inf
+    - A3 - d*P3^elastD-S3           |    0 <= P3 <= inf
+    - A2 = (1-delta)*S1             | -inf <= A2 <= inf
+    - A3 = (1-delta)*S2             | -inf <= A3 <= inf
+
+  transition:
+
+    - A1 = (1-delta)*S3(-1)+1+e
+
+  expectation:
+
+    - EP  = P1(1)
+
+    
+calibration:
+
+  parameters:
+
+    k      :  0.015
+    delta  :  0.005
+    r      :  0.0074
+    elastD : -0.2
+    d      : (A1-S1)/P1^elastD
+    
+  steady_state:
+
+    A1 : 1
+    A2 : (1-delta)*S1
+    A3 : (1-delta)*S2
+    S1 : 0.66
+    S2 : 0.33
+    S3 : 0
+    P1 : 1
+    P2 : 1
+    P3 : 1
+
+    
