@@ -1,4 +1,6 @@
-model_type: fghp
+# STO7SP4.yaml Model definition file for the fourth quarter of quarterly storage model with annual inelastic supply
+# Copyright (C) 2011-2013 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
 
 declarations:
 

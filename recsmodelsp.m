@@ -9,6 +9,7 @@ classdef recsmodelsp
     nperiods
     shocks
     bounds
+    infos
   end
   properties (Hidden=true)
     IncidenceMatrices
@@ -29,7 +30,7 @@ classdef recsmodelsp
       inputfilesdirectory = fileparts(which(inputfiles{1}));
       recipe = fullfile(recsdirectory,'recipes','fghsubperiods.yaml');
       dolo = fullfile(recsdirectory,'Python','dolo');
-      dolooptions = [' --diff  --recipes="' recipe '" '];
+      dolooptions = [' --diff --model_type=fghp --recipes="' recipe '" '];
       
       model.nperiods = length(inputfiles);
       model.functions = struct();
@@ -67,7 +68,10 @@ classdef recsmodelsp
         model.functions(iperiod).f  = modeltmp.functions.arbitrage;
         model.functions(iperiod).g  = modeltmp.functions.transition;
         model.functions(iperiod).h  = modeltmp.functions.expectation;
-
+        
+        model.infos(iperiod).incidence_matrices = modeltmp.infos.incidence_matrices;
+        model.infos(iperiod).ixforward = sum(model.infos(iperiod).incidence_matrices.expectation{5},1)>=1;
+   
         model.dim(iperiod,:) = {length(modeltmp.symbols.states) length(modeltmp.symbols.controls) length(modeltmp.symbols.expectations)};
       end
         

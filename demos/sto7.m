@@ -1,4 +1,4 @@
-%% Quarterly storage model with annual inelastic supply
+%% STO7 Quarterly storage model with annual inelastic supply
 % This model represents the market of a storable commodity that is produced once
 % a year and stored for a year-long consumption. Supply is stochastic and
 % inelastic. Except for its distribution, no information about the coming

@@ -57,4 +57,9 @@ disp('STO7 Quarterly storage model with annual inelastic supply');
 clear interp model options
 sto7
 
+disp('STO7SP Quarterly storage model with informational subperiods and annual inelastic supply');
+clear interp model options
+sto7SP
+
 rmpath(fullfile(recsdirectory,'demos'))
+
