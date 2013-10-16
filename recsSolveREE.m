@@ -122,7 +122,7 @@ if nargin<=2 || isempty(s), s = interp.s; end
 
 % Identify variables dimensions
 n      = size(s,1);
-[m,p]  = model.dim{2:3};
+[d,m,p]  = model.dim{:};
 k      = length(w);               % number of shock values
 
 % Get x or generate it by interpolation if missing
@@ -233,12 +233,17 @@ end
 xx      = x(ind,:);
 snext   = g(ss,xx,ee,params);
 output  = struct('snextmin',min(snext),'snextmax',max(snext));
+vari    = 1:d;
+varmin  = vari(min(snext)<fspace.a);
+varmax  = vari(max(snext)>fspace.b);
 if extrapolate==2 || extrapolate==-1
-  if any(min(snext)<fspace.a)
-    warning('RECS:Extrapolation','State variables beyond smin')
+  if ~isempty(varmin)
+    warning('RECS:Extrapolation','State variables (%s) beyond smin',...
+            int2str(varmin))
   end
-  if any(max(snext)>fspace.b)
-    warning('RECS:Extrapolation','State variables beyond smax')
+  if ~isempty(varmax)
+    warning('RECS:Extrapolation','State variables (%s) beyond smax',...
+            int2str(varmax))
   end
 end
 
