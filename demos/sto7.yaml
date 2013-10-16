@@ -1,8 +1,12 @@
+# STO7.yaml Model definition file for a quarterly storage model with annual inelastic supply
+# Copyright (C) 2011-2013 Christophe Gouel
+# Licensed under the Expat license, see LICENSE.txt
+
 declarations:
 
   states: [A1]
 
-  controls: [S1, S2, S3, P1, P2, P3, A2, A3]
+  controls: [S1, S2, S3, S4, P1, P2, P3, P4, A2, A3, A4]
 
   expectations: [EP]
 
@@ -17,16 +21,19 @@ equations:
 
     - P1+k-P2*(1-delta)/(1+r)       |    0 <= S1 <= inf
     - P2+k-P3*(1-delta)/(1+r)       |    0 <= S2 <= inf
-    - P3+k-EP*(1-delta)/(1+r)       |    0 <= S3 <= inf
+    - P3+k-P4*(1-delta)/(1+r)       |    0 <= S3 <= inf
+    - P4+k-EP*(1-delta)/(1+r)       |    0 <= S4 <= inf
     - A1 - d*P1^elastD-S1           |    0 <= P1 <= inf
     - A2 - d*P2^elastD-S2           |    0 <= P2 <= inf
     - A3 - d*P3^elastD-S3           |    0 <= P3 <= inf
+    - A4 - d*P4^elastD-S4           |    0 <= P4 <= inf
     - A2 = (1-delta)*S1             | -inf <= A2 <= inf
     - A3 = (1-delta)*S2             | -inf <= A3 <= inf
+    - A4 = (1-delta)*S3             | -inf <= A4 <= inf
 
   transition:
 
-    - A1 = (1-delta)*S3(-1)+1+e
+    - A1 = (1-delta)*S4(-1)+4*(1+e)
 
   expectation:
 
@@ -37,22 +44,25 @@ calibration:
 
   parameters:
 
-    k      :  0.015
-    delta  :  0.005
-    r      :  0.0074
+    k      :  0.1*P1/4
+    delta  :  1.02^(1/4)-1
+    r      :  1.03^(1/4)-1
     elastD : -0.2
     d      : (A1-S1)/P1^elastD
     
   steady_state:
 
-    A1 : 1
+    A1 : 4
     A2 : (1-delta)*S1
     A3 : (1-delta)*S2
-    S1 : 0.66
-    S2 : 0.33
-    S3 : 0
+    A4 : (1-delta)*S3
+    S1 : 3
+    S2 : 2
+    S3 : 1
+    S4 : 0
     P1 : 1
     P2 : 1
     P3 : 1
+    P4 : 1
 
     
