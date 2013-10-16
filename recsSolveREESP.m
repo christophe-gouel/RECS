@@ -1,4 +1,4 @@
-function [interp,X,exitflag] = recsSolveREESP(model,interp,X,options)
+function [interp,X,exitflag,output] = recsSolveREESP(model,interp,X,options)
 % RECSSOLVEREESP 
 
 % Copyright (C) 2011-2013 Christophe Gouel
@@ -12,7 +12,7 @@ defaultopt = struct(                                        ...
                                  'DerivativeCheck', 'off'    ,...
                                  'Jacobian'       , 'on'     ,...
                                  'maxit'          , 1000)  ,...
-    'extrapolate'       , 1                                ,...
+    'extrapolate'       , 2                                ,...
     'Display'           , 'iter'                           ,...     
     'loop_over_s'       , 0                                ,...
     'funapprox'         , 'resapprox');
@@ -36,6 +36,7 @@ switch lower(Display)
 end
 atol  = options.eqsolveroptions.atol;
 maxit = options.eqsolveroptions.maxit;
+extrapolate = options.extrapolate;
 
 % Extract fields of model
 nperiods  = model.nperiods;
@@ -91,6 +92,40 @@ while(cnrm > atol && it < maxit)
 end % while(cnrm > atol && it < maxit)
 
 %% Output treatment
+% Check if state satisfies bounds
+output = struct();
+output.snextmin = cell(nperiods,1);
+output.snextmax = cell(nperiods,1);
+for i=1:nperiods
+  si     = s{i};
+  xi     = X{i};
+  ei     = shocks{i}.e;
+  n      = size(si,1);
+  k      = size(ei,1);
+  ind    = (1:n);
+  ind    = ind(ones(1,k),:);
+  ss     = si(ind,:);
+  ee     = ei(repmat(1:k,1,n),:);
+  xx     = xi(ind,:);
+  snext  = functions(i).g(ss,xx,ee,params);
+  output.snextmin{i} = min(snext);
+  output.snextmax{i} = max(snext);
+  if extrapolate==2 || extrapolate==-1
+    vari   = 1:fspace{inext(i)}.d;
+    varmin = vari(min(snext)<fspace{inext(i)}.a);
+    varmax = vari(max(snext)>fspace{inext(i)}.b);
+    if ~isempty(varmin)
+      warning('RECS:Extrapolation','State variables (%s) in subperiod %i beyond smin',...
+              int2str(varmin),inext(i))
+    end
+    if ~isempty(varmax)
+      warning('RECS:Extrapolation','State variables (%s) in subperiod %i beyond smax',...
+              int2str(varmax),inext(i))
+    end
+  end
+end % for i=1:nperiods
+
+% exitflag
 if it==maxit
   exitflag = 0;
   if showiters
@@ -109,6 +144,7 @@ else
   end
 end
 
+% interp
 interp.cX = cX;
 interp.X  =  X;
 
