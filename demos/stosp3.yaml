@@ -2,17 +2,17 @@ model_type: fghp
 
 declarations:
 
-  states: [A, EProd]
+  states: [A3, E3Prod]
 
-  controls: [S, P]
+  controls: [S3, P3]
 
-  expectations: [EP]
+  expectations: [EP4]
 
-  statesnext: [Anext]
+  statesnext: [A4, E4Prod]
 
-  controlsnext: [Snext, Pnext]
+  controlsnext: [S4, P4]
 
-  shocks: [e]
+  shocks: [e4]
 
   parameters: [k, delta, r, elastD, d]
 
@@ -21,25 +21,26 @@ equations:
 
   arbitrage:
 
-    - P+k-EP*(1-delta)/(1+r)     |    0 <= S <= inf
-    - A - d*P^elastD-S           |    0 <= P <= inf
+    - P3+k-EP4*(1-delta)/(1+r)     |    0 <= S3 <= inf
+    - A3 - d*P3^elastD-S3           |    0 <= P3 <= inf
 
   transition:
 
-    - Anext = (1-delta)*S(-1)+1+EProd(-1)+e
+    - A4 = (1-delta)*S3(-1)
+    - E4Prod = E3Prod(-1)+e4
 
   expectation:
 
-    - EP  = Pnext(1)
+    - EP4 = P4(1)
 
     
 calibration:
    
   steady_state:
 
-    A  : 1
-    S  : 0.75
-    P  : 1
-    EProd : 1
+    A3     : 2
+    S3     : 1
+    P3     : 1
+    E3Prod : 0
 
     

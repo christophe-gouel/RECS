@@ -1,0 +1,45 @@
+model_type: fghp
+
+declarations:
+
+  states: [A4, E4Prod]
+
+  controls: [S4, P4]
+
+  expectations: [EP1]
+
+  statesnext: [A1]
+
+  controlsnext: [S1, P1]
+
+  shocks: [e1]
+
+  parameters: [k, delta, r, elastD, d]
+
+  
+equations:
+
+  arbitrage:
+
+    - P4+k-EP1*(1-delta)/(1+r)     |    0 <= S4 <= inf
+    - A4 - d*P4^elastD-S4          |    0 <= P4 <= inf
+
+  transition:
+
+    - A1 = (1-delta)*S4(-1)+4*(1+E4Prod(-1)+e1)
+
+  expectation:
+
+    - EP1  = P1(1)
+
+    
+calibration:
+   
+  steady_state:
+
+    A4     : 1
+    S4     : 0
+    P4     : 1
+    E4Prod : 0
+
+    

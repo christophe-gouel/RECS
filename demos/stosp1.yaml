@@ -2,17 +2,17 @@ model_type: fghp
 
 declarations:
 
-  states: [A]
+  states: [A1]
 
-  controls: [S, P]
+  controls: [S1, P1]
 
-  expectations: [EP]
+  expectations: [EP2]
 
-  statesnext: [Anext, EProd]
+  statesnext: [A2]
 
-  controlsnext: [Snext, Pnext]
+  controlsnext: [S2, P2]
 
-  shocks: [e]
+  shocks: [dummy]
 
   parameters: [k, delta, r, elastD, d]
 
@@ -21,34 +21,33 @@ equations:
 
   arbitrage:
 
-    - P+k-EP*(1-delta)/(1+r)     |    0 <= S <= inf
-    - A - d*P^elastD-S           |    0 <= P <= inf
+    - P1+k-EP2*(1-delta)/(1+r)     |    0 <= S1 <= inf
+    - A1 - d*P1^elastD-S1          |    0 <= P1 <= inf
 
   transition:
 
-    - Anext = (1-delta)*S(-1)
-    - EProd = e
+    - A2 = (1-delta)*S1(-1)
 
   expectation:
 
-    - EP  = Pnext(1)
+    - EP2  = P2(1)
 
     
 calibration:
 
   parameters:
 
-    k      :  0.015
-    delta  :  0.005
-    r      :  0.0074
+    k      :  0.1*P1/4
+    delta  :  1.02^(1/4)-1
+    r      :  1.03^(1/4)-1
     elastD : -0.2
-    d      : (A-S)/P^elastD
+    d      : (A1-S1)/P1^elastD
     
   steady_state:
 
-    A  : 1
-    S  : 0.66
-    P  : 1
+    A1  : 4
+    S1  : 3
+    P1  : 1
 
 
     
