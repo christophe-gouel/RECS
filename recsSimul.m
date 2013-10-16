@@ -213,11 +213,16 @@ end
 
 %% Check if state satisfies bounds
 ssimlong = reshape(permute(ssim,[1 3 2]),[],d);
-if any(min(ssimlong,[],1)<fspace.a)
-  warning('RECS:Extrapolation','Extrapolating beyond smin')
+vari     = 1:d;
+varmin   = vari(min(ssimlong,[],1)<fspace.a);
+varmax   = vari(max(ssimlong,[],1)>fspace.b);
+if ~isempty(varmin)
+  warning('RECS:Extrapolation','Extrapolating state variables (%s) beyond smin',...
+          int2str(varmin))
 end
-if any(max(ssimlong,[],1)>fspace.b)
-  warning('RECS:Extrapolation','Extrapolating beyond smax')
+if ~isempty(varmax)
+  warning('RECS:Extrapolation','Extrapolating state variables (%s) beyond smax',...
+          int2str(varmax))
 end
 clear('ssimlong')
 
