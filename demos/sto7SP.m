@@ -26,7 +26,7 @@ smax  = {6  ; 5.1 ; [3.9   0.07]; [2.72  0.14]};
 for iperiod=1:model.nperiods
   % Shocks
   [model.shocks{iperiod}.e,model.shocks{iperiod}.w] = qnwnorm(5,0,sigma(iperiod)^2);
-  model.shocks{iperiod}.funrand = @(nrep) randn(nrep,1)*sigma(1);
+  model.shocks{iperiod}.funrand = @(nrep) randn(nrep,1)*sigma(iperiod);
 
   % Interpolation structure
   interp.fspace{iperiod} = fundefn('spli',n{iperiod},smin{iperiod},smax{iperiod});
@@ -60,7 +60,9 @@ sigma = [eps 0.015 0.015 0.02];
 for iperiod=1:model.nperiods
   % Shocks
   [model.shocks{iperiod}.e,model.shocks{iperiod}.w] = qnwnorm(5,0,sigma(iperiod)^2);
-  model.shocks{iperiod}.funrand = @(nrep) randn(nrep,1)*sigma(1);
+  model.shocks{iperiod}.funrand = @(nrep) randn(nrep,1)*sigma(iperiod);
 end
 
-[interp,X2] = recsSolveREESP(model,interp,X);
+[interp,X] = recsSolveREESP(model,interp,X);
+
+[ssim,xsim,esim,stat,fsim] = recsSimulSP(model,interp,repmat(4,1000,1),200);

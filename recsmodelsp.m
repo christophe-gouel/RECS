@@ -5,7 +5,7 @@ classdef recsmodelsp
     params  % Model's parameters
     % FUNCTIONS - Anonymous functions that defines the model
     functions 
-    dim     % Problem's dimensions {d,m,p}
+    dim     % Problem's dimensions {d,m,p,q}
     nperiods
     shocks
     bounds
@@ -60,7 +60,7 @@ classdef recsmodelsp
       modeltmp      = eval(strrep(model.functions(1).fname,'.m',''));
       model.params  = modeltmp.calibration.parameters;
 
-      model.dim = cell(model.nperiods,3);
+      model.dim = cell(model.nperiods,4);
       for iperiod=1:model.nperiods
         modeltmp      = eval(strrep(model.functions(iperiod).fname,'.m',''));
       
@@ -72,7 +72,10 @@ classdef recsmodelsp
         model.infos(iperiod).incidence_matrices = modeltmp.infos.incidence_matrices;
         model.infos(iperiod).ixforward = sum(model.infos(iperiod).incidence_matrices.expectation{5},1)>=1;
    
-        model.dim(iperiod,:) = {length(modeltmp.symbols.states) length(modeltmp.symbols.controls) length(modeltmp.symbols.expectations)};
+        model.dim(iperiod,:) = {length(modeltmp.symbols.states) ...
+                            length(modeltmp.symbols.controls) ...
+                            length(modeltmp.symbols.expectations) ...
+                            length(modeltmp.symbols.shocks)};
       end
         
      

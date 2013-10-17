@@ -43,7 +43,6 @@ nperiods  = model.nperiods;
 params    = model.params;
 shocks    = model.shocks;
 functions = model.functions;
-dim       = model.dim;
 ixforward = cell(nperiods,1);
 for i=1:nperiods, ixforward{i} = model.infos(i).ixforward; end
   
