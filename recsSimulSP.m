@@ -125,7 +125,6 @@ for i=1:nperiods
   esim{i} =   NaN(nrep,dim{i,4},nper);
   for t=1:nper, esim{i}(:,:,t) = shocks{i}.funrand(nrep); end
 end
-esim{1}(:,:,1) = NaN;
 
 if nargout==5
   fsim = cell(nperiods,1);
