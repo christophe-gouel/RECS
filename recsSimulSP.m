@@ -77,7 +77,8 @@ defaultopt = struct(...
     'functional'      , 0                                  ,...
     'loop_over_s'     , 0                                  ,...
     'simulmethod'     , 'interpolation'                    ,...
-    'stat'            , 0);
+    'stat'            , 0                                  ,...
+    'Tburn'           , 20);
 if nargin<5
   options = defaultopt;
 else
@@ -92,6 +93,7 @@ display         = options.display;
 extrapolate     = options.extrapolate;
 simulmethod     = lower(options.simulmethod);
 statdisplay     = options.stat;
+Tburn           = options.Tburn;
 if ~any(strcmp(simulmethod,{'interpolation','solve'}))
   warning('RECS:OptionError',['The simulmethod field can take only the values ' ...
                       '''interpolation'' or ''solve''. Simulations will '        ...
@@ -190,70 +192,75 @@ end
 clear('ssimlong')
 
 %% Compute some descriptive statistics
-if (nargout>=4 || statdisplay) && (nper >= 40)
-  X = cat(2,ssim{:},xsim{:});
-  X = permute(X(:,:,21:end),[2 1 3]);
-  X = reshape(X,D+M,[])';
-
-  % Sample size
-  stat.n = size(X,1);
-
-  % Percent of time spent at the bounds
-  LB = cell(nperiods,1);
-  UB = cell(nperiods,1);
-  is = 1;
-  for i=1:nperiods
-    [LB{i},UB{i}] = functions(i).b(X(:,is:(is-1+dim{i,1})),params);
-    is = is+dim{i,1};
-  end
-  LB = cat(2,LB{:});
-  UB = cat(2,UB{:});
-  pLB = [NaN(1,D) mean(abs(X(:,D+1:D+M)-LB)<eps,1)*100];
-  pUB = [NaN(1,D) mean(abs(UB-X(:,D+1:D+M))<eps,1)*100];
-
-  mX   = mean(X,1);
-  y    = bsxfun(@minus,X,mX);
-  varX = mean(y.*y,1);
-  stat.moments = [mX' sqrt(varX)' (mean(y.^3,1)./varX.^1.5)' ...
-                  (mean(y.^4,1)./(varX.*varX))' min(X)' max(X)' pLB' pUB'];
-  if display==1
-    disp('Statistics from simulated variables (excluding the first 20 observations):');
-    disp(' Moments');
-    disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
-    disp(stat.moments(1:D,1:end-2))
-    disp(stat.moments(D+1:end,:))
-  end
-
-  stat.cor = corrcoef(X);
-  if display==1
-    disp(' Correlation');
-    disp(stat.cor);
-
-    figure
-    for i=1:D+M
-      subplot(ceil((D+M)/ceil(sqrt(D+M))),ceil(sqrt(D+M)),i)
-      hist(X(:,i),log2(size(X,1))+1)
+if nargout>=4 || statdisplay
+  if nper >= Tburn+20
+    X = cat(2,ssim{:},xsim{:});
+    X = permute(X(:,:,(Tburn+1):end),[2 1 3]);
+    X = reshape(X,D+M,[])';
+    
+    % Sample size
+    stat.n = size(X,1);
+    
+    % Percent of time spent at the bounds
+    LB = cell(nperiods,1);
+    UB = cell(nperiods,1);
+    is = 1;
+    for i=1:nperiods
+      [LB{i},UB{i}] = functions(i).b(X(:,is:(is-1+dim{i,1})),params);
+      is = is+dim{i,1};
     end
-  end
-
-  X = cat(2,ssim{:},xsim{:});
-  X = permute(X(:,:,21:end),[3 2 1]);
-  acor = zeros(D+M,5);
-  parfor n=1:nrep
-    acor = acor+autocor(X(:,:,n))/nrep;
-  end
-  stat.acor = acor;
-  if display==1
-    disp(' Autocorrelation');
-    disp('    1         2         3         4         5');
-    disp(stat.acor(1:D,:));
-    disp(stat.acor(D+1:end,:));
+    LB = cat(2,LB{:});
+    UB = cat(2,UB{:});
+    pLB = [NaN(1,D) mean(abs(X(:,D+1:D+M)-LB)<eps,1)*100];
+    pUB = [NaN(1,D) mean(abs(UB-X(:,D+1:D+M))<eps,1)*100];
+    
+    mX   = mean(X,1);
+    y    = bsxfun(@minus,X,mX);
+    varX = mean(y.*y,1);
+    stat.moments = [mX' sqrt(varX)' (mean(y.^3,1)./varX.^1.5)' ...
+                    (mean(y.^4,1)./(varX.*varX))' min(X)' max(X)' pLB' pUB'];
+    if display==1
+      fprintf(1,'Statistics from simulated variables (excluding the first %i observations):\n',Tburn);
+      disp(' Moments');
+      disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
+      disp(stat.moments(1:D,1:end-2))
+      disp(stat.moments(D+1:end,:))
+    end
+    
+    stat.cor = corrcoef(X);
+    if display==1
+      disp(' Correlation');
+      disp(stat.cor);
+      
+      figure
+      for i=1:D+M
+        subplot(ceil((D+M)/ceil(sqrt(D+M))),ceil(sqrt(D+M)),i)
+        hist(X(:,i),log2(size(X,1))+1)
+      end
+    end
+    
+    X = cat(2,ssim{:},xsim{:});
+    X = permute(X(:,:,(Tburn+1):end),[3 2 1]);
+    acor = zeros(D+M,5);
+    parfor n=1:nrep
+      acor = acor+autocor(X(:,:,n))/nrep;
+    end
+    stat.acor = acor;
+    if display==1
+      disp(' Autocorrelation');
+      disp('    1         2         3         4         5');
+      disp(stat.acor(1:D,:));
+      disp(stat.acor(D+1:end,:));
+    end
+  else
+    warning('Insufficient number of observations after burn-in period')
+    stat = [];
   end
 end % stat
 
 %% Check accuracy
 if options.accuracy
-  recsAccuracy(model,interp,ssim(:,:,21:end),options);
+  recsAccuracy(model,interp,ssim(:,:,(Tburn+1):end),options);
 end
 
 
