@@ -53,13 +53,13 @@ disp('STO5 Two-country storage-trade model');
 clear interp model options
 sto5
 
-disp('STO7 Quarterly storage model with annual inelastic supply');
+disp('STO6 Quarterly storage model with annual inelastic supply');
 clear interp model options
-sto7
+sto6
 
-disp('STO7SP Quarterly storage model with informational subperiods and annual inelastic supply');
+disp('STO6SP Quarterly storage model with informational subperiods and annual inelastic supply');
 clear interp model options
-sto7SP
+sto6SP
 
 rmpath(fullfile(recsdirectory,'demos'))
 

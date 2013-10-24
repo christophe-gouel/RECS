@@ -13,6 +13,7 @@
 % STO3 Anticipated switch to a public storage policy
 % STO4 Competitive storage with price-band backed by public storage
 % STO5 Two-country storage-trade model
+% STO6 Quarterly storage model with annual inelastic supply
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

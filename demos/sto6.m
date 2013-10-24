@@ -1,4 +1,4 @@
-%% STO7 Quarterly storage model with annual inelastic supply
+%% STO6 Quarterly storage model with annual inelastic supply
 % This model represents the market of a storable commodity that is produced once
 % a year and stored for a year-long consumption. Supply is stochastic and
 % inelastic. Except for its distribution, no information about the coming
@@ -8,10 +8,10 @@
 %
 
 %% Writing the model
-% The model is defined in a Yaml file: <sto7.txt sto7.yaml>.
+% The model is defined in a Yaml file: <sto6.txt sto6.yaml>.
 
 %% Create the model object
-model = recsmodel('sto7.yaml',struct('Mu',0,'Sigma',0.05^2,'order',5));
+model = recsmodel('sto6.yaml',struct('Mu',0,'Sigma',0.05^2,'order',5));
 
 %% Define approximation space
 interp = recsinterpinit(50,model.sss*0.7,model.sss*1.5);

@@ -1,16 +1,16 @@
-%% STO7SP Quarterly storage model with informational subperiods and annual inelastic supply 
+%% STO6SP Quarterly storage model with informational subperiods and annual inelastic supply 
 % This model represents the market of a storable commodity that is produced once
 % a year and stored for a year-long consumption. Supply is stochastic and
-% inelastic. Contrary to <sto7.html STO7>, there are informational shocks about
+% inelastic. Contrary to <sto6.html STO6>, there are informational shocks about
 % the coming harvest that allows stocks to be adjusted before the full harvest
 % is known.
 
 %% Writing the model
-% The model is defined in 4 Yaml files: sto7SP1.yaml, sto7SP2.yaml,
-% sto7SP3.yaml, and sto7SP4.yaml.
+% The model is defined in 4 Yaml files: sto6SP1.yaml, sto6SP2.yaml,
+% sto6SP3.yaml, and sto6SP4.yaml.
 
 %% Create the model object
-model = recsmodelsp({'sto7SP1.yaml' 'sto7SP2.yaml' 'sto7SP3.yaml' 'sto7SP4.yaml'});
+model = recsmodelsp({'sto6SP1.yaml' 'sto6SP2.yaml' 'sto6SP3.yaml' 'sto6SP4.yaml'});
 model.shocks = cell(model.nperiods,1);
 model.bounds = cell(model.nperiods,2);
 
@@ -51,7 +51,7 @@ x1 = [s1(:,1)*3/4         ((s1(:,1)/4)/d).^(1/elastD)];
 %% Solve for rational expectations
 [interp,X] = recsSolveREESP(model,interp,{x1 x2 x3 x4});
 
-%% Compare STO7 and STO7SP when informational shocks are removed
+%% Compare STO6 and STO6SP when informational shocks are removed
 disp('Max absolute error in first subperiod storage and price (in log10)');
 disp(log10(max(abs(Xcat(:,[1 5])-X{1}))));
 
