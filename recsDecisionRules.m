@@ -84,6 +84,8 @@ for i=1:length(states)
   for j=1:m
     subplot(ceil((m)/ceil(sqrt(m))),ceil(sqrt(m)),j)
     plot(s(:,states(i),1),squeeze(x(:,j,:)))
+    xlabel(model.symbols.states{i});
+    ylabel(model.symbols.controls{j});
   end
 
   %% Export DR

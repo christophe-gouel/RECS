@@ -261,10 +261,12 @@ if nargout>=4 || statdisplay
       disp(' Correlation');
       disp(stat.cor);
       
+      symbols = [model.symbols.states model.symbols.controls];
       figure
       for i=1:d+m
         subplot(ceil((d+m)/ceil(sqrt(d+m))),ceil(sqrt(d+m)),i)
         hist(X(:,i),log2(size(X,1))+1)
+        xlabel(symbols{i});
       end
     end
 
