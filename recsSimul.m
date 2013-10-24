@@ -231,6 +231,11 @@ clear('ssimlong')
 %% Compute some descriptive statistics
 if nargout>=4 || statdisplay
   if nper >= Tburn+20
+    if exist('table','file'), tabularform = true;
+    else                      tabularform = false;
+    end
+    symbols = [model.symbols.states model.symbols.controls];
+
     X = cat(2,ssim,xsim);
     X = permute(X(:,:,(Tburn+1):end),[2 1 3]);
     X = reshape(X,d+m,[])';
@@ -238,7 +243,7 @@ if nargout>=4 || statdisplay
     % Sample size
     stat.n = size(X,1);
     
-   % Percent of time spent at the bounds
+    % Percent of time spent at the bounds
     [LB,UB] = b(X(:,1:d),params);
     pLB     = [NaN(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps,1)*100];
     pUB     = [NaN(1,d) mean(abs(UB-X(:,d+1:d+m))<eps,1)*100];
@@ -248,20 +253,33 @@ if nargout>=4 || statdisplay
     varX = mean(y.*y,1);
     stat.moments = [mX' sqrt(varX)' (mean(y.^3,1)./varX.^1.5)' ...
                     (mean(y.^4,1)./(varX.*varX))' min(X)' max(X)' pLB' pUB'];
+
+    if tabularform
+      stat.moments = array2table(stat.moments,...
+                                 'RowNames',symbols,...
+                                 'VariableNames',...
+                                 {'Mean' 'StdDev' 'Skewness' 'Kurtosis' 'Min' 'Max' 'pLB' 'pUB'});
+    end
     if display==1
       fprintf(1,'Statistics from simulated variables (excluding the first %i observations):\n',Tburn);
       disp(' Moments');
-      disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
-      disp(stat.moments(1:d,1:end-2))
-      disp(stat.moments(d+1:end,:))
+      if exist('table','file')
+        disp(stat.moments)
+      else
+        disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
+        disp(stat.moments(1:d,1:end-2))
+        disp(stat.moments(d+1:end,:))
+      end
     end
-    
+
     stat.cor = corrcoef(X);
+    if tabularform
+      stat.cor = array2table(stat.cor,'RowNames',symbols,'VariableNames',symbols);
+    end
     if display==1
       disp(' Correlation');
       disp(stat.cor);
       
-      symbols = [model.symbols.states model.symbols.controls];
       figure
       for i=1:d+m
         subplot(ceil((d+m)/ceil(sqrt(d+m))),ceil(sqrt(d+m)),i)
@@ -276,12 +294,21 @@ if nargout>=4 || statdisplay
     parfor n=1:nrep
       acor = acor+autocor(X(:,:,n))/nrep;
     end
-    stat.acor = acor;
+    if tabularform
+      stat.acor = array2table(acor,'RowNames',symbols,...
+                              'VariableNames',{'T1' 'T2' 'T3' 'T4' 'T5'});
+    else
+      stat.acor = acor;
+    end
     if display==1
       disp(' Autocorrelation');
-      disp('    1         2         3         4         5');
-      disp(stat.acor(1:d,:));
-      disp(stat.acor(d+1:end,:));
+      if exist('table','file')
+        disp(stat.acor);
+      else
+        disp('    1         2         3         4         5');
+        disp(stat.acor(1:d,:));
+        disp(stat.acor(d+1:end,:));
+      end
     end
   else
     warning('Insufficient number of observations after burn-in period')
