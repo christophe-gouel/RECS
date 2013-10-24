@@ -17,7 +17,7 @@ model1 = recsmodel('sto1.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 model2 = recsmodel('sto2.yaml',struct('Mu',Mu,'Sigma',sigma^2,'order',7));
 
 %% Define approximation space
-[interp,s] = recsinterpinit(50,min(model1.e)*0.95,2);
+[interp,s] = recsinterpinit(50,min(model1.shocks.e)*0.95,2);
 
 %% Terminal condition: solve for the infinite-horizon behavior under policy
 % See <sto2.html STO2> for details.

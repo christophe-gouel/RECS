@@ -66,14 +66,14 @@ eqsolver        = lower(options.eqsolver);
 eqsolveroptions = options.eqsolveroptions;
 
 params = model.params;
-e      = model.w'*model.e;
+e      = model.shocks.w'*model.shocks.e;
 [d,m]  = model.dim{1:2};
 fp     = model.functions.fp;
 gp     = model.functions.gp;
 hp     = model.functions.hp;
 
 %% Solve for the deterministic steady state
-nx = model.nxvarbounds;
+nx = model.infos.nxvarbounds;
 w  = zeros(nx(1),1);
 v  = zeros(nx(2),1);
 X  = [s(:); x(:); w; v];

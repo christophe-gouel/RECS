@@ -15,7 +15,7 @@ else
 end
 
 h         = model.functions.h;
-ixforward = model.ixforward;
+ixforward = model.infos.ixforward;
 params    = model.params
 
 cx     = interp.cx;

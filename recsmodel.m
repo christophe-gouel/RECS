@@ -2,13 +2,12 @@ classdef recsmodel
 % RECSMODEL
 
   properties
+    dim     % Problem's dimensions {d,m,p,q}
+    dima    % Dimension of auxiliary variables
     func    % Anonymous function that defines the model's equations
     params  % Model's parameters
     % FUNCTIONS - Anonymous functions that defines the model
     functions 
-    ee      % Anonymous function that defines the model's unit-free equation errors
-    e       % Values of discrete probability distribution
-    w       % Probabilities of discrete probability distribution
     % FUNRAND - Random shocks generator function. Function handle that accepts an
     % integer n as input and returns a n-by-q matrix of shocks.
     funrand
@@ -16,20 +15,10 @@ classdef recsmodel
     sss     % State variables at steady state
     xss     % Response variables at steady state
     zss     % Expectations variables at steady state
-    dima    % Dimension of auxiliary variables
-    dim     % Problem's dimensions {d,m,p}
+    shocks
     symbols % Symbols of parameters, shocks, and variables
-    % MODEL_TYPE - Type of model: fgh1 when expectations are functions forward
-    % variables and fgh2 when they possibly depend on all variables.
-    model_type 
-    eq_type
+    infos   % Various information about the model
   end
-  properties (Hidden=true)
-    IncidenceMatrices
-    ixforward % Index of response variables that appear with leads
-    ixvarbounds
-    nxvarbounds
-  end % Hidden properties
 
   methods
     function model = recsmodel(inputfile,shocks,outputfile,options)
@@ -117,30 +106,31 @@ classdef recsmodel
       
       %% Incidence matrices and dimensions
       IM = modeltmp.infos.incidence_matrices;
-      model.IncidenceMatrices = struct('fs',IM.arbitrage{1},...
-                                       'fx',IM.arbitrage{2},...
-                                       'fz',IM.arbitrage{3},...
-                                       'gs',IM.transition{1},...
-                                       'gx',IM.transition{2},...
-                                       'ge',IM.transition{3},...
-                                       'hs',IM.expectation{1},...
-                                       'hx',IM.expectation{2},...
-                                       'he',IM.expectation{3},...
-                                       'hsnext',IM.expectation{4},...
-                                       'hxnext',IM.expectation{5},...
-                                       'lbs',IM.arbitrage_lb{1},...
-                                       'ubs',IM.arbitrage_ub{1});
+      model.infos.IncidenceMatrices = struct('fs',IM.arbitrage{1},...
+                                             'fx',IM.arbitrage{2},...
+                                             'fz',IM.arbitrage{3},...
+                                             'gs',IM.transition{1},...
+                                             'gx',IM.transition{2},...
+                                             'ge',IM.transition{3},...
+                                             'hs',IM.expectation{1},...
+                                             'hx',IM.expectation{2},...
+                                             'he',IM.expectation{3},...
+                                             'hsnext',IM.expectation{4},...
+                                             'hxnext',IM.expectation{5},...
+                                             'lbs',IM.arbitrage_lb{1},...
+                                             'ubs',IM.arbitrage_ub{1});
       
-      model.dim = {size(model.IncidenceMatrices.fs,2) ...
-                   size(model.IncidenceMatrices.fs,1) ...
-                   size(model.IncidenceMatrices.fz,2)};
-      model.ixforward = sum(model.IncidenceMatrices.hxnext,1)>=1;
+      model.dim = {size(model.infos.IncidenceMatrices.fs,2) ...
+                   size(model.infos.IncidenceMatrices.fs,1) ...
+                   size(model.infos.IncidenceMatrices.fz,2) ...
+                   length(model.symbols.shocks)};
+      model.infos.ixforward = sum(model.infos.IncidenceMatrices.hxnext,1)>=1; % Index of response variables that appear with leads
 
       %% Identify variables for which bounds are variable
-      model.ixvarbounds = logical([sum(model.IncidenceMatrices.lbs,2)...
-                          sum(model.IncidenceMatrices.ubs,2)]);
-      model.nxvarbounds = int16(sum(model.ixvarbounds,1));
-      if any(model.nxvarbounds)
+      model.infos.ixvarbounds = logical([sum(model.infos.IncidenceMatrices.lbs,2)...
+                          sum(model.infos.IncidenceMatrices.ubs,2)]);
+      model.infos.nxvarbounds = int16(sum(model.infos.ixvarbounds,1));
+      if any(model.infos.nxvarbounds)
         model    = mcptransform(model);
       else
         model.functions.bp = @(s,p,varargin) OrganizeBounds(modeltmp,s,p,varargin{:});;
@@ -150,11 +140,12 @@ classdef recsmodel
       end
         
       %% Identify model type
-      if all(~[model.IncidenceMatrices.hs(:); model.IncidenceMatrices.hx(:); ...
-               model.IncidenceMatrices.he(:)])
-        model.model_type = 'fgh1';
+      if all(~[model.infos.IncidenceMatrices.hs(:); ...
+               model.infos.IncidenceMatrices.hx(:); ...
+               model.infos.IncidenceMatrices.he(:)])
+        model.infos.model_type = 'fgh1';
       else
-        model.model_type = 'fgh2';
+        model.infos.model_type = 'fgh2';
       end
 
       %% Prepare shocks information & find steady state
@@ -181,9 +172,9 @@ classdef recsmodel
         end
 
         % Gaussian quadrature
-        [model.e,model.w] = qnwnorm(order,Mu,Sigma);
+        [model.shocks.e,model.shocks.w] = qnwnorm(order,Mu,Sigma);
         % Random number generator
-        model.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,q)*R;
+        model.shocks.funrand     = @(nrep) Mu(ones(nrep,1),:)+randn(nrep,q)*R;
 
         %% Find steady state
         if ~isempty(sss0) && ~isempty(xss0)
@@ -197,12 +188,13 @@ classdef recsmodel
       end % shocks and steady state
       
       %% Equation type
-      model.eq_type = 'mcp';
-      if all(~[model.IncidenceMatrices.lbs(:); model.IncidenceMatrices.ubs(:)])
+      model.infos.eq_type = 'mcp';
+      if all(~[model.infos.IncidenceMatrices.lbs(:); ...
+               model.infos.IncidenceMatrices.ubs(:)])
         if ~isempty(sss0)
           [LB,UB] = model.functions.b(sss0,model.params); 
           if all(isinf([LB(:); UB(:);]))
-            model.eq_type = 'cns';
+            model.infos.eq_type = 'cns';
           end
         end
       end
@@ -228,7 +220,7 @@ classdef recsmodel
       for t=1:nper
         ssim(:,:,t+1) = model.functions.g(ssim(:,:,t),...
                                           model.xss(ones(nrep,1),:),...
-                                          model.funrand(nrep),model.params);
+                                          model.shocks.funrand(nrep),model.params);
       end
       quant = [0 0.001 0.01 0.5 0.99 0.999 1];
       SQ = quantile(reshape(permute(real(ssim(:,:,2:end)),[1 3 2]),nrep*nper,d),...

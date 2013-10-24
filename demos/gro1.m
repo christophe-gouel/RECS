@@ -46,8 +46,8 @@ model = recsmodel('gro1.yaml',...
 order         = [10 10];
 %%
 % Limits of the state space
-smin          = [0.85*model.sss(1) min(model.e)*4];
-smax          = [1.15*model.sss(1) max(model.e)*4];
+smin          = [0.85*model.sss(1) min(model.shocks.e)*4];
+smax          = [1.15*model.sss(1) max(model.shocks.e)*4];
 %%
 [interp,s] = recsinterpinit(order,smin,smax,'cheb');
 

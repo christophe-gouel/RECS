@@ -47,9 +47,9 @@ else
   options = catstruct(options,overridingopt);
 end
 
-e       = model.e;
-funrand = model.funrand;
-w       = model.w;
+e       = model.shocks.e;
+funrand = model.shocks.funrand;
+w       = model.shocks.w;
 
 fspace = interp.fspace;
 

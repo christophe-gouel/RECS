@@ -10,8 +10,8 @@ f = model.functions.f;
 g = model.functions.g;
 h = model.functions.h;
 
-ix = model.ixvarbounds;
-nx = model.nxvarbounds;
+ix = model.infos.ixvarbounds;
+nx = model.infos.nxvarbounds;
 
 model.functions.bp = @(s,params) bp(s,params,b,ix,nx);
 model.functions.fp = @(s,x,w,v,z,params,output) fp(s,x,w,v,z,params,output,b,f,ix,nx);

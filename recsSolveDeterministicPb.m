@@ -56,16 +56,16 @@ end
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 
-[d,m,p] = model.dim{:};
+[d,m,p] = model.dim{1:3};
 n       = T*(m+p+d);
 
-e      = model.w'*model.e;
+e      = model.shocks.w'*model.shocks.e;
 fp     = model.functions.fp;
 gp     = model.functions.gp;
 hp     = model.functions.hp;
 params = model.params;
 
-nx = model.nxvarbounds;
+nx = model.infos.nxvarbounds;
 M  = m+sum(nx);
 
 n = n+T*sum(nx);

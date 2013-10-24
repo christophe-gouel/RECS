@@ -20,8 +20,8 @@ for iter=1:5
       %% GRO1
       disp('Stochastic growth model')
       model = recsmodel('gro1.yaml',struct('Mu',0,'Sigma',0.007^2,'order',5));
-      [interp,s] = recsinterpinit(10,[0.85*model.sss(1) min(model.e)*4],...
-                                  [1.15*model.sss(1) max(model.e)*4],'cheb');
+      [interp,s] = recsinterpinit(10,[0.85*model.sss(1) min(model.shocks.e)*4],...
+                                  [1.15*model.sss(1) max(model.shocks.e)*4],'cheb');
       [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss);
 
     case 2

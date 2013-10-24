@@ -10,7 +10,7 @@ if situation==1
 else
   n = 30;
 end
-[interp,s] = recsinterpinit(n,min(model.e)*0.95,2);
+[interp,s] = recsinterpinit(n,min(model.shocks.e)*0.95,2);
 
 %% Find a first guess through the perfect foresight solution
 [interp,xinit] = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));

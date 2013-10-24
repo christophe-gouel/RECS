@@ -29,9 +29,9 @@
 % <ug_model_struct.html the preceding step>, we choose bounds for capital 15%
 % below and above the steady-state value (|model.sss(1)|), and for productivity,
 % which follows an AR(1), we choose 4 times below minimum and 4 times above
-% maximum discretized shocks (|model.e|):
-smin          = [0.85*model.sss(1) min(model.e)*4];
-smax          = [1.15*model.sss(1) max(model.e)*4];
+% maximum discretized shocks (|model.shocks.e|):
+smin          = [0.85*model.sss(1) min(model.shocks.e)*4];
+smax          = [1.15*model.sss(1) max(model.shocks.e)*4];
 %%
 % Using 10 nodes for each dimension and Chebyshev polynomials, the function call
 % is:

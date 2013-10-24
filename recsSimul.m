@@ -118,15 +118,15 @@ if ~any(strcmp(simulmethod,{'interpolation','solve'}))
 end
 
 b         = model.functions.b;
-e         = model.e;
+e         = model.shocks.e;
 f         = model.functions.f;
 g         = model.functions.g;
 h         = model.functions.h;
-ixforward = model.ixforward;
+ixforward = model.infos.ixforward;
 params    = model.params;
-w         = model.w;
-if isfield(model,'funrand') || (isobject(model) && ~isempty(model.funrand)) % Check if a random shocks generator function is provided
-  funrand = model.funrand;
+w         = model.shocks.w;
+if isfield(model.shocks,'funrand') % Check if a random shocks generator function is provided
+  funrand = model.shocks.funrand;
 else % Use the discretisation to generate the shocks
   funrand = @(N) e(discrand(N,w),:); % could be implemented also with datasample
 end

@@ -102,11 +102,11 @@ reemethod          = lower(options.reemethod);
 
 % Extract fields of model
 b      = model.functions.b;
-e      = model.e;
+e      = model.shocks.e;
 g      = model.functions.g;
 h      = model.functions.h;
 params = model.params;
-w      = model.w;
+w      = model.shocks.w;
 
 if strcmp(reemethod,'1-step') && strcmp(funapprox,'expapprox')
   warning('RECS:Switching2Iterative',...
@@ -121,9 +121,9 @@ end
 if nargin<=2 || isempty(s), s = interp.s; end
 
 % Identify variables dimensions
-n      = size(s,1);
-[d,m,p]  = model.dim{:};
-k      = length(w);               % number of shock values
+n       = size(s,1);
+[d,m,p] = model.dim{1:3};
+k       = length(w);               % number of shock values
 
 % Get x or generate it by interpolation if missing
 if nargin<=3 || isempty(x)
@@ -215,7 +215,7 @@ switch funapprox
  case 'expapprox'
   interp.cz = c;
   interp.cx = funfitxy(fspace,Phi,x);
-  if strcmp(model.model_type,'fgh1')
+  if strcmp(model.infos.model_type,'fgh1')
     interp.ch = funfitxy(fspace,Phi,h(zeros(n,0),[],[],s,x,params));
   end
  case 'expfunapprox'
@@ -224,7 +224,7 @@ switch funapprox
  otherwise
   interp.cx = c;
   if ~isempty(z), interp.cz = funfitxy(fspace,Phi,z); end
-  if strcmp(model.model_type,'fgh1')
+  if strcmp(model.infos.model_type,'fgh1')
     interp.ch = funfitxy(fspace,Phi,h(zeros(n,0),[],[],s,x,params));
   end
 end

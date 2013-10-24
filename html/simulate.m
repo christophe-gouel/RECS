@@ -23,9 +23,9 @@
 %  [ssim,xsim] = recsSimul(model,interp,s0,nper,shocks);
 %
 % However, by default, |recsSimul| uses the function |funrand| defined in the
-% model structure (see <ug_model_struct.html Define the model structure>) to
-% draw random shocks. If this function is not provided random draws are made
-% from the shock discretization, using the associated probabilities.
+% model object (see <ug_model_struct.html Define the model object>) to draw
+% random shocks. If this function is not provided random draws are made from the
+% shock discretization, using the associated probabilities.
 %
 % To reproduce previously run results, it is necessarily to reset the random
 % number generator using the MATLAB function |reset|.

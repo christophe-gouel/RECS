@@ -131,7 +131,7 @@ interp.x  = x;
 interp.z  = z;
 
 % Check if it is possible to approximate the expectations function
-if strcmp(model.model_type,'fgh1')
+if strcmp(model.infos.model_type,'fgh1')
   hv        = model.functions.h(zeros(n,0),[],[],s,x,params);
   interp.ch = funfitxy(interp.fspace,interp.Phi,hv);
 end

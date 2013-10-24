@@ -26,13 +26,13 @@ end
 
 % Extract fields of model
 b         = model.functions.b;
-e         = model.e;
+e         = model.shocks.e;
 f         = model.functions.f;
 g         = model.functions.g;
 h         = model.functions.h;
-ixforward = model.ixforward;
+ixforward = model.infos.ixforward;
 params    = model.params;
-w         = model.w;
+w         = model.shocks.w;
 
 % Identify variables dimensions
 n      = size(x,1);

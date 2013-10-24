@@ -20,7 +20,7 @@ function model = recsSolveLocal(model)
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-e      = model.w'*model.e;
+e      = model.shocks.w'*model.shocks.e;
 params = model.params;
 sss    = model.sss;
 xss    = model.xss;

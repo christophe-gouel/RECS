@@ -54,10 +54,10 @@ eqsolver        = lower(options.eqsolver);
 eqsolveroptions = options.eqsolveroptions;
 
 b      = model.functions.b;
-e      = model.e;
+e      = model.shocks.e;
 g      = model.functions.g;
 params = model.params;
-w      = model.w;
+w      = model.shocks.w;
 
 cx     = interp.cx;
 fspace = interp.fspace;
