@@ -1,7 +1,7 @@
 %% Installation
 
 %% Download
-% RECS Toolbox zip archives are available at <http://code.google.com/p/recs/>.
+% RECS Toolbox zip archives are available at <https://github.com/christophe-gouel/RECS/releases>.
 %
 % Why is this archive 12 MB? Much of this size is due to an executable for
 % Windows. The executable file includes a complete Python distribution
@@ -26,7 +26,7 @@
 %   be run in parallel to speed-up computation.
 
 %% Installation instructions
-% # <http://code.google.com/p/recs/ Download the latest RECS archive> and unzip
+% # <https://github.com/christophe-gouel/RECS/releases Download the latest RECS archive> and unzip
 % it into a folder, called here |recsfolder| (avoid folder names that include
 % spaces, even for parent folders).
 % # Install the CompEcon toolbox: (i) <http://www4.ncsu.edu/~pfackler/compecon/

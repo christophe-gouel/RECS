@@ -1,4 +1,5 @@
-**RECS toolbox Version 0.7-beta**
+RECS toolbox Version 0.7-beta
+=============================
 
 A MATLAB solver for nonlinear, dynamic, stochastic, rational expectations
 equilibrium models. RECS stands for "Rational Expectations Complementarity
@@ -14,7 +15,7 @@ Download
 ========
 
 RECS Toolbox zip archives are available at
-[code.google.com/p/recs/](http://code.google.com/p/recs/).
+[https://github.com/christophe-gouel/RECS/releases](https://github.com/christophe-gouel/RECS/releases).
 
 Why is this archive 12 MB? Much of this size is due to an executable for
 Windows. The executable file includes a complete Python distribution necessary
@@ -44,7 +45,7 @@ Optional dependencies
 Installation instructions
 =========================
 
-1. [Download the latest RECS archive](http://code.google.com/p/recs/) and unzip
+1. [Download the latest RECS archive](https://github.com/christophe-gouel/RECS/releases) and unzip
    it into a folder, called here `recsfolder` (avoid folder names that include
    spaces, even for parent folders).
 2. Install the CompEcon toolbox:
