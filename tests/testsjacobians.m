@@ -49,9 +49,9 @@ for iter=1:5
       [interp,x] = recsFirstGuess(interp,model,s,model.sss,model.xss,struct('T',5));
 
     case 5
-      %% STO6
+      %% STO5
       disp('Two-country storage-trade model')
-      model = recsmodel('sto6.yaml',struct('Mu',[1 1],...
+      model = recsmodel('sto5.yaml',struct('Mu',[1 1],...
                                            'Sigma',diag([0.05 0.05])^2,...
                                            'order',5));
       [interp,s] = recsinterpinit(7,0.73*model.sss,2*model.sss);

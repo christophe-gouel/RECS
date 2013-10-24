@@ -49,12 +49,8 @@ disp('STO4 Competitive storage with price-band backed by public storage');
 clear interp model options
 sto4
 
-disp('STO5 One small-country storage-trade model');
+disp('STO5 Two-country storage-trade model');
 clear interp model options
 sto5
-
-disp('STO6 Two-country storage-trade model');
-clear interp model options
-sto6
 
 rmpath(fullfile(recsdirectory,'demos'))
