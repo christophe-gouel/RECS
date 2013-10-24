@@ -11,9 +11,6 @@ classdef recsmodelsp
     bounds
     infos
   end
-  properties (Hidden=true)
-    IncidenceMatrices
-  end % Hidden properties
 
   methods
     function model = recsmodelsp(inputfiles,options)
