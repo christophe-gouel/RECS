@@ -2,14 +2,15 @@ classdef recsmodelsp
 % RECSMODELSP
 
   properties
-    params  % Model's parameters
+    bounds
+    dim     % Problem's dimensions {d,m,p,q}
     % FUNCTIONS - Anonymous functions that defines the model
     functions 
-    dim     % Problem's dimensions {d,m,p,q}
-    nperiods
-    shocks
-    bounds
     infos
+    nperiods
+    params  % Model's parameters
+    shocks
+    ss      % Model's deterministic steady state
   end
 
   methods

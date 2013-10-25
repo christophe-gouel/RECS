@@ -34,6 +34,8 @@ for iperiod=1:model.nperiods
   interp.s{iperiod}      = gridmake(funnode(interp.fspace{iperiod}));
 end
 
+[model.ss.sss,model.ss.xss,model.ss.zss] = recsSSSP(model,{4 3 [2 0] [1 0]},{[3 1] [2 1] [1 1] [0 1]});
+
 [s1,s2,s3,s4] = interp.s{:};
 
 %% Bounds
