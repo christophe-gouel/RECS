@@ -94,11 +94,12 @@ end
 %% Prepare outputs
 s0     = s;
 x0     = x;
-s      = mat2cell(X(cat(2,is{:}))',1,cell2mat(dim(:,1)));
-x      = mat2cell(X(cat(2,ix{:}))',1,cell2mat(dim(:,2)));
-z = cell(nperiods,1);
+s      = mat2cell(X(cat(2,is{:}))',1,cell2mat(dim(:,1)))';
+x      = mat2cell(X(cat(2,ix{:}))',1,cell2mat(dim(:,2)))';
+z      = cell(nperiods,1);
 for i=1:nperiods
- z{i} = functions(i).h(X(is{i})',X(ix{i})',e{i},X(is{inext(i)})',X(ix{inext(i)})',params);
+ z{i} = functions(i).h(X(is{i})',X(ix{i})',e{i},X(is{inext(i)})',...
+                       X(ix{inext(i)})',params);
 end
 
 %% Display steady state
