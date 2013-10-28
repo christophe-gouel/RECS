@@ -197,7 +197,9 @@ if nargout>=4 || statdisplay
     X = cat(2,ssim{:},xsim{:});
     X = permute(X(:,:,(Tburn+1):end),[2 1 3]);
     X = reshape(X,D+M,[])';
-    
+    symbols = struct2cell(model.symbols);
+    symbols = cat(2,symbols{1,:,:},symbols{2,:,:});
+
     % Sample size
     stat.n = size(X,1);
     
@@ -219,15 +221,17 @@ if nargout>=4 || statdisplay
     varX = mean(y.*y,1);
     stat.moments = [mX' sqrt(varX)' (mean(y.^3,1)./varX.^1.5)' ...
                     (mean(y.^4,1)./(varX.*varX))' min(X)' max(X)' pLB' pUB'];
+    stat.moments = array2table(stat.moments,...
+                               'RowNames',symbols,...
+                               'VariableNames',...
+                               {'Mean' 'StdDev' 'Skewness' 'Kurtosis' 'Min' 'Max' 'pLB' 'pUB'});
     if display==1
       fprintf(1,'Statistics from simulated variables (excluding the first %i observations):\n',Tburn);
       disp(' Moments');
-      disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
-      disp(stat.moments(1:D,1:end-2))
-      disp(stat.moments(D+1:end,:))
+      disp(stat.moments)
     end
     
-    stat.cor = corrcoef(X);
+    stat.cor = array2table(corrcoef(X),'RowNames',symbols,'VariableNames',symbols);
     if display==1
       disp(' Correlation');
       disp(stat.cor);
@@ -236,6 +240,7 @@ if nargout>=4 || statdisplay
       for i=1:D+M
         subplot(ceil((D+M)/ceil(sqrt(D+M))),ceil(sqrt(D+M)),i)
         hist(X(:,i),log2(size(X,1))+1)
+        xlabel(symbols{i});
       end
     end
     
@@ -245,12 +250,11 @@ if nargout>=4 || statdisplay
     parfor n=1:nrep
       acor = acor+autocor(X(:,:,n))/nrep;
     end
-    stat.acor = acor;
+    stat.acor = array2table(acor,'RowNames',symbols,...
+                            'VariableNames',{'T1' 'T2' 'T3' 'T4' 'T5'});
     if display==1
       disp(' Autocorrelation');
-      disp('    1         2         3         4         5');
-      disp(stat.acor(1:D,:));
-      disp(stat.acor(D+1:end,:));
+      disp(stat.acor);
     end
   else
     warning('Insufficient number of observations after burn-in period')

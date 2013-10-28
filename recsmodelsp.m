@@ -11,6 +11,7 @@ classdef recsmodelsp
     params  % Model's parameters
     shocks
     ss      % Model's deterministic steady state
+    symbols
   end
 
   methods
@@ -32,6 +33,7 @@ classdef recsmodelsp
       
       model.nperiods = length(inputfiles);
       model.functions = struct();
+      model.symbols = struct();
       
       for iperiod=1:model.nperiods
         outputfile = strrep(inputfiles{iperiod},'.yaml','model.m');
@@ -74,6 +76,9 @@ classdef recsmodelsp
                             length(modeltmp.symbols.controls) ...
                             length(modeltmp.symbols.expectations) ...
                             length(modeltmp.symbols.shocks)};
+        
+        model.symbols(iperiod).states   = modeltmp.symbols.states;
+        model.symbols(iperiod).controls = modeltmp.symbols.controls;
       end
         
      
