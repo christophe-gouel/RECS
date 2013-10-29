@@ -64,6 +64,7 @@ e         = cell(nperiods,1);
 for i=1:nperiods, e{i} = repmat(model.shocks{i}.w'*model.shocks{i}.e,T,1); end
 
 inext    = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
+vec      = @(X) X(:);
 
 D       = sum(cell2mat(dim(:,1)));
 M       = sum(cell2mat(dim(:,2)));
@@ -88,6 +89,8 @@ X  = [xss'; zss'; [sss(2:end); sss{1}]'];
 X  = cat(2, X{:});
 X  = reshape( X(ones(T,1),:)',n,1);
 
+%% Create indexes of variables' position
+% Indexes of variables' position for one period
 ix      = cell(nperiods,1);
 iz      = cell(nperiods,1);
 is      = cell(nperiods,1);
@@ -100,6 +103,12 @@ for i=1:nperiods
   is{inext(i)} = index:(index+dim{inext(i),1}-1);
   index = index+dim{inext(i),1};
 end
+
+% Indexes of variables' position for all the horizon
+iX2iXT = @(iX,dimX) vec((repmat(iX,T,1)+(D+M+P)*repmat((0:T-1)',1,dimX))');
+ixT = cellfun(iX2iXT,ix,dim(:,2),'UniformOutput', false);
+izT = cellfun(iX2iXT,iz,dim(:,3),'UniformOutput', false);
+isT = cellfun(iX2iXT,is,dim(:,1),'UniformOutput', false);
 
 %% Solve deterministic problem
 
@@ -124,14 +133,10 @@ end
 
 %% Prepare output
 X = reshape(X,M+P+D,T)';
-x = cell(nperiods,1);
-z = cell(nperiods,1);
-s = cell(nperiods,1);
-for i=1:nperiods
-  x{i} = X(:,ix{i});
-  z{i} = X(:,iz{i});
-  s{i} = X(:,is{i});
-end
+x = cellfun(@(iX) X(:,iX),ix,'UniformOutput', false);
+z = cellfun(@(iX) X(:,iX),iz,'UniformOutput', false);
+s = cellfun(@(iX) X(:,iX),is,'UniformOutput', false);
+
 s{1} = [s0; s{1}];
 if ~isempty(F), F = reshape(F,M+P+D,T)'; end
 

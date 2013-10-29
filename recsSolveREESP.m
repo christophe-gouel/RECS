@@ -51,10 +51,7 @@ s          = interp.s;
 fspace     = interp.fspace;
 Phi        = interp.Phi;
 
-cX = cell(nperiods,1);
-for i=1:nperiods
-  cX{i} = funfitxy(fspace{i},Phi{i},X{i});
-end
+cX = cellfun(@funfitxy,fspace,Phi,X,'UniformOutput', false)';
 
 cnrm     = 1;
 it       = 0;

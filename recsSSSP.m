@@ -137,13 +137,9 @@ n        = length(X);
 
 f = cell(nperiods,1);
 g = cell(nperiods,1);
-s = cell(nperiods,1);
-x = cell(nperiods,1);
 z = cell(nperiods,1);
-for i=1:nperiods
-  s{i} = X(is{i})';
-  x{i} = X(ix{i})';
-end
+s = cellfun(@(iX) X(iX)',is,'UniformOutput', false);
+x = cellfun(@(iX) X(iX)',ix,'UniformOutput', false);
 
 if nargout==2
   %% With Jacobian calculation

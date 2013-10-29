@@ -17,14 +17,9 @@ nperiods = length(e);
 inext    = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
 
 X     = reshape(X,M+P+D,T)';
-x     = cell(nperiods,1);
-z     = cell(nperiods,1);
-snext = cell(nperiods,1);
-for i=1:nperiods
-  x{i}     = X(:,ix{i});
-  z{i}     = X(:,iz{i});
-  snext{i} = X(:,is{i});
-end
+x     = cellfun(@(iX) X(:,iX),ix,'UniformOutput', false);
+z     = cellfun(@(iX) X(:,iX),iz,'UniformOutput', false);
+snext = cellfun(@(iX) X(:,iX),is,'UniformOutput', false);
 
 s        = snext;
 s{1}     = [s0; s{1}(1:(end-1),:)];
