@@ -43,7 +43,7 @@ defaultopt = struct(                                      ...
     'eqsolver'        , 'lmmcp'                          ,...
     'eqsolveroptions' , struct('Diagnostics'    , 'off' ,...
                                'DerivativeCheck', 'off' ,...
-                               'Jacobian'       , 'off'));
+                               'Jacobian'       , 'on'));
 if nargin <=6
   options = defaultopt;
 else
@@ -71,6 +71,21 @@ M       = sum(cell2mat(dim(:,2)));
 P       = sum(cell2mat(dim(:,3)));
 n       = T*(D+M+P);
 
+%% Maximum number of non-zero elements in the Jacobian
+nnzJac = 0;
+for i=1:nperiods
+  nnzJac = nnzJac+T*(...
+      dim{i,2}*(dim{i,2}+dim{i,3})+...               % Main diagonal blocks
+      dim{i,3}*(1+dim{i,2}+dim{inext(i),1})+...
+      dim{inext(i)}*(1+dim{i,2})+...
+      dim{i,3}*dim{inext(i),2}+...                   % Superdiagonal blocks
+      dim{i,1}*(dim{i,2}+dim{i,3}+dim{inext(i),1})); % Subdiagonal blocks
+end
+nnzJac = nnzJac...
+         -dim{nperiods,3}*dim{1,2}...            % Superdiagonal blocks
+         -dim{1,1}*(dim{1,2}+dim{1,3}+dim{2,1}); %   Subdiagonal blocks
+
+%% Bounds
 LBx         = cell(nperiods,1);
 UBx         = cell(nperiods,1);
 LB          = cell(nperiods,1);
@@ -109,16 +124,17 @@ iX2iXT = @(iX,dimX) vec((repmat(iX,T,1)+(D+M+P)*repmat((0:T-1)',1,dimX))');
 ixT = cellfun(iX2iXT,ix,dim(:,2),'UniformOutput', false);
 izT = cellfun(iX2iXT,iz,dim(:,3),'UniformOutput', false);
 isT = cellfun(iX2iXT,is,dim(:,1),'UniformOutput', false);
+ixnext = vec((repmat(ix{1},T-1,1)+(D+M+P)*repmat((1:T-1)',1,dim{1,2}))');
+izprev = vec((repmat(iz{4},T-1,1)+(D+M+P)*repmat((0:T-2)',1,dim{4,3}))');
+iznext = vec((repmat(iz{1},T-1,1)+(D+M+P)*repmat((1:T-1)',1,dim{1,3}))');
+isprev = vec((repmat(is{1},T-1,1)+(D+M+P)*repmat((0:T-2)',1,dim{1,1}))');
+isnext = vec((repmat(is{2},T-1,1)+(D+M+P)*repmat((1:T-1)',1,dim{2,1}))');
 
 %% Solve deterministic problem
 
-% Precalculation of indexes for the sparse Jacobian
-% tmp      = zeros(M+p+d,M+p+d,T);
-% [~,grid] = blktridiag(tmp,tmp(:,:,1:end-1),tmp(:,:,1:end-1));
-
 [X,F,exitflag] = runeqsolver(@recsDeterministicPbSP,X,LB,UB,eqsolver, ...
                              eqsolveroptions,functions,s0,xss{1},e, ...
-                             params,M,P,D,ix,iz,is);
+                             params,M,P,D,ix,iz,is,ixT,izT,isT,ixnext,izprev,iznext,isprev,isnext,nnzJac);
 
 % SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPbSP,X0,LB,UB,eqsolver, ...
 %                                      eqsolveroptions,functions,S0,xss{1},e, ...

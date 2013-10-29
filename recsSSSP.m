@@ -73,6 +73,7 @@ end
 iprev    = @(iperiod) (iperiod-1)*(iperiod>1)+nperiods*(iperiod==1);
 inext    = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
 
+%% Maximum number of non-zero elements in the Jacobian
 nnzJac = 0;
 for i=1:nperiods
   nnzJac = nnzJac+...
@@ -158,14 +159,17 @@ if nargout==2
     g{i} = s{i}-g{i};
     
     % f
-    [z{i},hs{i},hx{i},~,hsnext{i},hxnext{i}] = functions(i).h(s{i},x{i},e{i},s{inext(i)},x{inext(i)},params);
+    [z{i},hs{i},hx{i},~,hsnext{i},hxnext{i}] = functions(i).h(s{i},x{i},e{i},...
+                                                      s{inext(i)},x{inext(i)},...
+                                                      params,[1 1 1 0 1 1]);
     [f{i},fs{i},fx{i},fz{i}] = functions(i).f(s{i},x{i},z{i},params,[1 1 1 1]);
     fz{i} = permute(fz{i},[2 3 1]);
   end
   
   J                       = spalloc(n,n,nnzJac);
   for i=1:nperiods
-    J(is{i},is{i})        = speye(length(is{i}));
+    linearInd             = sub2ind([n n],is{i},is{i});
+    J(linearInd)          = 1;
     J(is{i},is{iprev(i)}) = -permute(gs{i},[2 3 1]);
     J(is{i},ix{iprev(i)}) = -permute(gx{i},[2 3 1]);
     J(ix{i},is{i})        = permute(fs{i},[2 3 1])+fz{i}*permute(hs{i},[2 3 1]);
