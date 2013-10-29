@@ -39,7 +39,7 @@ defaultopt = struct(...
     'eqsolver'        , 'lmmcp'                         ,...
     'eqsolveroptions' , struct('Diagnostics'    , 'off',...
                                'DerivativeCheck', 'off',...
-                               'Jacobian'       , 'off'));
+                               'Jacobian'       , 'on'));
 if nargin<4
   options = defaultopt;
 else
@@ -70,7 +70,15 @@ for i=2:nperiods
   ix{i} = (ix{i-1}(end)+1):(sum(cell2mat(dim(:,1)))+sum(cell2mat(dim(1:i,2))));
 end
 
+iprev    = @(iperiod) (iperiod-1)*(iperiod>1)+nperiods*(iperiod==1);
 inext    = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
+
+nnzJac = 0;
+for i=1:nperiods
+  nnzJac = nnzJac+...
+           dim{i,1}*(1+dim{iprev(i),1}+dim{iprev(i),2})+...
+           dim{i,2}*(dim{i,2}+dim{i,1}+dim{inext(i),2}+dim{inext(i),1});
+end
 
 %% Solve for the deterministic steady state
 X  = cat(2,s{:},x{:})';
@@ -84,7 +92,7 @@ LB = [-inf(size(cat(2,s{:}),2),1); cat(2,LB{:})'];
 UB = [+inf(size(cat(2,s{:}),2),1); cat(2,UB{:})'];
 
 [X,~,exitflag] = runeqsolver(@SSResidual,X,LB,UB,eqsolver,eqsolveroptions,...
-                             functions,params,e,is,ix,inext,nperiods);
+                             functions,params,e,is,ix,inext,iprev,nnzJac);
 
 if exitflag~=1
   warning('RECS:SSNotFound','Failure to find a deterministic steady state');
@@ -121,30 +129,65 @@ if exitflag==1 && options.display==1
 end
 
 
-function F = SSResidual(X,functions,params,e,is,ix,inext,nperiods)
+function [F,J] = SSResidual(X,functions,params,e,is,ix,inext,iprev,nnzJac)
 %% SSRESIDUAL evaluates the equations and Jacobians of the steady-state finding problem
+
+nperiods = length(e);
+n        = length(X);
 
 f = cell(nperiods,1);
 g = cell(nperiods,1);
 s = cell(nperiods,1);
 x = cell(nperiods,1);
 z = cell(nperiods,1);
-Fs = cell(nperiods,1);
 for i=1:nperiods
   s{i} = X(is{i})';
   x{i} = X(ix{i})';
 end
 
-for i=1:nperiods
- z{i} = functions(i).h(s{i},x{i},e{i},s{inext(i)},x{inext(i)},params);
- g{i} = functions(i).g(s{i},x{i},e{i},params);
- f{i} = functions(i).f(s{i},x{i},z{i},params);
+if nargout==2
+  %% With Jacobian calculation
+  gs     = cell(nperiods,1);
+  gx     = cell(nperiods,1);
+  fs     = cell(nperiods,1);
+  fx     = cell(nperiods,1);
+  fz     = cell(nperiods,1);
+  hs     = cell(nperiods,1);
+  hx     = cell(nperiods,1);
+  hsnext = cell(nperiods,1);
+  hxnext = cell(nperiods,1);
+  for i=1:nperiods
+    % s-g
+    [g{i},gs{i},gx{i}] = functions(iprev(i)).g(s{iprev(i)},x{iprev(i)},e{iprev(i)},params,[1 1 1 0]);
+    g{i} = s{i}-g{i};
+    
+    % f
+    [z{i},hs{i},hx{i},~,hsnext{i},hxnext{i}] = functions(i).h(s{i},x{i},e{i},s{inext(i)},x{inext(i)},params);
+    [f{i},fs{i},fx{i},fz{i}] = functions(i).f(s{i},x{i},z{i},params,[1 1 1 1]);
+    fz{i} = permute(fz{i},[2 3 1]);
+  end
+  
+  J                       = spalloc(n,n,nnzJac);
+  for i=1:nperiods
+    J(is{i},is{i})        = speye(length(is{i}));
+    J(is{i},is{iprev(i)}) = -permute(gs{i},[2 3 1]);
+    J(is{i},ix{iprev(i)}) = -permute(gx{i},[2 3 1]);
+    J(ix{i},is{i})        = permute(fs{i},[2 3 1])+fz{i}*permute(hs{i},[2 3 1]);
+    J(ix{i},ix{i})        = permute(fx{i},[2 3 1])+fz{i}*permute(hx{i},[2 3 1]);
+    J(ix{i},is{inext(i)}) = fz{i}*permute(hsnext{i},[2 3 1]);
+    J(ix{i},ix{inext(i)}) = fz{i}*permute(hxnext{i},[2 3 1]);
+  end
+
+else
+  %% Without Jacobian calculation
+  for i=1:nperiods
+    g{i} = s{i}-functions(iprev(i)).g(s{iprev(i)},x{iprev(i)},e{iprev(i)},params);
+    z{i} = functions(i).h(s{i},x{i},e{i},s{inext(i)},x{inext(i)},params);
+    f{i} = functions(i).f(s{i},x{i},z{i},params);
+  end
+  
 end
 
-for i=1:nperiods
-  Fs{i} = s{inext(i)}-g{i};
-end
-
-F = [cat(2,Fs{:}) cat(2,f{:})]';
+F = [cat(2,g{:}) cat(2,f{:})]';
 
 return
