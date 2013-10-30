@@ -27,14 +27,17 @@ for iperiod=1:model.nperiods
   % Shocks
   [model.shocks{iperiod}.e,model.shocks{iperiod}.w] = qnwnorm(5,0,sigma(iperiod)^2);
   model.shocks{iperiod}.funrand = @(nrep) randn(nrep,1)*sigma(iperiod);
-
-  % Interpolation structure
-  interp.fspace{iperiod} = fundefn('spli',n{iperiod},smin{iperiod},smax{iperiod});
-  interp.Phi{iperiod}    = funbasx(interp.fspace{iperiod});
-  interp.s{iperiod}      = gridmake(funnode(interp.fspace{iperiod}));
 end
+% Interpolation structure
+interp.fspace = cellfun(@(N,SMIN,SMAX) fundefn('spli',N,SMIN,SMAX),n,smin,smax,...
+                        'UniformOutput', false);
+interp.Phi    = cellfun(@(FSPACE) funbasx(FSPACE),interp.fspace,...
+                        'UniformOutput', false);
+interp.s      = cellfun(@(FSPACE) gridmake(funnode(FSPACE)),interp.fspace,...
+                        'UniformOutput', false);
 
-[model.ss.sss,model.ss.xss,model.ss.zss] = recsSSSP(model,{4 3 [2 0] [1 0]},{[3 1] [2 1] [1 1] [0 1]});
+[model.ss.sss,model.ss.xss,model.ss.zss] = recsSSSP(model,{4; 3; [2 0]; [1 0]},...
+                                                  {[3 1]; [2 1]; [1 1]; [0 1]});
 
 [s1,s2,s3,s4] = interp.s{:};
 
@@ -51,7 +54,7 @@ x2 = [s2(:,1)*2/3         ((s2(:,1)/3)/d).^(1/elastD)];
 x1 = [s1(:,1)*3/4         ((s1(:,1)/4)/d).^(1/elastD)];
 
 %% Solve for rational expectations
-[interp,X] = recsSolveREESP(model,interp,{x1 x2 x3 x4});
+[interp,X] = recsSolveREESP(model,interp,{x1; x2; x3; x4});
 
 %% Compare STO6 and STO6SP when informational shocks are removed
 disp('Max absolute error in first subperiod storage and price (in log10)');
