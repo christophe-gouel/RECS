@@ -103,8 +103,8 @@ switch fgmethod
 end % switch fgmethod
 
 %% Prepare output
-interp.cX = cellfun(@funfitxy,interp.fspace,interp.Phi,X,'UniformOutput', false)';
-interp.cZ = cellfun(@funfitxy,interp.fspace,interp.Phi,Z,'UniformOutput', false)';
+interp.cX = cellfun(@funfitxy,interp.fspace,interp.Phi,X,'UniformOutput', false);
+interp.cZ = cellfun(@funfitxy,interp.fspace,interp.Phi,Z,'UniformOutput', false);
 interp.X  = X;
 interp.Z  = Z;
 

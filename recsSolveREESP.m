@@ -47,11 +47,16 @@ ixforward = cell(nperiods,1);
 for i=1:nperiods, ixforward{i} = model.infos(i).ixforward; end
   
 % Extract fields of interp
+if nargin<=2 || isempty(X), X = interp.X; end
 s          = interp.s;
 fspace     = interp.fspace;
 Phi        = interp.Phi;
+if ~isfield(interp,'cX')
+  cX = cellfun(@funfitxy,fspace,Phi,X,'UniformOutput', false);
+else
+  cX = interp.cX;
+end
 
-cX = cellfun(@funfitxy,fspace,Phi,X,'UniformOutput', false);
 cnrm     = 1;
 it       = 0;
 vec      = @(x) cell2mat(cellfun(@(z) z(:),x,'UniformOutput',false));

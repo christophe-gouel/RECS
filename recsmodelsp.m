@@ -34,6 +34,9 @@ classdef recsmodelsp
       model.nperiods = length(inputfiles);
       model.functions = struct();
       model.symbols = struct();
+      model.ss      = struct();
+      model.ss.sss  = cell(model.nperiods,1);
+      model.ss.xss  = cell(model.nperiods,1);
       
       for iperiod=1:model.nperiods
         outputfile = strrep(inputfiles{iperiod},'.yaml','model.m');
@@ -76,6 +79,9 @@ classdef recsmodelsp
                             length(modeltmp.symbols.controls) ...
                             length(modeltmp.symbols.expectations) ...
                             length(modeltmp.symbols.shocks)};
+        
+        model.ss.sss{iperiod} = modeltmp.calibration.states;
+        model.ss.xss{iperiod} = modeltmp.calibration.controls;
         
         model.symbols(iperiod).states   = modeltmp.symbols.states;
         model.symbols(iperiod).controls = modeltmp.symbols.controls;

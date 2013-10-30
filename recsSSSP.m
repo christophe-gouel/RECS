@@ -27,7 +27,7 @@ function [s,x,z,exitflag] = recsSSSP(model,s,x,options)
 %
 % [S,X,Z,EXITFLAG] = RECSSSSP(MODEL,...) returns EXITFLAG,
 % which describes the exit conditions. Possible values are
-%    1 : RECSSS converges to the deterministic steady state
+%    1 : RECSSSSP converges to the deterministic steady state
 %    0 : Failure to converge
 
 % Copyright (C) 2011-2013 Christophe Gouel
@@ -51,6 +51,9 @@ else
 end
 eqsolver        = lower(options.eqsolver);
 eqsolveroptions = options.eqsolveroptions;
+
+if nargin<3 || isempty(x), x = model.ss.xss;   end
+if nargin<2 || isempty(s), s = model.ss.sss; end
 
 nperiods  = model.nperiods;
 params    = model.params;
@@ -168,8 +171,7 @@ if nargout==2
   
   J                       = spalloc(n,n,nnzJac);
   for i=1:nperiods
-    linearInd             = sub2ind([n n],is{i},is{i});
-    J(linearInd)          = 1;
+    J(sub2ind([n n],is{i},is{i})) = 1;
     J(is{i},is{iprev(i)}) = -permute(gs{i},[2 3 1]);
     J(is{i},ix{iprev(i)}) = -permute(gx{i},[2 3 1]);
     J(ix{i},is{i})        = permute(fs{i},[2 3 1])+fz{i}*permute(hs{i},[2 3 1]);
