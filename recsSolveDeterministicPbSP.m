@@ -1,4 +1,4 @@
-function [x,s,z,F,exitflag,N] = recsSolveDeterministicPbSP(model,s0,T,xss,zss,sss,options)
+function [x,s,z,F,exitflag,N] = recsSolveDeterministicPbSP(model,s0,istart,T,xss,zss,sss,options)
 % RECSSOLVEDETERMINISTICPBSP Solves a perfect foresight problem
 %
 % X = RECSSOLVEDETERMINISTICPBSP(MODEL,S0,T,XSS,ZSS,SSS) tries to find the perfect
@@ -39,12 +39,11 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPbSP(model,s0,T,xss,zss,ss
 
 %% Initialization
 defaultopt = struct(                                      ...
-    'checkfinalstate' , 0                                ,...
     'eqsolver'        , 'lmmcp'                          ,...
     'eqsolveroptions' , struct('Diagnostics'    , 'off' ,...
-                               'DerivativeCheck', 'off' ,...
+                               'DerivativeCheck', 'on' ,...
                                'Jacobian'       , 'on'));
-if nargin <=6
+if nargin <=7
   options = defaultopt;
 else
   warning('off','catstruct:DuplicatesFound')
@@ -56,22 +55,32 @@ end
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 
-dim       = model.dim;
 functions = model.functions;
 nperiods  = model.nperiods;
 params    = model.params;
 e         = cell(nperiods,1);
-for i=1:nperiods, e{i} = repmat(model.shocks{i}.w'*model.shocks{i}.e,T,1); end
+for i=1:nperiods
+  if istart~=1 && i<=(istart-1)
+    e{i} = repmat(model.shocks{i}.w'*model.shocks{i}.e,T-1,1); 
+  else
+    e{i} = repmat(model.shocks{i}.w'*model.shocks{i}.e,T,1); 
+  end
+end
 
-inext    = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
+inext    = @(iperiod) (iperiod+1).*(iperiod<nperiods)+ones(size(iperiod)).*(iperiod==nperiods);
 vec      = @(X) X(:);
 
+%% Dimensions
+dim     = model.dim;
+Dstart  = sum(cell2mat(dim(inext(istart:nperiods),1)));
+Mstart  = sum(cell2mat(dim(istart:nperiods,2)));
+Pstart  = sum(cell2mat(dim(istart:nperiods,3)));
 D       = sum(cell2mat(dim(:,1)));
 M       = sum(cell2mat(dim(:,2)));
 P       = sum(cell2mat(dim(:,3)));
-n       = T*(D+M+P);
 
 %% Maximum number of non-zero elements in the Jacobian
+% This is an upper bound: it assumes that istart=1 and all derivatives are non-zero.
 nnzJac = 0;
 for i=1:nperiods
   nnzJac = nnzJac+T*(...
@@ -86,23 +95,23 @@ nnzJac = nnzJac...
          -dim{1,1}*(dim{1,2}+dim{1,3}+dim{2,1}); %   Subdiagonal blocks
 
 %% Bounds
-LBx         = cell(nperiods,1);
-UBx         = cell(nperiods,1);
-LB          = cell(nperiods,1);
-UB          = cell(nperiods,1);
+LBper = cell(nperiods,1);
+UBper = cell(nperiods,1);
 for i=1:nperiods, 
-  [LBx{i},UBx{i}] = functions(i).b(sss{i},params);
-  LB{i} = [LBx{i} -inf(1,dim{inext(i),1}+dim{i,3})];
-  UB{i} = [UBx{i} +inf(1,dim{inext(i),1}+dim{i,3})];
+  [LBper{i},UBper{i}] = functions(i).b(sss{i},params);
+  LBper{i} = [LBper{i} -inf(1,dim{inext(i),1}+dim{i,3})];
+  UBper{i} = [UBper{i} +inf(1,dim{inext(i),1}+dim{i,3})];
 end
-LB = cat(2,LB{:});
-UB = cat(2,UB{:});
-LB = reshape(LB(ones(T,1),:)',n,1);
-UB = reshape(UB(ones(T,1),:)',n,1);
+LB      = cat(2, LBper{:});
+UB      = cat(2, UBper{:});
+LB      = [cat(2,LBper{istart:end})'; reshape(LB(ones(T-1,1),:)',(T-1)*(M+D+P),1)];
+UB      = [cat(2,UBper{istart:end})'; reshape(UB(ones(T-1,1),:)',(T-1)*(M+D+P),1)];
 
-X  = [xss'; zss'; [sss(2:end); sss{1}]'];
-X  = cat(2, X{:});
-X  = reshape( X(ones(T,1),:)',n,1);
+%% First guess equal to steady state
+X      = [xss'; zss'; [sss(2:end); sss{1}]'];
+Xstart = X(:,istart:end);
+X      = cat(2, X{:});
+X      = [cat(2,Xstart{:})'; reshape(X(ones(T-1,1),:)',(T-1)*(M+D+P),1)];
 
 %% Create indexes of variables' position
 % Indexes of variables' position for one period
@@ -119,50 +128,52 @@ for i=1:nperiods
   index = index+dim{inext(i),1};
 end
 
+% Indexes of variables at the first period
+nskip = D+M+P-(Dstart+Mstart+Pstart);
+ixstart = cellfun(@(dimX) zeros(0,dimX),dim(:,2),'UniformOutput', false);
+izstart = cellfun(@(dimX) zeros(0,dimX),dim(:,3),'UniformOutput', false);
+isstart = cellfun(@(dimX) zeros(0,dimX),dim(:,1),'UniformOutput', false);
+for i=istart:nperiods
+  ixstart{i}        = ix{i}-nskip;
+  izstart{i}        = iz{i}-nskip;
+  isstart{inext(i)} = is{inext(i)}-nskip;
+end
+
 % Indexes of variables' position for all the horizon
-iX2iXT = @(iX,dimX) vec((repmat(iX,T,1)+(D+M+P)*repmat((0:T-1)',1,dimX))');
-ixT = cellfun(iX2iXT,ix,dim(:,2),'UniformOutput', false);
-izT = cellfun(iX2iXT,iz,dim(:,3),'UniformOutput', false);
-isT = cellfun(iX2iXT,is,dim(:,1),'UniformOutput', false);
-ixnext = vec((repmat(ix{1},T-1,1)+(D+M+P)*repmat((1:T-1)',1,dim{1,2}))');
-izprev = vec((repmat(iz{4},T-1,1)+(D+M+P)*repmat((0:T-2)',1,dim{4,3}))');
-iznext = vec((repmat(iz{1},T-1,1)+(D+M+P)*repmat((1:T-1)',1,dim{1,3}))');
-isprev = vec((repmat(is{1},T-1,1)+(D+M+P)*repmat((0:T-2)',1,dim{1,1}))');
-isnext = vec((repmat(is{2},T-1,1)+(D+M+P)*repmat((1:T-1)',1,dim{2,1}))');
+iX2iXT = @(istart,iX,dimX) [vec(istart);
+                    vec((repmat(iX,T-1,1)+(Dstart+Mstart+Pstart)+(D+M+P)*repmat((0:T-2)',1,dimX))')];
+ixT = cellfun(iX2iXT,ixstart,ix,dim(:,2),'UniformOutput', false);
+izT = cellfun(iX2iXT,izstart,iz,dim(:,3),'UniformOutput', false);
+isT = cellfun(iX2iXT,isstart,is,dim(:,1),'UniformOutput', false);
+
+% Indexes of some variables to account for the difference between forward/predetermined and static variables
+ixnext = cellfun(@(iX,dimX) vec((repmat(iX,T-1,1)+...
+                                 (Dstart+Mstart+Pstart)+...
+                                 (D+M+P)*repmat((0:T-2)',1,dimX))'),...
+                 ix,dim(:,2),'UniformOutput', false);
+izprev = [vec(izstart{4});
+          vec((repmat(iz{4},T-2,1)+...
+               (Dstart+Mstart+Pstart)+(D+M+P)*repmat((0:T-3)',1,dim{4,3}))')];
+iznext = vec((repmat(iz{istart},T-1,1)+...
+              (Dstart+Mstart+Pstart)+(D+M+P)*repmat((0:T-2)',1,dim{istart,3}))');
 
 %% Solve deterministic problem
+SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPbSP,X0,LB,UB,eqsolver, ...
+                                     eqsolveroptions,functions,S0,xss{1},e, ...
+                                     params,M,P,D,ixT,izT,isT, ixnext,izprev,iznext, ...
+                                     nnzJac,dim,istart);
 
-[X,F,exitflag] = runeqsolver(@recsDeterministicPbSP,X,LB,UB,eqsolver, ...
-                             eqsolveroptions,functions,s0,xss{1},e, ...
-                             params,M,P,D,ix,iz,is,ixT,izT,isT,ixnext,izprev,iznext,isprev,isnext,nnzJac);
+% Simple continuation problem applied on a Newton solve
+[X,F,exitflag,N] = SCP(X,s0,sss{istart},SCPSubProblem,1);
 
-% SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPbSP,X0,LB,UB,eqsolver, ...
-%                                      eqsolveroptions,functions,S0,xss{1},e, ...
-%                                      params,M,P,D,ix,iz,is);
-
-% % Simple continuation problem applied on a Newton solve
-%[X,F,exitflag,N] = SCP(X,s0,sss{1},SCPSubProblem,1);
 if exitflag~=1
   warning('RECS:FailureDeterministic',...
           'Failure to find the perfect foresight solution');
 end
 
 %% Prepare output
-X = reshape(X,M+P+D,T)';
-x = cellfun(@(iX) X(:,iX),ix,'UniformOutput', false);
-z = cellfun(@(iX) X(:,iX),iz,'UniformOutput', false);
-s = cellfun(@(iX) X(:,iX),is,'UniformOutput', false);
-
-s{1} = [s0; s{1}];
-if ~isempty(F), F = reshape(F,M+P+D,T)'; end
-
-N = [];
-%% Check is the final state is self-replicating (meaning that sT=sss and xT=xss)
-% if options.checkfinalstate
-%   deltafinal = max(abs([s(end,:)-sss x(end,:)-xss]));
-%   if deltafinal>sqrt(eps)
-%     warning('RECS:FinalState',...
-%             'Final state is not self-replicating (max(|delta|)=%g)',...
-%             deltafinal);
-%   end
-% end
+X2xzs = @(iX,dimX) reshape(X(iX),dimX,[])';
+x = cellfun(X2xzs,ixT,dim(:,2),'UniformOutput', false);
+z = cellfun(X2xzs,izT,dim(:,3),'UniformOutput', false);
+s = cellfun(X2xzs,isT,dim(:,1),'UniformOutput', false);
+s{istart} = [s0; s{istart}];
