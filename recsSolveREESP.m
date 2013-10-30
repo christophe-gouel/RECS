@@ -51,11 +51,10 @@ s          = interp.s;
 fspace     = interp.fspace;
 Phi        = interp.Phi;
 
-cX = cellfun(@funfitxy,fspace,Phi,X,'UniformOutput', false)';
-
+cX = cellfun(@funfitxy,fspace,Phi,X,'UniformOutput', false);
 cnrm     = 1;
 it       = 0;
-vec      = @(x) cell2mat(cellfun(@(z) reshape(z,[],1),x,'UniformOutput',false));
+vec      = @(x) cell2mat(cellfun(@(z) z(:),x,'UniformOutput',false));
 inext    = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
 exitEQ   = zeros(nperiods,1);
 

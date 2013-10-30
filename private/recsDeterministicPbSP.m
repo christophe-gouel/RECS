@@ -42,7 +42,7 @@ function [F,J] = recsDeterministicPbSP(X,functions,s0,xss,e,params,M,P,D,ixT,izT
 
 %% Initialization
 n        = size(X,1);
-T        = length(isT{1});
+T        = length(isT{1})/dim{1,1};
 nperiods = length(e);
 
 inext = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
@@ -54,25 +54,25 @@ snext   = cellfun(X2xzs,isT,dim(:,1),'UniformOutput', false);
 isnextT = isT;
 ixnextT = ixT;
 
-isnext = isnextT{inext(istart)}((dim{inext(istart),1}+1):end);
-
 s           = snext;
+isnext      = isnextT{inext(istart)}((dim{inext(istart),1}+1):end);
 if istart~=1
   s{istart} = [s0; snext{istart}];
   s{1}      = snext{1}(1:end-1,:);
-  isT{1}    = isT{1}(1:end-1,:);
+  isT{1}    = isT{1}(1:end-dim{1,1},:);
   isprev    = isT{istart};
 else
   s{1}      = [s0; snext{1}(1:end-1,:)];
+  isprev    = isT{1}(1:end-dim{1,1},:);
 end
 
-xnext           = x;
+xnext             = x;
 if istart~=1
-  xnext{1}      = [x{1}; xss];
-  xnext{istart} = x{istart}(2:end,:);
+  xnext{1}        = [x{1}; xss];
+  xnext{istart}   = x{istart}(2:end,:);
   ixnextT{istart} = ixnextT{istart}((dim{istart,2}+1):end);
 else
-  xnext{1}      = [x{1}(2:end,:); xss];
+  xnext{1}        = [x{1}(2:end,:); xss];
 end
 
 f = cell(nperiods,1);
