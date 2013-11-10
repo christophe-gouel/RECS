@@ -14,11 +14,13 @@ ms2 = recsmodel('sto2.yaml',struct('Mu',1,'Sigma',0.05^2,'order',7));
 Ts2 = 5;
 % gro1
 mg1 = recsmodel('gro1.yaml',struct('Mu',0,'Sigma',0.007^2,'order',5));
-[ig1,sg1] = recsinterpinit(10,[0.85*mg1.sss(1) min(mg1.e)*4],[1.15*mg1.sss(1) max(mg1.e)*4]);
+[ig1,sg1] = recsinterpinit(10,[0.85*mg1.sss(1) min(mg1.shocks.e)*4],...
+                           [1.15*mg1.sss(1) max(mg1.shocks.e)*4]);
 Tg1 = 50;
 % gro2
 mg2 = recsmodel('gro2.yaml',struct('Mu',0,'Sigma',0.04^2,'order',7));
-[ig2,sg2] = recsinterpinit(14,[0.47*mg2.sss(1)  min(mg2.e)*3.5],[1.72*mg2.sss(1)  max(mg2.e)*3.5]);
+[ig2,sg2] = recsinterpinit(14,[0.47*mg2.sss(1)  min(mg2.shocks.e)*3.5],...
+                           [1.72*mg2.sss(1)  max(mg2.shocks.e)*3.5]);
 Tg2 = 50;
 
 mcpsolverlist    = {'lmmcp','ncpsolve','path'};

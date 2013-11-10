@@ -89,7 +89,15 @@ try
       end
 
     case 'path'
-      [x,f,exitflag] = recspathmcp(x, LB, UB, 'pathtransform');
+      % Maximum number of non-zero elements in the Jacobian
+      if isfield(solveroptions,'nnzJ')
+        nnzJ = solveroptions.nnzJ;
+      else
+        nnzJ = [];
+      end
+
+      % Launche PATH through PATHTRANSFORM
+      [x,f,exitflag] = recspathmcp(x, LB, UB, 'pathtransform',nnzJ);
       clear global eqtosolve
 
     case 'mixed'
