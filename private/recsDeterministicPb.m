@@ -1,5 +1,4 @@
-function [F,J,grid] = recsDeterministicPb(X,fp,gp,hp,s0,xss,p,e,params,nx,grid,nnzJac,izprevT,isprevT,ixT,izT, ...
-                                     isT,ixnextT,iznextT,isnextT)
+function [F,J,grid] = recsDeterministicPb(X,fp,gp,hp,s0,xss,p,e,params,nx,grid)
 % RECSDETERMINISTICPB Evaluates the equations and Jacobian of the deterministic problem.
 %
 % RECSDETERMINISTICPB is called by recsSolveDeterministicPb. It is not meant to be
@@ -62,7 +61,6 @@ s     = [s0; snext(1:end-1,:)];
 
 %% Computation of equations and Jacobian
 if nargout>=2
-  if 1
   %% With Jacobian
   [f,fs,fx,fz]              = fp(s,x,w,v,z,params,ones(4,1));
   [h,hs,hx,~,hsnext,hxnext] = hp(s,x,e,snext,xnext,params,[1 1 1 0 1 1]);
@@ -92,31 +90,6 @@ if nargout>=2
                         permute(Jsub,[2 3 1]),...
                         permute(Jsup,[2 3 1]),...
                         [],grid);
-  else
-    [f,fs,fx,fz]              = fp(s,x,w,v,z,params,ones(4,1));
-    [h,hs,hx,~,hsnext,hxnext] = hp(s,x,e,snext,xnext,params,[1 1 1 0 1 1]);
-    [g,gs,gx]                 = gp(s,x,e,params,[1 1 1 0]);
-
-    J                         = spalloc(n,n,nnzJac);
-    nd2spdiag = @(Mat) spblkdiag(permute(Mat,[2 3 1]));
-
-    %% df
-    J(ixnextT,isprevT) = nd2spdiag(fs(2:end,:,:)); % df/ds
-    J(ixT,ixT)         = nd2spdiag(fx);            % df/dx
-    J(ixT,izT)         = nd2spdiag(fz);            % df/dz
-
-    %% d(z-h)
-    J(iznextT,isprevT)        = nd2spdiag(-hs(2:end,:,:));         % d(z-h)/ds
-    J(izT,ixT)                = nd2spdiag(-hx);                    % d(z-h)/dx
-    J(sub2ind([n n],izT,izT)) = 1;                                 % d(z-h)/dz
-    J(izT,isT)                = nd2spdiag(-hsnext);                % d(z-h)/dsnext
-    J(izprevT,ixnextT)        = nd2spdiag(-hxnext(1:(end-1),:,:)); % d(z-h)/dxnext
-
-    %% d(sn-g)
-    J(isnextT,isprevT)        = nd2spdiag(-gs(2:end,:,:));         % d(sn-g)/ds
-    J(isT,ixT)                = nd2spdiag(-gx);                    % d(sn-g)/dx
-    J(sub2ind([n n],isT,isT)) = 1;                                 % d(sn-g)/dsn
-  end
 
 else
   %% Without Jacobian

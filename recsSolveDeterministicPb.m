@@ -84,22 +84,6 @@ X = [xss w v zss sss];
 X = X(ones(T,1),:)';
 X = reshape(X,n,1);
 
-ix = 1:M;
-iz = (M+1):(M+p);
-is = (M+p+1):(M+p+d);
-
-vec     = @(X) X(:);
-iX2iXT  = @(iX,Tperiod,dimX) vec((repmat(iX,length(Tperiod),1)+...
-                                  (M+p+d)*repmat(Tperiod',1,dimX))');
-izprevT = iX2iXT(iz,0:T-2,p);
-isprevT = iX2iXT(is,0:T-2,d);
-ixT     = iX2iXT(ix,0:T-1,M);
-izT     = iX2iXT(iz,0:T-1,p);
-isT     = iX2iXT(is,0:T-1,d);
-ixnextT = iX2iXT(ix,1:T-1,M);
-iznextT = iX2iXT(iz,1:T-1,p);
-isnextT = iX2iXT(is,1:T-1,d);
-
 %% Number of nonzero elements in the Jacobian
 IM = structfun(@(X) sum(X(:)),...
                model.infos.IncidenceMatrices,'UniformOutput',false);
@@ -116,8 +100,7 @@ tmp      = zeros(M+p+d,M+p+d,T);
 
 SCPSubProblem = @(X0,S0) runeqsolver(@recsDeterministicPb,X0,LB,UB,eqsolver, ...
                                      eqsolveroptions,fp,gp,hp,S0,xss,p,e, ...
-                                     params,nx,grid,nnzJac,izprevT,isprevT,ixT,izT, ...
-                                     isT,ixnextT,iznextT,isnextT);
+                                     params,nx,grid);
 
 % Simple continuation problem applied on a Newton solve
 [X,F,exitflag,N] = SCP(X,s0,sss,SCPSubProblem,1);
