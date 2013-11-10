@@ -59,7 +59,7 @@ eqsolveroptions  = options.eqsolveroptions;
 [d,m,p] = model.dim{1:3};
 n       = T*(m+p+d);
 
-e      = model.shocks.w'*model.shocks.e;
+e      = repmat(model.shocks.w'*model.shocks.e,T,1);
 fp     = model.functions.fp;
 gp     = model.functions.gp;
 hp     = model.functions.hp;

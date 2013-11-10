@@ -47,8 +47,6 @@ n = size(X,1);
 M = m+sum(nx);
 T = n/(M+p+d);
 
-e = e(ones(T,1),:);
-
 X = reshape(X,M+p+d,T)';
 
 x     = X(:,1:m);
