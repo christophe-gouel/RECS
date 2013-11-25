@@ -16,6 +16,8 @@ function H = numhessian(FUN,x,options,varargin)
 %                   elements of the Hessian.
 %  FinDiffRelStep : scalar or vector step size factor, the default value is
 %                   FinDiffRelStep = 1E-4.
+%  UseParallel    : 'always' to use parallel calculation (require Parallel
+%                    Computing Toolbox)' or never' (default)
 
 % Copyright (C) 2011-2013 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
@@ -35,7 +37,8 @@ n  = length(x);
 % options
 defaultopt = struct(             ...
     'DiagOnly'       , false    ,...
-    'FinDiffRelStep' , 1E-4);
+    'FinDiffRelStep' , 1E-4     ,...
+    'UseParallel'    , 'never');
 if nargin <= 2
   options = defaultopt;
 else
@@ -43,6 +46,12 @@ else
   options = catstruct(defaultopt,options);
 end
 DiagOnly = options.DiagOnly;
+switch options.UseParallel
+  case 'never'
+    M = 0;
+  case 'always'
+    M = n;
+end
 
 %% Compute the stepsize
 step = options.FinDiffRelStep.*max(abs(x),1);
@@ -50,13 +59,12 @@ ee   = sparse(1:n,1:n,step,n,n);
 
 %% Calculation of the hessian
 f = FUN(x,varargin{:});
+
 if ~DiagOnly
-  H = 4*step*step';
-else
-  H = 4*step.^2;
-end
-for i=1:n
-  if ~DiagOnly
+  %% All hessian
+  
+  H = 4*(step*step');
+  parfor (i=1:n, M)
     for j=1:n
       fpp    = FUN(x+ee(:,i)+ee(:,j),varargin{:});
       fmm    = FUN(x-ee(:,i)-ee(:,j),varargin{:});
@@ -68,12 +76,19 @@ for i=1:n
         H(i,j) = (fmm+fpp-2*f)/H(i,j);
       end
     end
-  else
-    fpp    = FUN(x+2*ee(:,i),varargin{:});
+  end
+  % Impose symmetry (an alternative and faster approach would be to do above a
+  % loop for j=i:n)
+  H = (H+H')/2;
+
+else
+  %% Diagonal only
+  
+  H = 4*step.^2;
+  parfor (i=1:n, M)
+    fpp    = FUN(x+2*ee(:,i),varargin{:}); %#ok<*PFBNS>
     fmm    = FUN(x-2*ee(:,i),varargin{:});
     H(i)   = (fmm+fpp-2*f)/H(i);
   end 
+
 end
-% Impose symmetry (an alternative and faster approach would be to do above a
-% loop for j=i:n)
-if ~DiagOnly, H = (H+H')/2; end
