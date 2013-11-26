@@ -27,6 +27,8 @@ function [interp,x,z,exitflag,output] = recsFirstGuess(interp,model,s,sss,xss,op
 %                       'steady-state'
 %    T                : integer defining the time horizon at which the model is
 %                       supposed to converge to its steady state (default: 50)
+%    UseParallel      : 'always' (default) to use parallel calculation (require
+%                       Parallel Computing Toolbox)' or never'
 %
 % [INTERP,X] = RECSFIRSTGUESS(INTERP,MODEL,S,SSS,XSS,...) returns X, n-by-m matrix,
 % containing the value of the response variables in the first period.
@@ -61,8 +63,9 @@ if nargin <=4 || isempty(xss)
     xss = [];
   end
 end
-defaultopt = struct('fgmethod','auto',...
-                    'T'       ,50);
+defaultopt = struct('fgmethod'    , 'auto',...
+                    'T'           , 50    ,...
+                    'UseParallel' , 'always');
 if nargin <=5
   options = defaultopt;
 else
@@ -72,6 +75,12 @@ end
 
 fgmethod = options.fgmethod;
 T        = options.T;
+switch lower(options.UseParallel)
+  case 'never'
+    UseParallel = 0;
+  case 'always'
+    UseParallel = size(s,1);
+end
 
 n        = size(s,1);
 
@@ -105,7 +114,7 @@ switch fgmethod
     exitflag = zeros(n,1);
     N        = zeros(n,1);
 
-    parfor i=1:n
+    parfor (i=1:n, UseParallel)
       [X,~,Z,~,exitflag(i),N(i)] = recsSolveDeterministicPb(model,s(i,:),...
                                                         T,xss,zss,sss,options);
       x(i,:) = X(1,:);

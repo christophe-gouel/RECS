@@ -10,14 +10,20 @@ function [x,fval,exitflag] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,c,e,w,fsp
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
+[n,m]            = size(x);
+if nargin<=14, [LB,UB] = b(s,params); end
+
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
 extrapolate      = options.extrapolate;
 funapprox        = lower(options.funapprox);
 loop_over_s      = options.loop_over_s;
-
-[n,m]            = size(x);
-if nargin<=14, [LB,UB] = b(s,params); end
+switch lower(options.UseParallel)
+  case 'never'
+    UseParallel = 0;
+  case 'always'
+    UseParallel = n;
+end
 
 %% Solve equilibrium equations on grid points
 if loop_over_s
@@ -26,7 +32,7 @@ if loop_over_s
     fval         = zeros(size(x));
     [~,grid]     = spblkdiag(zeros(m,m,1),[],0);
     exitflag     = zeros(n,1);
-    parfor i=1:n
+    parfor (i=1:n, UseParallel)
       [x(i,:),fval(i,:),exitflag(i)] = eqsolve(x(i,:),s(i,:),z(i,:),...
                                                b,f,g,h,params,eqsolver,...
                                                grid,c,e,w,fspace,funapprox,...
@@ -45,7 +51,7 @@ if loop_over_s
     LB           = mat2cell(LB,sizeBlocks);
     UB           = mat2cell(UB,sizeBlocks);
     fval         = cell(loop_over_s,1);
-    parfor i=1:loop_over_s
+    parfor (i=1:loop_over_s, UseParallel)
       [~,grid]   = spblkdiag(zeros(m,m,sizeBlocks(i)),[],0);
       [x{i},fval{i},exitflag(i)] = eqsolve(x{i},s{i},z{i},...
                                            b,f,g,h,params,eqsolver,...

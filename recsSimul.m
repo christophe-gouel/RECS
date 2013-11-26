@@ -37,6 +37,8 @@ function [ssim,xsim,esim,stat,fsim] = recsSimul(model,interp,s0,nper,shocks,opti
 %    simulmethod      : 'interpolation' (default) or 'solve'
 %    stat             : 1 to ouput summary statistics from the simulation
 %                       (default: 0)
+%    UseParallel      : 'always' (default) to use parallel calculation (require
+%                       Parallel Computing Toolbox)' or never'
 %
 % [SSIM,XSIM] = RECSSIMUL(MODEL,INTERP,S0,NPER,...) returns the nrep-by-m-by-nper
 % array XSIM that contains the simulated response variables.
@@ -93,7 +95,8 @@ defaultopt = struct(...
     'loop_over_s'     , 0                                  ,...
     'simulmethod'     , 'interpolation'                    ,...
     'stat'            , 0                                  ,...
-    'Tburn'           , 20);
+    'Tburn'           , 20                                 ,...
+    'UseParallel'     , 'always');
 if nargin<6
   options = defaultopt;
 else
@@ -115,6 +118,12 @@ if ~any(strcmp(simulmethod,{'interpolation','solve'}))
   warning('RECS:OptionError',['The simulmethod field can take only the values ' ...
                       '''interpolation'' or ''solve''. Simulations will '        ...
                       'be carried out using the default option, ''interpolation''.'])
+end
+switch lower(options.UseParallel)
+  case 'never'
+    UseParallel = 0;
+  case 'always'
+    UseParallel = nrep;
 end
 
 b         = model.functions.b;
@@ -239,15 +248,15 @@ if nargout>=4 || statdisplay
     X = cat(2,ssim,xsim);
     X = permute(X(:,:,(Tburn+1):end),[2 1 3]);
     X = reshape(X,d+m,[])';
-    
+
     % Sample size
     stat.n = size(X,1);
-    
+
     % Percent of time spent at the bounds
     [LB,UB] = b(X(:,1:d),params);
     pLB     = [NaN(1,d) mean(abs(X(:,d+1:d+m)-LB)<eps,1)*100];
     pUB     = [NaN(1,d) mean(abs(UB-X(:,d+1:d+m))<eps,1)*100];
-    
+
     mX   = mean(X,1);
     y    = bsxfun(@minus,X,mX);
     varX = mean(y.*y,1);
@@ -279,7 +288,7 @@ if nargout>=4 || statdisplay
     if display==1
       disp(' Correlation');
       disp(stat.cor);
-      
+
       figure
       for i=1:d+m
         subplot(ceil((d+m)/ceil(sqrt(d+m))),ceil(sqrt(d+m)),i)
@@ -291,7 +300,7 @@ if nargout>=4 || statdisplay
     X = cat(2,ssim,xsim);
     X = permute(X(:,:,(Tburn+1):end),[3 2 1]);
     acor = zeros(d+m,5);
-    parfor n=1:nrep
+    parfor (n=1:nrep, UseParallel)
       acor = acor+autocor(X(:,:,n))/nrep;
     end
     if tabularform

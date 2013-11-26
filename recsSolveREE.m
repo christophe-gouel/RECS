@@ -45,6 +45,8 @@ function [interp,x,z,fval,exitflag,output] = recsSolveREE(interp,model,s,x,optio
 %                       not just interpolated. If 1 and funapprox is 'resapprox', the
 %                       guess of response variables is found with the new
 %                       approximation structure
+%  UseParallel        : 'always' (default) to use parallel calculation (require
+%                       Parallel Computing Toolbox)' or never'
 %
 % [INTERP,X] = RECSSOLVEREE(INTERP,MODEL,S,X,...) returns the value of the response
 % variables on the grid.
@@ -84,7 +86,8 @@ defaultopt = struct(                                        ...
     'reemethod'         , 'iter'                           ,...
     'reesolver'         , 'sa'                             ,...
     'reesolveroptions'  , struct([])                       ,...
-    'useapprox'         , 1);
+    'useapprox'         , 1                                ,...
+    'UseParallel'       , 'always');
 if nargin <=4
   options = defaultopt;
 else

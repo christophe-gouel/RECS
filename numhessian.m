@@ -46,11 +46,11 @@ else
   options = catstruct(defaultopt,options);
 end
 DiagOnly = options.DiagOnly;
-switch options.UseParallel
+switch lower(options.UseParallel)
   case 'never'
-    M = 0;
+    UseParallel = 0;
   case 'always'
-    M = n;
+    UseParallel = n;
 end
 
 %% Compute the stepsize
@@ -62,9 +62,9 @@ f = FUN(x,varargin{:});
 
 if ~DiagOnly
   %% All hessian
-  
+
   H = 4*(step*step');
-  parfor (i=1:n, M)
+  parfor (i=1:n, UseParallel)
     for j=1:n
       fpp    = FUN(x+ee(:,i)+ee(:,j),varargin{:});
       fmm    = FUN(x-ee(:,i)-ee(:,j),varargin{:});
@@ -83,12 +83,12 @@ if ~DiagOnly
 
 else
   %% Diagonal only
-  
+
   H = 4*step.^2;
-  parfor (i=1:n, M)
+  parfor (i=1:n, UseParallel)
     fpp    = FUN(x+2*ee(:,i),varargin{:}); %#ok<*PFBNS>
     fmm    = FUN(x-2*ee(:,i),varargin{:});
     H(i)   = (fmm+fpp-2*f)/H(i);
-  end 
+  end
 
 end
