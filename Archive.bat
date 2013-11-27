@@ -1,8 +1,8 @@
 del *.zip
 
-:: Create dolo-recs executable for Windows
-pyinstaller.py --onefile --out=pyinstaller --paths=.\Python\dolo .\Python\dolo\bin\dolo-recs
-copy /Y pyinstaller\dist\dolo-recs.exe Python\dolo\bin
+:: Create dolo-matlab executable for Windows
+pyinstaller.py --onefile --out=pyinstaller --paths=.\Python\dolo .\Python\dolo\bin\dolo-matlab
+copy /Y pyinstaller\dist\dolo-matlab.exe Python\dolo\bin
 rmdir /S /Q pyinstaller
 del *.log
 
@@ -31,7 +31,7 @@ robocopy Python recs-archive\Python /E
 :: Clean the files and compress
 cd recs-archive
 del /S .git*
-del /S logfile.tmp 
+del /S logfile.tmp
 del /S *.mex*
 del Archive.bat
 rename README.md README.txt

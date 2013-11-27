@@ -11,8 +11,7 @@ occasionally binding constraints.
 
 **Main page is at**: [www.recs-solver.org](http://www.recs-solver.org).
 
-Download
-========
+## Download
 
 RECS Toolbox zip archives are available at
 [https://github.com/christophe-gouel/RECS/releases](https://github.com/christophe-gouel/RECS/releases).
@@ -21,8 +20,7 @@ Why is this archive 12 MB? Much of this size is due to an executable for
 Windows. The executable file includes a complete Python distribution necessary
 to parse RECS model files.
 
-Dependencies
-============
+## Dependencies
 
 * MATLAB R2010a or later.
 * [CompEcon toolbox](http://www4.ncsu.edu/~pfackler/compecon/). RECS depends on
@@ -31,8 +29,7 @@ Dependencies
   forget to create the mex files if you want your models solved in a reasonable
   time.
 
-Optional dependencies
----------------------
+### Optional dependencies
 
 * [Path solver for MATLAB](http://pages.cs.wisc.edu/~ferris/path.html). Path is
   the reference solver for mixed complementarity problems. Its installation is
@@ -42,8 +39,7 @@ Optional dependencies
 * MATLAB Parallel Computing Toolbox. This toolbox allows many RECS programs to
   be run in parallel to speed-up computation.
 
-Installation instructions
-=========================
+## Installation instructions
 
 1. [Download the latest RECS archive](https://github.com/christophe-gouel/RECS/releases) and unzip
    it into a folder, called here `recsfolder` (avoid folder names that include
@@ -60,32 +56,26 @@ Installation instructions
 6. You can test your installation by running RECS demonstration files by typing
    `recsdemos`. You can also access RECS documentation in MATLAB by typing `doc`.
 
-Install on Linux
-----------------
+### Install on Linux and Mac
 
-Python 2.7.X is required. On Debian/Ubuntu, to install the necessary packages
-type in a terminal:
-
-    sudo apt-get install python-yaml python-sympy python-scipy
-
-Install on Mac
---------------
-
-In this case, you are on your own. You have to install
+Python 2.7.X and the following packages are required and have to be accessible
+on your PATH:
 
 * [Python 2.7.X](http://www.python.org/download/). Python is preinstalled on
-  Mac, but is usually too old to be useful.
+  Linux and Mac, but is often too old to be useful.
 * [PyYaml](http://pyyaml.org/wiki/PyYAML).
 * [SymPy](http://sympy.org).
 * [SciPy](http://www.scipy.org/Download).
 
-One solution might be to install a scientific Python distribution such as
-[EPD](http://www.enthought.com/).
+On Debian/Ubuntu, to install the necessary packages type in a terminal:
 
-Let me know whether or not it works.
+    sudo apt-get install python-yaml python-sympy python-scipy
 
-Installation from source
-========================
+One solution might be to install a scientific Python distribution that would
+contain all the necessary packages such as
+[Anaconda](https://store.continuum.io/cshop/anaconda/).
+
+## Installation from source
 
 If you want to work with the bleeding edge version of RECS, which may be
 unstable, or if you want to contribute to RECS development, you need to install
@@ -94,9 +84,14 @@ RECS from source. The installation requires [Git](http://git-scm.com/).
 When installing from source, all platforms (Linux, Mac, and Windows) require
 [Python 2.7.X](http://www.python.org/download/), along with
 [PyYaml](http://pyyaml.org/wiki/PyYAML), [SymPy](http://sympy.org), and
-[SciPy](http://www.scipy.org/Download). Under Windows, it is also necessary to
-install [PyInstaller](http://www.pyinstaller.org/) and to make its folder
-available in Windows Path.
+[SciPy](http://www.scipy.org/Download). One solution is to install everything at
+once by installing a scientific Python distribution such as
+[Anaconda](https://store.continuum.io/cshop/anaconda/).
+
+Optionnaly, under Windows, to be able to generate a binary to run to the solver
+without a Python installation, one can also install
+[PyInstaller](http://www.pyinstaller.org/) and make its folder available in
+Windows Path.
 
 1. Download the latest version of RECS from the git repository by typing in a
    command line: `git clone https://github.com/christophe-gouel/RECS.git recs`
@@ -114,14 +109,12 @@ available in Windows Path.
 7. You can test your installation by running RECS demonstration files by typing
    `recsdemos`. You can also access RECS documentation in MATLAB by typing `doc`.
 
-Source
-=======
+## Source
 
 RECS source can be found on the following git repository:
 <https://github.com/christophe-gouel/RECS.git>.
 
-License
-=======
+## License
 
 Unless stated otherwise, all files in the RECS toolbox are licensed using the
 Expat license, a permissive free software license. Please see the [software
