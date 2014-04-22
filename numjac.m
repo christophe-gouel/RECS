@@ -18,7 +18,7 @@ function J = numjac(FUN,x,options,varargin)
 %                   other. In this case, NUMJAC returns a sparse block diagonal 
 %                   nxd-by-nxd Jacobian.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2014 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -31,7 +31,8 @@ end
 defaultopt = struct(             ...
     'FinDiffType'    , 'central',...
     'FinDiffRelStep' , []       ,...
-    'SerialProblem'  , false);
+    'SerialProblem'  , false    ,...
+    'UseParallel'    , 'never');
 
 if nargin <= 2
   options = defaultopt;
@@ -51,6 +52,12 @@ switch lower(options.FinDiffType)
     error(['Invalid value for OPTIONS field FinDiffType: must be ' ...
            '''forward'' or ''central''']);
 end
+switch lower(options.UseParallel)
+  case 'never'
+    UseParallel = false;
+  case 'always'
+    UseParallel = true;
+end
 
 if isempty(epsilon)
   if central
@@ -66,7 +73,7 @@ if central
   x0  = x-step;
   h   = x1-x0; 
 else
-  f0  = FUN(x,varargin{:});
+  f   = FUN(x,varargin{:});
   h   = x1-x;
 end
   
@@ -81,6 +88,8 @@ if ~options.SerialProblem
     if central
       xx(j) = x0(j);
       f0    = FUN(xx,varargin{:});
+    else
+      f0    = f;
     end
     if j==1, J = zeros(length(f0),d); end
     J(:,j)  = (f1-f0)/h(j);
@@ -89,13 +98,16 @@ else
   %% Serial problem
   [n,d]       = size(x);
   J           = zeros(n,d,d);
-  for j=1:d
+  UseParallel = d*UseParallel;
+  parfor (j=1:d, UseParallel)
     xx        = x;
     xx(:,j)   = x1(:,j);
-    f1        = FUN(xx,varargin{:});
+    f1        = FUN(xx,varargin{:}); %#ok<PFBNS>
     if central
       xx(:,j) = x0(:,j);
       f0      = FUN(xx,varargin{:});
+    else
+      f0      = f;
     end
     J(:,:,j)  = (f1-f0)./h(:,j);
   end
