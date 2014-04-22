@@ -12,8 +12,8 @@ function [interp,s] = recsinterpinit(n,smin,smax,method,options)
 %                   on the grid.
 %
 % INTERP = RECSINTERPINIT(N,SMIN,SMAX,METHOD) use the string METHOD to define
-% the interpolation method, either spline ('spli', default), or Chebyshev
-% polynomials ('cheb').
+% the interpolation method, either spline ('spli', default), linear
+% interpolation ('lin'), or Chebyshev polynomials ('cheb').
 %
 % INTERP = RECSINTERPINIT(N,SMIN,SMAX,METHOD,OPTIONS) uses the structure OPTIONS
 % to create the interpolation structure. The fields of the structure are order :
@@ -22,15 +22,11 @@ function [interp,s] = recsinterpinit(n,smin,smax,method,options)
 % [INTERP,S] = RECSINTERPINIT(N,SMIN,SMAX,...) returns the prod(N)-by-d matrix
 % S, which represents the state variables on the grid.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2014 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
 if nargin<4 || isempty(method), method = 'spli'; end
-
-if strcmp(method,'lin')
-  error('RECS does not support linear interpolation')
-end
 
 defaultopt = struct(  ...
     'extrapolate' , ~strcmp(method,'cheb'),...
