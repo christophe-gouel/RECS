@@ -521,14 +521,14 @@ Da(I1b)    = (x(I1b)-lb(I1b))./denom1(I1b)-1;
 Db(I1b)    = Fx(I1b)./denom1(I1b)-1;
 I1b        = Indexset==1 & beta_l~=0;
 if any(I1b)
-  Da(I1b)    = z(I1b)./denom2(I1b)-1;
-  Db(I1b)    = (DFx(I1b,:)*z)./denom2(I1b)-1;
+  Da(I1b)  = z(I1b)./denom2(I1b)-1;
+  Db(I1b)  = (DFx(I1b,:)*z)./denom2(I1b)-1;
 end
 
-I1a        = I(Indexset==1 & alpha_l==1);
+I1a         = I(Indexset==1 & alpha_l==1);
 if any(I1a)
-  H2(I1a,:)  = repmat(x(I1a)-lb(I1a),1,n).*DFx(I1a,:)+sparse(1:length(I1a),I1a, ...
-                                                    Fx(I1a),length(I1a),n,length(I1a));
+  H2(I1a,:) = bsxfun(@times,x(I1a)-lb(I1a),DFx(I1a,:))+...
+              sparse(1:length(I1a),I1a,Fx(I1a),length(I1a),n,length(I1a));
 end
 
 I2         = Indexset==2;
@@ -544,14 +544,14 @@ Da(I2b)    = (ub(I2b)-x(I2b))./denom1(I2b)-1;
 Db(I2b)    = -Fx(I2b)./denom1(I2b)-1;
 I2b        = Indexset==2 & beta_u~=0;
 if any(I2b)
-  Da(I2b)    = -z(I2b)./denom2(I2b)-1;
-  Db(I2b)    = -(DFx(I2b,:)*z)./denom2(I2b)-1;
+  Da(I2b)  = -z(I2b)./denom2(I2b)-1;
+  Db(I2b)  = -(DFx(I2b,:)*z)./denom2(I2b)-1;
 end
 
-I2a        = I(Indexset==2 & alpha_u==1);
+I2a         = I(Indexset==2 & alpha_u==1);
 if any(I2a)
-  H2(I2a,:)  = repmat(x(I2a)-ub(I2a),1,n).*DFx(I2a,:)+sparse(1:length(I2a),I2a, ...
-                                                    Fx(I2a),length(I2a),n,length(I2a));
+  H2(I2a,:) = bsxfun(@times,x(I2a)-ub(I2a),DFx(I2a,:))+...
+              sparse(1:length(I2a),I2a,Fx(I2a),length(I2a),n,length(I2a));
 end
 
 I3         = Indexset==3;
@@ -593,21 +593,23 @@ end
 Da(I3)     = ai(I3)+bi(I3).*ci(I3);
 Db(I3)     = bi(I3).*di(I3);
 
-I3a        = I(Indexset==3 & alpha_l==1 & alpha_u==1);
+I3a         = I(Indexset==3 & alpha_l==1 & alpha_u==1);
 if any(I3a)
-  H2(I3a,:)  = repmat(-lb(I3a)-ub(I3a)+2*x(I3a),1,n).*DFx(I3a,:)+...
-      2*sparse(1:length(I3a),I3a,Fx(I3a),length(I3a),n,length(I3a));
+  H2(I3a,:) = bsxfun(@times,-lb(I3a)-ub(I3a)+2*x(I3a),DFx(I3a,:))+...
+              2*sparse(1:length(I3a),I3a,Fx(I3a),length(I3a),n,length(I3a));
 end
-I3a        = I(Indexset==3 & alpha_l==1 & alpha_u~=1);
+I3a         = I(Indexset==3 & alpha_l==1 & alpha_u~=1);
 if any(I3a)
-  H2(I3a,:)  = repmat(x(I3a)-lb(I3a),1,n).*DFx(I3a,:)+...
-      sparse(1:length(I3a),I3a,Fx(I3a),length(I3a),n,length(I3a));
+  H2(I3a,:) = bsxfun(@times,x(I3a)-lb(I3a),DFx(I3a,:))+...
+              sparse(1:length(I3a),I3a,Fx(I3a),length(I3a),n,length(I3a));
 end
-I3a        = I(Indexset==3 & alpha_l~=1 & alpha_u==1);
+I3a         = I(Indexset==3 & alpha_l~=1 & alpha_u==1);
 if any(I3a)
-  H2(I3a,:)  = repmat(x(I3a)-ub(I3a),1,n).*DFx(I3a,:)+...
-      sparse(1:length(I3a),I3a,Fx(I3a),length(I3a),n,length(I3a));
+  H2(I3a,:) = bsxfun(@times,x(I3a)-ub(I3a),DFx(I3a,:))+...
+              sparse(1:length(I3a),I3a,Fx(I3a),length(I3a),n,length(I3a));
 end
 
-H1         = sparse(1:n,1:n,Da,n,n,n)+Db(:,ones(n,1)).*DFx;
-H          = [lambda1*H1; lambda2*H2];
+H1 = bsxfun(@times,Db,DFx);
+H1 = spdiags(diag(H1)+Da,0,H1);
+
+H  = [lambda1*H1; lambda2*H2];
