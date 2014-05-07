@@ -35,7 +35,7 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,solver,solveroptions,varargin
 % on the active solver, but a general rule is that 0 means failure to converge 1
 % means convergence to a solution.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2014 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -101,9 +101,9 @@ try
       clear global eqtosolve
 
     case 'mixed'
-      solveroptions.maxit = 10;
-      solveroptions.atol  = 1E-2;
-      solveroptions.rtol  = 1E-3;
+      solveroptions.MaxIter   = 10;
+      solveroptions.TolFun    = 1E-2;
+      solveroptions.RelTolFun = 1E-3;
       [x,f,exitflag] = SA(eqtosolve, x, solveroptions);
 
       solveroptions.maxit = 40;
