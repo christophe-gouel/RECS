@@ -21,8 +21,8 @@ params = num2cell(model.params);
 clear('interp')
 sigma = [eps eps eps 0.05];
 n     = {50; 50; [50 5]; [50 5]};
-smin  = {2.8; 2.05; [1.35 -0.07]; [0.67 -0.14]};
-smax  = {6  ; 5.1 ; [3.9   0.07]; [2.72  0.14]}; 
+smin  = {2.8; 2.05; [1.35 -0.15]; [0.67 -0.21]};
+smax  = {6  ; 5.1 ; [3.9   0.15]; [2.72  0.21]}; 
 for iperiod=1:model.nperiods
   % Shocks
   [model.shocks{iperiod}.e,model.shocks{iperiod}.w] = qnwnorm(5,0,sigma(iperiod)^2);
@@ -61,7 +61,7 @@ disp('Max absolute error in first subperiod storage and price (in log10)');
 disp(log10(max(abs(Xcat(:,[1 5])-X{1}))));
 
 %% Introduced information shocks
-sigma = [eps 0.015 0.015 0.02];
+sigma = [eps 0.05/sqrt(3) 0.05/sqrt(3) 0.05/sqrt(3)];
 for iperiod=1:model.nperiods
   % Shocks
   [model.shocks{iperiod}.e,model.shocks{iperiod}.w] = qnwnorm(5,0,sigma(iperiod)^2);
