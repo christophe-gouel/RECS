@@ -19,6 +19,8 @@ startup.m
 /html/*.yaml
 /html/helpsearch/*
 
+/Python/PythonVirtualEnv/*
+
 recs-archive/*
 
 /www/*

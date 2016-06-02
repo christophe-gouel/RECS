@@ -7,7 +7,7 @@ classdef recsmodel
     func    % Anonymous function that defines the model's equations
     params  % Model's parameters
     % FUNCTIONS - Anonymous functions that defines the model
-    functions 
+    functions
     % FUNRAND - Random shocks generator function. Function handle that accepts an
     % integer n as input and returns a n-by-q matrix of shocks.
     funrand
@@ -74,7 +74,7 @@ classdef recsmodel
       inputfiledirectory = fileparts(which(inputfile));
       dolo = fullfile(recsdirectory,'Python','dolo');
       dolooptions = ' --diff  --model_type=fgh2 ';
-      
+
       if ispc && ~options.Python && ...
             exist(fullfile(dolo,'bin','dolo-matlab.exe'),'file')
         status = system([fullfile(dolo,'bin','dolo-matlab.exe') dolooptions ...
@@ -83,7 +83,9 @@ classdef recsmodel
       else
         dolomatlab = fullfile(dolo,'bin','dolo-matlab');
         setenv('PYTHONPATH',dolo)
-        status = system(['python ' dolomatlab dolooptions which(inputfile) ...
+        pythonexec = fullfile(recsdirectory,'Python','PythonVirtualEnv','bin','python');
+        if ~exist(pythonexec,'file'), pythonexec = 'python'; end
+        status = system([pythonexec ' ' dolomatlab dolooptions which(inputfile) ...
                          ' '  fullfile(inputfiledirectory,outputfile)]);
       end
 
@@ -103,7 +105,7 @@ classdef recsmodel
       model.functions.g  = modeltmp.functions.transition;
       model.functions.h  = modeltmp.functions.expectation;
       model.functions.ee = @(s,x,z,p) NaN;
-      
+
       %% Incidence matrices and dimensions
       IM = modeltmp.infos.incidence_matrices;
       model.infos.IncidenceMatrices = struct('fs',IM.arbitrage{1},...
@@ -119,7 +121,7 @@ classdef recsmodel
                                              'hxnext',IM.expectation{5},...
                                              'lbs',IM.arbitrage_lb{1},...
                                              'ubs',IM.arbitrage_ub{1});
-      
+
       model.dim = {size(model.infos.IncidenceMatrices.fs,2) ...
                    size(model.infos.IncidenceMatrices.fs,1) ...
                    size(model.infos.IncidenceMatrices.fz,2) ...
@@ -138,7 +140,7 @@ classdef recsmodel
         model.functions.gp = modeltmp.functions.transition;
         model.functions.hp = modeltmp.functions.expectation;
       end
-        
+
       %% Identify model type
       if all(~[model.infos.IncidenceMatrices.hs(:); ...
                model.infos.IncidenceMatrices.hx(:); ...
@@ -186,30 +188,30 @@ classdef recsmodel
           end
         end
       end % shocks and steady state
-      
+
       %% Equation type
       model.infos.eq_type = 'mcp';
       if all(~[model.infos.IncidenceMatrices.lbs(:); ...
                model.infos.IncidenceMatrices.ubs(:)])
         if ~isempty(sss0)
-          [LB,UB] = model.functions.b(sss0,model.params); 
+          [LB,UB] = model.functions.b(sss0,model.params);
           if all(isinf([LB(:); UB(:);]))
             model.infos.eq_type = 'cns';
           end
         end
       end
-        
+
       function [LB,UB,LB_s,UB_s] = OrganizeBounds(modeltmp,s,p,o)
       % ORGANIZEBOUNDS reorganizes bounds from dolo-matlab format to RECS format
         if nargin<4
           if nargout>2, o = [1; 1];
-          else,         o = [1; 0]; 
+          else,         o = [1; 0];
           end
         end
         [LB,LB_s] = modeltmp.functions.arbitrage_lb(s,p,o);
-        [UB,UB_s] = modeltmp.functions.arbitrage_ub(s,p,o);        
+        [UB,UB_s] = modeltmp.functions.arbitrage_ub(s,p,o);
       end
-      
+
     end % recsmodel
     function SQ = StateQuant(model)
       nrep = 10000;

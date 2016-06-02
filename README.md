@@ -45,10 +45,10 @@ to parse RECS model files.
    it into a folder, called here `recsfolder` (avoid folder names that include
    spaces, even for parent folders).
 2. Install the CompEcon toolbox:
-   1. [Download the CompEcon toolbox archive](http://www4.ncsu.edu/~pfackler/compecon/);
-   2. Unzip the archive into a folder, called here `compeconfolder`;
-   3. Add CompEcon to the MATLAB path: `addpath('compeconfolder/CEtools','compeconfolder/CEdemos')`;
-   4. Type `mexall` in MATLAB prompt to create all CompEcon mex files.
+    1. [Download the CompEcon toolbox archive](http://www4.ncsu.edu/~pfackler/compecon/);
+    2. Unzip the archive into a folder, called here `compeconfolder`;
+    3. Add CompEcon to the MATLAB path: `addpath('compeconfolder/CEtools','compeconfolder/CEdemos')`;
+    4. Type `mexall` in MATLAB prompt to create all CompEcon mex files.
 3. (optional) Install other dependencies.
 4. Add the RECS folder to the MATLAB path: `addpath('recsfolder')`.
 5. On Windows, you are all set. On other architectures, you will have to install
@@ -58,22 +58,38 @@ to parse RECS model files.
 
 ### Install on Linux and Mac
 
-Python 2.7.X and the following packages are required and have to be accessible
-on your PATH:
+Python 2.7.X and the following packages are required:
 
 * [Python 2.7.X](http://www.python.org/download/). Python is preinstalled on
-  Linux and Mac, but is often too old to be useful.
+  Linux and Mac, but you should check the version number.
+* [NumPy](http://www.numpy.org/).
 * [PyYaml](http://pyyaml.org/wiki/PyYAML).
-* [SymPy](http://sympy.org).
-* [SciPy](http://www.scipy.org/Download).
+* [SymPy](http://sympy.org), version 0.7.2.
 
-On Debian/Ubuntu, to install the necessary packages type in a terminal:
+To make the Python programs available to RECS, you have two options:
 
-    sudo apt-get install python-yaml python-sympy python-scipy
+*   Install them in a virtual Python environment. By default, RECS looks for a
+    folder PythonVirtualEnv inside the Python folder. To do the installation,
+    from RECS folder type in a terminal
 
-One solution might be to install a scientific Python distribution that would
-contain all the necessary packages such as
-[Anaconda](https://store.continuum.io/cshop/anaconda/).
+        cd Python
+        virtualenv PythonVirtualEnv
+        source PythonVirtualEnv/bin/activate
+        pip install numpy PyYAML sympy==0.7.2
+        deactivate
+
+    If your default Python installation is not the version 2.7.X, replace the
+	second command by
+
+        virtualenv PythonVirtualEnv -p /usr/bin/python2.7
+
+    where `/usr/bin/python2.7` should be replaced by the address of your Python
+    2.7.X interpreter.
+
+* Install them in your default Python installation (recommended only if you do
+  not use Python otherwise). In this case, just type
+
+        pip install numpy PyYAML sympy==0.7.2
 
 ## Installation from source
 
@@ -83,10 +99,8 @@ RECS from source. The installation requires [Git](http://git-scm.com/).
 
 When installing from source, all platforms (Linux, Mac, and Windows) require
 [Python 2.7.X](http://www.python.org/download/), along with
-[PyYaml](http://pyyaml.org/wiki/PyYAML), [SymPy](http://sympy.org), and
-[SciPy](http://www.scipy.org/Download). One solution is to install everything at
-once by installing a scientific Python distribution such as
-[Anaconda](https://store.continuum.io/cshop/anaconda/).
+[NumPy](http://www.numpy.org/), [PyYaml](http://pyyaml.org/wiki/PyYAML), and
+[SymPy](http://sympy.org) version 0.7.2. See above for instructions.
 
 Optionnaly, under Windows, to be able to generate a binary to run to the solver
 without a Python installation, one can also install
@@ -98,10 +112,10 @@ Windows Path.
 2. From RECS folder (`cd recs`), download recs submodules with two commands:
    `git submodule init` and `git submodule update`.
 3. Install the CompEcon toolbox:
-   1. [Download the CompEcon toolbox archive](http://www4.ncsu.edu/~pfackler/compecon/);
-   2. Unzip the archive into a folder, called here `compeconfolder`;
-   3. Add CompEcon to the MATLAB path: `addpath('compeconfolder/CEtools','compeconfolder/CEdemos')`;
-   4. Type `mexall` in MATLAB prompt to create all CompEcon mex files.
+    1. [Download the CompEcon toolbox archive](http://www4.ncsu.edu/~pfackler/compecon/);
+    2. Unzip the archive into a folder, called here `compeconfolder`;
+    3. Add CompEcon to the MATLAB path: `addpath('compeconfolder/CEtools','compeconfolder/CEdemos')`;
+    4. Type `mexall` in MATLAB prompt to create all CompEcon mex files.
 4. (optional) Install other dependencies.
 5. Add the RECS folder to the MATLAB path: `addpath('recsfolder')`.
 6. Finalizes RECS installation from source by running in MATLAB the function

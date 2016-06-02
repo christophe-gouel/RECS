@@ -41,28 +41,42 @@
 % # You can test your installation by running RECS demonstration files by typing
 % |recsdemos|. You can also access RECS documentation in MATLAB by typing |doc|.
 %
-% *Install on Linux*
+%% Install Python packages (for Linux and Mac, or Windows when installing from source)
 %
-% Python 2.7.X is required. On Debian/Ubuntu, to install the necessary packages
-% type in a terminal:
-%
-%  sudo apt-get install python-yaml python-sympy python-scipy
-%
-% *Install on Mac*
-%
-% In this case, you are on your own. You have to install
+% Python 2.7.X and the following packages are required:
 %
 % * <http://www.python.org/download/ Python 2.7.X>. Python is preinstalled on
-% Mac, but is usually too old to be useful.
+%   Linux and Mac, but you should check the version number.
+% * <http://www.numpy.org/ NumPy>.
 % * <http://pyyaml.org/wiki/PyYAML PyYaml>.
-% * <http://sympy.org SymPy>.
-% * <http://www.scipy.org/Download SciPy>.
+% * <http://sympy.org SymPy>, version 0.7.2.
 %
+% To make the Python programs available to RECS, you have two options:
 %
-% One solution might be to install a scientific Python distribution such as
-% <http://www.enthought.com/ EPD>.
+% *Install them in a virtual Python environment.*
 %
-% Let me know whether or not it works.
+% By default, RECS looks for a folder PythonVirtualEnv inside the Python
+% folder. To do the installation, from RECS folder type in a terminal
+%
+%  cd Python
+%  virtualenv PythonVirtualEnv
+%  source PythonVirtualEnv/bin/activate
+%  pip install numpy PyYAML sympy==0.7.2
+%  deactivate
+%
+% If your default Python installation is not the version 2.7.X, replace the
+% second command by
+%
+%  virtualenv PythonVirtualEnv -p /usr/bin/python2.7
+%
+% where |/usr/bin/python2.7| should be replaced by the address of your Python
+% 2.7.X interpreter.
+%
+% *Install them in your default Python installation.*
+%
+% Recommended only if you do not use Python otherwise. In this case, just type
+%
+%  pip install numpy PyYAML sympy==0.7.2
 
 %% Installation from source
 % If you want to work with the bleeding edge version of RECS, which may be
@@ -71,10 +85,13 @@
 %
 % When installing from source, all platforms (Linux, Mac, and Windows) require
 % <http://www.python.org/download/ Python 2.7.X>, along with
-% <http://pyyaml.org/wiki/PyYAML PyYaml>, <http://sympy.org SymPy>, and
-% <http://www.scipy.org/Download SciPy>. Under Windows, it is also necessary to
-% install <http://www.pyinstaller.org/ PyInstaller> and to make its folder
-% available in Windows Path.
+% <http://www.numpy.org/ NumPy>, <http://pyyaml.org/wiki/PyYAML PyYaml>, and
+% <http://sympy.org SymPy> version 0.7.2.  See above for instructions.
+%
+% Optionnaly, under Windows, to be able to generate a binary to run to the
+% solver without a Python installation, one can also install
+% <http://www.pyinstaller.org/ PyInstaller> and make its folder available in
+% Windows Path.
 %
 % # Download the latest version of RECS from the git repository by typing in a
 % command line: |git clone https://github.com/christophe-gouel/RECS.git recs|
