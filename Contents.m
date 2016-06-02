@@ -1,5 +1,5 @@
 % RECS Toolbox
-% Version 0.7-beta (R2013b) 19-Sep-2013
+% Version 0.7-beta (R2016a) 2-Jun-2016
 %
 % RECS functions
 %   recsAccuracy              - Evaluate accuracy of a RECS solution.
@@ -24,5 +24,5 @@
 %   SA          - Solve a system of equations by successive approximation.
 %   SCP         - Solve a problem through simple continuation method (homotopy)
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt

@@ -94,7 +94,6 @@ defaultopt = struct(...
 if nargin < 3
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
 end
 

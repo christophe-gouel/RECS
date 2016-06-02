@@ -37,7 +37,7 @@ function [interp1,s,x] =  recsConvert(interp0,model,n,smin,smax,method,options)
 %
 % See also RECSINTERPINIT, RECSSIMUL.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -52,7 +52,6 @@ defaultopt = struct(        ...
 overridingopt = struct(...
     'accuracy'    , 0 ,...
     'stat'        , 0);
-warning('off','catstruct:DuplicatesFound')
 if nargin < 7
   options = defaultopt;
 else
@@ -61,7 +60,7 @@ end
 options = catstruct(options,overridingopt);
 
 if isscalar(n) && interp0.fspace.d>1
-  n = n*ones(interp0.fspace.d,1); 
+  n = n*ones(interp0.fspace.d,1);
 end
 
 %% Define new interpolation structure

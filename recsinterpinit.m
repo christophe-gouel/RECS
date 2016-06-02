@@ -22,7 +22,7 @@ function [interp,s] = recsinterpinit(n,smin,smax,method,options)
 % [INTERP,S] = RECSINTERPINIT(N,SMIN,SMAX,...) returns the prod(N)-by-d matrix
 % S, which represents the state variables on the grid.
 
-% Copyright (C) 2011-2014 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -34,7 +34,6 @@ defaultopt = struct(  ...
 if nargin<5
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
 end
 
@@ -50,4 +49,4 @@ interp.Phi         = funbasx(interp.fspace);
 
 %% State collocation nodes
 interp.s           = gridmake(funnode(interp.fspace));
-if nargout==2, s   = interp.s; end              
+if nargout==2, s   = interp.s; end

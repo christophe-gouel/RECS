@@ -3,22 +3,22 @@ function J = numjac(FUN,x,options,varargin)
 %
 % J = NUMJAC(FUN,X) computes the Jacobian J by central finite differences
 % applied to function FUN (function name or function handle) that accepts a vector
-% X as input and return a vector F. The Jacobian is evaluated at X. 
+% X as input and return a vector F. The Jacobian is evaluated at X.
 %
 % J = NUMJAC(FUN,X,options) uses the structure OPTIONS to calculate the
 % Jacobian. The fields of the structure are
-%  FinDiffType    : 'central' (default) or 'forward' for central or forward 
+%  FinDiffType    : 'central' (default) or 'forward' for central or forward
 %                   finite differences
-%  FinDiffRelStep : scalar or vector step size factor. For central finite 
+%  FinDiffRelStep : scalar or vector step size factor. For central finite
 %                   differences, the default value is FinDiffRelStep = eps^(1/3),
 %                   and for forward finite differences FinDiffRelStep = sqrt(eps).
 %  SerialProblem  : true or false (default), if true considers the problem as a
-%                   serial problem: X is a n-by-d matrix and FUN(X) outputs a 
-%                   n-by-d matrix, such that each line is independent from the 
-%                   other. In this case, NUMJAC returns a sparse block diagonal 
+%                   serial problem: X is a n-by-d matrix and FUN(X) outputs a
+%                   n-by-d matrix, such that each line is independent from the
+%                   other. In this case, NUMJAC returns a sparse block diagonal
 %                   nxd-by-nxd Jacobian.
 
-% Copyright (C) 2011-2014 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -37,7 +37,6 @@ defaultopt = struct(             ...
 if nargin <= 2
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
 end
 
@@ -61,9 +60,9 @@ end
 
 if isempty(epsilon)
   if central
-    epsilon = eps^(1/3); 
+    epsilon = eps^(1/3);
   else
-    epsilon = sqrt(eps); 
+    epsilon = sqrt(eps);
   end
 end
 
@@ -71,12 +70,12 @@ step  = epsilon.*max(abs(x),1);
 x1    = x+step;
 if central
   x0  = x-step;
-  h   = x1-x0; 
+  h   = x1-x0;
 else
   f   = FUN(x,varargin{:});
   h   = x1-x;
 end
-  
+
 %% Computation of finite difference Jacobian
 if ~options.SerialProblem
   %% Traditional problem

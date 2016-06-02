@@ -33,7 +33,7 @@ function result = recsDecisionRules(model,interp,states,s0,space,options)
 %
 % See also RECSSIMUL.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -58,7 +58,6 @@ overridingopt = struct(...
 if nargin<6
   options = overridingopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(options,overridingopt);
 end
 

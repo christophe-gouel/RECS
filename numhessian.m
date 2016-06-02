@@ -19,7 +19,7 @@ function H = numhessian(FUN,x,options,varargin)
 %  UseParallel    : 'always' to use parallel calculation (require Parallel
 %                    Computing Toolbox)' or never' (default)
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -42,7 +42,6 @@ defaultopt = struct(             ...
 if nargin <= 2
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
 end
 DiagOnly = options.DiagOnly;

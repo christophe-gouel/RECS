@@ -24,7 +24,7 @@ function [x,FVAL,EXITFLAG,OUTPUT,JACOB] = lmmcp(FUN,x,lb,ub,options,varargin)
 %  Termination parameters
 %      MaxIter    : Maximum number of iterations (default = 500)
 %      tmin       : safeguard stepsize (default = 1E-12)
-%      TolFun     : Termination tolerance on the function value, a positive 
+%      TolFun     : Termination tolerance on the function value, a positive
 %                   scalar (default = sqrt(eps))
 %  Stepsize parameters
 %      m          : number of previous function values to use in the nonmonotone
@@ -119,7 +119,6 @@ end
 if nargin < 5 || isempty(options) || ~isstruct(options)
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
 end
 
@@ -238,11 +237,11 @@ if preprocess==1
   if verbosity > 1
     disp('************************** Preprocessor ****************************')
   end
-  
+
   normpLM=1;
   while (k < presteps) && (Psix > eps2) && (normpLM>null)
     k = k+1;
-    
+
     % choice of Levenberg-Marquardt parameter, note that we do not use
     % the condition estimator for large-scale problems, although this
     % may cause numerical problems in some examples
@@ -262,7 +261,7 @@ if preprocess==1
       pLM = -DPhix\Phix;
     end
     normpLM = norm(pLM);
-    
+
     % compute the projected Levenberg-Marquard step onto box Xk
     lbnew = max(min(lb-x,0),-delta);
     ubnew = min(max(ub-x,0),delta);
@@ -274,7 +273,7 @@ if preprocess==1
     Phixnew        = Phi(xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
     Psixnew        = 0.5*(Phixnew'*Phixnew);
     normPhixnew    = norm(Phixnew);
-    
+
     % update of delta
     if normPhixnew<=eta*normPhix
       delta = max(deltamin,sigma2*delta);
@@ -292,7 +291,7 @@ if preprocess==1
     DPhix     = DPhi(x,Fx,DFx,lb,ub,lambda1,lambda2,n,Indexset);
     DPsix     = DPhix'*Phix;
     normDPsix = norm(DPsix,inf);
-    
+
     % output at each iteration
     t=1;
     if verbosity > 1
@@ -346,7 +345,7 @@ while (k < kmax) && (Psix > eps2)
       mu = 1e-1/(k+1);
     end
   end
-  
+
   % compute a Levenberg-Marquard direction
 
   if i
@@ -367,7 +366,7 @@ while (k < kmax) && (Psix > eps2)
   Phixnew = Phi(xnew,Fxnew,lb,ub,lambda1,lambda2,n,Indexset);
   Psixnew = 0.5*(Phixnew'*Phixnew);
   const   = sigma*DPsix'*d;
-  
+
   while (Psixnew > MaxPsi + const*t)  && (t > tmin)
     t       = t*beta;
     xnew    = x+t*d;
@@ -387,7 +386,7 @@ while (k < kmax) && (Psix > eps2)
   normDPsix = norm(DPsix);
   k         = k+1;
   k_main    = k_main+1;
-  
+
   if k_main<=5
     aux(mod(k_main,m)+1) = Psix;
     MaxPsi               = Psix;
@@ -395,7 +394,7 @@ while (k < kmax) && (Psix > eps2)
     aux(mod(k_main,m)+1) = Psix;
     MaxPsi               = max(aux);
   end
-  
+
   % updatings for the watchdog strategy
   if watchdog ==1
     if Psix<Psibest

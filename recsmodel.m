@@ -65,7 +65,6 @@ classdef recsmodel
       if nargin<4
         options = defaultopt;
       else
-        warning('off','catstruct:DuplicatesFound')
         options = catstruct(defaultopt,options);
       end
 

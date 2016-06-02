@@ -6,13 +6,13 @@ function A = catstruct(varargin)
 %
 %     A.name = 'Me' ;
 %     B.income = 99999 ;
-%     X = catstruct(A,B) 
+%     X = catstruct(A,B)
 %     % -> X.name = 'Me' ;
 %     %    X.income = 99999 ;
 %
 %   If a fieldname is not unique among structures (i.e., a fieldname is
 %   present in more than one structure), only the value from the last
-%   structure with this field is used. In this case, the fields are 
+%   structure with this field is used. In this case, the fields are
 %   alphabetically sorted. A warning is issued as well. An axample:
 %
 %     S1.name = 'Me' ;
@@ -28,7 +28,7 @@ function A = catstruct(varargin)
 %     CD = catstruct(C,D) % CD is a 1x2 structure array with fields bb and aa
 %
 %   The last input can be the string 'sorted'. In this case,
-%   CATSTRUCT(S1,S2, ..., 'sorted') will sort the fieldnames alphabetically. 
+%   CATSTRUCT(S1,S2, ..., 'sorted') will sort the fieldnames alphabetically.
 %   To sort the fieldnames of a structure A, you could use
 %   CATSTRUCT(A,'sorted') but I recommend ORDERFIELDS for doing that.
 %
@@ -36,17 +36,18 @@ function A = catstruct(varargin)
 %   struct (0x0 struct array with no fields).
 %
 %   NOTE: To concatenate similar arrays of structs, you can use simple
-%   concatenation: 
+%   concatenation:
 %     A = dir('*.mat') ; B = dir('*.m') ; C = [A ; B] ;
+
+%   NOTE: This function relies on unique. Matlab changed the behavior of
+%   its set functions since 2013a, so this might cause some backward
+%   compatibility issues when dulpicated fieldnames are found.
 %
 %   See also CAT, STRUCT, FIELDNAMES, STRUCT2CELL, ORDERFIELDS
 
-% for Matlab R13 and up
-% version 3.0 (mar 2013)
+% version 4.1 (feb 2015), tested in R2014a
 % (c) Jos van der Geest
 % email: jos@jasen.nl
-
-% (C) 2013 Christophe Gouel
 
 % History
 % Created in 2005
@@ -54,20 +55,26 @@ function A = catstruct(varargin)
 %   2.0 (sep 2007) removed bug when dealing with fields containing cell
 %                  arrays (Thanks to Rene Willemink)
 %   2.1 (sep 2008) added warning and error identifiers
-%   2.2 (oct 2008) fixed error when dealing with empty structs (Thanks to
+%   2.2 (oct 2008) fixed error when dealing with empty structs (thanks to
 %                  Lars Barring)
 %   3.0 (mar 2013) fixed problem when the inputs were array of structures
-%                  (thanks to Tor Inge Birkenes for pointing this out).
+%                  (thanks to Tor Inge Birkenes).
 %                  Rephrased the help section as well.
+%   4.0 (dec 2013) fixed problem with unique due to version differences in
+%                  ML. Unique(...,'last') is no longer the deafult.
+%                  (thanks to Isabel P)
+%   4.1 (feb 2015) fixed warning with narginchk
 
-error(nargchk(1,Inf,nargin)) ;
+% (C) 2016 Christophe Gouel
+
+narginchk(1,Inf) ;
 N = nargin ;
 
 if ~isstruct(varargin{end}),
     if isequal(varargin{end},'sorted'),
+        narginchk(2,Inf) ;
         sorted = 1 ;
         N = N-1 ;
-        error(nargchk(1,Inf,N)) ;
     else
         error('catstruct:InvalidArgument','Last argument should be a structure, or the string "sorted".') ;
     end
@@ -78,7 +85,7 @@ end
 sz0 = [] ; % used to check that all inputs have the same size
 
 % used to check for a few trivial cases
-NonEmptyInputs = false(N,1) ; 
+NonEmptyInputs = false(N,1) ;
 NonEmptyInputsN = 0 ;
 
 % used to collect the fieldnames and the inputs
@@ -91,7 +98,7 @@ for ii=1:N,
     if ~isstruct(X),
         error('catstruct:InvalidArgument',['Argument #' num2str(ii) ' is not a structure.']) ;
     end
-    
+
     if ~isempty(X),
         % empty structs are ignored
         if ii > 1 && ~isempty(sz0)
@@ -119,27 +126,27 @@ elseif NonEmptyInputsN == 1,
     end
 else
     % there is actually something to concatenate
-    FN = cat(1,FN{:}) ;    
-    VAL = cat(1,VAL{:}) ;    
+    FN = cat(1,FN{:}) ;
+    VAL = cat(1,VAL{:}) ;
     FN = squeeze(FN) ;
     VAL = squeeze(VAL) ;
     MatlabVersion = version;
     if str2double(MatlabVersion(end-5:end-2))<2013 % Equivalent to, but faster than if verLessThan('matlab','8.1')
-      [UFN,ind] = unique(FN) ;          
+      [UFN,ind] = unique(FN) ;
     else
       [UFN,ind] = unique(FN,'legacy') ;
     end
-    
+
     if numel(UFN) ~= numel(FN),
-        warning('catstruct:DuplicatesFound','Fieldnames are not unique between structures.') ;
+%         warning('catstruct:DuplicatesFound','Fieldnames are not unique between structures.') ;
         sorted = 1 ;
     end
-    
+
     if sorted,
         VAL = VAL(ind,:) ;
         FN = FN(ind,:) ;
     end
-    
+
     A = cell2struct(VAL, FN);
     A = reshape(A, sz0) ; % reshape into original format
 end

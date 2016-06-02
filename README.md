@@ -22,7 +22,7 @@ to parse RECS model files.
 
 ## Dependencies
 
-* MATLAB R2010a or later.
+* MATLAB R2011b or later.
 * [CompEcon toolbox](http://www4.ncsu.edu/~pfackler/compecon/). RECS depends on
   the CompEcon toolbox for many programs (especially with respect to
   interpolation). Please follow CompEcon installation instructions and do not

@@ -2,7 +2,7 @@ Format: http://dep.debian.net/deps/dep5/
 Upstream-Contact: Christophe Gouel <christophe.gouel@grignon.inra.fr>
 
 Files: *
-Copyright: 2011-2013, Christophe Gouel
+Copyright: 2011-2016, Christophe Gouel
 License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy of
  this software and associated documentation files (the "Software"), to deal in the
@@ -23,7 +23,7 @@ License: Expat
 
 Files: blktridiag.m
 Copyright: 2009, John D'Errico
-           2013, Christophe Gouel
+           2016, Christophe Gouel
 License: BSD-2-clause
  All rights reserved.
  .
@@ -49,8 +49,8 @@ License: BSD-2-clause
 Source: http://www.mathworks.com/matlabcentral/fileexchange/10603-block-tri-diagonal-matrices
 
 Files: catstruct.m
-Copyright: 2009-2013, Jos van der Geest
-           2013, Christophe Gouel
+Copyright: 2009-2015, Jos van der Geest
+           2016, Christophe Gouel
 License: BSD-2-clause
  All rights reserved.
  .

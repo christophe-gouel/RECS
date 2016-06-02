@@ -34,7 +34,7 @@ function [x,fval,exitflag] = SA(f,x,options,varargin)
 %       0 : Failure to converge because of too many iterations or equations not
 %           defined at starting point
 
-% Copyright (C) 2011-2014 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -48,7 +48,6 @@ defaultopt = struct(      ...
 if nargin < 3 || isempty(options)
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
 end
 
