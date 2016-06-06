@@ -28,26 +28,34 @@ function [x,F,exitflag,N] = SCP(x,z1,z0,problem,N)
 % [X,F,EXITFLAG,N] = SCP(X,Z1,Z0,PROBLEM,...) returns N the number of slices in
 % which the problem was sliced to achieve convergence.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
   
 if nargin<=4, N = 1; end
-exitflag = 0;
-it       = 0;
-x0       = x;
-maxit    = 10;
+exitflag  = 0;
+it        = 0;
+maxit     = 10;
+Nlist     = 1:maxit;
+lastgoodx = x;
+lastgoodz = z0;
 while(exitflag~=1 && it < maxit)
-  it = it+1;
-  x  = x0;
+  it = it + 1;
+  x  = lastgoodx;
+  z0 = lastgoodz;
   for n=1:N
-    z = ((N-n)*z0 + n*z1)/N;
+    z = ((N - n)*z0 + n*z1)/N;
     [x,F,exitflag] = problem(x,z);
-    if exitflag~=1, break, end
+    if exitflag==1
+      lastgoodx = x;
+      lastgoodz = z;
+    else
+      break
+    end
   end
-  N = N+1;
+  N = N + Nlist(it);
 end
 
-N = N-1;
+N = N - Nlist(it);
 if exitflag~=1 && it==maxit
   exitflag = 0;
 else
