@@ -38,7 +38,7 @@ function [interp,X,Z,exitflag,output] = recsFirstGuessSP(model,interp,options)
 %
 % See also RECSSOLVEDETERMINISTICPBSP, RECSSOLVEREESP, RECSSSSP.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -47,7 +47,6 @@ defaultopt = struct('fgmethod','auto',...
 if nargin <=2
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   options = catstruct(defaultopt,options);
 end
 

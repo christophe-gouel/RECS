@@ -34,7 +34,7 @@ function [x,s,z,F,exitflag,N] = recsSolveDeterministicPbSP(model,s0,istart,T,xss
 %
 % See also RECSFIRSTGUESS, RECSSOLVEREE, RECSSS, SCP.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -46,7 +46,6 @@ defaultopt = struct(                                      ...
 if nargin <=7
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   if isfield(options,'eqsolveroptions')
     options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
   end

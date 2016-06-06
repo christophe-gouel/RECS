@@ -49,7 +49,7 @@ function [ssim,xsim,esim,stat,fsim] = recsSimulSP(model,interp,s0,nper,options)
 %
 % See also RECSACCURACY, RECSDECISIONRULES, RECSIRF.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -82,7 +82,6 @@ defaultopt = struct(...
 if nargin<5
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   if isfield(options,'eqsolveroptions')
     options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
   end

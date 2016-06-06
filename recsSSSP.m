@@ -30,7 +30,7 @@ function [s,x,z,exitflag] = recsSSSP(model,s,x,options)
 %    1 : RECSSSSP converges to the deterministic steady state
 %    0 : Failure to converge
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -43,7 +43,6 @@ defaultopt = struct(...
 if nargin<4
   options = defaultopt;
 else
-  warning('off','catstruct:DuplicatesFound')
   if isfield(options,'eqsolveroptions')
     options.eqsolveroptions = catstruct(defaultopt.eqsolveroptions,options.eqsolveroptions);
   end

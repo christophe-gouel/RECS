@@ -20,7 +20,6 @@ classdef recsmodelsp
       if nargin<2
         options = defaultopt;
       else
-        warning('off','catstruct:DuplicatesFound')
         options = catstruct(defaultopt,options);
       end
 
@@ -49,7 +48,9 @@ classdef recsmodelsp
         else
           dolomatlab = fullfile(dolo,'bin','dolo-matlab');
           setenv('PYTHONPATH',dolo)
-          status = system(['python ' dolomatlab dolooptions which(inputfiles{iperiod}) ...
+          pythonexec = fullfile(recsdirectory,'Python','PythonVirtualEnv','bin','python');
+          if ~exist(pythonexec,'file'), pythonexec = 'python'; end
+          status = system([pythonexec ' ' dolomatlab dolooptions which(inputfiles{iperiod}) ...
                            ' '  fullfile(inputfilesdirectory,outputfile)]);
         end
 
