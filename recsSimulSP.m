@@ -78,7 +78,8 @@ defaultopt = struct(...
     'loop_over_s'     , 0                                  ,...
     'simulmethod'     , 'interpolation'                    ,...
     'stat'            , 0                                  ,...
-    'Tburn'           , 20);
+    'Tburn'           , 20                                 ,...
+    'UseParallel'     , 'always');
 if nargin<5
   options = defaultopt;
 else
@@ -138,7 +139,7 @@ for t=1:nper
     if i~=1
       ssim{i}(:,:,t) = functions(i-1).g(ssim{i-1}(:,:,t),xsim{i-1}(:,:,t),esim{i-1}(:,:,t),params); 
     elseif t>1
-      ssim{1}(:,:,t) = functions(4).g(ssim{4}(:,:,t-1),xsim{4}(:,:,t-1),esim{4}(:,:,t-1),params); 
+      ssim{1}(:,:,t) = functions(nperiods).g(ssim{nperiods}(:,:,t-1),xsim{nperiods}(:,:,t-1),esim{nperiods}(:,:,t-1),params); 
     else
       ssim{1}(:,:,1) = s0;
     end
