@@ -101,6 +101,43 @@ classdef recsmodelsp
       end
       
     end % recsmodelsp
+    function SQ = StateQuant(model)
+      nrep = 10000;
+      nper = 200;
+
+      SQ = cell(model.nperiods,1);
+      ssim = cell(model.nperiods,1);
+      for i=1:model.nperiods
+        ssim{i} = zeros(nrep,model.dim{i,1},nper); 
+      end
+      for t=1:nper
+        for i=1:model.nperiods
+          if i~=1
+            ssim{i}(:,:,t) = model.functions(i-1).g(ssim{i-1}(:,:,t),...
+                                                    model.ss.xss{i-1}(ones(nrep,1),:),...
+                                                    model.shocks{i-1}.funrand(nrep), ...
+                                                    model.params);
+          elseif t>1
+            ssim{1}(:,:,t) = model.functions(model.nperiods).g(ssim{model.nperiods}(:,:,t-1),...
+                                                              model.ss.xss{model.nperiods}(ones(nrep,1),:),...
+                                                              model.shocks{model.nperiods}.funrand(nrep), ...
+                                                              model.params);
+          else
+            ssim{1}(:,:,1) = model.ss.sss{1}(ones(nrep,1),:);
+          end
+        end
+      end
+      quant = [0 0.001 0.01 0.5 0.99 0.999 1];
+      for i=1:model.nperiods
+        SQ{i} = quantile(reshape(permute(real(ssim{i}(:,:,2:end)),[1 3 2]),...
+                                 nrep*(nper-1),model.dim{i,1}),...
+                         quant);
+        if model.dim{i,1}==1, SQ{i} = SQ{i}'; end
+        SQ{i} = array2table(SQ{i},...
+                            'RowNames',{'min' '0.1%' '1%' 'median' '99%' '99.9%' 'max'},...
+                            'VariableNames',model.symbols(i).states);
+      end
+    end % StateQuant
   end % methods
 
 end % classdef
