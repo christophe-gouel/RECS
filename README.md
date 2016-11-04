@@ -56,9 +56,10 @@ to parse RECS model files.
 6. You can test your installation by running RECS demonstration files by typing
    `recsdemos`. You can also access RECS documentation in MATLAB by typing `doc`.
 
-### Install on Linux and Mac
+### Install Python dependencies 
 
-Python 2.7.X and the following packages are required:
+Python 2.7.X and the following packages are required on Linux and Mac, and on
+Windows when installing from source:
 
 * [Python 2.7.X](http://www.python.org/download/). Python is preinstalled on
   Linux and Mac, but you should check the version number.
@@ -85,6 +86,11 @@ To make the Python programs available to RECS, you have two options:
 
     where `/usr/bin/python2.7` should be replaced by the address of your Python
     2.7.X interpreter.
+
+	Alternatively, if your Python distribution is Anaconda, you can create from
+    RECS folder the virtual environment by
+	
+		conda create -p ./Python/PythonVirtualEnv python=2.7 numpy PyYAML sympy==0.7.2
 
 * Install them in your default Python installation (recommended only if you do
   not use Python otherwise). In this case, just type

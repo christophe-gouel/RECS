@@ -80,9 +80,17 @@ classdef recsmodel
                          which(inputfile) ' ' ...
                          fullfile(inputfiledirectory,outputfile)]);
       else
+        if ispc
+          bindir = '';
+          exe    = '.exe';
+        else
+          bindir = 'bin';
+          exe    = '';
+        end
         dolomatlab = fullfile(dolo,'bin','dolo-matlab');
         setenv('PYTHONPATH',dolo)
-        pythonexec = fullfile(recsdirectory,'Python','PythonVirtualEnv','bin','python');
+        pythonexec = fullfile(recsdirectory,'Python','PythonVirtualEnv', ...
+                              bindir,['python' exe]);
         if ~exist(pythonexec,'file'), pythonexec = 'python'; end
         status = system([pythonexec ' ' dolomatlab dolooptions which(inputfile) ...
                          ' '  fullfile(inputfiledirectory,outputfile)]);
