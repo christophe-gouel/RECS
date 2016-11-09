@@ -18,6 +18,7 @@ startup.m
 /html/*.txt
 /html/*.yaml
 /html/helpsearch/*
+/html/helpsearch-v3/*
 
 /Python/PythonVirtualEnv/*
 
