@@ -41,13 +41,13 @@ function [x,f,exitflag] = runeqsolver(func,x,LB,UB,solver,solveroptions,varargin
 %% Initialization
 if strcmpi(solver,'path'), global eqtosolve; end %#ok<TLEV>
 
+%% Numerical Jacobian if the Jacobian is not provided
 if strcmpi(solveroptions.Jacobian,'off') && ...
-      any(strcmpi(solver,{'lmmcp','ncpsolve','path'}))
+      any(strcmpi(solver,{'lmmcp','mcpsolve','ncpsolve','path'}))
   eqtosolve = @(Y) PbWithNumJac(func,Y,solver,varargin);
 else
   eqtosolve = @(Y) func(Y,varargin{:});
 end
-
 
 %% Derivative Check
 if strcmpi(solveroptions.DerivativeCheck,'on')
@@ -88,6 +88,9 @@ try
         lastwarn('Warning reinitialization','RECS:WarningInit');
       end
 
+    case 'mcpsolve'
+      [x,f,exitflag] = mcpsolve(eqtosolve, x, LB, UB, solveroptions);
+      
     case 'path'
       % Maximum number of non-zero elements in the Jacobian
       if isfield(solveroptions,'nnzJ')
@@ -117,7 +120,7 @@ try
       options = optimset(optimset('Display','off'),solveroptions);
       [x,f,exitflag] = fsolve(eqtosolve, x, options);
 
-  end
+  end % switch solver
 catch
   exitflag = 0;
   f        = NaN(size(x));
