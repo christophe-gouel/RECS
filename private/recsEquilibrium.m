@@ -1,4 +1,4 @@
-function [F,Jx,Jc] = recsEquilibrium(x,s,z,b,f,g,h,params,gridJx,c,e,w,fspace,funapprox,extrapolate,ixforward)
+function [F,Jx,Jc] = recsEquilibrium(x,s,z,b,f,g,h,params,gridJx,c,e,w,fspace,funapprox,extrapolate,ixforward,ArrayProblem)
 % RECSEQUILIBRIUM evaluates the equilibrium equations and Jacobian
 %
 % RECSEQUILIBRIUM is called by recsSolveREEFull and recsSolveEquilibrium. It is not
@@ -6,12 +6,12 @@ function [F,Jx,Jc] = recsEquilibrium(x,s,z,b,f,g,h,params,gridJx,c,e,w,fspace,fu
 %
 % See also RECSSOLVEREEFULL, RECSSOLVEEQUILIBRIUM.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
 [n,d] = size(s);
-x     = reshape(x,[],n)';
+if ~ArrayProblem, x = reshape(x,[],n)'; end
 m     = size(x,2);
 mf    = sum(ixforward); % Number of forward response variables
 
@@ -154,8 +154,10 @@ switch funapprox
 end
 
 % Reshape output
-F = reshape(F',n*m,1);
-if nargout>=2
-  Jx = permute(Jx,[2 3 1]);
-  Jx = spblkdiag(Jx,gridJx);
+if ~ArrayProblem
+  F = reshape(F',n*m,1);
+  if nargout>=2
+    Jx = permute(Jx,[2 3 1]);
+    Jx = spblkdiag(Jx,gridJx);
+  end
 end

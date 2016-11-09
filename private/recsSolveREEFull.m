@@ -85,14 +85,14 @@ if functional, params{end} = c; end
 if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
-                              grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
+                              grid,c,e,w,fspace,funapprox,extrapolate,ixforward,false);
   [R,Rx,Rc] = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward,true);
   J = [Fx Fc;
        Rx Rc];
 else
   %% Without Jacobian
   F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
-                      grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
+                      grid,c,e,w,fspace,funapprox,extrapolate,ixforward,false);
   R = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward,true);
 end
 
@@ -117,7 +117,7 @@ indxstatic     = ~indxforward;
 if nargout==2
   %% With Jacobian
   [F,Fx,Fc] = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
-                              grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
+                              grid,c,e,w,fspace,funapprox,extrapolate,ixforward,false);
   [~,~,Rc]  = recsResidual(s,x,h,params,c,fspace,funapprox,Phi,ixforward,true);
   Fc = sparse(Fc);
 
@@ -126,7 +126,7 @@ if nargout==2
 else
   %% Without Jacobian
   F = recsEquilibrium(reshape(x',[n*m 1]),s,zeros(n,0),b,f,g,h,params,...
-                      grid,c,e,w,fspace,funapprox,extrapolate,ixforward);
+                      grid,c,e,w,fspace,funapprox,extrapolate,ixforward,false);
 end
 
 

@@ -6,15 +6,17 @@ function [x,fval,exitflag] = recsSolveEquilibrium(s,x,z,b,f,g,h,params,c,e,w,fsp
 %
 % See also RECSSIMUL, RECSSOLVEREE.
 
-% Copyright (C) 2011-2013 Christophe Gouel
+% Copyright (C) 2011-2016 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
 [n,m]            = size(x);
 if nargin<=14, [LB,UB] = b(s,params); end
 
+ArrayProblem     = options.ArrayProblem;
 eqsolver         = lower(options.eqsolver);
 eqsolveroptions  = options.eqsolveroptions;
+eqsolveroptions.ArrayProblem = ArrayProblem;
 extrapolate      = options.extrapolate;
 funapprox        = lower(options.funapprox);
 loop_over_s      = options.loop_over_s;
@@ -66,29 +68,37 @@ if loop_over_s
   exitflag       = all(exitflag);
 else
   %% Solve all the grid in one step
-  [~,grid]          = spblkdiag(zeros(m,m,n),[],0);
+  if ~ArrayProblem
+    [~,grid] = spblkdiag(zeros(m,m,n),[],0); 
+  else
+    grid     = [];
+  end
   [x,fval,exitflag] = eqsolve(x,s,z,b,f,g,h,params,eqsolver,grid,c,e,w,fspace,...
                               funapprox,eqsolveroptions,LB,UB,extrapolate,...
-                              ixforward);
+                              ixforward,ArrayProblem);
 end % if loop_over_s
 
 function [x,fval,exitflag] = eqsolve(x,s,z,b,f,g,h,params,eqsolver,grid,c,e,w,...
                                      fspace,funapprox,eqsolveroptions,LB,UB,...
-                                     extrapolate,ixforward)
+                                     extrapolate,ixforward,ArrayProblem)
 %% Eqsolve
 
-[n,m]          = size(x);
-x              = reshape(x',[n*m 1]);
-LB             = reshape(LB',[n*m 1]);
-UB             = reshape(UB',[n*m 1]);
+if ~ArrayProblem
+  [n,m]          = size(x);
+  x              = reshape(x',[n*m 1]);
+  LB             = reshape(LB',[n*m 1]);
+  UB             = reshape(UB',[n*m 1]);
+end
 
 [x,fval,exitflag] = runeqsolver(@recsEquilibrium,x,LB,UB,eqsolver,eqsolveroptions,...
                                 s,z,b,f,g,h,params,grid,c,e,w,fspace,funapprox,...
-                                extrapolate,ixforward);
+                                extrapolate,ixforward,ArrayProblem);
 
 if exitflag~=1, disp('No convergence'); end
 
-x              = reshape(x,m,n)';
-if ~isempty(fval), fval = reshape(fval,m,n)'; end
+if ~ArrayProblem
+  x              = reshape(x,m,n)';
+  if ~isempty(fval), fval = reshape(fval,m,n)'; end
+end
 
 return
