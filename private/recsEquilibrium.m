@@ -160,6 +160,6 @@ if ~ArrayProblem
   F = reshape(F',n*m,1);
   if nargout>=2
     Jx = permute(Jx,[2 3 1]);
-    Jx = spblkdiag(Jx,gridJx);
+    if n>1, Jx = spblkdiag(Jx,gridJx); end
   end
 end
