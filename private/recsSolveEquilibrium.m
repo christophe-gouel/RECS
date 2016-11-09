@@ -32,7 +32,9 @@ if loop_over_s
   if loop_over_s==1
     %% Solve separately for each point on the grid
     fval         = zeros(size(x));
-    [~,grid]     = spblkdiag(zeros(m,m,1),[],0);
+    if ~ArrayProblem, [~,grid] = spblkdiag(zeros(m,m,1),[],0);
+    else                 grid  = [];
+    end
     exitflag     = zeros(n,1);
     parfor (i=1:n, UseParallel)
       [x(i,:),fval(i,:),exitflag(i)] = eqsolve(x(i,:),s(i,:),z(i,:),...
@@ -40,7 +42,7 @@ if loop_over_s
                                                grid,c,e,w,fspace,funapprox,...
                                                eqsolveroptions,...
                                                LB(i,:),UB(i,:),extrapolate,...
-                                               ixforward);
+                                               ixforward,ArrayProblem);
     end
   else
     %% Solve separately for blocks of grid points
@@ -54,13 +56,15 @@ if loop_over_s
     UB           = mat2cell(UB,sizeBlocks);
     fval         = cell(loop_over_s,1);
     parfor (i=1:loop_over_s, UseParallel)
-      [~,grid]   = spblkdiag(zeros(m,m,sizeBlocks(i)),[],0);
+      if ~ArrayProblem, [~,grid] = spblkdiag(zeros(m,m,sizeBlocks(i)),[],0);
+      else                 grid  = [];
+      end
       [x{i},fval{i},exitflag(i)] = eqsolve(x{i},s{i},z{i},...
                                            b,f,g,h,params,eqsolver,...
                                            grid,c,e,w,fspace,funapprox,...
                                            eqsolveroptions,...
                                            LB{i},UB{i},extrapolate,...
-                                           ixforward);
+                                           ixforward,ArrayProblem);
     end
     x            = cell2mat(x);
     fval         = cell2mat(fval);
@@ -68,10 +72,8 @@ if loop_over_s
   exitflag       = all(exitflag);
 else
   %% Solve all the grid in one step
-  if ~ArrayProblem
-    [~,grid] = spblkdiag(zeros(m,m,n),[],0); 
-  else
-    grid     = [];
+  if ~ArrayProblem, [~,grid] = spblkdiag(zeros(m,m,n),[],0); 
+  else                 grid  = [];
   end
   [x,fval,exitflag] = eqsolve(x,s,z,b,f,g,h,params,eqsolver,grid,c,e,w,fspace,...
                               funapprox,eqsolveroptions,LB,UB,extrapolate,...
