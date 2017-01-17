@@ -80,17 +80,30 @@ classdef recsmodel
                          which(inputfile) ' ' ...
                          fullfile(inputfiledirectory,outputfile)]);
       else
+        PythonVirtualEnvdirectory = fullfile(recsdirectory,'Python','PythonVirtualEnv');
         if ispc
-          bindir = '';
-          exe    = '.exe';
+          if exist(fullfile(PythonVirtualEnvdirectory,'python.exe'),'file')
+            pythonexec = fullfile(PythonVirtualEnvdirectory,'python.exe');
+          elseif exist(fullfile(PythonVirtualEnvdirectory,'bin', ...
+                                'python.exe'),'file')
+            pythonexec = fullfile(PythonVirtualEnvdirectory,'bin', ...
+                                  'python.exe');
+          elseif exist(fullfile(PythonVirtualEnvdirectory,'Scripts', ...
+                                'python.exe'),'file')
+            pythonexec = fullfile(PythonVirtualEnvdirectory,'Scripts', ...
+                                  'python.exe');
+          else
+            pythonexec = 'python.exe';
+          end
         else
-          bindir = 'bin';
-          exe    = '';
-        end
+          if exist(fullfile(PythonVirtualEnvdirectory,'bin','python'),'file')
+            pythonexec = fullfile(PythonVirtualEnvdirectory,'bin','python');
+          else
+            pythonexec = 'python';
+          end
+        end % ispc
         dolomatlab = fullfile(dolo,'bin','dolo-matlab');
         setenv('PYTHONPATH',dolo)
-        pythonexec = fullfile(recsdirectory,'Python','PythonVirtualEnv', ...
-                              bindir,['python' exe]);
         if ~exist(pythonexec,'file'), pythonexec = 'python'; end
         status = system([pythonexec ' ' dolomatlab dolooptions which(inputfile) ...
                          ' '  fullfile(inputfiledirectory,outputfile)]);
