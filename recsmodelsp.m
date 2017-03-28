@@ -4,6 +4,7 @@ classdef recsmodelsp
   properties
     bounds
     dim     % Problem's dimensions {d,m,p,q}
+    dima
     % FUNCTIONS - Anonymous functions that defines the model
     functions 
     infos
