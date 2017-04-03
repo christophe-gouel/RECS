@@ -50,18 +50,18 @@ inext     = @(iperiod) (iperiod+1)*(iperiod<nperiods) + 1*(iperiod==nperiods);
 for i=1:nperiods
   n(i)            = size(s{i},1);
   za{i}           = zeros(n(i),pa(i));
-  k{i}            = size(shocks{i}.e,1); 
+  k{i}            = size(shocks{inext(i)}.e,1); 
   ind{i}          = (1:n(i));
   ind{i}          = ind{i}(ones(1,k{i}),:);
   ss{i}           = s{i}(ind{i},:);
-  ee{i}           = shocks{i}.e(repmat(1:k{i},1,n(i)),:);
+  ee{i}           = shocks{inext(i)}.e(repmat(1:k{i},1,n(i)),:);
   xx{i}           = X{i}(ind{i},:);
   snext{i}        = functions(i).g(ss{i},xx{i},ee{i},params,struct('F',1,'Js',0,'Jx',0));
   Phinext{i}      = funbas(fspace{inext(i)},snext{i});
   [LBnext,UBnext] = functions(inext(i)).b(snext{i},params);
   xnext{i}        = min(max(Phinext{i}*cX{inext(i)},LBnext),UBnext);
   h               = functions(i).h(ss{i},xx{i},ee{i},snext{i},xnext{i},params);
-  z{i}            = reshape(shocks{i}.w'*reshape(h,k{i},n(i)*p(i)),n(i),p(i));
+  z{i}            = reshape(shocks{inext(i)}.w'*reshape(h,k{i},n(i)*p(i)),n(i),p(i));
 end
 
 %% Calculate the auxiliary variables
@@ -99,7 +99,7 @@ if any(pa>0)
     for i=nperiods:-1:1
       xanext = Phinext{i}*cxa{inext(i)};
       ha     = functions(i).ha(ss{i},xx{i},xa{i}(ind{i},:),ee{i},snext{i},xnext{i},xanext,params);
-      za{i}  = reshape(shocks{i}.w'*reshape(ha,k{i},n(i)*pa(i)),n(i),pa(i));
+      za{i}  = reshape(shocks{inext(i)}.w'*reshape(ha,k{i},n(i)*pa(i)),n(i),pa(i));
       xa{i}  = functions(i).fa(s{i},X{i},z{i},za{i},params);
       cxa{i} = funfitxy(fspace{i},Phi{i},xa{i});
     end % for i=nperiods:-1:1
@@ -131,7 +131,7 @@ function R = ResidualVFI(xaold_first)
   for i=nperiods:-1:1
     xanext = Phinext{i}*cxa{inext(i)};
     ha     = functions(i).ha(ss{i},xx{i},xa{i}(ind{i},:),ee{i},snext{i},xnext{i},xanext,params);
-    za{i}  = reshape(shocks{i}.w'*reshape(ha,k{i},n(i)*pa(i)),n(i),pa(i));
+    za{i}  = reshape(shocks{inext(i)}.w'*reshape(ha,k{i},n(i)*pa(i)),n(i),pa(i));
     xa{i}  = functions(i).fa(s{i},X{i},z{i},za{i},params);
     cxa{i} = funfitxy(fspace{i},Phi{i},xa{i});
   end % for i=nperiods:-1:1
