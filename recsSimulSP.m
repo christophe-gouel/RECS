@@ -1,4 +1,4 @@
-function [ssim,xsim,esim,stat,fsim] = recsSimulSP(model,interp,s0,nper,options)
+function [ssim,xsim,esim,stat,fsim] = recsSimulSP(model,interp,s0,nper,esim,options)
 % RECSSIMULSP Simulates a model from starting values given in s0 and for nper period
 %
 % SSIM = RECSSIMULSP(MODEL,INTERP,S0,NPER) simulates the model defined in the
@@ -49,14 +49,17 @@ function [ssim,xsim,esim,stat,fsim] = recsSimulSP(model,interp,s0,nper,options)
 %
 % See also RECSACCURACY, RECSDECISIONRULES, RECSIRF.
 
-% Copyright (C) 2011-2016 Christophe Gouel
+% Copyright (C) 2011-2017 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin<4
-  nper = [];
-  if nargin<3
-    error('Not enough input arguments');
+if nargin<5
+  esim = [];
+  if nargin<4
+    nper = [];
+    if nargin<3
+      error('Not enough input arguments');
+    end
   end
 end
 
@@ -80,7 +83,7 @@ defaultopt = struct(...
     'stat'            , 0                                  ,...
     'Tburn'           , 20                                 ,...
     'UseParallel'     , 'always');
-if nargin<5
+if nargin<6
   options = defaultopt;
 else
   if isfield(options,'eqsolveroptions')
@@ -102,8 +105,8 @@ end
 
 % Extract fields of model
 nperiods  = model.nperiods;
-shocks    = model.shocks;
 params    = model.params;
+shocks    = model.shocks;
 dim       = model.dim;
 functions = model.functions;
 ixforward = cell(nperiods,1);
@@ -118,14 +121,17 @@ cX      = interp.cX;
 inext    = @(iperiod) (iperiod+1)*(iperiod<nperiods)+1*(iperiod==nperiods);
 
 %% Generate shocks
-ssim = cell(nperiods,1);
-xsim = cell(nperiods,1);
-esim = cell(nperiods,1);
+ssim = cell(nperiods,1); xsim = ssim;
 for i=1:nperiods
   ssim{i} = zeros(nrep,dim{i,1},nper); 
   xsim{i} = zeros(nrep,dim{i,2},nper);
-  esim{i} =   NaN(nrep,dim{i,4},nper);
-  for t=1:nper, esim{i}(:,:,t) = shocks{i}.funrand(nrep); end
+end
+if isempty(esim)
+  esim = cell(nperiods,1);
+  for i=1:nperiods
+    esim{i} =   NaN(nrep,dim{i,4},nper);
+    for t=1:nper, esim{i}(:,:,t) = shocks{i}.funrand(nrep); end
+  end
 end
 
 if nargout==5
