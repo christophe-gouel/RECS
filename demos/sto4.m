@@ -34,7 +34,7 @@
 %
 % $$A_{t}: A_{t}=S^{\mathrm{S}}_{t-1}+H_{t-1}\epsilon_{t},$$
 %
-% $$S^{\mathrm{G}}_{t}: S^{\mathrm{G}}_{t}= S^{\mathrm{G}}_{t}+\Delta S^{\mathrm{G}+}_{t}-\Delta S^{\mathrm{G}-}_{t}.$$
+% $$S^{\mathrm{G}}_{t}: S^{\mathrm{G}}_{t}= S^{\mathrm{G}}_{t-1}+\Delta S^{\mathrm{G}+}_{t-1}-\Delta S^{\mathrm{G}-}_{t-1}.$$
 
 %% Writing the model
 % The model is defined in a Yaml file: <sto4.txt sto4.yaml>.
