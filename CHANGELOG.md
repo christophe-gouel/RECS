@@ -1,6 +1,11 @@
 # Changelog
+All notable changes to this project will be documented in this file.
 
-## [0.7]
+The file tries to o follow the conventions proposed by
+[Keep a Changelog](http://keepachangelog.com). This project does not adheres to
+[Semantic Versioning](http://semver.org).
+
+## [0.7] - 2018-01-05
 
 ### Added
 - Extract information about variable names to be used in tables and figures.
@@ -20,7 +25,7 @@
 ## Older versions
 
 See [release notes](https://github.com/christophe-gouel/RECS/wiki/Release-Notes)
-for older versions or refer to commit messages for more information:
+for older versions or refer to commit messages for more information.
 
 [0.6]: https://github.com/christophe-gouel/RECS/compare/v0.5.1...v0.6
 [0.5.1]: https://github.com/christophe-gouel/RECS/compare/v0.5...v0.5.1
