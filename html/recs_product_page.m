@@ -1,4 +1,4 @@
-%% RECS toolbox Version 0.7-beta
+%% RECS toolbox Version 0.7
 % RECS is a MATLAB solver for dynamic, stochastic, rational expectations
 % equilibrium models. RECS stands for "Rational Expectations Complementarity
 % Solver". This name emphasizes that RECS has been developed specifically to
@@ -22,7 +22,7 @@
 % * <recs_functions.html Functions>
 % * <demos.html RECS Toolbox Demos>
 %
-% Release notes are available at <https://github.com/christophe-gouel/RECS/wiki/Release-Notes>.
+% Changelog is available at <https://github.com/christophe-gouel/RECS/CHANGELOG.md>.
 %
 % <html>
 % <h2>License</h2>

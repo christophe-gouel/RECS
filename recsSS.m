@@ -34,7 +34,7 @@ function [s,x,z,exitflag] = recsSS(model,s,x,options)
 %    1 : RECSSS converges to the deterministic steady state
 %    0 : Failure to converge
 
-% Copyright (C) 2011-2016 Christophe Gouel
+% Copyright (C) 2011-2018 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -104,13 +104,22 @@ if exitflag==1 && options.display==1
     fprintf(1,['Deterministic steady state (different from first guess, ' ...
                'max(|delta|)=%g)\n'],deltass)
   end
-  fprintf(1,' State variables:\n\t\t')
-  fprintf(1,'%0.4g\t',s)
-  fprintf(1,'\n\n Response variables:\n\t\t')
-  fprintf(1,'%0.4g\t',x)
-  fprintf(1,'\n\n Expectations variables:\n\t\t')
-  fprintf(1,'%0.4g\t',z)
-  fprintf(1,'\n\n')
+  if exist('table','file')
+    fprintf(1,' State variables:\n')
+    disp(array2table(s,'VariableNames',model.symbols.states))
+    fprintf(1,' Response variables:\n')
+    disp(array2table(x,'VariableNames',model.symbols.controls))
+    fprintf(1,' Expectations variables:\n')
+    disp(array2table(z,'VariableNames',model.symbols.expectations))
+  else
+    fprintf(1,' State variables:\n\t\t')
+    fprintf(1,'%0.4g\t',s)
+    fprintf(1,'\n\n Response variables:\n\t\t')
+    fprintf(1,'%0.4g\t',x)
+    fprintf(1,'\n\n Expectations variables:\n\t\t')
+    fprintf(1,'%0.4g\t',z)
+    fprintf(1,'\n\n')
+  end
 end
 
 

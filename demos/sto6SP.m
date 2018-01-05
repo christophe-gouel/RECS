@@ -57,8 +57,10 @@ x1 = [s1(:,1)*3/4         ((s1(:,1)/4)/d).^(1/elastD)];
 [interp,X] = recsSolveREESP(model,interp,{x1; x2; x3; x4});
 
 %% Compare STO6 and STO6SP when informational shocks are removed
-disp('Max absolute error in first subperiod storage and price (in log10)');
-disp(log10(max(abs(Xcat(:,[1 5])-X{1}))));
+if exist('Xcat','var')
+  disp('Max absolute error in first subperiod storage and price (in log10)');
+  disp(log10(max(abs(Xcat(:,[1 5])-X{1}))));
+end
 
 %% Introduced information shocks
 sigma = [0.05/sqrt(3) eps 0.05/sqrt(3) 0.05/sqrt(3)];

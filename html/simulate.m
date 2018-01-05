@@ -28,14 +28,15 @@
 % shock discretization, using the associated probabilities.
 %
 % To reproduce previously run results, it is necessarily to reset the random
-% number generator using the MATLAB function |reset|.
+% number generator using the MATLAB function |rng|.
 %
 % *Asymptotic statistics*
 %
 % If in the options the field |stat| is set to 1, or if four arguments are
 % required as the output of |recsSimul|, then some statistics over the
 % asymptotic distribution are calculated. The first 20 observations are
-% discarded. The statistics calculated are the mean, standard deviation,
+% discarded (the number of burn-in observations can be adjusted in the
+% options). The statistics calculated are the mean, standard deviation,
 % skewness, kurtosis, minimum, maximum, percentage of time spent at the lower
 % and upper bounds, correlation matrix, and the five first-order autocorrelation
 % coefficients. In addition, |recsSimul| draws the histograms of the variables
@@ -45,11 +46,6 @@
 % |recsSimul|:
 %
 %  [ssim,xsim,esim,stat] = recsSimul(model,interp,s0,nper);
-%
-% Since RECS does not retain the variable names, when displaying the statistics,
-% the variables are organized as follows: first state variables, followed by
-% response variables, both of which follow the order of their definition in the
-% Yaml file.
 
 %% Choice of simulation techniques
 % There are two main approaches to simulate the model once an approximated

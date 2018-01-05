@@ -58,7 +58,7 @@ function [ssim,xsim,esim,stat,fsim] = recsSimul(model,interp,s0,nper,shocks,opti
 %
 % See also RECSACCURACY, RECSDECISIONRULES, RECSIRF.
 
-% Copyright (C) 2011-2016 Christophe Gouel
+% Copyright (C) 2011-2018 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -272,7 +272,7 @@ if nargout>=4 || statdisplay
     if display==1
       fprintf(1,'Statistics from simulated variables (excluding the first %i observations):\n',Tburn);
       disp(' Moments');
-      if exist('table','file')
+      if tabularform
         disp(stat.moments)
       else
         disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
@@ -311,7 +311,7 @@ if nargout>=4 || statdisplay
     end
     if display==1
       disp(' Autocorrelation');
-      if exist('table','file')
+      if tabularform
         disp(stat.acor);
       else
         disp('    1         2         3         4         5');

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 
-<toc version="0.7-beta">
+<toc version="0.7">
 
   <tocitem target="recs_product_page.html">RECS
 
@@ -56,6 +56,8 @@
         <tocitem target="sto3.html"> Anticipated switch to a public storage policy </tocitem>
         <tocitem target="sto4.html"> Competitive storage with price-band backed by public storage </tocitem>
         <tocitem target="sto5.html"> Two-country storage-trade model with supply reaction, fixed tariffs </tocitem>
+        <tocitem target="sto6.html"> Quarterly storage model with annual inelastic supply </tocitem>
+        <tocitem target="sto6SP.html"> Variant of sto6: Quarterly storage model with informational subperiods and annual inelastic supply </tocitem>
       </tocitem>
 
     </tocitem>

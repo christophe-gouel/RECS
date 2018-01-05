@@ -30,7 +30,7 @@ function [s,x,z,exitflag] = recsSSSP(model,s,x,options)
 %    1 : RECSSSSP converges to the deterministic steady state
 %    0 : Failure to converge
 
-% Copyright (C) 2011-2016 Christophe Gouel
+% Copyright (C) 2011-2018 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -122,11 +122,22 @@ if exitflag==1 && options.display==1
     fprintf(1,['Deterministic steady state (different from first guess, ' ...
                'max(|delta|)=%g)\n'],deltass)
   end
-  fprintf(1,' State variables:\n\t\t')
-  fprintf(1,'%0.4g\t',cat(2,s{:}))
-  fprintf(1,'\n\n Response variables:\n\t\t')
-  fprintf(1,'%0.4g\t',cat(2,x{:}))
-  fprintf(1,'\n\n Expectations variables:\n\t\t')
+  if exist('table','file')
+    symbols = struct2cell(model.symbols);
+    symbols = cat(2,symbols{1,:,:},symbols{2,:,:});
+    D = sum(cell2mat(model.dim(:,1)));
+    fprintf(1,' State variables:\n')
+    disp(array2table(cat(2,s{:}),'VariableNames',symbols(1:D)))
+    fprintf(1,' Response variables:\n')
+    disp(array2table(cat(2,x{:}),'VariableNames',symbols(D+1:end)))
+  else
+    fprintf(1,' State variables:\n\t\t')
+    fprintf(1,'%0.4g\t',cat(2,s{:}))
+    fprintf(1,'\n\n Response variables:\n\t\t')
+    fprintf(1,'%0.4g\t',cat(2,x{:}))
+  fprintf(1,'\n\n')
+  end
+  fprintf(1,' Expectations variables:\n\t\t')
   fprintf(1,'%0.4g\t',cat(2,z{:}))
   fprintf(1,'\n\n')
 end

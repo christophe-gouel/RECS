@@ -120,11 +120,16 @@
 %       </td>
 %       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a>, <a href="matlab:doc('recsSolveREE')"><tt>recsSolveREE</tt></a> </td>
 %     </tr>
+%     <tr>
 %       <td> <tt>T</tt> </td>
 %       <td> integer defining the time horizon at which the model is supposed to
 %                       converge to its steady state (default: 50) </td>
 %       <td> <a href="matlab:doc('recsFirstGuess')"><tt>recsFirstGuess</tt></a> </td>
+%     </tr>
 %     <tr>
+%       <td> <tt>Tburn</tt> </td>
+%       <td> integer defining the number of observations discarded as burn-in period (default: 20) </td>
+%       <td> <a href="matlab:doc('recsSimul')"><tt>recsSimul</tt></a> </td>
 %     </tr>
 %   </table>
 % </html>

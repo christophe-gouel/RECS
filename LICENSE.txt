@@ -1,8 +1,8 @@
 Format: http://dep.debian.net/deps/dep5/
-Upstream-Contact: Christophe Gouel <christophe.gouel@grignon.inra.fr>
+Upstream-Contact: Christophe Gouel <christophe.gouel@inra.fr>
 
 Files: *
-Copyright: 2011-2016, Christophe Gouel
+Copyright: 2011-2018, Christophe Gouel
 License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy of
  this software and associated documentation files (the "Software"), to deal in the

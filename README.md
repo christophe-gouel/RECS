@@ -1,5 +1,5 @@
-RECS toolbox Version 0.7-beta
-=============================
+RECS toolbox Version 0.7
+========================
 
 A MATLAB solver for nonlinear, dynamic, stochastic, rational expectations
 equilibrium models. RECS stands for "Rational Expectations Complementarity
@@ -7,16 +7,16 @@ Solver". This name emphasizes that RECS has been developed specifically to solve
 models that include complementarity equations, also known as models with
 occasionally binding constraints.
 
-[Christophe Gouel](http://www.christophegouel.com) (<christophe.gouel@grignon.inra.fr>)
+[Christophe Gouel](http://www.christophegouel.com) (<christophe.gouel@inra.fr>)
 
 **Main page is at**: [www.recs-solver.org](http://www.recs-solver.org).
 
 ## Download
 
 RECS Toolbox zip archives are available at
-[https://github.com/christophe-gouel/RECS/releases](https://github.com/christophe-gouel/RECS/releases).
+<https://github.com/christophe-gouel/RECS/releases>.
 
-Why is this archive 12 MB? Much of this size is due to an executable for
+Why is this archive 20 MB? Much of this size is due to an executable for
 Windows. The executable file includes a complete Python distribution necessary
 to parse RECS model files.
 

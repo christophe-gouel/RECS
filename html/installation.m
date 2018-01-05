@@ -3,7 +3,7 @@
 %% Download
 % RECS Toolbox zip archives are available at <https://github.com/christophe-gouel/RECS/releases>.
 %
-% Why is this archive 12 MB? Much of this size is due to an executable for
+% Why is this archive 20 MB? Much of this size is due to an executable for
 % Windows. The executable file includes a complete Python distribution
 % necessary to parse RECS model files.
 
@@ -71,6 +71,11 @@
 %
 % where |/usr/bin/python2.7| should be replaced by the address of your Python
 % 2.7.X interpreter.
+%
+% Alternatively, if your Python distribution is Anaconda, you can create from
+% RECS folder the virtual environment by
+%	
+%  conda create -p ./Python/PythonVirtualEnv python=2.7 numpy PyYAML sympy==0.7.2
 %
 % *Install them in your default Python installation.*
 %

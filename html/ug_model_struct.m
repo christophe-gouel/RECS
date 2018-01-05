@@ -22,9 +22,10 @@
 % definition in a MATLAB readable form but also all the derivatives of the
 % equations, plus some additional information such as the parameters values for
 % calibration or a first guess for the steady state.
-% * It creates in MATLAB workspace the object |model| with two fields: the
-% function name, |func| equal to |@filemodel|, and the parameters values,
-% |params|, if these latter have been provided in the Yaml file.
+% * It creates in MATLAB workspace the object |model| with several fields: for
+% example, |functions| which contains all the model functions, and the
+% parameters values, |params|, if these latter have been provided in the Yaml
+% file.
 
 %% Shocks with a Gaussian distribution
 % If your shocks follow a Gaussian distribution, you can also define their
@@ -55,14 +56,6 @@
 % function call in <gro1.html gro1.m> is:
 model = recsmodel('gro1.yaml',...
                   struct('Mu',0,'Sigma',0.007^2,'order',5));
-%%
-% It is *important to notice* that variables names are not displayed here and
-% will not be displayed in subsequent steps. Variable names are used only in the
-% symbolic model definition in the Yaml file. Once the Yaml file has been
-% processed, variables are merely ordered based on their original order in the
-% Yaml file. In this case, it means that, in the steady-state results above, for
-% the state variables the first number is capital and the second is the log of
-% productivity.
 
 %%
 % The model object has the following properties:

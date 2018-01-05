@@ -13,13 +13,19 @@
 % documentation for how to manage options.
 
 %% MCP solvers
-% Three MCP solvers can be used with RECS of which two are available by
+% Four MCP solvers can be used with RECS of which three are available by
 % default.
 %
 % *|lmmcp|*
 %
 % |lmmcp| is RECS default solver (for both MCP and traditional
 % nonlinear problems). It is included in RECS files.
+%
+% *|mcpsolve|*
+%
+% |mcpsolve| is a faster implementation of |ncpsolve| from the CompEcon
+% toolbox. It is a simple MCP solver that will be very fast on simple problems
+% but that may lack robustness.
 %
 % *|ncpsolve|*
 %
@@ -42,5 +48,5 @@
 
 %% See also
 % <matlab:isfilepresent('fsolve') |fsolve|>, <matlab:doc('lmmcp') |lmmcp|>,
-% <matlab:doc('ncpsolve') |ncpsolve|>, <matlab:doc('recspathmcp')
-% |recspathmcp|>.
+% <matlab:doc('mcpsolve') |mcpsolve|>, <matlab:doc('ncpsolve') |ncpsolve|>,
+% <matlab:doc('recspathmcp') |recspathmcp|>.

@@ -49,7 +49,7 @@ function [ssim,xsim,esim,stat,fsim] = recsSimulSP(model,interp,s0,nper,esim,opti
 %
 % See also RECSACCURACY, RECSDECISIONRULES, RECSIRF.
 
-% Copyright (C) 2011-2017 Christophe Gouel
+% Copyright (C) 2011-2018 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -202,6 +202,9 @@ clear('ssimlong')
 
 %% Compute some descriptive statistics
 if nargout>=4 || statdisplay
+  if exist('table','file'), tabularform = true;
+  else                      tabularform = false;
+  end
   if nper >= Tburn+20
     X = cat(2,ssim{:},xsim{:});
     X = permute(X(:,:,(Tburn+1):end),[2 1 3]);
@@ -230,17 +233,25 @@ if nargout>=4 || statdisplay
     varX = mean(y.*y,1);
     stat.moments = [mX' sqrt(varX)' (mean(y.^3,1)./varX.^1.5)' ...
                     (mean(y.^4,1)./(varX.*varX))' min(X)' max(X)' pLB' pUB'];
-    stat.moments = array2table(stat.moments,...
-                               'RowNames',symbols,...
-                               'VariableNames',...
-                               {'Mean' 'StdDev' 'Skewness' 'Kurtosis' 'Min' 'Max' 'pLB' 'pUB'});
+    if tabularform
+      stat.moments = array2table(stat.moments,...
+                                 'RowNames',symbols,...
+                                 'VariableNames',...
+                                 {'Mean' 'StdDev' 'Skewness' 'Kurtosis' 'Min' 'Max' 'pLB' 'pUB'});
+    end
     if display==1
       fprintf(1,'Statistics from simulated variables (excluding the first %i observations):\n',Tburn);
       disp(' Moments');
+      if ~tabularform
+        disp('    Mean      Std. Dev. Skewness  Kurtosis  Min       Max       %LB       %UB');
+      end
       disp(stat.moments)
     end
     
-    stat.cor = array2table(corrcoef(X),'RowNames',symbols,'VariableNames',symbols);
+    stat.cor = corrcoef(X);
+    if tabularform
+      stat.cor = array2table(stat.cor,'RowNames',symbols,'VariableNames',symbols);
+    end
     if display==1
       disp(' Correlation');
       disp(stat.cor);
@@ -259,10 +270,17 @@ if nargout>=4 || statdisplay
     parfor n=1:nrep
       acor = acor+autocor(X(:,:,n))/nrep;
     end
-    stat.acor = array2table(acor,'RowNames',symbols,...
-                            'VariableNames',{'T1' 'T2' 'T3' 'T4' 'T5'});
+    if tabularform
+      stat.acor = array2table(acor,'RowNames',symbols,...
+                              'VariableNames',{'T1' 'T2' 'T3' 'T4' 'T5'});
+    else
+      stat.acor = acor;
+    end
     if display==1
       disp(' Autocorrelation');
+      if ~tabularform
+        disp('    1         2         3         4         5');
+      end
       disp(stat.acor);
     end
   else
