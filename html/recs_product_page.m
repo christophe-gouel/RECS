@@ -22,7 +22,7 @@
 % * <recs_functions.html Functions>
 % * <demos.html RECS Toolbox Demos>
 %
-% Changelog is available at <https://github.com/christophe-gouel/RECS/CHANGELOG.md>.
+% Changelog is available at <https://github.com/christophe-gouel/RECS/blob/master/CHANGELOG.md>.
 %
 % <html>
 % <h2>License</h2>
