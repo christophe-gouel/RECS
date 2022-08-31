@@ -58,11 +58,11 @@ function [ssim,xsim,esim,stat,fsim] = recsSimul(model,interp,s0,nper,shocks,opti
 %
 % See also RECSACCURACY, RECSDECISIONRULES, RECSIRF.
 
-% Copyright (C) 2011-2018 Christophe Gouel
+% Copyright (C) 2011-2022 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
-if nargin<5;
+if nargin<5
   shocks = [];
   if nargin<4
     nper = [];
@@ -159,8 +159,8 @@ esim        =   NaN(nrep,q,nper);
 if nargout==5, fsim = zeros(nrep,m,nper); end
 if isempty(shocks)
   for t=2:nper, esim(:,:,t) = funrand(nrep); end
-elseif numel(shocks)==d
-  esim(:,:,2:end) = shocks(ones(nrep,1),:,ones(nper,1));
+elseif numel(shocks)==q
+  esim(:,:,2:end) = shocks(ones(nrep,1),:,ones(nper-1,1));
 else
   esim(:,:,2:end) = shocks;
 end

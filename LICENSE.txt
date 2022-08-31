@@ -1,10 +1,10 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: RECS
-Upstream-Contact: Christophe Gouel <christophe.gouel@inra.fr>
+Upstream-Contact: Christophe Gouel <christophe.gouel@inrae.fr>
 Source: https://github.com/christophe-gouel/RECS
 
 Files: *
-Copyright: 2011-2018, Christophe Gouel
+Copyright: 2011-2022, Christophe Gouel
 License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy of
  this software and associated documentation files (the "Software"), to deal in the

@@ -29,7 +29,7 @@ function [si,xi] = recsIRF(model,interp,shock,nrep,nper,options)
 %
 % See also RECSDECISIONRULES, RECSSIMUL.
 
-% Copyright (C) 2011-2016 Christophe Gouel
+% Copyright (C) 2011-2022 Christophe Gouel
 % Licensed under the Expat license, see LICENSE.txt
 
 %% Initialization
@@ -52,7 +52,7 @@ w       = model.shocks.w;
 
 fspace = interp.fspace;
 
-if isfield(model,'sss')
+if isprop(model,'sss')
   s0  = model.sss;
 else
   s0  = (fspace.a+fspace.b)/2;

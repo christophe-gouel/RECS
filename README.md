@@ -9,9 +9,9 @@ Solver". This name emphasizes that RECS has been developed specifically to solve
 models that include complementarity equations, also known as models with
 occasionally binding constraints.
 
-[Christophe Gouel](http://www.christophegouel.com) (<christophe.gouel@inra.fr>)
+[Christophe Gouel](https://www.christophegouel.com) (<christophe.gouel@inrae.fr>)
 
-**Main page is at**: [www.recs-solver.org](http://www.recs-solver.org).
+**Main page is at**: [www.recs-solver.org](https://www.recs-solver.org).
 
 ## Download
 
